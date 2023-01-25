@@ -1,0 +1,19 @@
+{
+  "name": "chaos",
+  "version": "1.0.0",
+  "description": "a 2D game engine",
+  "main": "index.html",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "vite"
+  },
+  "keywords": [
+    "game",
+    "engine",
+    "2D"
+  ],
+  "author": "wayne mwashuma",
+  "license": "MIT"
+}
