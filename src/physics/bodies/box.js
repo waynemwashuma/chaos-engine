@@ -1,0 +1,22 @@
+import{Body} from "./body.js"
+import {Vector} from"../../utils/index.js"
+import {Rectangle} from "../shapes/index.js"
+class Box extends Body {
+  constructor(w,h) {
+    super(new Rectangle(w,h))
+    this.inertia = Rectangle.calcInertia(this._mass,w,h)
+    
+  }
+  set mass(x){
+    this._mass = x
+    this.inv_mass = x === 0 ? 0 : 1 / x
+    this.inertia = Rectangle.calcInertia(x,this.shapes[0].width,this.shapes[0].height)
+  }
+  get mass(){
+    return this._mass
+  }
+}
+
+export {
+  Box
+}
