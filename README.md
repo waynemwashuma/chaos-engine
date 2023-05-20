@@ -11,14 +11,23 @@
  
  - Added some features to physics including:
     -> Collision Masking
+
     -> Narrowphase
+    
     -> Broadphase
+    
     -> Stable distance constraints
+    
     -> Static and Dynamic bodies(may add kinematic later on)
+    
     -> Composite bodies(not complete)
+    
     -> Friction(was removed temporarily due to instability it causes)
+    
     -> Sleeping introduced to improve performance
+    
     -> Querying regions through the broadphase(not done for AABBBroadphase)
+    
     -> Iterative solving for velocity to improve non-rotational stacking
     
  - Improved the collision detection.
@@ -39,8 +48,9 @@
  
  - Added documentation to the Vector class
  
- 
- **** WARNING ****
+
+### **** WARNING ****
+
 Upgrade from v0.0.0 to v0.1.0 as it is not yet stable
 
  Some of these include breaking changes like 
@@ -56,7 +66,7 @@ This is not yet a stable version hence dont rely on it to make production apps
 
  
  
- **** FUTURE WORK ****
+### **** FUTURE WORK ****
  
  - Add a webgl renderer(dont have a direct plan for this yet)
  - Stabilize the collision response to work well with large forces such as (gravity =  10000)
