@@ -27,7 +27,7 @@ class Body extends Component {
     layer: 0,
     group: 0
   }
-  parent = null
+  entity = null
   bounds = null
   shapes = null
   allowSleep = Settings.allowSleep
@@ -145,12 +145,12 @@ class Body extends Component {
     this.rotation.degree += arm.cross(force) * this.inv_inertia
   }
   
-  init(parent) {
-    this.parent = parent
+  init(entity) {
+    this.entity = entity
     this.requires("transform", "movable", "bounds")
-    let transform = parent.get("transform")
-    let bounds = parent.get("bounds")
-    let move = parent.get("movable")
+    let transform = entity.get("transform")
+    let bounds = entity.get("bounds")
+    let move = entity.get("movable")
     this._acceleration = move.acceleration
     this._rotation = move.rotation
     this._velocity = move.velocity

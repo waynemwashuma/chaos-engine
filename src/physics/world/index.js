@@ -161,7 +161,6 @@ class World {
         ImpulseSolver.solve(manifold)
         FrictionSolver.solve(manifold)
       }
-
       for (var i = 0; i < length; i++) {
         manifold = this.CLMDs[i]
         manifold.bodyA.velocity.add(manifold.velA)
@@ -170,7 +169,6 @@ class World {
         manifold.bodyB.rotation.radian += manifold.rotB
       }
     }
-    
     for (let i = 0; i < length; i++) {
       manifold = this.CLMDs[i]
       manifold.stmp = this.count

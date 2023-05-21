@@ -18,7 +18,7 @@ export const BodyType = Object.freeze({
 export const Settings = {
   //For the world
   angularVelDampen: 0.001,
-  linearVelDampen: 0.001,
+  linearVelDampen: 0.00,
   posDampen: 0.17,
   linearDamping: 0.01,
   angularDamping: 0.01,

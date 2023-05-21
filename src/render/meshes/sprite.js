@@ -1,4 +1,4 @@
-import { Vector,Utils,Angle } from "../../utils/index.js"
+import { Vector, Utils, Angle } from "../../utils/index.js"
 import { Component } from "/src/manager/component.js"
 
 let v = new Vector()
@@ -44,24 +44,26 @@ class Sprite extends Component {
   init(entity) {
     this.entity = entity
     this.requires("transform")
-    let transform = parent.get("transform")
+    let transform = entity.get("transform")
     this._position = transform.position
     this._orientation = transform.orientation
     this.bounds = parent.bounds
   }
-  add(sprite){
+  add(sprite) {
     this._children.push(sprite)
   }
-  remove(sprite,recursive = false){
-    let index = this._children.indexOf(sprite)
-    if(index !== -1){
-      Utils.removeElement(this._children,index)
-      return
+  remove(sprite, recursive = false, index) {
+    let inx = index ?? this._children.indexOf(sprite)
+    if (inx !== -1) {
+      Utils.removeElement(this._children, inx)
+      return true
     }
-    if(!recursive)return
+    if (!recursive) return false
     for (var i = 0; i < this._children.length; i++) {
-      this._children[i].remove(sprite,recursive)
+      let t = this._children[i].remove(sprite, recursive,index)
+      if (t) return true
     }
+    return false
   }
 }
 class Mesh extends Sprite {

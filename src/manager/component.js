@@ -18,16 +18,16 @@ class Component {
     return this.parent.getComponent(n);
   }
 
-  init(parent) {
-    this.parent = parent
+  init(entity) {
+    this.entity = entity
   }
 
   update(dt) {}
 
   requires(...names) {
     for (var i = 0; i < names.length; i++)
-      if (!this.parent.has(names[i]))
-        Err.throw(`The component \`${this.CHOAS_TYPE}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.parent.id}`)
+      if (!this.entity.has(names[i]))
+        Err.throw(`The component \`${this.CHOAS_TYPE}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.enrity.id}`)
   }
   get(name){
     return this.parent.get(name)

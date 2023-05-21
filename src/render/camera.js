@@ -1,28 +1,37 @@
-import { Angle,Vector } from "../utils/index.js"
+import { Angle, Vector,Matrix } from "../utils/index.js"
 class Camera {
   _position = new Vector()
-  constructor(renderer,position) {
+  constructor(renderer, position) {
+    this.transformMatrix = new Matrix()
+    this.target = null
+    this.lerpFactor = 0.5
     this.renderer = renderer
-    this.position.set(position?.x|| 0,position?.y || 0)
+    this.position.set(position?.x || 0, position?.y || 0)
     this.orientation = new Angle()
   }
-  get position(){
+  get position() {
     return this._position
   }
-  set position(x){
+  set position(x) {
     this._position.copy(x)
   }
-  get transform(){
+  get transform() {
     return this.position
   }
-  updateCtx(ctx) {
-    //ctx.translate(this.position.x,this.position.y)
+  update(ctx) {
+    this._position.lerp(
+      this.target,
+      this.lerpFactor
+    )
   }
   clear(ctx) {
     ctx.setTransform()
   }
-  dispose(){
+  dispose() {
     this.renderer = null
+  }
+  follow(position) {
+    this.target = position
   }
 }
 export {

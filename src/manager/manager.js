@@ -51,14 +51,17 @@ class Manager {
     this._accumulator = 0
     this.RAF()
   }
-  constructor() {
-    this.init()
+  constructor(options) {
+    options = Object.assign({
+      autoInitialize:true
+    },options)
+    if(options.autoInitialize)this.init()
   }
   init() {
     this.objects.forEach(ob => {
       ob.init(this)
     })
-    //this.initSystems()
+    this.initSystems()
     if (this._coreSystems["events"]) {
       this._coreSystems['events'].trigger("init", this)
     }
@@ -121,7 +124,11 @@ class Manager {
       input = this._coreSystems["input"]
 
     let totalTS = performance.now()
+    
+    //the only reason this is here is that
+    //i need to debug stuff visually
     if (renderer) renderer.clear()
+    
     for (var i = 0; i < this._systems.length; i++) {
       this._systems[i].update(dt)
     }
@@ -134,7 +141,7 @@ class Manager {
     }
     this.perf.total = performance.now() - totalTS
   }
-  registerClass(obj, override) {
+  registerClass(obj, override = false) {
     let n = obj.name.toLowerCase()
     if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
     this._classes[n] = obj

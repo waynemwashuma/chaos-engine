@@ -1,17 +1,17 @@
 function defaultCollisionHandler(clmds) {
   let a, b
   for (let i = 0; i < clmds.length; i++) {
-    a = clmds[i].bodyA.parent.getHandler("collision")
-    b = clmds[i].bodyB.parent.getHandler("collision")
+    a = clmds[i].bodyA.entity.getHandler("collision")
+    b = clmds[i].bodyB.entity.getHandler("collision")
 
     if (a) a(
-      clmds[i].bodyA.parent,
-      clmds[i].bodyB.parent,
+      clmds[i].bodyA.entity,
+      clmds[i].bodyB.entity,
       clmds[i]
     )
     if (b) b(
-      clmds[i].bodyB.parent,
-      clmds[i].bodyA.parent,
+      clmds[i].bodyB.entity,
+      clmds[i].bodyA.entity,
       clmds[i]
     )
   }
@@ -20,17 +20,17 @@ function defaultCollisionHandler(clmds) {
 function defaultPrecollisionHandler(clmds) {
   let a, b
   for (let i = 0; i < clmds.length; i++) {
-    a = clmds[i].a.parent.getHandler("precollision")
-    b = clmds[i].b.parent.getHandler("precollision")
+    a = clmds[i].a.entity.getHandler("precollision")
+    b = clmds[i].b.entity.getHandler("precollision")
 
     if (a) a(
-      clmds[i].a.parent,
-      clmds[i].b.parent,
+      clmds[i].a.entity,
+      clmds[i].b.entity,
       clmds[i]
     )
     if (b) b(
-      clmds[i].a.parent,
-      clmds[i].b.parent,
+      clmds[i].a.entity,
+      clmds[i].b.entity,
       clmds[i]
     )
   }
