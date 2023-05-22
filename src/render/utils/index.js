@@ -1,1 +1,0 @@
-export {ParalaxBackground} from "./parallaxBackground.js"

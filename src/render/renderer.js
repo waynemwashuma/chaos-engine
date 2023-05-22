@@ -21,6 +21,7 @@ class Renderer {
     lastTimestamp: 0,
     total: 0
   }
+  background = null
   /** @type {HTMLCanvasElement}*/
   domElement = null
   /**@type {CanvasRenderingContext2D}*/
@@ -35,30 +36,18 @@ class Renderer {
     this.ctx = this.domElement.getContext('2d')
     this.camera = new Camera(this)
     this.clock = new Clock()
-
   }
   init(manager) {
     manager.setComponentList("mesh", this.objects)
   }
-  /** 
-   *
-   *@description gets the width of canvas being drawn to
-   */
   push() {
     this._transforms.push(this.ctx.getTransform())
   }
   pop() {
-    this.ctx.translate(
-      -this._translation.x,
-      -this._translation.y
-    )
-    this.ctx.scale(
-      -this._scale.x,
-      -this._scale.y
-    )
-    this.ctx.rotate(-this._rotation)
+    this.ctx.setTransform(this._transforms.pop())
+
   }
-  reset(){
+  reset() {
     this.ctx.setTransform()
   }
   translate(x, y) {
@@ -93,7 +82,8 @@ class Renderer {
     this.ctx.arc(
       x - this.camera.position.x,
       y - this.camera.position.y,
-      r, 0, Math.PI * 2)
+      r, 0, Math.PI * 2
+      )
   }
   vertices(vertices, close = true) {
     this.ctx.moveTo(
@@ -102,22 +92,27 @@ class Renderer {
     for (var i = 1; i < vertices.length; i++) {
       this.ctx.lineTo(
         vertices[i].x - this.camera.position.x,
-        vertices[i].y - this.camera.position.y)
+        vertices[i].y - this.camera.position.y
+      )
     }
     if (close)
       this.ctx.lineTo(
         vertices[0].x - this.camera.position.x,
-        vertices[0].y - this.camera.position.y)
+        vertices[0].y - this.camera.position.y
+      )
   }
   arc(x, y, r, start, end) {
     this.ctx.arc(
       x - this.camera.position.x,
-      y - this.camera.position.y, r, start, end)
+      y - this.camera.position.y,
+      r, start, end
+    )
   }
   fillText(text, x, y) {
     this.ctx.fillText(text,
       x - this.camera.position.x,
-      y - this.camera.position.y)
+      y - this.camera.position.y
+    )
   }
   fill(color = "black", fillRule) {
     this.ctx.fillStyle = color
@@ -149,7 +144,7 @@ class Renderer {
     this.ctx.drawImage(img, w * ix, h * iy, w, h,
       x - this.camera.position.y,
       y - this.camera.position.y,
-      w,h)
+      w, h)
   }
   get width() {
     return this.domElement.clientWidth
@@ -167,14 +162,14 @@ class Renderer {
     this.width = w
     this.height = h
   }
-  set background(x) {
+  set CSSbackground(x) {
     this.domElement.style.background = x
   }
-  get background() {
+  get CSSbackground() {
     return this.domElement.style.background
   }
   clear() {
-    this.ctx.setTransform()
+    this.reset()
     let h = this.height,
       w = this.width
     this.ctx.clearRect(0, 0, w, h)
@@ -183,6 +178,8 @@ class Renderer {
 
     this.perf.lastTimestamp = performance.now()
     //this.clear(this.ctx)
+    if (this.background != void 0)
+      this.background.update(this, dt)
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].update(this, dt)
     }

@@ -1,3 +1,3 @@
 export * from "./renderer.js"
-export * from "./meshes/index.js"
-export * from "./utils/index.js"
+export * from "./sprites/index.js"
+export * from "./backgrounds/index.js"

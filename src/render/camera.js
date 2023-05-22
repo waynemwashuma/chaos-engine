@@ -19,6 +19,7 @@ class Camera {
     return this.position
   }
   update(ctx) {
+    if(this.target)
     this._position.lerp(
       this.target,
       this.lerpFactor
