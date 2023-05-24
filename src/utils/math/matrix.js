@@ -35,14 +35,7 @@ class Matrix {
     v.y = this.b * x + this.d * y + this.f
     return v
   }
-  identity() {
-    this.a = 1
-    this.b = 0
-    this.c = 0
-    this.d = 1
-    this.e = 0
-    this.f = 0
-  }
+  
   clone() {
     return new Matrix(...this)
   }
@@ -53,7 +46,7 @@ class Matrix {
     this.d = m.d
     this.e = m.e
     this.f = m.f
-    
+
     return this
   }
 
@@ -67,12 +60,10 @@ class Matrix {
   }
 }
 
-console.log(new Matrix());
-
 
 
 class Matrix3 {
-  constructor() {
+  constructor(array) {
     //X - basis vector
     this.a = 1
     this.b = 0
@@ -91,18 +82,90 @@ class Matrix3 {
     this.k = 0
     this.l = 0
   }
+  identity() {
+    this.a = 1
+    this.b = 0
+    this.c = 0
+    this.d = 1
+    this.e = 0
+    this.f = 0
+    this.j = 0
+    this.k = 0
+    this.l = 0
+    
+    return this
+  }
   scale(x, y = 1, z = 1) {
     this.a *= x
     this.e *= y
     this.i *= z
+    return this
   }
   translate(x = 0, y = 0, z = 0) {
     this.j += x
     this.k += y
     this.l += z
-  }
-  transform() {
 
+    return this
+  }
+  rotateX(rad) {
+    let cos = Math.cos(rad),
+      sin = Math.sin(rad),
+      e = this.e,
+      f = this.f,
+      h = this.h,
+      i = this.i
+
+    this.e = e * cos - f * sin;
+    this.f = e * sin + f * cos;
+    this.h = h * cos - i * sin;
+    this.i = h * sin + i * cos;
+
+    return this
+  }
+  rotateY(rad) {
+    let cos = Math.cos(rad),
+      sin = Math.sin(rad),
+      a = this.a,
+      c = this.c,
+      g = this.g,
+      i = this.i
+
+    this.a = a * cos - c * sin;
+    this.c = a * sin + c * cos;
+    this.g = g * cos - i * sin;
+    this.i = g * sin + i * cos;
+
+    return this
+  }
+  rotateZ(rad) {
+    let cos = Math.cos(rad),
+      sin = Math.sin(rad),
+      a = this.a,
+      b = this.b,
+      d = this.d,
+      e = this.e
+
+    this.a = a * cos - b * sin;
+    this.b = a * sin + b * cos;
+    this.d = d * cos - e * sin;
+    this.e = d * sin + e * cos;
+
+    return this
+  }
+  transform(v) {
+
+  }
+  clone() {
+    return new Matrix3().copy(this)
+  }
+  copy(m) {
+    this.a = m.a
+    this.b = m.b
+    this.c = m.c
+    this.d = m.d
+    this.e = m.e
+    this.f = m.f
   }
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
@@ -112,6 +175,8 @@ class Matrix3 {
   }
 }
 
+//let matrix = new Matrix3().rotateZ(Math.PI / 2)
+//console.log(matrix);
 export {
   Matrix
 }

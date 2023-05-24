@@ -12,43 +12,43 @@
  - Added some features to physics including:
     -> Collision Masking
 
-    -> Narrowphase
+    -> Narrowphase.
     
-    -> Broadphase
+    -> Broadphase.
     
-    -> Stable distance constraints
+    -> Stable distance constraints.
     
-    -> Static and Dynamic bodies(may add kinematic later on)
+    -> Static and Dynamic bodies(may add kinematic later on).
     
-    -> Composite bodies(not complete)
+    -> Composite bodies(not complete).
     
-    -> Friction(was removed temporarily due to instability it causes)
+    -> Friction(was removed temporarily due to instability it causes).
     
-    -> Sleeping introduced to improve performance
+    -> Sleeping introduced to improve performance.
     
-    -> Querying regions through the broadphase(not done for AABBBroadphase)
+    -> Querying regions through the broadphase(not done for AABBBroadphase).
     
-    -> Iterative solving for velocity to improve non-rotational stacking
+    -> Iterative solving for velocity to improve non-rotational stacking.
     
  - Improved the collision detection.
  - Removed the Line body as it didn't work well with the physics system.
  - The event system with the physics system interact to provide you with collision events.
- - Refactored to remove event system from the physics part and made it standalone
+ - Refactored to remove event system from the physics part and made it standalone.
  
  - Added Camera system to the renderer
- - Added new methods to the renderer to prevent direct need for canvas context
+ - Added new methods to the renderer to prevent direct need for canvas context.
  
- - Included a loader to preload assets(not completed yet)
- - Included a storage API to store data in cookies,sessions or localstorage(may include indexedDB later on)
- - Added a way to support playing audio using Web Audio(may need to add an Audio tag fallback)
+ - Included a loader to preload assets(not completed yet).
+ - Included a storage API to store data in cookies,sessions or localstorage(may include indexedDB later on).
+ - Added a way to support playing audio using Web Audio(may need to add an Audio tag fallback).
  
  - Added methods to search for entities with specific tags and/or components.
  
- - Improved input handling of touch devices
+ - Improved input handling of touch devices.
  
- - Added documentation to the Vector class
+ - Added documentation to the Vector class.
  
-
+ - Renamed Mesh classes to Sprite.
 ### **** WARNING ****
 
 Upgrade from v0.0.0 to v0.1.0 as it is not yet stable
@@ -74,7 +74,6 @@ This is not yet a stable version hence dont rely on it to make production apps
  - Add game state class for managing the game
  
  - Migrate some other parts of the code to the new model( Meshes for example )
- - Rename Mesh class to Sprite
  - Add an animation system.
  - Add tutorials to this game engine
  - Add documentation to every file in this project.
