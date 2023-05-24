@@ -21,7 +21,8 @@ class Manager {
     world: null,
     renderer: null,
     input: null,
-    events: null
+    events: null,
+    audio:null
   }
   _systemsMap = {}
   _compMap = {}
@@ -53,9 +54,9 @@ class Manager {
   }
   constructor(options) {
     options = Object.assign({
-      autoInitialize:true
-    },options)
-    if(options.autoInitialize)this.init()
+      autoInitialize: true
+    }, options)
+    if (options.autoInitialize) this.init()
   }
   init() {
     this.objects.forEach(ob => {
@@ -100,15 +101,13 @@ class Manager {
   }
   play() {
     this.RAF()
-    if (this._coreSystems["events"]) {
+    if (this._coreSystems["events"])
       this._coreSystems['events'].trigger("play")
-    }
   }
   pause() {
     cancelAnimationFrame(this._rafID)
-    if (this._coreSystems["events"]) {
+    if (this._coreSystems["events"]) 
       this._coreSystems['events'].trigger("pause")
-    }
   }
   initSystems() {
     for (var i = 0; i < this._systems.length; i++) {
@@ -124,11 +123,11 @@ class Manager {
       input = this._coreSystems["input"]
 
     let totalTS = performance.now()
-    
+
     //the only reason this is here is that
     //i need to debug stuff visually
     if (renderer) renderer.clear()
-    
+
     for (var i = 0; i < this._systems.length; i++) {
       this._systems[i].update(dt)
     }
@@ -221,7 +220,7 @@ class Manager {
     if (n) {
       if (n in this._classes)
         return new this._classes[n]()
-      Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used to clone.`)
+      Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`)
     }
     return obj instanceof Array ? [] : {}
   }
