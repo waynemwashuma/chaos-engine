@@ -16,7 +16,7 @@
     
     -> Broadphase.
     
-    -> Stable distance constraints.
+    -> distance constraints.
     
     -> Static and Dynamic bodies(may add kinematic later on).
     
