@@ -8,21 +8,29 @@ class Loader {
     this.json = {}
     this._progressBytes = 0
     this._totalBytes = 0
+    this._filesLoaded = 0
     this._totalFileNo = 0
     const that = this
+    this.onfinish = null
     this._handlers = {
-      onload: function(e) {
-        let type = that._getType(e.responseURL)
-        let name = that._getName(e.responseURL)
-        if (type == "image") {
+      onload: function(xhr,e) {
+        let type = that._getType(xhr.responseURL)
+        let name = that._getName(xhr.responseURL)
+        if (type === "image") {
           that.imgs[name] = new Image()
-          that.imgs[name].src = URL.createObjectURL(e.response)
-        } else if (type == "audio") {
-          that.sfx[name] = e.response
+          that.imgs[name].src = URL.createObjectURL(xhr.response)
+        } else if (type === "audio") {
+          that.sfx[name] = xhr.response
+          //it using webAudio,just set it to the buffer 
+          //else find a way to put this buffer into an audio tag
+        } else if (type === "json") {
+          that.json[name] = JSON.parse(xhr.response)
+        } else {
+          return Err.warn(`The file in url ${e.responseURL} is not loaded in the loader because its extension name is not supported`)
         }
-      },
-      onprogress: function(e) {
-
+        that._filesLoaded += 1
+        if (that._filesLoaded == that._totalFileNo && that.onfinish)
+          that.onfinish()
       },
       onheadload: function(e) {
         if (e.total === 0 || !e.lengthComputable) return
@@ -31,7 +39,6 @@ class Loader {
         xhr.open('GET', files.images[i], true)
 
         xhr.onload = e => that._handlers.onload(xhr)
-        xhr.onprogress = that._handlers.onprogress
         xhr.onerror = console.log
         xhr.send()
       },
@@ -58,35 +65,47 @@ class Loader {
 
     if (ext === "jpg" || ext === "png" || ext === "jpeg") return "image"
     if (ext === "mp3" || ext === "ogg") return "audio"
-    throw Error(`The file extension ${ext} is not supported by the loader`)
-  }
-  loadImage(url) {
-
-  }
-  loadSfx() {
-
+    if (ext === "json") return "json"
   }
   loadAll(files) {
-    this._totalFileNo = files.images?.length + files.audio?.length + files.json?.length
-    let that = this
+    this._totalFileNo =
+      (files.images?.length || 0) +
+      (files.audio?.length || 0) +
+      (files.json?.length || 0)
     if (files.images) {
       for (var i = 0; i < files.images.length; i++) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', files.images[i], true)
         xhr.responseType = "blob"
-        xhr.onload = e => this._handlers.onload(xhr, files.images[i])
-        xhr.onerror = e => this._handlers.onerror(e, files.images[i])
+        xhr.onload = e => this._handlers.onload(xhr)
+        xhr.onerror = e => this._handlers.onerror(xhr)
         xhr.send()
       }
     }
     if (files.audio) {
       for (var i = 0; i < files.audio.length; i++) {
         let xhr = new XMLHttpRequest();
+        xhr.responseType = "arraybuffer"
         xhr.open('GET', files.audio[i], true);
-        xhr.onload = e => this._handlers.onload(xhr, files.audio[i])
-        xhr.onerror = e => this._handlers.onerror(e, files.audio[i])
+        xhr.onprogress = e => {
+          console.log(e.total,e.loaded);
+        }
+        xhr.onload = e => this._handlers.onload(xhr)
+        xhr.onerror = e => this._handlers.onerror(xhr)
         xhr.send();
       }
+    }
+    if (files.json) {
+      for (var i = 0; i < files.json.length; i++) {
+        let name = files.json[i]
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = "text"
+        xhr.open('GET', files.json[i], true);
+        xhr.onload = e => this._handlers.onload(xhr)
+        xhr.onerror = e => this._handlers.onerror(xhr)
+        xhr.send();
+      }
+
     }
   }
 }
@@ -95,8 +114,10 @@ let l = new Loader()
 
 l.loadAll({
   images: ["/fire.jpg"],
-  audio: ["dv.mp3"]
+  audio: ["dv.mp3"],
+  json: ["res.json"]
 })
+console.log(l);
 export {
   Loader
 }

@@ -1,5 +1,6 @@
 import { World } from "../physics/index.js"
 import { Renderer } from "../render/renderer.js"
+import {Loader} from "../loader/index.js"
 import {
   Clock,
   Utils,
@@ -14,6 +15,7 @@ import {
 import { Input } from "../inputs/index.js"
 
 class Manager {
+  _rafID = undefined
   _classes = {}
   _componentLists = {}
   _systems = []
@@ -24,6 +26,8 @@ class Manager {
     events: null,
     audio:null
   }
+  _initialized = false
+  playing = false
   _systemsMap = {}
   _compMap = {}
   clock = new Clock()
@@ -34,6 +38,7 @@ class Manager {
     lastTimestamp: 0,
     total: 0
   }
+  loader = new Loader()
   _update = accumulate => {
     let dt = this.clock.update(accumulate)
 
@@ -47,26 +52,33 @@ class Manager {
     }
     this.update(dt)
     if (this._coreSystems["events"]) {
+      this._coreSystems['events'].trigger("update")
       this._coreSystems['events'].trigger("updateEnd")
     }
     this._accumulator = 0
     this.RAF()
   }
-  constructor(options) {
-    options = Object.assign({
-      autoInitialize: true
+  constructor(options = {}) {
+    this.options = Object.assign({
+      autoPlay: true
     }, options)
-    if (options.autoInitialize) this.init()
+    this.loader.onfinish = e=>{
+      this.init()
+      this.play()
+    }
+    this.loader.loadAll(options.files)
   }
   init() {
-    this.objects.forEach(ob => {
-      ob.init(this)
-    })
+    for (var i = 0; i < this.objects.length; i++) {
+      this.objects[i].init(this)
+    }
     this.initSystems()
     if (this._coreSystems["events"]) {
       this._coreSystems['events'].trigger("init", this)
     }
-    this.play()
+    this.update(0)
+    if(this.playing)this.play()
+    this._initialized = true
   }
   add(object) {
     this.objects.push(object)
@@ -100,11 +112,19 @@ class Manager {
     this._rafID = requestAnimationFrame(this._update)
   }
   play() {
+    if(!this._initialized){
+      this.playing = true
+      return
+    }
     this.RAF()
     if (this._coreSystems["events"])
       this._coreSystems['events'].trigger("play")
   }
   pause() {
+    if(!this._initialized){
+      this.playing = false
+      return
+    }
     cancelAnimationFrame(this._rafID)
     if (this._coreSystems["events"]) 
       this._coreSystems['events'].trigger("pause")

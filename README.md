@@ -78,3 +78,4 @@ This is not yet a stable version hence dont rely on it to make production apps
  - Add tutorials to this game engine
  - Add documentation to every file in this project.
  - Add appropriate demos to the project and get a website running for them
+ - Add some error handling mechanisms 
