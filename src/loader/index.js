@@ -31,7 +31,7 @@ class Loader {
         } else if (type === "json") {
           that.json[name] = JSON.parse(xhr.response)
         } else {
-          return Err.warn(`The file in url ${xhr.responseURL} is not loaded in the loader because its extension name is not supported.`)
+          return Err.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
         }
         that._filesLoaded += 1
 
