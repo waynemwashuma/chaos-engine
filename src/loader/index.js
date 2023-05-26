@@ -1,5 +1,5 @@
 import { DEVICE } from "../device/index.js"
-
+import { Err } from "../utils/index.js"
 class Loader {
   constructor(manager) {
     this._toload = []
@@ -8,29 +8,37 @@ class Loader {
     this.json = {}
     this._progressBytes = 0
     this._totalBytes = 0
+    this._filesErr = 0
     this._filesLoaded = 0
     this._totalFileNo = 0
     const that = this
     this.onfinish = null
     this._handlers = {
-      onload: function(xhr,e) {
+      onload: function(xhr, e) {
         let type = that._getType(xhr.responseURL)
         let name = that._getName(xhr.responseURL)
+        if (e.lengthComputable === false) {
+          that._handlers.onerror(xhr, e)
+          return
+        }
         if (type === "image") {
           that.imgs[name] = new Image()
           that.imgs[name].src = URL.createObjectURL(xhr.response)
         } else if (type === "audio") {
           that.sfx[name] = xhr.response
-          //it using webAudio,just set it to the buffer 
+          //if using webAudio,just set it to the buffer 
           //else find a way to put this buffer into an audio tag
         } else if (type === "json") {
           that.json[name] = JSON.parse(xhr.response)
         } else {
-          return Err.warn(`The file in url ${e.responseURL} is not loaded in the loader because its extension name is not supported`)
+          return Err.warn(`The file in url ${xhr.responseURL} is not loaded in the loader because its extension name is not supported.`)
         }
         that._filesLoaded += 1
-        if (that._filesLoaded == that._totalFileNo && that.onfinish)
+
+        if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) {
           that.onfinish()
+        }
+
       },
       onheadload: function(e) {
         if (e.total === 0 || !e.lengthComputable) return
@@ -39,11 +47,13 @@ class Loader {
         xhr.open('GET', files.images[i], true)
 
         xhr.onload = e => that._handlers.onload(xhr)
-        xhr.onerror = console.log
+        xhr.onerror = that._handlers.onerror(xhr)
         xhr.send()
       },
-      onerror: function(e, name) {
-        console.log(e);
+      onerror: function(e) {
+        that._filesErr += 1
+        Err.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`)
+        if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish()
       }
     }
   }
@@ -67,19 +77,27 @@ class Loader {
     if (ext === "mp3" || ext === "ogg") return "audio"
     if (ext === "json") return "json"
   }
-  loadAll(files) {
+  loadAll(files = {}) {
     this._totalFileNo =
       (files.images?.length || 0) +
       (files.audio?.length || 0) +
       (files.json?.length || 0)
+    if (this._totalFileNo === 0) {
+      this.onfinish()
+      return
+    }
     if (files.images) {
       for (var i = 0; i < files.images.length; i++) {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', files.images[i], true)
         xhr.responseType = "blob"
-        xhr.onload = e => this._handlers.onload(xhr)
+        xhr.onload = e => {
+          this._handlers.onload(xhr, e)
+
+        }
         xhr.onerror = e => this._handlers.onerror(xhr)
         xhr.send()
+
       }
     }
     if (files.audio) {
@@ -87,12 +105,10 @@ class Loader {
         let xhr = new XMLHttpRequest();
         xhr.responseType = "arraybuffer"
         xhr.open('GET', files.audio[i], true);
-        xhr.onprogress = e => {
-          console.log(e.total,e.loaded);
-        }
-        xhr.onload = e => this._handlers.onload(xhr)
+        xhr.onload = e => this._handlers.onload(xhr, e)
         xhr.onerror = e => this._handlers.onerror(xhr)
         xhr.send();
+
       }
     }
     if (files.json) {
@@ -101,7 +117,7 @@ class Loader {
         let xhr = new XMLHttpRequest();
         xhr.responseType = "text"
         xhr.open('GET', files.json[i], true);
-        xhr.onload = e => this._handlers.onload(xhr)
+        xhr.onload = e => this._handlers.onload(xhr, e)
         xhr.onerror = e => this._handlers.onerror(xhr)
         xhr.send();
       }
@@ -110,14 +126,6 @@ class Loader {
   }
 }
 
-let l = new Loader()
-
-l.loadAll({
-  images: ["/fire.jpg"],
-  audio: ["dv.mp3"],
-  json: ["res.json"]
-})
-console.log(l);
 export {
   Loader
 }

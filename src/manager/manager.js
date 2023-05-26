@@ -59,7 +59,7 @@ class Manager {
     this.RAF()
   }
   constructor(options = {}) {
-    this.options = Object.assign({
+   options = Object.assign({
       autoPlay: true
     }, options)
     this.loader.onfinish = e=>{
@@ -271,9 +271,9 @@ class Manager {
       }
     }
   }
-  static Default() {
+  static Default(options) {
     let events = new EventDispatcher()
-    let manager = new Manager()
+    let manager = new Manager(options)
     let renderer = new Renderer()
     let world = new World()
     let input = new Input()
