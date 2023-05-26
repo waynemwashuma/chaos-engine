@@ -1,30 +1,15 @@
-import { CanvasBounds, BallEntity, BoxEntity, Raycastor } from "/assets/index.js"
-import { Vector, Manager, DebugMesh, Box, SpringConstraint } from "/src/index.js"
-
-let manager = new Manager()
-
-let tireSize = 20
-let bounds = new CanvasBounds()
-let tire1 = new BallEntity(new Vector(160, 285), tireSize)
-let tire2 = new BallEntity(new Vector(240, 275), tireSize)
-let load = new BoxEntity(new Vector(200, 50), 100, 50)
-let car = new BoxEntity(new Vector(200, 250), 100, 50)
-car.body.layer = 1
-tire1.body.layer = 2
-tire2.body.layer = 3
-let constraint1 = new SpringConstraint(car.body, tire1.body, { x: 30, y: 25 })
-let constraint2 = new SpringConstraint(car.body, tire2.body, { x: -30, y: 25 })
+import { BoxEntity } from "/assets/index.js"
+import { Vector } from "/src/index.js"
 
 
-manager.bindTo("#can")
-manager.renderer.add(new DebugMesh(manager))
+export function stacking(manager) {
+  stack(200, 300, 50, 50, 8, 5, manager)
+  manager.getSystem("world").gravity = 980
+}
 
-manager.add(new CanvasBounds())
-manager.add(car)
-manager.add(tire1)
-manager.add(tire2)
-//manager.add(load)
-manager.world.addConstraint(constraint1)
-manager.world.addConstraint(constraint2)
-
-manager.world.gravity = { x: 0, y: 980 }
+function stack(x, y, w, h, no, spacing, manager) {
+  for (var i = 0; i < no; i++) {
+    let entity = new BoxEntity(x, y + (h + spacing) * i, w, h)
+    manager.add(entity)
+  }
+}
