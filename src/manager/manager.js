@@ -77,8 +77,8 @@ class Manager {
       this._coreSystems['events'].trigger("init", this)
     }
     this.update(0)
-    if(this.playing)this.play()
     this._initialized = true
+    if(this.playing)this.play()
   }
   add(object) {
     this.objects.push(object)
