@@ -1,4 +1,4 @@
-import {DEVICE} from "../device/index.js"
+import { DEVICE } from "../device/index.js"
 
 class Loader {
   constructor(manager) {
@@ -14,11 +14,11 @@ class Loader {
       onload: function(e) {
         let type = that._getType(e.responseURL)
         let name = that._getName(e.responseURL)
-        if(type == "image"){
+        if (type == "image") {
           that.imgs[name] = new Image()
           that.imgs[name].src = URL.createObjectURL(e.response)
-        }else if(type == "audio"){
-          
+        } else if (type == "audio") {
+          that.sfx[name] = e.response
         }
       },
       onprogress: function(e) {
@@ -29,14 +29,13 @@ class Loader {
         that._totalBytes += e.total
         let xhr = new XMLHttpRequest();
         xhr.open('GET', files.images[i], true)
-        
-        xhr.onload = that._handlers.onload
+
+        xhr.onload = e => that._handlers.onload(xhr)
         xhr.onprogress = that._handlers.onprogress
         xhr.onerror = console.log
-        xhr.onload = that._handlers.onload
         xhr.send()
       },
-      onerror: function(e,name) {
+      onerror: function(e, name) {
         console.log(e);
       }
     }
@@ -73,8 +72,8 @@ class Loader {
     if (files.images) {
       for (var i = 0; i < files.images.length; i++) {
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', files.images[i],true)
-xhr.responseType = "blob"
+        xhr.open('GET', files.images[i], true)
+        xhr.responseType = "blob"
         xhr.onload = e => this._handlers.onload(xhr, files.images[i])
         xhr.onerror = e => this._handlers.onerror(e, files.images[i])
         xhr.send()
@@ -95,8 +94,8 @@ xhr.responseType = "blob"
 let l = new Loader()
 
 l.loadAll({
-  images : ["/fire.jpg"],
-  audio:["dv.mp3"]
+  images: ["/fire.jpg"],
+  audio: ["dv.mp3"]
 })
 export {
   Loader

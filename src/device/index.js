@@ -21,34 +21,27 @@ export const DEVICE = {
 
 }
 let ua = navigator.userAgent
+let ae = new Audio()
 
-if (/Android/.test(ua))
-{
-  DEVICE.android = true;
+if (/Android/.test(ua)){
+  DEVICE.android = true
 }
-else if (/iP[ao]d|iPhone/i.test(ua))
-{
-  DEVICE.ios = true;
+else if (/iP[ao]d|iPhone/i.test(ua)){
+  DEVICE.ios = true
 }
-else if (/Linux/.test(ua))
-{
-  DEVICE.linux = true;
+else if (/Linux/.test(ua)){
+  DEVICE.linux = true
 }
-else if (/Mac OS/.test(ua))
-{
-  DEVICE.mac = true;
+else if (/Mac OS/.test(ua)){
+  DEVICE.mac = true
 }
-else if (/Windows/.test(ua))
-{
-  DEVICE.windows = true;
+else if (/Windows/.test(ua)){
+  DEVICE.windows = true
 }
 
 
 if(window.AudioContext){
   DEVICE.webAudio = true
 }
-console.log(DEVICE);
-console.log(ua);
-
 
 Object.freeze(DEVICE)
