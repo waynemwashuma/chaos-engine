@@ -1,8 +1,3 @@
-import { CanvasBounds, BallEntity, BoxEntity, Raycastor } from "/assets/index.js"
-import { Vector, Manager, DebugMesh, Box, SpringConstraint } from "/src/index.js"
-
-let manager = new Manager()
-let bounds = new CanvasBounds()
 import { CanvasBounds, BoxEntity, BallEntity } from "/assets/index.js"
 import { Vector, Manager, DebugMesh, Box, Ball, SpringConstraint, rand, Entity, BodyMesh } from "/src/index.js"
 
@@ -29,7 +24,6 @@ manager.add(pin1)
 manager.add(pin2)
 chain.bodies.forEach(b => manager.add(b))
 chain.constraints.forEach(b => world.addConstraint(b))
-console.log(renderer);
 //world.gravity = { x: 0, y: 980 }
 
 function createChain(x, y, w, h, number, spacing, pin1, pin2) {
