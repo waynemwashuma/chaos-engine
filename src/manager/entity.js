@@ -1,4 +1,4 @@
-import { Vector, Angle, Utils } from "../utils/index.js"
+import { Vector, Angle } from "../utils/index.js"
 import { Body, AABBox } from "../physics/index.js"
 import { BodyMesh } from "../render/index.js"
 import { Transform, Movable } from "/src/index.js"
@@ -12,23 +12,32 @@ class Entity {
   get CHAOS_OBJ_TYPE() {
     return "entity"
   }
-  get CHAOS_TYPE(){
+  get CHAOS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
   destroy() {
+    this.removeSelf()
     for (let k in this._components) {
-      this._components[k].destroy()
+      let comp = this._components[k]
+      if (comp.destroy)
+        comp.destroy()
       delete this._components[k]
     }
     for (let k in this._handlers) {
       delete this._handlers[k]
     }
-  this.removeSelf()
+
   }
   removeSelf() {
-    if(this._global)this._global.remove(this)
+    if (this._global) this._global.remove(this)
     this.active = false
     this._global = null
+  }
+  removeComponents() {
+    if (this._global === void 0) return
+    for (var k in this._components) {
+      this._global.removeComponent(k, this._components[k])
+    }
   }
   get manager() {
     return this._global
@@ -41,10 +50,14 @@ class Entity {
   }
   attach(n, c) {
     this._components[n] = c
-    if (this.manager) c.init(this)
+    if (this.manager) {
+      c.init(this)
+      this._global.addComponent(n, c)
+    }
     return this
   }
   remove(n) {
+    this._global.removeComponent(n, this._components[n])
     delete this._components[n]
   }
   register(n, h) {
@@ -80,7 +93,7 @@ class Entity {
       global.addComponent(k, this._components[k])
     }
   }
-  
+
   update(dt) {
     for (let k in this._components) {
       if (k == "mesh" || k == "body") continue

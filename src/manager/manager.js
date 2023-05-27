@@ -1,6 +1,6 @@
 import { World } from "../physics/index.js"
 import { Renderer } from "../render/renderer.js"
-import {Loader} from "../loader/index.js"
+import { Loader } from "../loader/index.js"
 import {
   Clock,
   Utils,
@@ -24,7 +24,7 @@ class Manager {
     renderer: null,
     input: null,
     events: null,
-    audio:null
+    audio: null
   }
   _initialized = false
   playing = false
@@ -59,10 +59,10 @@ class Manager {
     this.RAF()
   }
   constructor(options = {}) {
-   options = Object.assign({
+    options = Object.assign({
       autoPlay: true
     }, options)
-    this.loader.onfinish = e=>{
+    this.loader.onfinish = e => {
       this.init()
       this.play()
     }
@@ -78,7 +78,7 @@ class Manager {
     }
     this.update(0)
     this._initialized = true
-    if(this.playing)this.play()
+    if (this.playing) this.play()
   }
   add(object) {
     this.objects.push(object)
@@ -88,16 +88,32 @@ class Manager {
     }
   }
   addComponent(n, c) {
+    if (n === "body") {
+      this._coreSystems.world.add(c)
+      return
+    }
+    if (n === "mesh") {
+      this._coreSystems.renderer.add(c)
+      return
+    }
     if (n in this._componentLists)
       this._componentLists[n].push(c)
   }
+  removeComponent(n,c) {
+    if (n === "body") {
+      this._coreSystems.world.remove(c)
+      return
+    }
+    if (n === "mesh") {
+      this._coreSystems.renderer.remove(c)
+      return
+    }
+    if (n in this._componentLists)
+      Utils.removeElement(this._componentLists[n],this._componentLists[n].indexOf(c))
+  }
   remove(object) {
     let index = this.objects.indexOf(object)
-    if (object.has("mesh"))
-      this._coreSystems.renderer.remove(object.get("mesh"))
-    if (object.has("body"))
-      this._coreSystems.world.remove(object.get("body"))
-
+    object.removeComponents()
     Utils.removeElement(this.objects, index)
     if (this._coreSystems["events"]) {
       this._coreSystems['events'].trigger("remove", object)
@@ -112,7 +128,7 @@ class Manager {
     this._rafID = requestAnimationFrame(this._update)
   }
   play() {
-    if(!this._initialized){
+    if (!this._initialized) {
       this.playing = true
       return
     }
@@ -121,12 +137,12 @@ class Manager {
       this._coreSystems['events'].trigger("play")
   }
   pause() {
-    if(!this._initialized){
+    if (!this._initialized) {
       this.playing = false
       return
     }
     cancelAnimationFrame(this._rafID)
-    if (this._coreSystems["events"]) 
+    if (this._coreSystems["events"])
       this._coreSystems['events'].trigger("pause")
   }
   initSystems() {
@@ -192,15 +208,15 @@ class Manager {
       return this._coreSystems[n]
     return this._systems[this._systemsMap[n]]
   }
+  unregisterSystem(n) {
+    this._coreSystems[n] = undefined
+    this._systems[this._systemsMap[n]] = undefined
+  }
   setComponentList(n, arr = []) {
     this._componentLists[n] = arr
   }
   getComponentList(n) {
     return this._componentList[n]
-  }
-  unregisterSystem(n) {
-    this._coreSystems[n] = undefined
-    this._systems[this._systemsMap[n]] = undefined
   }
   getEntityByComponents(comps, entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
@@ -262,12 +278,6 @@ class Manager {
         for (let i = 0; i < comp.length; i++) {
           comp[i].update(dt)
         }
-      },
-      add(comp) {
-
-      },
-      remove(comp) {
-
       }
     }
   }

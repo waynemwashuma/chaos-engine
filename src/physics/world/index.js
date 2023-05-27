@@ -120,7 +120,7 @@ class World {
       manifold.kineticFriction = a.kineticFriction < b.kineticFriction ? a.kineticFriction : b.kineticFriction
       if (a.collisionResponse && b.collisionResponse)
         this.CLMDs.push(manifold)
-        
+
     }
   }
   /*
@@ -285,8 +285,11 @@ class World {
    */
   removeBody(body) {
     this.broadphase.remove(body)
-    if (Utils.removeElement(this.objects, body.index))
+    if (Utils.removeElement(this.objects, body.index)) {
+      if (body.index === this.objects.length)
+        return
       this.objects[body.index].index = body.index
+    }
     return body
   }
   /**
