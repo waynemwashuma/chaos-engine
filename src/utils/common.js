@@ -48,7 +48,7 @@ Utils.inheritComponent = function(component) {
   if (proto.init) {
     let init = proto.init
     proto.init = function(entity) {
-      this.entity = entity 
+      this.entity = entity
       init.call(this, entity)
     }
   } else {
@@ -58,8 +58,8 @@ Utils.inheritComponent = function(component) {
   }
   if (!proto.update) {
     proto.update = function() {
-      Err.warn("Please override the update function in the component " + proto.constructor.name)
-      
+      Err.warnOnce("Please override the update function in the component " + proto.constructor.name)
+
     }
   }
   proto.getComponent = function(n) {
@@ -88,4 +88,32 @@ Utils.inheritComponent = function(component) {
     enumerable: true,
     configurable: false
   })
+}
+
+Utils.inheritSystem = function(system) {
+  if (system == void 0 || typeof system !== "function") return
+  let proto = system.prototype
+  if (!proto.init) {
+    proto.init = function() {
+      Err.warnOnce("Please override the init method in the system " + proto.constructor.name)
+    }
+  }
+  if (!proto.update) {
+    proto.update = function() {
+      Err.warnOnce("Please override the update method in the system " + proto.constructor.name)
+  
+    }
+  }
+  if (!proto.add) {
+    proto.add = function(component) {
+      this.objects.push(component)
+    }
+  }
+  
+  if (!proto.remove) {
+    proto.remove = function(component) {
+      let index = this.objects.indexOf(component)
+      Utils.removeElement(this.objects,index)
+    }
+  }
 }
