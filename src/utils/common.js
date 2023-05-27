@@ -31,11 +31,10 @@ Utils.generateID = function() {
 }
 
 Utils.inheritComponent = function(component) {
-  if (component == void 0 || typeof component !== "object") return
-  if (component.CHAOS_CLASSNAME || component.CHAOS_OBJ_TYPE) return
-  
-  let proto = component.prototype || component.__proto__
-  if (component.destroy) {
+  if (component == void 0 || typeof component !== "function") return
+  let proto = component.prototype
+
+  if (proto.destroy) {
     let destroy = component.destroy
     proto.destroy = function() {
       this.parent = null
@@ -46,20 +45,21 @@ Utils.inheritComponent = function(component) {
       this.parent = null
     }
   }
-  if (component.init) {
+  if (proto.init) {
     let init = component.init
-    proto.init = function(parent) {
-      this.parent = parent
+    proto.init = function(entity) {
+      this.entity = entity 
       init.call(this, arguments)
     }
   } else {
-    proto.init = function(parent) {
-      this.parent = parent
+    proto.init = function(entity) {
+      this.entity = entity
     }
   }
-  if (!component.update) {
+  if (!proto.update) {
     proto.update = function() {
-      Err.warn("Please override the update function in the class " + this.CHAOS_CLASSNAME)
+      Err.warn("Please override the update function in the class " + proto.constructor.name)
+      
     }
   }
   proto.getComponent = function(n) {
@@ -68,7 +68,7 @@ Utils.inheritComponent = function(component) {
   proto.requires = function(...names) {
     for (var i = 0; i < names.length; i++)
       if (!this.parent.has(names[i]))
-        Err.throw(`The component \`${this.CHOAS_TYPE}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.parent.id}`)
+        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`)
   }
 
   proto.query = function(bound, target = []) {
@@ -76,7 +76,7 @@ Utils.inheritComponent = function(component) {
   }
   Object.defineProperty(proto, "CHOAS_CLASSNAME", {
     get: function() {
-      return this.constructor.name
+      return this.constructor.name.toLowerCase()
     },
     enumerable: true,
     configurable: false
@@ -89,4 +89,3 @@ Utils.inheritComponent = function(component) {
     configurable: false
   })
 }
-
