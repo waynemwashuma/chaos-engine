@@ -16,11 +16,11 @@ export const demos = {
     window.onresize = () => {
       renderer.setViewPort(innerWidth, innerHeight)
     }
+    renderer.addUI(new DebugMesh(this.manager))
   },
   setup: function(name) {
     this.manager.clear()
     this.manager.add(new CanvasBounds())
-    this.manager.getSystem("renderer").addUI(new DebugMesh(this.manager))
     switch (name) {
       case "random":
         random(this.manager)
