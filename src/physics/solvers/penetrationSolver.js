@@ -1,8 +1,8 @@
 import { Vector, sq } from "../../utils/index.js"
-
+import {Settings} from "../settings.js"
 const tmp1 = new Vector(),
   tmp2 = new Vector()
-let dampen = 0.4
+let dampen = Settings.posDampen
 class PenetrationSolver {
   static warmstart(manifold, laststmp) {
     if (manifold.stmp !== laststmp) return
