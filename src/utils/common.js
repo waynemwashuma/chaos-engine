@@ -46,10 +46,10 @@ Utils.inheritComponent = function(component) {
     }
   }
   if (proto.init) {
-    let init = component.init
+    let init = proto.init
     proto.init = function(entity) {
       this.entity = entity 
-      init.call(this, arguments)
+      init.call(this, entity)
     }
   } else {
     proto.init = function(entity) {
@@ -58,7 +58,7 @@ Utils.inheritComponent = function(component) {
   }
   if (!proto.update) {
     proto.update = function() {
-      Err.warn("Please override the update function in the class " + proto.constructor.name)
+      Err.warn("Please override the update function in the component " + proto.constructor.name)
       
     }
   }
@@ -67,7 +67,7 @@ Utils.inheritComponent = function(component) {
   }
   proto.requires = function(...names) {
     for (var i = 0; i < names.length; i++)
-      if (!this.parent.has(names[i]))
+      if (!this.entity.has(names[i]))
         Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`)
   }
 

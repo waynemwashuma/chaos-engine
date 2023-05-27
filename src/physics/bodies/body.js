@@ -3,7 +3,7 @@ import { Component } from "/src/manager/component.js"
 import { ObjType, Settings } from "../settings.js"
 
 let defaults = new Vector()
-class Body extends Component {
+class Body {
   id = Utils.generateID()
   _position = new Vector()
   _velocity = new Vector()
@@ -36,7 +36,6 @@ class Body extends Component {
   collisionResponse = Settings.collisionResponse
   autoUpdateBound = Settings.autoUpdateBound
   constructor(...shapes) {
-    super()
     this.type = Settings.type
     this.shapes = shapes
     this.mass = 1
@@ -177,6 +176,7 @@ class Body extends Component {
   static KINEMATIC = ObjType.KINEMATIC
   static DYNAMIC = ObjType.DYNAMIC
 }
+Utils.inheritComponent(Body)
 export {
   Body
 }

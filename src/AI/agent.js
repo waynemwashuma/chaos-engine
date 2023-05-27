@@ -1,13 +1,12 @@
-import {Component} from "../manager/index.js"
+import {Utils} from "../utils/index.js"
 import {BehaviourManager} from "./behaviourManager.js"
 
-class Agent extends Component {
+class Agent {
   velocity = null
   rotation = null
   maxSpeed = 20
   maxTurnRate = 5
   constructor() {
-    super()
     this.behaviours = new BehaviourManager()
   }
   init(parent){
@@ -32,7 +31,7 @@ class Agent extends Component {
     this.behaviours.update(inv_dt)
   }
 }
-
+Utils.inheritComponent(Agent)
 export {
   Agent
 }

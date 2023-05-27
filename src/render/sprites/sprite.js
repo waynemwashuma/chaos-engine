@@ -2,7 +2,7 @@ import { Vector, Utils, Angle } from "../../utils/index.js"
 import { Component } from "/src/manager/component.js"
 
 let v = new Vector()
-class Sprite extends Component {
+class Sprite {
   _position = new Vector()
   _orientation = new Angle()
   scale = new Vector(1, 1)
@@ -66,11 +66,7 @@ class Sprite extends Component {
     return false
   }
 }
-class Mesh extends Sprite {
-  constructor() {
-    super()
-  }
-}
+Utils.inheritComponent(Sprite)
 export {
   //Mesh,
   Sprite
