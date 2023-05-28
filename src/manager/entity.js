@@ -4,7 +4,7 @@ import { BodyMesh } from "../render/index.js"
 import { Transform, Movable } from "/src/index.js"
 
 /**
- * This is a container to hold components and event handlers.
+ * This is a container to hold components,tags and event handlers.
  * 
  * @class
  * @public
@@ -59,6 +59,7 @@ class Entity {
    * Gets the current manager of an entity
    * 
    * @returns {Manager}
+   * @readonly
    */
   get manager() {
     return this._global
@@ -68,6 +69,8 @@ class Entity {
    * 
    * @param {String} n Name of the component.
    * @param {Component} c The component to add.
+   * 
+   * @returns {this}
    */
   attach(n, c) {
     this._components[n] = c
@@ -81,6 +84,7 @@ class Entity {
    * Removes a component from an entity.
    * 
    * @param {String} n Name pf the component
+   * @rerurns {this}
    */
   remove(n) {
     this._global.removeComponent(n, this._components[n])
@@ -108,7 +112,8 @@ class Entity {
   /**
    * Returns an event handler which can be fired during an event
    * 
-   * @@param {string} n Name of the event
+   * @param {string} n Name of the event
+   * @returns {function | undefined}
    */
   getHandler(n) {
     return this._handlers[n]
@@ -173,6 +178,8 @@ class Entity {
   }
   /**
    * A helper function to create a new Entity with transform,movable and bounds components.
+   * 
+   * @returns {Entity}
    */
   static Default(x, y, a) {
     return new Entity()
