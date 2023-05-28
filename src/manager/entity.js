@@ -198,7 +198,6 @@ class Entity {
     return this._global.query(bound, target)
   }
 }
-let r = new Entity()
 export {
   Entity
 }
