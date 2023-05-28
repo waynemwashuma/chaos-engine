@@ -11,9 +11,9 @@ import { Transform, Movable } from "/src/index.js"
  */
 class Entity {
   _components = {}
-  _global = null
   _handlers = {}
   _tags = new Set()
+  _global = null
   active = false
   get CHAOS_OBJ_TYPE() {
     return "entity"
