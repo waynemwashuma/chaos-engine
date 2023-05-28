@@ -6,9 +6,7 @@ class Agent {
   rotation = null
   maxSpeed = 20
   maxTurnRate = 5
-  constructor() {
-    this.behaviours = new BehaviourManager()
-  }
+  behaviours = new BehaviourManager()
   init(parent){
     this.parent = parent
     this.requires("transform","movable")
