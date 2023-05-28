@@ -1,7 +1,7 @@
 import { Utils } from "../utils/index.js"
 
 class Component {
-  parent = null
+  entity = null
 }
 Utils.inheritComponent(Component)
 export {
