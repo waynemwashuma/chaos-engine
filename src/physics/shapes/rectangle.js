@@ -4,6 +4,12 @@ import { Vector, sq } from "../../utils/index.js"
 class Rectangle extends Shape {
   height = 0
   width = 0
+  /**
+   * @param {number} width
+   * @param {number} height
+   * @param {vector} offset Positional offset from the body center.
+   *  @param {number} offsetAngle Angular offset from the body center.
+  */
   constructor(width, height,offset,offsetAngle) {
     let v1 = new Vector(-width / 2, -height / 2)
     let v2 = new Vector(-width / 2, height / 2)
