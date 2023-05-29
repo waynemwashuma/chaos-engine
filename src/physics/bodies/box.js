@@ -1,6 +1,13 @@
 import{Body} from "./body.js"
 import {Vector} from"../../utils/index.js"
 import {Rectangle} from "../shapes/index.js"
+
+/**
+ * A body with a rectangle shape on it.
+ * 
+ * @augments Body
+ * @param {number} radius
+*/
 class Box extends Body {
   constructor(w,h) {
     super(new Rectangle(w,h))

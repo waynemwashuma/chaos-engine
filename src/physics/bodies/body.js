@@ -3,6 +3,10 @@ import { Component } from "/src/manager/component.js"
 import { ObjType, Settings } from "../settings.js"
 
 let defaults = new Vector()
+
+/**
+ * 
+ */
 class Body {
   id = Utils.generateID()
   _position = new Vector()
@@ -41,10 +45,21 @@ class Body {
     this.mass = 1
     this.inertia = 1
   }
+  /**
+   * Sets the type of a body.It includes the static and dynamic for now.
+   * 
+   * @example
+   * let body = new Body()
+   * body.type = Body.STATIC
+   * 
+  */
   set type(x) {
     if (x === Body.STATIC || x === Body.KINEMATIC) this.mass = 0
     this._type = x
   }
+  /**
+   * Gets the type of body.
+  */
   get type() {
     return this._type
   }
@@ -129,21 +144,53 @@ class Body {
   set angularVelocity(x) {
     this.rotation.degree = x
   }
+  /**
+   * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
+   * 
+   * @param {Vector} v The anchor arm
+   * @returns {number}
+   */
   setAnchor(v) {
     this.anchors.push(new Vector(v.x, v.y).rotate(this.orientation.radian).add(this.position))
     return this._localanchors.push(v) - 1
   }
+  /**
+   * Gets an anchor in its world coordinate form.
+   * Treat the returned value as read-only.
+   * 
+   * @param {number} index the position of the
+   * @returns {Vector}
+   */
   getAnchor(index) {
     return this.anchors[index]
   }
+  /**
+   * Returns a rotated anchor relative to the body.
+   * 
+   * @param {number} index The position of the anchor.
+   * @param {Vector} [target=Vector] Vector to store results in.
+   * @rerurns {Vector}
+   */
   getLocalAnchor(index, target = new Vector()) {
     return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
   }
+  /**
+   * Applies a force to a body affecting its direction of travel and rotation.
+   * 
+   * 
+   * @param {number} index The force to be applied.
+   * @param {Vector} [arm=Vector] The collision arm.
+   */
   applyForce(force, arm = Vector.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
     this.rotation.degree += arm.cross(force) * this.inv_inertia
   }
   
+  /**
+   * 
+   * 
+   * @private
+  */
   init(entity) {
     this.entity = entity
     this.requires("transform", "movable", "bounds")
@@ -159,8 +206,11 @@ class Body {
 
     this.update()
   }
+  
+  /**
+   * This updates the world coordinates of shapes, anchors and bounds.
+  */
   update() {
-
     for (var i = 0; i < this.shapes.length; i++) {
       this.shapes[i].update(this.position, this._orientation.radian)
     }

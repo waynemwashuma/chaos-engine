@@ -2,6 +2,13 @@ import {Body} from "./body.js"
 import {Circle} from "../shapes/index.js"
 import {Vector} from"../../utils/index.js"
 
+
+/**
+ * A body with a circle shape on it.
+ * 
+ * @augments Body
+ * @param {number} radius
+*/
 class Ball extends Body{
   constructor(radius) {
     super(new Circle(radius))
