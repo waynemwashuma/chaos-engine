@@ -187,8 +187,6 @@ class Body {
   }
   
   /**
-   * 
-   * 
    * @private
   */
   init(entity) {
@@ -220,7 +218,7 @@ class Body {
     if (this.autoUpdateBound)
       this.bounds.calculateBounds(this, this.boundPadding)
     this.bounds.update(this.position)
-    //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < -360 ? 360 + this.angle : this.angle
+    //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
   }
   static STATIC = ObjType.STATIC
   static KINEMATIC = ObjType.KINEMATIC
