@@ -1,5 +1,4 @@
 /**
- * @module Mouse
  * 
  * This handles all inputs from mouse and touchpad on laptops
 */
@@ -20,18 +19,24 @@ class Mouse {
   /**
    * Checks to see if the vector provided is
    * within a dragbox if mouse is being dragged with a right or left button down
-   * @param {} pos an object containing x and y coordinates to be checked
+   * @param {Vector} pos an object containing x and y coordinates to be checked
    * 
   */
   inDragBox(pos) {
     if (!this.dragging) return false
-    if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
-      pos.y > this.dragLastPosition.y && pos.y < this.dragLastPosition.y + this.position.y) {
+    if (pos.x > this.dragLastPosition.x && pos.x < this.position.x &&
+      pos.y > this.dragLastPosition.y &&
+      pos.y < this.position.y) {
       return false
     }
     return true
   }
-  init(eh) {
+  /**
+   * Initializes the mouse by appending to the DOM
+   * 
+   * @private
+  */
+    init(eh) {
     eh.add('click',this._onClick)
     eh.add('mousedown',this._onDown)
     eh.add('mouseup',this._onUp)
