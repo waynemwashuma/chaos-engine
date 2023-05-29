@@ -23,7 +23,7 @@ class Agent {
     this.behaviours.add(behaviour)
   }
   remove(behaviour) {
-    this.behaviours.re(behaviour)
+    this.behaviours.remove(behaviour)
   }
   update(inv_dt){
     this.behaviours.update(inv_dt)

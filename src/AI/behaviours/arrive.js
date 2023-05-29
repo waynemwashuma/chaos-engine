@@ -10,10 +10,10 @@ class ArriveBehaviour extends Behaviour {
   arrive = false
   arrivespeed = 1
   radius = 1000
-  constructor(pursuer) {
+  constructor(pursued) {
     super()
-    let transform = pursuer.get("transform")
-    let move = pursuer.get("movable")
+    let transform = pursued.get("transform")
+    let move = pursued.get("movable")
     //TODO - Check if the above are undefined
     this.pursuedPos = transform.position
     this.pursuedVel = move.velocity
