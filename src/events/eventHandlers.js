@@ -1,3 +1,8 @@
+/**
+ * This provides a way to fire off an entity's collision event handler registered to it.
+ * 
+ * @param {array<{}>} clmds an array of collision manifolds
+*/
 function defaultCollisionHandler(clmds) {
   let a, b
   for (let i = 0; i < clmds.length; i++) {
@@ -17,6 +22,11 @@ function defaultCollisionHandler(clmds) {
   }
 }
 
+/**
+ * This provides a way to fire off an entity's precollision event handler registered to it
+ * 
+ * @param {array<{}>} clmds an array of collision manifolds
+*/
 function defaultPrecollisionHandler(clmds) {
   let a, b
   for (let i = 0; i < clmds.length; i++) {
@@ -29,8 +39,8 @@ function defaultPrecollisionHandler(clmds) {
       clmds[i]
     )
     if (b) b(
-      clmds[i].a.entity,
       clmds[i].b.entity,
+      clmds[i].a.entity,
       clmds[i]
     )
   }

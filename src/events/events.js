@@ -1,5 +1,5 @@
 export const Events = {
-  COLLISIONS : "collision",
+  COLLISION : "collision",
   PRECOLLISION : "precollision",
   PREUPDATE : "preupdate",
   POSTUPDATE : "postupdate",
