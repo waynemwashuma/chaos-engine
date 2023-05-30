@@ -25,4 +25,8 @@ export function car(manager) {
   world.addConstraint(constraint2)
   
   world.gravity = { x: 0, y: 980 }
+  
+  setInterval(x=>{
+    tire1.get("body").angularVelocity += 10
+  })
 }

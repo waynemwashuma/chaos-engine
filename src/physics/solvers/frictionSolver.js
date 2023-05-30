@@ -32,9 +32,9 @@ class FrictionSolver {
     )
     let jt
     if (Math.abs(j) >= impulse * sf) {
-      jt = tangent.multiply(-impulse * kf)
+      jt = tangent.multiply(j * kf)
     } else {
-      jt = tangent.multiply(j)
+      jt = tangent.multiply(-impulse * kf)
     }
 
     manifold.velA.add(tmp5.copy(jt).multiply(a.inv_mass))
