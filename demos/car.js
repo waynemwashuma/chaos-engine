@@ -27,6 +27,6 @@ export function car(manager) {
   world.gravity = { x: 0, y: 980 }
   
   setInterval(x=>{
-    tire1.get("body").angularVelocity += 10
+    ///tire1.get("body").angularVelocity -= 10
   })
 }

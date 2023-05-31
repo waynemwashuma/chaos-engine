@@ -15,17 +15,18 @@ class ImpulseSolver {
     let vb = tmp4.copy(bodyB.velocity).add(a$vb)
     let vp = va.sub(vb)
     let vp_p = axis.dot(vp);
-    
+    if (vp_p >= 0) {
+      manifold.impulse = 0
+      return
+    }
     ////this used to be -(1 + restitution) but when i changed it,stability ensued.
     //i think the reason of the previous instability is because i changed the penetration solver to be impulse based from position based.
+    //so.. i came back to that....
     let j = -(1 + restitution) * vp_p / (
       (bodyA.inv_mass + bodyB.inv_mass) +
       sq(ca1.cross(axis)) * bodyA.inv_inertia +
       sq(ca2.cross(axis)) * bodyB.inv_inertia)
-    if (vp_p >= 0) {
-      manifold.impulse = j
-      return
-    }
+    
     let jn = axis.clone().multiply(j)
     let ang1 = ca1.cross(jn) * bodyA.inv_inertia;
     let ang2 = ca2.cross(jn) * -bodyB.inv_inertia;
