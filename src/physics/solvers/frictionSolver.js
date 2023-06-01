@@ -37,7 +37,6 @@ class FrictionSolver {
       jt = tangent.multiply(-impulse * kf)
     }
     
-    console.log(jt.magnitude());
     manifold.velA.add(tmp5.copy(jt).multiply(a.inv_mass))
     manifold.velB.add(tmp5.copy(jt).multiply(-b.inv_mass))
     manifold.rotA += ca1.cross(jt) * a.inv_inertia
