@@ -1,6 +1,7 @@
 import {Sprite } from "./sprite.js"
 import { Vector } from "/src/index.js"
 import {Shape} from "../../physics/index.js"
+import { ObjType } from "../../physics/settings.js"
 
 let r = new Vector()
 class BodyMesh extends Sprite {
@@ -12,39 +13,45 @@ class BodyMesh extends Sprite {
     this.drawBounds = options.drawBounds || false
   }
   update(renderer, dt) {
-    this.drawShape(renderer)
+    if(this.body.physicsType == ObjType.COMPOSITE){
+      for (var i = 0; i < this.body.bodies.length; i++) {
+        this.body.bodies[i]
+      }
+    }else{
+      this.drawShapes(this.body,renderer)
     if (this.drawVelocity == true)
-      this.drawVelocity(renderer)
+      this.drawVelocity(this.body,renderer)
     if (this.drawBounds == true)
-      this.drawBounds(renderer)
+      this.drawBounds(this.body,renderer)
+    }
   }
-  drawVelocity(ctx) {
+  drawVelocity(body,ctx) {
     ctx.begin()
     ctx.line(
-      this.position.x,
-      this.position.y,
-      this.position.x + this.body.velocity.x,
-      this.position.y + this.body.velocity.y
+      body.position.x,
+      body.position.y,
+      body.position.x + body.velocity.x,
+      body.position.y + body.velocity.y
     )
     ctx.stroke("cyan")
     ctx.close
   }
-  drawBounds(renderer) {
+  drawBounds(body,renderer) {
     renderer.begin()
     renderer.rect(
-      this.body.bounds.min.x,
-      this.body.bounds.min.y,
-      this.body.bounds.max.x - this.body.bounds.min.x,
-      this.body.bounds.max.y - this.body.bounds.min.y
+      body.bounds.min.x,
+      body.bounds.min.y,
+      body.bounds.max.x - this.body.bounds.min.x,
+      body.bounds.max.y - this.body.bounds.min.y
     )
     renderer.stroke("red")
     renderer.close()
 
   }
-  drawShape(renderer) {
+  drawShapes(body,renderer) {
     renderer.begin()
-    for (var i = 0; i < this.body.shapes.length; i++) {
-      let shape = this.body.shapes[i]
+    for (var i = 0; i < body.shapes.length; i++) {
+      let shape = body.shapes[i]
       if (shape.type == Shape.CIRCLE) {
         renderer.circle(
           shape.position.x,

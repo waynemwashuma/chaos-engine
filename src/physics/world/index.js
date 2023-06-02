@@ -2,6 +2,7 @@ import { EulerSolver, VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
 import { Vector, naturalizePair, Utils } from "../../utils/index.js"
 import { SAT } from "../SAT/index.js";
+import { ObjType } from "../settings.js"
 //import {ctx} from "../../debug.js"
 
 import { NaiveBroadphase } from "../broadphases/index.js"
@@ -265,7 +266,13 @@ class World {
     manager.setComponentList("body", this.objects)
   }
   add(object) {
-    this.addBody(object)
+    if(object.physicsType == ObjType.BODY){
+    this.addBody(object )
+    }else if(object.physicsType == ObjType.CONSTRAINT){
+      this.addConstraint(object)
+    }else if(object.physicsType == ObjType.COMPOSITE){
+      this.addComposite(object)
+    }
   }
   /**
    * Adds a body to the physics world
@@ -274,7 +281,6 @@ class World {
   addBody(body) {
     //must update vertices and bounds so that Broadphase works properly
     body.update()
-    //body.bounds.calculateBounds(body)
     body.index = this.objects.length
     this.objects.push(body)
     this.broadphase.insert(body)
@@ -319,6 +325,24 @@ class World {
     temp.index = constraint.index
     constraint.index = -1
     return constraint
+  }
+  
+  addComposite(composite){
+    for (var i = 0; i < composite.bodies.length; i++) {
+      this.addBody(composite.bodies[i])
+    }
+    for (var i = 0; i < composite.constraints.length; i++) {
+      this.addConstraint(composite.constraints[i])
+    }
+  }
+  
+  removeComposite(){
+    for (var i = 0; i < composite.bodies.length; i++) {
+      this.removeBody(composite.bodies[i])
+    }
+    for (var i = 0; i < composite.constraints.length; i++) {
+      this.removeContraint(composite.constraints[i])
+    }
   }
   /**
    * Searches for objects in a given bounds and returns them

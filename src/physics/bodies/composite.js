@@ -3,22 +3,23 @@ import { ObjType } from "../settings.js"
 
 
 class Composite {
-  constructor(bodies, constraints, composites) {
-    this.bodies = bodies
-    this.constraints = constraints
+  constructor() {
+    this.bodies = []
+    this.constraints = []
   }
   get physicsType() {
     return ObjType.COMPOSITE
   }
   init(entity) {
     this.bodies.forEach(e => {
-      e.init(entity)
+      e.entity = entity
     })
   }
   add(object) {
     if (object.physicsType === ObjType.CONSTRAINT)
-      this.constraints.push(object)
-    this.bodies.push(object)
+      return this.constraints.push(object)
+    if (object.physicsType === ObjType.BODY)
+      this.bodies.push(object)
   }
 }
 Utils.inheritComponent(Composite)

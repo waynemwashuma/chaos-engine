@@ -1,5 +1,6 @@
 import { Vector, Utils, Angle, sq } from "../../utils/index.js"
 import { Component } from "/src/manager/component.js"
+import {AABBox} from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 
 let defaults = new Vector()
@@ -189,8 +190,13 @@ class Body {
   /**
    * @private
   */
-  init(entity) {
+  init(entity,composited) {
     this.entity = entity
+    if(composited){
+      this.bounds = new AABBox()
+      this.update()
+      return
+    }
     this.requires("transform", "movable", "bounds")
     let transform = entity.get("transform")
     let bounds = entity.get("bounds")
