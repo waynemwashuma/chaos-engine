@@ -9,7 +9,7 @@ class FrictionSolver {
   static solve(manifold) {
     let { bodyA: a, bodyB: b, ca1, ca2, restitution, impulse } = manifold
     let { axis } = manifold.contactData
-    //if (impulse <= 0) return
+    if (impulse <= 0) return
     let a$va = tmp1.set(ca1.y * -a.rotation._rad, ca1.x * a.rotation._rad)
     let a$vb = tmp2.set(ca2.y * -b.rotation._rad, ca2.x * b.rotation._rad)
     let va = tmp3.copy(a.velocity).add(a$va)
@@ -30,13 +30,15 @@ class FrictionSolver {
       (a.inv_mass + b.inv_mass) +
       sq((ca1.dot(tangent)) * a.inv_inertia + sq(ca2.dot(tangent)) * b.inv_inertia)
     )
+    
     let jt
     if (Math.abs(j) <= impulse * sf) {
       jt = tangent.multiply(j)
+      
     } else {
-      jt = tangent.multiply(-impulse * kf)
+      jt = tangent.multiply(j * kf)
     }
-    
+
     manifold.velA.add(tmp5.copy(jt).multiply(a.inv_mass))
     manifold.velB.add(tmp5.copy(jt).multiply(-b.inv_mass))
     manifold.rotA += ca1.cross(jt) * a.inv_inertia

@@ -146,10 +146,7 @@ class World {
       inv_dt = 1 / dt,
       laststmp = this.count - 1
 
-    for (let i = 0; i < length; i++) {
-      manifold = this.CLMDs[i]
-      PenetrationSolver.solve(manifold, inv_dt)
-    }
+
 
     for (var j = 0; j < this.velocitySolverIterations; j++) {
       for (let i = 0; i < length; i++) {
@@ -169,6 +166,12 @@ class World {
         manifold.bodyB.rotation.radian += manifold.rotB
       }
     }
+
+    for (let i = 0; i < length; i++) {
+      manifold = this.CLMDs[i]
+      PenetrationSolver.solve(manifold, inv_dt)
+    }
+
     for (let i = 0; i < length; i++) {
       manifold = this.CLMDs[i]
       manifold.stmp = this.count

@@ -18,9 +18,9 @@ export const BodyType = Object.freeze({
 export const Settings = {
   //For the world
   posDampen: 0.80,
-  linearDamping: 0.001,
-  angularDamping: 0.001,
-  velocitySolverIterations: 10,
+  linearDamping: 0.00,
+  angularDamping: 0.00,
+  velocitySolverIterations: 1,
   fixedFrameRate: 0.016,
   
   //For all bodies
