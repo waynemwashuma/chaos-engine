@@ -1,19 +1,27 @@
-import { Component } from "/src/manager/component.js"
-import {ObjType} from "../settings.js"
-class Composite extends Component{
-  constructor(bodies,constraints,composites){
+import { Utils } from "/src/utils/index.js"
+import { ObjType } from "../settings.js"
+
+
+class Composite {
+  constructor(bodies, constraints, composites) {
     this.bodies = bodies
     this.constraints = constraints
-    this.composites = composites
   }
-  get physicsType(){
+  get physicsType() {
     return ObjType.COMPOSITE
   }
-  init(parent){
-    
+  init(entity) {
+    this.bodies.forEach(e => {
+      e.init(entity)
+    })
+  }
+  add(object) {
+    if (object.physicsType === ObjType.CONSTRAINT)
+      this.constraints.push(object)
+    this.bodies.push(object)
   }
 }
-
-export{
+Utils.inheritComponent(Composite)
+export {
   Composite
 }
