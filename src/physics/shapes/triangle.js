@@ -1,28 +1,29 @@
-import {Shape} from"./shape.js"
-import {Vector} from "../../utils/index.js"
+import { Shape } from "./shape.js"
+import { Vector } from "../../utils/index.js"
 
+let tmp1 = new Vector(),
+  tmp2 = new Vector()
 class Triangle extends Shape {
-  constructor(pos,length1,length2,angle) {
-    let l1 = new Vector().multiply(length1) 
-    let l2 = Vector.fromDeg(angle).multiply(length2)
-    let xRatio = l2.dot()
-    super(pos, [
+  constructor(length1, length2, angle, offset, offsetAngle) {
+    let l1 = tmo1.set(1,0).multiply(length1)
+    let l2 = Vector.fromDeg(angle,tmp2).multiply(length2)
+    super([
        new Vector(
-         pos.x - l1.x,
-         pos.y - l2.y/2
-        ),
+        -l1.x / 2,
+        -l2.y / 2
+      ),
         new Vector(
-         pos.x + l1.x,
-         pos.y - l2.y/2
-        ),
+        l1.x / 2,
+        -l2.y / 2
+      ),
         new Vector(
-          pos.x + l2.x,
-          pos.y + l2.y / 2
-        )
-      ])
+        l2.x / 2,
+        l2.y / 2
+      )
+      ], offset, offsetAngle)
   }
 }
 
-export{
+export {
   Triangle
 }
