@@ -26,15 +26,13 @@ function createCar(x,y,tireSize= 20,maskgroup=1,manager) {
   let carE = new Composite()
   
   carE.add(tirebody1)
-  carE.add(tirebody2)
+  //carE.add(tirebody2)
   carE.add(carbody)
-  carE.add(constraint1)
-  carE.add(constraint2)
+  //carE.add(constraint1)
+  //carE.add(constraint2)
   
-  console.log(carE);
-  
-  car.attach("body",carE)//.attach(new BodyMesh())
-  
+  car.attach("body",carE).attach("mesh",new BodyMesh())
+  console.log(car);
   
   tirebody1.position.set(160, 285)
   tirebody1.position.set(240, 275)

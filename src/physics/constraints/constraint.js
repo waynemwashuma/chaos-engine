@@ -8,7 +8,7 @@ class Constraint {
     this.dampening = 0.03
   }
   get physicsType(){
-    return ObjType.COMPOSITE
+    return ObjType.CONSTRAINT
   }
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()

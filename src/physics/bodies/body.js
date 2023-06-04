@@ -15,6 +15,7 @@ class Body {
   _acceleration = new Vector()
   _orientation = new Angle()
   _rotation = new Angle()
+  bounds = new AABBox()
   _mass = 1
   _inertia = 0
   _type = null
@@ -190,7 +191,7 @@ class Body {
   /**
    * @private
   */
-  init(entity,composited) {
+  init(entity,composited = false) {
     this.entity = entity
     if(composited){
       this.bounds = new AABBox()
@@ -198,6 +199,7 @@ class Body {
       return
     }
     this.requires("transform", "movable", "bounds")
+    
     let transform = entity.get("transform")
     let bounds = entity.get("bounds")
     let move = entity.get("movable")

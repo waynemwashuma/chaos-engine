@@ -13,9 +13,11 @@ class BodyMesh extends Sprite {
     this.drawBounds = options.drawBounds || false
   }
   update(renderer, dt) {
+    //console.log(this.body.physicsType)
     if(this.body.physicsType == ObjType.COMPOSITE){
       for (var i = 0; i < this.body.bodies.length; i++) {
-        this.body.bodies[i]
+        this.drawShapes(this.body.bodies[i],renderer)
+        
       }
     }else{
       this.drawShapes(this.body,renderer)

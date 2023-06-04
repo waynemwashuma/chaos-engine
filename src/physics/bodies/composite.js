@@ -12,7 +12,7 @@ class Composite {
   }
   init(entity) {
     this.bodies.forEach(e => {
-      e.entity = entity
+      //e.init(entity,true)
     })
   }
   add(object) {
