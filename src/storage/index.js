@@ -1,11 +1,3 @@
-class Store{
-  constructor(){
-    this.store = indexedDB.open("database")
-    this.store.onsuccess = (ev)=>{
-    }
-  }
-}
-export {
-  Store
-}
-localStorage.setItem("red",{})
+export * from "./cookie.js"
+export * from "./sessionStorage.js"
+export * from "./localStorage.js"

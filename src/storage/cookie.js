@@ -1,7 +1,5 @@
-class Cookies {
-  constructor() {
-    this._pairs = this.split()
-  }
+export const Cookies = {
+  _pairs : null,
   split() {
     let pairs = document.cookie.split(';')
     let ret = {}
@@ -10,13 +8,12 @@ class Cookies {
       ret[cookie[0]] = cookie[1]
     }
     return ret
-  }
-  set() {}
-  get() {}
+  },
+  set() {},
+  get() {},
   clear() {
     document.cookie = ""
   }
 }
-export {
-  Cookies
-}
+
+Cookies._pairs = Cookies.split()
