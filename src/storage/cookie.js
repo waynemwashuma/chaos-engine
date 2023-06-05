@@ -1,5 +1,5 @@
 export const Cookies = {
-  _pairs : null,
+  _pairs: null,
   split() {
     let pairs = document.cookie.split(';')
     let ret = {}
@@ -9,8 +9,17 @@ export const Cookies = {
     }
     return ret
   },
-  set() {},
-  get() {},
+  set(n, v, maxAge= 1200000) {
+    document.cookie = `${n}=${v};maxAge=${maxAge}`
+  },
+  get(n) {
+    let arr = document.cookie.split(";")
+    for (var i = 0; i < arr.length; i++) {
+      let pair = arr[i].split('=')
+      if (pair[0].includes(n))
+        return pair[1]
+    }
+  },
   clear() {
     document.cookie = ""
   }
