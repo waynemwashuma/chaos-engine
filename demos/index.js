@@ -14,7 +14,7 @@ export const demos = {
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight)
     window.onresize = () => {
-      renderer.setViewPort(innerWidth, innerHeight)
+      renderer.setViewport(innerWidth, innerHeight)
     }
     renderer.addUI(new DebugMesh(this.manager))
   },
