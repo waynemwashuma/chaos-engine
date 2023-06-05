@@ -192,7 +192,6 @@ class Body {
    * @private
   */
   init(entity,composited = false) {
-    console.log(this.init);
     this.entity = entity
     if(composited){
       this.bounds = new AABBox()
