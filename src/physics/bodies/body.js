@@ -192,6 +192,7 @@ class Body {
    * @private
   */
   init(entity,composited = false) {
+    console.log(this.init);
     this.entity = entity
     if(composited){
       this.bounds = new AABBox()
@@ -232,7 +233,7 @@ class Body {
   static KINEMATIC = ObjType.KINEMATIC
   static DYNAMIC = ObjType.DYNAMIC
 }
-Utils.inheritComponent(Body)
+Utils.inheritComponent(Body,false,false)
 export {
   Body
 }
