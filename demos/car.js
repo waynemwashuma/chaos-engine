@@ -29,16 +29,15 @@ function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
   let carbody = new Box(100, 50)
   let constraint1 = new SpringConstraint(carbody, tirebody1, { x: 30, y: 25 })
   let constraint2 = new SpringConstraint(carbody, tirebody2, { x: -30, y: 25 })
+  let carCompositeBody = new Composite()
 
-  let carCompisiteBody = new Composite()
+  carCompositeBody.add(tirebody1)
+  carCompositeBody.add(tirebody2)
+  carCompositeBody.add(carbody)
+  carCompositeBody.add(constraint1)
+  carCompositeBody.add(constraint2)
 
-  carCompisiteBody.add(tirebody1)
-  carCompisiteBody.add(tirebody2)
-  carCompisiteBody.add(carbody)
-  carCompisiteBody.add(constraint1)
-  carCompisiteBody.add(constraint2)
-
-  car.attach("body", carCompisiteBody)
+  car.attach("body", carCompositeBody)
     .attach("mesh", new BodyMesh())
 
   carbody.position.set(x, y)
