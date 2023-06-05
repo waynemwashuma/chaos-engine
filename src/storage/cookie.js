@@ -20,8 +20,15 @@ export const Cookies = {
         return pair[1]
     }
   },
+  delete(n){
+    document.cookie = `${n}=; max-age=0`;
+  },
   clear() {
-    document.cookie = ""
+    let arr = document.cookie.split(";")
+    for (var i = 0; i < arr.length; i++) {
+      let pair = arr[i].split('=')
+      this.delete(pair[0])
+    }
   }
 }
 
