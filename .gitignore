@@ -1,7 +1,7 @@
 res/*
-main.js
+/main.js
 node_modules
-index.html
+/index.html
 debug.js
 *.jpg
 *.jpeg
