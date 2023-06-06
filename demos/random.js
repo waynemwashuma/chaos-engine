@@ -1,7 +1,8 @@
 import {
   Manager,
   Vector,
-  rand
+  rand,
+  BodyMesh
 } from "/dist/chaos.es.js"
 
 export function random(manager) {

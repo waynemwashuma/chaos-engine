@@ -1,6 +1,5 @@
 import { Vector, Angle } from "../utils/index.js"
 import { Body, AABBox } from "../physics/index.js"
-import { BodyMesh } from "../render/index.js"
 import { Transform, Movable } from "/src/index.js"
 
 /**

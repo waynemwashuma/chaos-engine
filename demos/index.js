@@ -53,10 +53,10 @@ class CanvasBounds extends Entity {
     super()
   }
   init(global) {
-    super.init(...arguments)
+    super.init(global)
     let renderer = global.getSystem("renderer")
     let walls = createBoundingBox(30, 30, renderer.width - 60, renderer.height - 80, 1000)
-    walls.forEach((w, i) => {
+    walls.forEach(w=> {
       let bound = Entity.Default(w.pos.x, w.pos.y)
       let body = new Box(w.w, w.h)
       bound.attach("body", body)

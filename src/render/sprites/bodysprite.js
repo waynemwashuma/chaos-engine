@@ -4,7 +4,7 @@ import {Shape} from "../../physics/index.js"
 import { ObjType } from "../../physics/settings.js"
 
 let r = new Vector()
-class BodyMesh extends Sprite {
+class BodySprite extends Sprite {
   drawVelocity = false
   drawBounds = false
   constructor(options ={}) {
@@ -77,5 +77,5 @@ class BodyMesh extends Sprite {
 }
 
 export {
-  BodyMesh
+  BodySprite
 }
