@@ -1,5 +1,8 @@
-import { BoxEntity } from "/assets/index.js"
-import { Vector } from "/src/index.js"
+import {
+  BodyMesh,
+  Box,
+  Entity
+} from "/dist/chaos.es.js"
 
 
 export function stacking(manager) {
@@ -9,7 +12,9 @@ export function stacking(manager) {
 
 function stack(x, y, w, h, no, spacing, manager) {
   for (var i = 0; i < no; i++) {
-    let entity = new BoxEntity(x, y + (h + spacing) * i, w, h)
+    let entity = new BoxEntity(x, y + (h + spacing) * i)
+      .attach(new Box(w, h))
+      .attach(new BodyMesh())
     manager.add(entity)
   }
 }

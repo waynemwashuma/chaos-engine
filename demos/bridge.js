@@ -1,14 +1,26 @@
-import { CanvasBounds, BoxEntity, BallEntity } from "/assets/index.js"
-import { Vector, Manager, DebugMesh, Box, Ball, SpringConstraint, rand, Entity, BodyMesh } from "/src/index.js"
+import {
+  Vector,
+  Manager,
+  DebugMesh,
+  Box,
+  Ball,
+  SpringConstraint,
+  rand,
+  Entity,
+  BodyMesh
+} from "/dist/chaos.es.js"
 
-export function bridge() {
-  let manager = Manager.Default()
+export function bridge(manager) {
   let world = manager.getSystem("world")
 
   world.gravity = 1000
-
-  let pin1 = new BoxEntity(100, 200, 20, 20)
-  let pin2 = new BoxEntity(350, 200, 20, 20)
+  
+  let pin1 = Entity.Default(100, 200)
+    .attach(new Box(20, 20))
+    .attach(new BodyMesh())
+  let pin2 = Entity.Default(350, 200)
+    .attach(new Box(20, 20))
+    .attach(new BodyMesh())
   let chain = createChain(50, 200, 50, 10, 5, 50, pin1, pin2)
 
   pin1.get("body").mass = 0
@@ -28,13 +40,13 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
       .attach("mesh", new BodyMesh())
       ],
     constraints = []
-    
+
   prev.mask.group = 1
-  
+
   for (var i = 1; i < number; i++) {
     let chain = new Box(w, h)
     let constraint = new SpringConstraint(prev, chain, { x: w / 2, y: 0 }, { x: -w / 2, y: 0 })
-    
+
     bodies.push(
       Entity.Default(x * i, y)
       .attach("body", chain)
