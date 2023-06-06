@@ -6,7 +6,7 @@ import {
   Ball,
   Composite,
   BodyMesh
-} from "/src/index.js"
+} from  "/dist/chaos.es.js"//"/src/index.js"
 
 export function car(manager) {
   let world = manager.getSystem("world")

@@ -8,3 +8,4 @@ debug.js
 *.png
 res.json
 *.mp3
+tests
