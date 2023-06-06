@@ -9,7 +9,7 @@
   },
   "scripts": {
     "vite": "vite --host",
-    "start": "nodemon ./server .js",
+    "start": "node ./server .js",
     "build": "vite build"
   },
   "keywords": [
