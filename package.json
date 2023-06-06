@@ -1,6 +1,6 @@
 {
   "name": "chaos",
-  "version": "0.1.1",
+  "version": "0.5.0",
   "description": "a 2D game engine",
   "main": "/src/index.js",
   "directories": {
