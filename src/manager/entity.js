@@ -9,11 +9,29 @@ import { Transform, Movable } from "/src/index.js"
  * @public
  */
 class Entity {
+  /**
+   * @private
+   */
   _components = {}
+  /**
+   * @private
+   */
   _handlers = {}
+  /**
+   * @private
+   */
   _tags = new Set()
+  /**
+   * @private
+   */
   _global = null
+  /**
+   * This is a flag to show if the entity is added to a manager.
+   * 
+   * @type {boolean}
+  */
   active = false
+  
   get CHAOS_OBJ_TYPE() {
     return "entity"
   }
@@ -189,7 +207,7 @@ class Entity {
   /**
    * Search an entity's manager for entities in a given bound.
    * 
-   * @param {Object} bound the region to search entitities in.
+   * @param {{}} bound the region to search entitities in.
    * @param {[]} [target=[]] An array to store results in.
    * @returns {array<Entity>}
    */
@@ -200,3 +218,5 @@ class Entity {
 export {
   Entity
 }
+
+let e = new Entity()
