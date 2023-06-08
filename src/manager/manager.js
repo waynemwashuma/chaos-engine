@@ -88,6 +88,7 @@ class Manager {
     options = Object.assign({
       autoPlay: true
     }, options)
+    
     this.loader.onfinish = e => {
       this.init()
       this.play()
@@ -464,30 +465,6 @@ class Manager {
         }
       }
     }
-  }
-  /**
-   * Creates manager with the renderer,world,input and event systems registered to avoid much boiler code
-   * 
-   * This function might be deprecated later on.
-   * 
-   * @params {Object} options Passed onto the first parameter of the Manager's constructor
-   * 
-   * @returns {Manager} 
-   */
-  static Default(options) {
-    let events = new EventDispatcher()
-    let manager = new Manager(options)
-    let renderer = new Renderer()
-    let world = new World()
-    let input = new Input()
-    events.add("collision", defaultCollisionHandler)
-    events.add("precollision", defaultPrecollisionHandler)
-    manager.registerSystem("input", input)
-    manager.registerSystem("events", events)
-    manager.registerSystem("world", world)
-    manager.registerSystem("renderer", renderer)
-
-    return manager
   }
 }
 export {
