@@ -21,11 +21,6 @@ import { Input } from "../inputs/index.js"
 /**
  * This class is responsible for managing all
  * entities and ensuring that systems are updated every frame.
- * To initialize a fully working Manager,use the static method `Manager.Default()` i.e
- * @example
- * //create a new manager for your game
- * let manager = Manager.Default()
- * 
  * 
  */
 class Manager {
@@ -53,6 +48,7 @@ class Manager {
     total: 0
   }
   loader = new Loader()
+  events = new EventDispatcher()
   /**
    * @private
    */
@@ -64,20 +60,15 @@ class Manager {
       this.RAF()
       return
     }
-    if (this._coreSystems["events"]) {
-      this._coreSystems['events'].trigger("updateStart")
-    }
+    this.events.trigger("updateStart")
     this.update(dt)
-    if (this._coreSystems["events"]) {
-      this._coreSystems['events'].trigger("update")
-      this._coreSystems['events'].trigger("updateEnd")
-    }
+    this.events.trigger("update")
+    this.events.trigger("updateEnd")
     this._accumulator = 0
     this.RAF()
   }
   /**
    * Creates a new instance of Manager class
-   * with no Systems ,classes or entities inside it
    * 
    * @param {Object} [options] 
    * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
@@ -94,12 +85,13 @@ class Manager {
       renderer: true,
       input: true
     }, options)
-    events.add("collision", defaultCollisionHandler)
-    events.add("precollision", defaultPrecollisionHandler)
     if (options.input)
       this.registerSystem("input", new Input())
-    if (options.physics)
+    if (options.physics) {
       this.registerSystem("world", new World())
+      this.events.add("collision", defaultCollisionHandler)
+      this.events.add("precollision", defaultPrecollisionHandler)
+    }
     if (options.renderer)
       this.registerSystem("renderer", new Renderer())
     this.loader.onfinish = e => {
@@ -119,9 +111,7 @@ class Manager {
       this.objects[i].init(this)
     }
     //this.initSystems()
-    if (this._coreSystems["events"]) {
-      this._coreSystems['events'].trigger("init", this)
-    }
+    this.events.trigger("init", this)
     this.update(0)
     this._initialized = true
     if (this.playing) this.play()
@@ -138,9 +128,7 @@ class Manager {
     }
     this.objects.push(object)
     object.init(this)
-    if (this._coreSystems["events"]) {
-      this._coreSystems['events'].trigger("add", object)
-    }
+    this.events.trigger("add", object)
   }
   /**
    * This adds a component to a componentList
@@ -196,9 +184,8 @@ class Manager {
     let index = this.objects.indexOf(object)
     object.removeComponents()
     Utils.removeElement(this.objects, index)
-    if (this._coreSystems["events"]) {
-      this._coreSystems['events'].trigger("remove", object)
-    }
+    this.events.trigger("remove", object)
+
   }
   /**
    * This removes all of the entities and components from the manager
@@ -225,8 +212,7 @@ class Manager {
       return
     }
     this.RAF()
-    if (this._coreSystems["events"])
-      this._coreSystems['events'].trigger("play")
+    this.events.trigger("play")
   }
   /**
    * This stops the update loop of the manager
@@ -237,8 +223,7 @@ class Manager {
       return
     }
     cancelAnimationFrame(this._rafID)
-    if (this._coreSystems["events"])
-      this._coreSystems['events'].trigger("pause")
+    this.events.trigger("pause")
   }
   /**
    * This method might be useless as systems are initialized on being added
@@ -263,13 +248,12 @@ class Manager {
   update(dt = 0.016) {
     let world = this._coreSystems["world"],
       renderer = this._coreSystems["renderer"],
-      events = this._coreSystems["events"],
       input = this._coreSystems["input"]
 
     let totalTS = performance.now()
 
     //the only reason this is here is that
-    //i need to debug stuff visually
+    //i need to debug stuff visually - ill remove it later.
     if (renderer) renderer.clear()
 
     for (var i = 0; i < this._systems.length; i++) {
@@ -278,9 +262,9 @@ class Manager {
     if (input) input.update()
     if (world) world.update(dt)
     if (renderer) renderer.update(dt)
-    if (world && events) {
-      events.trigger("precollision", world.contactList)
-      events.trigger("collision", world.CLMDs)
+    if (world) {
+      this.events.trigger("precollision", world.contactList)
+      this.events.trigger("collision", world.CLMDs)
     }
     this.perf.total = performance.now() - totalTS
   }
@@ -328,7 +312,7 @@ class Manager {
   /**
    * Gets the named system
    * 
-   * @param {} n the name the system was registered with.
+   * @param {string} n the name the system was registered with.
    * 
    * @return {System}
    */
@@ -463,11 +447,12 @@ class Manager {
   /**
    * Creates a system that allows you to use the `Component.update` method for the given componentList whose name is given.
    * 
-   * @param {string} n The name of componentList this system is taking care of.
+   * @param {string} name The name of componentList this system is taking care of.
    * 
    * @returns {System}
    */
-  static DefaultSystem(n) {
+  static DefaultSystem(name) {
+    let n = name
     return {
       init(manager) {
         manager.setComponentList(n)
@@ -477,6 +462,14 @@ class Manager {
         for (let i = 0; i < comp.length; i++) {
           comp[i].update(dt)
         }
+      },
+      add(comp) {
+        manager.getComponentList(n).push(comp)
+      },
+      remove(comp) {
+        let list = manager.getComponentList(n),
+          index = list.indexOf(comp)
+        Utils.removeElement(list, index)
       }
     }
   }
