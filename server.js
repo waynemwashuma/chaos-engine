@@ -10,4 +10,4 @@ app.use('/dist',express.static(__dirname + '/dist'))
 
 http.listen(PORT, function () {
     console.log('listening on port::' + PORT);
-});
+})
