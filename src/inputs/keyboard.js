@@ -1,9 +1,22 @@
+/**
+ * Handled the keyboard input of an application on a PC.
+*/
 class Keyboard {
-  constructor(dOMEventHandler) {
+  /**
+   * @param {DOMEventHandler} eh
+  */
+  constructor(eh) {
     this.keys = {}
     this.activeKeys = []
-    this.init(dOMEventHandler)
+    this.init(eh)
   }
+  /**
+   * Ensures that keycodes are produced in a consistent manner
+   * 
+   * @private
+   * @param {string} keycode
+   * @returns {string}
+  */
   normalize(keycode) {
     let r = keycode;
     if (keycode.includes('Key')) {
@@ -11,7 +24,12 @@ class Keyboard {
     }
     return r.toUpperCase()
   }
-
+  /**
+   * Adds Keyboard events to the DOM.
+   * 
+   * @private
+   * @param {DOMEventHandler} eh
+  */
   init(eh) {
     eh.add('keydown',this._onDown)
     eh.add('keyup',this._onUp)

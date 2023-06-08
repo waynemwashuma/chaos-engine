@@ -1,27 +1,28 @@
 /**
- * 
  * This handles all inputs from mouse and touchpad on laptops
-*/
+ */
 
 class Mouse {
-  constructor(DOMEventHandler) {
+  constructor(eh) {
     this.clickCount = 0
     this.dragging = false
     this.dragLastPosition = {}
-    this.delta = {}
-    this.position = {}
-    this.lastPosition = {x:0,y:0}
+    this.delta = {x:0,y:0}
+    this.position = {x:0,y:0}
+    this.lastPosition = { x: 0, y: 0 }
     this.leftbutton = null
     this.rightbutton = null
 
-    this.init(DOMEventHandler)
+    this.init(eh)
   }
   /**
    * Checks to see if the vector provided is
    * within a dragbox if mouse is being dragged with a right or left button down
-   * @param {Vector} pos an object containing x and y coordinates to be checked
    * 
-  */
+   * @param {Vector} pos an object containing x and y coordinates to be checked
+   * @returns {Boolean}
+   * 
+   */
   inDragBox(pos) {
     if (!this.dragging) return false
     if (pos.x > this.dragLastPosition.x && pos.x < this.position.x &&
@@ -35,14 +36,14 @@ class Mouse {
    * Initializes the mouse by appending to the DOM
    * 
    * @private
-  */
-    init(eh) {
-    eh.add('click',this._onClick)
-    eh.add('mousedown',this._onDown)
-    eh.add('mouseup',this._onUp)
-    eh.add('mousewheel',this._onWheel)
+   */
+  init(eh) {
+    eh.add('click', this._onClick)
+    eh.add('mousedown', this._onDown)
+    eh.add('mouseup', this._onUp)
+    eh.add('mousewheel', this._onWheel)
     eh.add('mousemove', this._onMove)
-    eh.add("contextmenu",this._onContextMenu)
+    eh.add("contextmenu", this._onContextMenu)
   }
   _onClick = (e) => {
     ++this.clickCount
@@ -65,7 +66,7 @@ class Mouse {
     }
     this.onmove(e)
   }
-  _onDown = (e)=>{
+  _onDown = (e) => {
     switch (e.button) {
 
       case 0:
@@ -78,11 +79,9 @@ class Mouse {
     }
     this.ondown(e)
   }
-  _onUp =(e)=>{
-        switch (e.button) {
-
+  _onUp = (e) => {
+    switch (e.button) {
       case 0:
-
         this.leftbutton = false
         break;
       case 2:
@@ -91,21 +90,21 @@ class Mouse {
     }
     this.onup(e)
   }
-  _onWheel=(e)=>{
+  _onWheel = (e) => {
     this.onwheel(e)
   }
-  _onContextMenu=(e)=>{
+  _onContextMenu = (e) => {
     e.preventDefault()
     this.oncontextmenu(e)
   }
-  
+
   onmove(e) {}
   onclick(e) {}
   ondown(e) {}
   onup(e) {}
   onwheel(e) {}
-  oncontextmenu(e){}
-  
+  oncontextmenu(e) {}
+
   update() {
     this.lastPosition = { ...this.position }
   }
