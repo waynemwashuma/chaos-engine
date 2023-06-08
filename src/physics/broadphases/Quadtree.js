@@ -248,10 +248,19 @@ class Node {
       }
     }
 
-    
+
   }
 }
+
+/**
+ * This is a bounded broadphase that is used to speed up collision testing on sparse number of objects over a large area.
+ */
 class Tree extends Broadphase {
+  /**
+   * @param {Bounds} bounds The region it operates on.
+   * @param {number} [maxdepth=3] Maximum number of branches.
+   * 
+   */
   constructor(bounds, maxdepth = 3) {
     bounds = bounds || {
       min: {
@@ -272,15 +281,27 @@ class Tree extends Broadphase {
 
     if (maxdepth) this._root.split(maxdepth)
   }
+  /**
+   * @inheritdoc
+   * @param {Body} obj
+   */
   insert(obj) {
     if (!this._root.contains(obj.bounds))
       return //console.log("out of bounds");
     this._root.insertObject(obj)
   }
+  /**
+   * @inheritdoc
+   * @param {Body} obj
+   */
   remove(obj) {
     let r = this._root.removeObject(obj)
     return r
   }
+  /**
+   * @inheritdoc
+   * @param {array<Body>} bodies
+   */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
       this.remove(bodies[i])
@@ -288,13 +309,28 @@ class Tree extends Broadphase {
     }
 
   }
+  /**
+   * @inheritdoc
+   * @param {Bounds} bounds Region to check in.
+   * @param {array} target Empty array to store results.
+   * @returns {array<Body>}
+   */
   query(bounds, target) {
     this._root.query(bounds, target)
     return target
   }
+  /**
+   * A depth first search of the quadtree that applies the given function to its nodes.
+   * 
+   * @param {function} func The function that checks every node unless it returns true.
+   * 
+   */
   traverse(func) {
-    this._root.traverse(func)
+    return this._root.traverse(func)
   }
+  /**
+   * @inheritdoc
+   */
   draw(ctx) {
     this._root.traverse(e => {
       if (e.hasObjects) {
@@ -303,6 +339,13 @@ class Tree extends Broadphase {
     })
     ctx.fillStyle = "black"
   }
+  /**
+   * Rezises a quadtree to a new bound size.
+   * This method should not be used without care.
+   * 
+   * @param {Bounds} bounds.
+   * 
+  */
   recalculateBounds(bounds) {
     if (!bounds) return
     let ob = this._root.traverse((e, arr) => {
@@ -317,6 +360,11 @@ class Tree extends Broadphase {
       this.insert(ob)
     })
   }
+  /**
+   * @inheritdoc
+   * @param {array} target Empty array to store results.
+   * @returns {array<Body>}
+   */
   getCollisionPairs(target) {
     this._root.getCollisionPairs(target, [])
   }
@@ -325,3 +373,16 @@ class Tree extends Broadphase {
 export {
   Tree as QuadTreeBroadphase,
 }
+
+
+/**
+ * @typedef Bounds
+ * @property {Vector_like} max
+ * @property {Vector_like} min
+ */
+
+/**
+ * @typedef Vector_like
+ * @property {number} x
+ * @property {number} y
+ */
