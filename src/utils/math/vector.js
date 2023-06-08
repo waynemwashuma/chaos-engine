@@ -160,8 +160,16 @@ class Vector {
     return target.set(-target.y * l, target.x * l);
   };
   /**
+   * Returns the normal to a vector, the normal has the same length as the vector.
+   * 
+   * @param {Vector} [target = Vector] Vector in which results are stored
+  */
+  normalFast(target = new Vector()){
+    return target.set(-this.y,this.x)
+  }
+  /**
    * Rotates this vector by a given angle in radians
-   * @@param {Vector} Angle in radians
+   * @param {Vector} Angle in radians
    */
   rotate(rad) {
     let
