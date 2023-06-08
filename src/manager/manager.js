@@ -81,14 +81,27 @@ class Manager {
    * 
    * @param {Object} [options] 
    * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
-   * @param {Object} [options.files] This is passed onto the Loader.Please check `Loader.load()` for more information on it.
+   * @param {Object} [options.files={}] This is passed onto the Loader.Please check `Loader.load()` for more information on it.
+   * @param {boolean} [options.physics=true] Adds physics world as a System.
+   * @param {boolean} [options.renderer=true] Adds a renderer as a system.
+   * @param {boolean} [options.input=true] Adds input as a system.
    * 
    **/
   constructor(options = {}) {
     options = Object.assign({
-      autoPlay: true
+      autoPlay: true,
+      physics: true,
+      renderer: true,
+      input: true
     }, options)
-    
+    events.add("collision", defaultCollisionHandler)
+    events.add("precollision", defaultPrecollisionHandler)
+    if (options.input)
+      this.registerSystem("input", new Input())
+    if (options.physics)
+      this.registerSystem("world", new World())
+    if (options.renderer)
+      this.registerSystem("renderer", new Renderer())
     this.loader.onfinish = e => {
       this.init()
       this.play()
@@ -99,6 +112,7 @@ class Manager {
    * This initializes the manager.
    * No need to call this function directly.
    * This is called after the preloader finishes loading all its files.
+   * 
    */
   init() {
     for (var i = 0; i < this.objects.length; i++) {
@@ -317,7 +331,7 @@ class Manager {
    * @param {} n the name the system was registered with.
    * 
    * @return {System}
-  */
+   */
   getSystem(n) {
     if (n in this._coreSystems)
       return this._coreSystems[n]
