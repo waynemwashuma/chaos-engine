@@ -1,33 +1,52 @@
-import {Sprite } from "./sprite.js"
+import { Sprite } from "./sprite.js"
 import { Vector } from "/src/index.js"
-import {Shape} from "../../physics/index.js"
+import { Shape } from "../../physics/index.js"
 import { ObjType } from "../../physics/settings.js"
 
+/**
+ * This draws a body from the physics System.
+ * 
+ * @augments Sprite
+ */
 let r = new Vector()
 class BodySprite extends Sprite {
+  /**
+   * Determine whether to draw a representation of the velocity.
+   * 
+   * @type {boolean}
+   */
   drawVelocity = false
+  /**
+   * Determine whether to draw the bounding box.
+   * 
+   * @type {boolean}
+   */
   drawBounds = false
-  constructor(options ={}) {
+  /**
+   * @param {{}} [options={}] 
+   * @param {boolean} [options.drawVelocity=false] Determine whether to draw a representation of the velocity.
+   * @param {boolean} [options.drawBounds=false] Determine whether to draw the bounding box.
+  */
+  constructor(options = {}) {
     super()
     this.drawVelocity = options.drawVelocity || false
     this.drawBounds = options.drawBounds || false
   }
   update(renderer, dt) {
-    //console.log(this.body.physicsType)
-    if(this.body.physicsType == ObjType.COMPOSITE){
+    if (this.body.physicsType == ObjType.COMPOSITE) {
       for (var i = 0; i < this.body.bodies.length; i++) {
-        this.drawShapes(this.body.bodies[i],renderer)
-        
+        this.drawShapes(this.body.bodies[i], renderer)
+
       }
-    }else{
-      this.drawShapes(this.body,renderer)
-    if (this.drawVelocity == true)
-      this.drawVelocity(this.body,renderer)
-    if (this.drawBounds == true)
-      this.drawBounds(this.body,renderer)
+    } else {
+      this.drawShapes(this.body, renderer)
+      if (this.drawVelocity == true)
+        this.drawVelocity(this.body, renderer)
+      if (this.drawBounds == true)
+        this.drawBounds(this.body, renderer)
     }
   }
-  drawVelocity(body,ctx) {
+  drawVelocity(body, ctx) {
     ctx.begin()
     ctx.line(
       body.position.x,
@@ -36,9 +55,9 @@ class BodySprite extends Sprite {
       body.position.y + body.velocity.y
     )
     ctx.stroke("cyan")
-    ctx.close
+    ctx.close()
   }
-  drawBounds(body,renderer) {
+  drawBounds(body, renderer) {
     renderer.begin()
     renderer.rect(
       body.bounds.min.x,
@@ -50,7 +69,7 @@ class BodySprite extends Sprite {
     renderer.close()
 
   }
-  drawShapes(body,renderer) {
+  drawShapes(body, renderer) {
     renderer.begin()
     for (var i = 0; i < body.shapes.length; i++) {
       let shape = body.shapes[i]

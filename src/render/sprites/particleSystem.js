@@ -2,7 +2,16 @@ import { Sprite } from "../../index.js"
 import { Vector, rand } from "../../utils/index.js"
 
 let tmp1 = new Vector()
+
+/**
+ * Its a fricking particle!
+*/
 class Particle {
+  /**
+   * @param {Vector} pos
+   * @param {number} radius
+   * @param {number} [lifespan=5] In seconds
+  */
   constructor(pos, radius, lifespan = 5) {
     this.position = pos
     this.active = true
@@ -17,32 +26,55 @@ class Particle {
     this.lifespan = lifespan
     this._life = 0
   }
+  /**
+   * Renders a particle.
+  */
   draw(ctx) {
     ctx.begin()
     ctx.circle(...this.position, this.radius)
     ctx.fill(`rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`)
     ctx.close()
   }
+  /**
+   * Updates a particle's lifetime
+  */
   update(ctx, dt) {
     this._life += dt
     this.position.add(tmp1.copy(this.velocity).multiply(dt))
     this.active = this._life < this.lifespan
   }
-  init() {}
 }
+
+/**
+ * This creates a particle system 
+ * @augments Sprite
+ */
 class System extends Sprite {
+  /**
+   * @param {number} [initial=1] Number of particles to start with.
+   * @param {number} [max=100] Maximum number of particles.
+   */
   constructor(initial = 1, max = 100, increment = 5) {
     super()
     this.initial = initial
     this.frameIncrease = increment
     this.max = max
   }
+
+  /**
+   * @protected
+   */
   initParticles(n) {
     for (var i = 0; i < n; i++) {
       this.add(this.create())
     }
   }
-  
+
+  /**
+   * override this to return an object created from your own class extending the particle class
+   * 
+   * @protected
+   */
   create() {
     return new Particle(
       new Vector(...this.position),
@@ -50,16 +82,25 @@ class System extends Sprite {
       rand(1, 6)
     )
   }
+  /**
+   * @inheritdoc
+   */
   init(entity) {
     super.init(entity)
     this.initParticles(this.initial)
   }
-  behavior(p){
+  /**
+   * @protected
+   */
+  behavior(p) {
     p.velocity.set(
       p.velocity.x + rand(-1, 1),
       p.velocity.y + rand(0, 0.3)
     )
   }
+  /**
+   * @inheritdoc
+   */
   update(ctx, dt) {
     for (let i = this._children.length - 1; i > 0; i--) {
       let p = this._children[i]
@@ -73,12 +114,6 @@ class System extends Sprite {
     if (this._children.length < this.max) {
       this.initParticles(this.frameIncrease)
     }
-  }
-  remove(index) {
-    this._children.splice(index, 1)
-  }
-  add(particle) {
-    this._children.push(particle)
   }
 }
 export {

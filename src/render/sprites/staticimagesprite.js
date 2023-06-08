@@ -1,7 +1,16 @@
 import { Sprite } from "./sprite.js"
 
+
+/**
+ * Renders a single image with no frames.
+ * 
+ * @augments Sprite
+*/
 class StaticImageSprite extends Sprite {
-  constructor(img, divX, divY) {
+  /**
+   * @param {HTMLImageElement} img Image to draw
+  */
+  constructor(img) {
     super()
     this.img = img
     img.onload = () => {
