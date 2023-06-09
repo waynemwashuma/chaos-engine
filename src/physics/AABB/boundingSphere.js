@@ -24,12 +24,6 @@ class BoundingCircle {
       Overlaps.boundSpheresColliding(this, bound)
     Overlaps.AABBvsSphere(bound, this)
   }
-  draw(ctx) {
-    ctx.strokeStyle = "red"
-    ctx.arc(this.pos.x, this.pos.y, this.r, 0, Math.PI * 2)
-    ctx.stroke()
-    ctx.strokeStyle = "black"
-  }
   /**
    * Calculates the bounds of the body
    * 

@@ -103,16 +103,6 @@ export class BoundingBox extends Component{
     this.min.y += dy
     this.max.y += dy
   }
-  draw(ctx) {
-    ctx.strokeStyle = "red"
-    ctx.moveTo(this.min.x, this.min.y)
-    ctx.lineTo(this.min.x, this.max.y)
-    ctx.lineTo(this.max.x, this.max.y)
-    ctx.lineTo(this.max.x, this.min.y)
-    ctx.lineTo(this.min.x, this.min.y)
-    ctx.stroke()
-    ctx.strokeStyle = "black"
-  }
   /**
    * Combines two bounds to create a new one that covers the previous two.
    * 
