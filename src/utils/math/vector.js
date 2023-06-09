@@ -4,7 +4,8 @@ let obj = {
 }
 let TWO_PI = Math.PI * 2
 /**
- * This is a 2D vector class.It has been optimized to reduce garbage collection and for perfomance when used properly
+ * This is a 2D vector class.
+ * 
  * @author Wayne Mwashuma <mwashumawayne@gmail.com>
  * @license MIT
  */
@@ -26,10 +27,17 @@ class Vector {
   /**
    *Calculates length of this vector and returns 
    * it
+   * 
+   * @returns {number}
    */
   magnitude() {
     return Math.sqrt(this.magnitudeSquared());
   };
+  /**
+   * Sets a vector to have the given length.
+   * 
+   * @param {number} length 
+   */
   setMagnitude(length) {
     this.normalize().multiply(length)
   }
@@ -41,7 +49,7 @@ class Vector {
   }
   /**
    *Calculates length of this vector to another vector
-   * @@param {Vector} v the other vector
+   * @param {Vector} v the other vector
    */
   distanceTo(v) {
     obj.x = this.x - v.x
@@ -50,7 +58,9 @@ class Vector {
   }
   /**
    *Calculates length squared of this vector to another vector
-   * @@param {Vector} v the other vector
+   * 
+   * @param {Vector} v the other vector
+   * @returns {number}
    */
   distanceToSquared(v) {
     obj.x = this.x - v.x
@@ -58,8 +68,10 @@ class Vector {
     return Vector.prototype.magnitudeSquared.call(obj)
   }
   /**
-   * Adds a given vector into this vector
-   * @@param {Vector} v
+   * Adds a given vector into this 
+   * 
+   * @param {Vector} v
+   * @returns {this}
    */
   add(v) {
     this.x += v.x
@@ -69,7 +81,9 @@ class Vector {
   /**
    * Adds a scalar value into this vector's
    * x and y values
-   * @@param {number} n
+   * 
+   * @param {number} n
+   * @returns {this}
    */
   addScalar(n) {
     this.x += n
@@ -78,7 +92,9 @@ class Vector {
   }
   /**
    * Subtracts a given vector from this vector
-   * @@param {Vector} v
+   * 
+   * @param {Vector} v
+   * @returns {this}
    */
   sub(v) {
     this.x -= v.x
@@ -87,7 +103,9 @@ class Vector {
   }
   /**
    * Subtracts a scalar value from this vector's x and y values.
-   * @@param {number} n
+   * 
+   * @param {number} n
+   * @returns {this}
    */
   subScalar(n) {
     this.x -= n
@@ -96,21 +114,27 @@ class Vector {
   }
   /**
    * Calculates the dot product of two vectors.
-   * @@param {Vector} v
+   * 
+   * @param {Vector} v
+   * @returns {number}
    */
   dot(v) {
     return this.x * v.x + this.y * v.y
   }
   /**
-   * Calculates the cross product of two vectors
-   * @@param {Vector} v
+   * Calculates the cross product of two vectors.
+   * 
+   * @param {Vector} vproduct
+   * @returns {number}
    */
   cross(v) {
     return this.x * v.y - this.y * v.x
   }
   /**
-   * Multiplies this vector with a scalar
-   * @@param {number} n 
+   * Multiplies this vector with a scalar.
+   * 
+   * @param {number} n 
+   * @returns {this}
    */
   multiply(n) {
     this.x *= n
@@ -118,8 +142,10 @@ class Vector {
     return this
   }
   /**
-   * Divides this vector with a scalar
-   * @@param {number} n 
+   * Divides this vector with a scalar.
+   * 
+   * @param {number} n 
+   * @returns {this}
    */
   divide(n) {
     this.multiply(1 / n)
@@ -127,8 +153,9 @@ class Vector {
   }
   /**
    * Makes this vector a unit vector by 
-   * dividing its components with its length
+   * dividing its components with its length.
    * 
+   * @returns {this}
    */
   normalize() {
     const length = this.magnitude()
@@ -139,20 +166,28 @@ class Vector {
   };
   /**
    * Checks to see if this vector is equal to
-   * another vector
-   * @@param {Vector} v
+   * another vector.
+   * 
+   * @param {Vector} v
+   * @returns {boolean}
    */
   equals(v) {
     return v.x === this.x && v.y === this.y
   }
+  /**
+   * Checks if the vector length is zero.
+   * 
+   * @returns {boolean}
+   */
   equalsZero() {
     return this.x === 0 && this.y === 0
   }
   /**
    * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
    * 
-   * @@param {number} l the length of the vector returned
-   * @param {Vector} [target = Vector] Vector in which results are stored
+   * @param {number} l the length of the vector returned.
+   * @param {Vector} [target = Vector] Vector in which results are stored.
+   * @returns {Vector}
    */
   normal(l = 1, target) {
     target = target || new Vector()
@@ -162,14 +197,17 @@ class Vector {
   /**
    * Returns the normal to a vector, the normal has the same length as the vector.
    * 
-   * @param {Vector} [target = Vector] Vector in which results are stored
-  */
-  normalFast(target = new Vector()){
-    return target.set(-this.y,this.x)
+   * @param {Vector} [target = Vector] Vector in which results are stored.
+   *  @returns {Vector}
+   */
+  normalFast(target = new Vector()) {
+    return target.set(-this.y, this.x)
   }
   /**
-   * Rotates this vector by a given angle in radians
+   * Rotates this vector by a given angle in radians.
+   * 
    * @param {Vector} Angle in radians
+   * @returns {this}
    */
   rotate(rad) {
     let
@@ -184,7 +222,8 @@ class Vector {
    * Returns an array with x and y values of
    * this vector pushed into the array in
    * that order.
-   * @@param {number[]} [target = []] The array to
+   * 
+   * @param {number[]} [target = []] The array to
    * push values.Defaults to creating a new
    * array if not provided one
    * @returns number[]
@@ -196,7 +235,8 @@ class Vector {
   }
   /**
    * Copies x and y values of this vector to 
-   * a new vector and returns the new vector
+   * a new vector and returns the new vector.
+   * 
    * @return Vector
    */
   clone() {
@@ -204,7 +244,8 @@ class Vector {
   }
   /**
    * Copies x and y values of another vector
-   * to this vector
+   * to this vector.
+   * 
    * @@param {Vector} v 
    * @return this
    */
@@ -214,9 +255,11 @@ class Vector {
     return this
   }
   /**
-   * Sets x and y values of this vector to the given parameter
+   * Sets x and y values of this vector to the given parameter.
+   * 
    * @param {Number} x 
    * @param {Number} y
+   * @returns {this}
    */
   set(x, y) {
     this.x = x
@@ -224,7 +267,7 @@ class Vector {
     return this
   }
   /**
-   * Draws this vector to a 2D canvas
+   * Draws this vector to a 2D canvas.
    * 
    * @param {CanvasRenderingContext2D} ctx the context to draw on.
    * @param {number} x Translates the x-coordinate origin of the vector
@@ -232,9 +275,9 @@ class Vector {
    * @param {string} color a CSS string that
    * is supplied to the rendering context.Can
    *  be a hex(e.g "0xFFFFFF"),rgb(e.g "rgb(255,255,255)"),hsl or a color name(e.g "white")
-   * @@param {Number} scale A value that
-   * multiplies the length of the vector
-   * 
+   * @param {Number} scale A value that
+   * lengthens or shortens the length of the vector
+   * @returns {this}
    */
   draw(ctx, x = 0, y = 0, color = "red", scale = 1) {
     ctx.beginPath()
@@ -248,16 +291,19 @@ class Vector {
     return this
   }
   /**
-   * Negates the values of this vector
+   * Negates the values of this vector.
+   * 
+   * @returns {this}
    */
   reverse() {
     return this.multiply(-1)
   }
   /**
-   * Returns a vector of this reflected on a sirface perpendicular to the normal
+   * Returns a vector of this reflected on a sirface perpendicular to the normal.
+   * 
    * @param {number} normal the unit vector perpendicular to reflection surface
-  @return {Vector}
-  */
+   * @return {Vector}
+   */
   reflect(normal, target) {
     target = target || new Vector()
     return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
@@ -268,8 +314,8 @@ class Vector {
    * 
    * @param {number} [min = 0] The smallest value 
    * the length of this vector is allowed to have.
-   * @param {number} [max = 1] The biggest value 
-   * the length of this vector is allowed to have.
+   * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
+   * @returns {this}
    */
   clamp(min = 0, max = 1) {
       let length = this.magnitude()
@@ -287,6 +333,7 @@ class Vector {
    * 
    * @param {Vector} v1 start of the angle
    * @param {Vector} v2 end of the angle
+   * @returns {number}
    */
   static getAbsDegBtwn(v1, v2) {
     let a = v1.cross(v2)
@@ -294,10 +341,11 @@ class Vector {
     return a < 0 ? deg : 360 - deg
   }
   /**
-   * Same as Vector.getAbsDegBtwn but returns in radians
+   * Same as `Vector.getAbsDegBtwn` but returns in radians.
    * 
    * @param { Vector } v1 start of the angle
    * @param { Vector } v2 end of the angle
+   * @returns {number}
    **/
   static getAbsRadBtwn(v1, v2) {
     let a = v1.cross(v2)
@@ -310,6 +358,7 @@ class Vector {
    * 
    * @param {Vector} v1 start of the angle
    * @param {Vector} v2 end of the angle
+   * @returns {number}
    */
   static getRadBtwn(v1, v2) {
     return Math.acos(v1.dot(v2) / (v1.magnitude() * v2.magnitude()))
@@ -320,16 +369,18 @@ class Vector {
    * 
    * @param {Vector} v1 start of the angle
    * @param {Vector} v2 end of the angle
+   * @returns {number}
    */
   static getDegBtwn(v1, v2) {
     return Vector.getRadBtwn(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
-   * given angle starting from the positive x axis
+   * given angle starting from the positive x axis.
    * 
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
    * @param {Vector} target Vector to store results in.
+   * @returns {Vector}
    */
   static fromRad(radian, target = new Vector()) {
     return target.set(Math.cos(radian), Math.sin(radian))
@@ -340,12 +391,15 @@ class Vector {
    * 
    * @param {number} degree angle in radians from `0°` to `360°`
    * @param {Vector} target Vector to store results in.
+   * @returns {Vector}
    */
   static fromDeg(degree, target) {
     return Vector.fromRad(degree * Math.PI / 180, target)
   }
   /**
    * Generates a new unit Vector in a random direction
+   * 
+   * @returns {Vector}
    */
   static random(target) {
     return Vector.fromRad(Math.random() * TWO_PI, target)
@@ -356,6 +410,8 @@ class Vector {
    * @param {Vector} v2 the vector to lerp from
    * @param {number} t a value from 0 to 1 to scale the new Vector between v1 and v2
    * @param {Vector} target the vector to store results into
+   * 
+   * @returns {Vector}
    */
   static lerp(v1, v2, t, target) {
     target = target || new Vector()
@@ -364,16 +420,35 @@ class Vector {
       (v2.y - v1.y) * t + v1.y
     )
   }
+
+  /**
+   * Returns the angle in degrees between the positive x-axis and the vector.
+   * 
+   * @param {Vector} v
+   * @returns {number}
+   */
   static toDeg(v) {
     return Vector.toRad(v) / Math.PI * 180
   }
 
+  /**
+   * Returns the angle in radians between the positive x-axis and the vector.
+   * 
+   * @param {Vector} v
+   * @returns {number}
+   */
   static toRad(v) {
     let a = Math.atan2(v.y, v.x)
     return a < 0 ? TWO_PI + a : a
   }
-  static ZERO = Object.freeze(new Vector())
   
+  /**
+   * A vector whose x and y values will remain 0.
+   * 
+   * @type {Vector}
+  */
+  static ZERO = Object.freeze(new Vector())
+
 }
 
 export {
