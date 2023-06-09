@@ -1,24 +1,118 @@
+/**
+ * Contains values showing which features are supported,general model of the device and browser used.
+ */
+
 export const DEVICE = {
+  /**
+   * Whether this device supports WebGPU
+   * 
+   * @type boolean
+   */
   webgpu: false,
+  /**
+   * Whether this device supports WebGL
+   * 
+   * @type boolean
+   */
   webgl: false,
+  /**
+   * Whether this device supports 2D canvas
+   * 
+   * @type boolean
+   */
   canvas: false,
+  /**
+   * Whether this device supports WebAudio
+   * 
+   * @type boolean
+   */
   webAudio: false,
+  /**
+   * Whether this device supports Audio tag.
+   * 
+   * @type boolean
+   */
   audio: false,
 
+  /**
+   * A list of audio extensions this device supports.
+   * 
+   * @type array<string>
+   */
   supportedAudio: [],
+  /**
+   * A list of audio extensions this device supports.
+   * 
+   * @type array<string>
+   */
   supportedImages: [],
 
+  /**
+   * Whether this device uses windows
+   * 
+   * @type boolean
+   */
   windows: false,
+  /**
+   * Whether this device uses MacOS
+   * 
+   * @type boolean
+   */
   mac: false,
+  /**
+   * Whether this device uses android
+   * 
+   * @type boolean
+   */
   android: false,
+  /**
+   * Whether this device uses linux
+   * 
+   * @type boolean
+   */
   linux: false,
+  /**
+   * Whether this device uses IOS
+   * 
+   * @type boolean
+   */
   ios: false,
 
+  /**
+   * If browser used is Chrome.
+   * 
+   * @type boolean
+   */
   chrome: false,
+  /**
+   * If browser used is FireFox.
+   * 
+   * @type boolean
+   */
   firefox: false,
+  /**
+   * If browser used is Edge.
+   * 
+   * @type boolean
+   */
   edge: false,
+  /**
+   * If browser used is Internet Explorer.
+   * 
+   * @type boolean
+   */
   ie: false,
+  /**
+   * If browser used is Safari.
+   * 
+   * @type boolean
+   */
   safari: false,
+  /**
+   * If browser used is Opera.
+   * 
+   * @type boolean
+   */
   opera: false
 
 }
