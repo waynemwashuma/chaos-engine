@@ -8,6 +8,8 @@ class Client {
 
 /**
  * This is a bounded broadphase that is used to speed up collision testing on dense number of objects over a small area.
+ * 
+ * @extends Broadphase
  */
 class Grid extends Broadphase{
   

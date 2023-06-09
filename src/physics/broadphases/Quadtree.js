@@ -254,6 +254,8 @@ class Node {
 
 /**
  * This is a bounded broadphase that is used to speed up collision testing on sparse number of objects over a large area.
+ * 
+ * @extends Broadphase
  */
 class Tree extends Broadphase {
   /**
