@@ -1,9 +1,17 @@
 import { Overlaps } from "./AABB.js"
 import {Component} from "/src/manager/component.js"
 
-
+/**
+ * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+*/
 export class BoundingBox extends Component{
-  constructor(minX, minY, maxX, maxY) {
+  /**
+   * @param {number} [minX=0]
+   * @param {number} [minY=0]
+   * @param {number} [maxX=0]
+   * @param {number} [maxY=0]
+  */
+  constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
     super()
     this.pos = {
       x: 0,
@@ -32,6 +40,7 @@ export class BoundingBox extends Component{
     return Overlaps.AABBColliding(this, bound)
   }
   /**
+   * Calculates the bounds of the body
    * 
    * @param {Body} body Body to calculate max and min from
    * @@param {Number} padding increases the size of the bounds
@@ -80,6 +89,9 @@ export class BoundingBox extends Component{
     this.pos.y = body.position.y
     this.padding = padding
   }
+  /**
+   * Translates this bound to the given position.
+  */
   update(pos) {
     let dx = pos.x - this.pos.x
     let dy = pos.y - this.pos.y
@@ -101,6 +113,13 @@ export class BoundingBox extends Component{
     ctx.stroke()
     ctx.strokeStyle = "black"
   }
+  /**
+   * Combines two bounds to create a new one that covers the previous two.
+   * 
+   * @param {BoundingBox} bound1 
+   * @param {BoundingBox} bound2 
+   * @param {BoundingBox} target Bound to store results into.
+  */
   static union(bound1, bound2, target) {
     target = target || new BoundingBox()
 
@@ -109,20 +128,5 @@ export class BoundingBox extends Component{
     target.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x
     target.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y
     return target
-  }
-  get area() {
-    return (this.max.x - this.min.x) * (this.max.y - this.min.y)
-  }
-  clone(){
-    let r = new BoundingBox()
-    
-    r.min.x = this.min.x
-    r.max.x = this.max.x
-    r.min.y = this.min.y
-    r.max.y = this.max.y
-    r.pos.x = this.pos.x
-    r.pos.y = this.pos.y
-    r.padding = this.padding
-    return r
   }
 }
