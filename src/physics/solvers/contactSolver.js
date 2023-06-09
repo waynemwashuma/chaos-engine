@@ -6,6 +6,7 @@ let angularVelocityLimit = 1
 let impulselimit = 0.8
 
 /**
+ * Determines if the body pair should be put to sleep.
 */
 export const ContactSolver = {
   solve(a, b, impulse, contactNo) {

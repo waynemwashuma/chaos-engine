@@ -6,7 +6,9 @@ let tmp1 = new Vector(),
   tmp4 = new Vector(),
   tmp5 = new Vector()
 
-/***/
+/**
+ * Solves for impulse along collision tangent for a given body pair.
+*/
 export const FrictionSolver = {
   /***/
   solve(manifold) {

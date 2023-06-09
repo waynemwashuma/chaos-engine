@@ -5,6 +5,9 @@ let tmp1 = new Vector(),
   tmp3 = new Vector(),
   tmp4 = new Vector()
 
+/**
+ * Solves for the collision normal impulse of a given body pair.
+*/
 export const ImpulseSolver = {
   solve(manifold) {
     let { bodyA, bodyB, ca1, ca2, restitution } = manifold

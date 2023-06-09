@@ -3,12 +3,11 @@ import { Settings } from "../settings.js"
 const tmp1 = new Vector(),
   tmp2 = new Vector()
 let dampen = Settings.posDampen
+
+/**
+ * Solves the interpenetration of bodies.
+*/
 export const PenetrationSolver = {
-  warmstart(manifold, laststmp) {
-    if (manifold.stmp !== laststmp) return
-    let dd = manifold.contactData.lastOverlap - manifold.contactData.overlap
-    manifold.contactData.overlap -= dd * 0.2
-  },
   solve(manifold, inv_dt) {
     let { bodyA, bodyB, ca1, ca2 } = manifold
     let { axis, overlap } = manifold.contactData
