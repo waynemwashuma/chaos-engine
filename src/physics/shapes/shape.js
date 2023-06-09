@@ -6,8 +6,8 @@ import {ShapeType} from "../settings.js"
 let tmp1 = new Vector()
 
 /**
- * This class makes the body class tangible
- * to collision detection and response.Without it,a body will not be able to interact with other bodies.
+ * This class makes a body tangible
+ * to collision detection and response.Without it,the body will not be able to interact with other bodies.
 */
 class Shape {
   type = ShapeType.POLYGON
@@ -43,52 +43,6 @@ class Shape {
   */
   getNormals(body, target) {
     return this.geometry.getNormals(this.angle, target)
-  }
-  drawNormals(ctx, scale = 10) {
-    const { vertices } = this
-    if (vertices.length < 2) return;
-    let center, normal
-    ctx.beginPath()
-    ctx.strokeStyle = "green"
-    for (var i = 0; i < vertices.length - 1; i++) {
-      center = vertices[i + 1].clone().sub(vertices[i]).multiply(.5)
-      normal = center.normal()
-      center = vertices[i].clone().add(center)
-      ctx.moveTo(center.x, center.y)
-      ctx.lineTo((normal.x * scale) + center.x, (normal.y * scale) + center.y)
-
-      ctx.stroke()
-    }
-    center = vertices[0].clone().sub(vertices[vertices.length - 1]).multiply(.5)
-    normal = center.normal()
-    center = vertices[vertices.length - 1].clone().add(center)
-    ctx.moveTo(center.x, center.y)
-    ctx.lineTo((normal.x * scale) + center.x, (normal.y * scale) + center.y)
-    ctx.stroke()
-    ctx.strokeStyle = "black"
-    ctx.closePath()
-  }
-  draw(ctx, fillStyle) {
-    const { vertices } = this.geometry
-    ctx.beginPath()
-    ctx.strokeStyle = "black"
-    ctx.moveTo(vertices[0].x, vertices[0].y)
-    for (var i = 1; i < vertices.length; i++) {
-      ctx.lineTo(vertices[i].x, vertices[i].y)
-    }
-    ctx.lineTo(vertices[0].x, vertices[0].y)
-    ctx.stroke()
-    if (fillStyle) {
-      ctx.fillStyle = fillStyle
-      ctx.fill()
-    }
-    ctx.closePath()
-    ctx.beginPath()
-    ctx.arc(0, 0, 2, 0, Math.PI * 2)
-    ctx.fillStyle = "black"
-    ctx.fill()
-    ctx.stroke()
-    ctx.closePath()
   }
   /**
    * Transforms the local coordinates of the vertices to world coordinates.

@@ -62,31 +62,6 @@ class Circle extends Shape {
     this.position.copy(position).add(this.offPosition)
     this.angle = this.offAngle + angle
   }
-  draw(ctx, fillStyle) {
-    ctx.beginPath()
-    ctx.strokeStyle = "black"
-    ctx.arc(0, 0, this.radius, 0, Math.PI * 2)
-    ctx.lineWidth = 1
-    ctx.stroke()
-    if (fillStyle) {
-      ctx.fillStyle = fillStyle
-      ctx.fill()
-    }
-    ctx.closePath()
-    ctx.beginPath()
-    ctx.arc(0, 0, 2, 0, Math.PI * 2)
-    ctx.fillStyle = "black"
-    ctx.fill()
-    ctx.stroke()
-    ctx.closePath()
-    ctx.beginPath()
-    ctx.moveTo(0, 0)
-    let r = Vector.fromDeg(this.angle).multiply(this.radius)
-    ctx.lineTo(...r)
-    ctx.stroke()
-    ctx.closePath()
-  }
-  drawNormals() {}
   get area() {
     return Math.PI * this.radius * this.radius
   }
