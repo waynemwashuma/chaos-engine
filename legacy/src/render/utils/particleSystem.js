@@ -1,5 +1,4 @@
 import { Vector, Mesh } from "../../index.js"
-import { Accumulator } from "../../utils/accumulator.js"
 
 function rand(min = 0, max = 1) {
   return Math.random() * (max - min) + min
