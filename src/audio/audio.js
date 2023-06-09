@@ -86,9 +86,10 @@ class Sfx {
    * @param {AudioNode} node
    */
   connect(node) {
-    this._source.disconnect()
     if (node)
       this._destination = node
+      if(!this._source) return;
+    this._source.disconnect()
     this._source.connect(this._destination)
   }
 }
