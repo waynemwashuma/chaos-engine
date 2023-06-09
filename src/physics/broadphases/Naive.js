@@ -1,10 +1,20 @@
 import { Broadphase } from "./broadphase.js"
 
+
+/**
+ * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
+*/
 class NaiveBroadphase extends Broadphase {
   constructor(world) {
     super()
     this.bodies = world.objects
   }
+  /**
+   * @inheritdoc
+   * @param {Bounds} bounds Region to check in.
+   * @param {array} target Empty array to store results.
+   * @returns {array<Body>}
+  */
   query(bound, target) {
     closeObjects = target || []
     for (var i = 0; i < this.objects.length; i++) {
@@ -14,6 +24,11 @@ class NaiveBroadphase extends Broadphase {
     }
     return closeObjects
   }
+  /**
+   * @inheritdoc
+   * @param {array} target Empty array to store results.
+   * @returns {array<Body>}
+  */
   getCollisionPairs(target) {
     target = target || []
     let bodies = this.bodies,
