@@ -2,30 +2,66 @@ import { Utils } from "../utils/index.js"
 
 class Sfx {
   /**
-   * 
-   * @param {AudioContext} context 
+   * @private
+   * @type {AudioBuffer}
+   */
+  _soundBuffer = null
+  /**
+   * @private
+   * @type {AudioBufferSourceNode}
+   */
+  _source = null
+  /**
+   * @private
+   * @type {function}
+   */
+  _onended = null
+  _destination = null
+  _playingOffset = 0
+  offset = 0
+  loop = false
+  delay = 0
+  duration = 0
+  /**
+   * @param {AudioHandler} handler 
    * @param {AudioBuffer} buffer
    */
   constructor(handler, buffer) {
-    this.buffer = handler.ctx.createBufferSource()
-    this.buffer.buffer = buffer
+    this.handler = handler
+    this.ctx = handler.ctx
+    this._soundBuffer = buffer
+    this._destination = handler.masterGainNode
     this.finished = false
     this.id = -1
-    let that = this
-    this.buffer.onended = () => {
-      handler.remove(that.id)
-      that.finished = true
-    }
+    this.duration = buffer.duration
+
   }
-  play(offset = 0, delay = 0, loop = false) {
-    this.buffer.start(delay, offset)
-    this.buffer.loop = loop
+  set onended(x) {
+    this._onended = x
+  }
+  start() {
+    this._playingOffset = this.offset
+    this.play()
+  }
+  play() {
+    this._source = this.ctx.createBufferSource()
+    this._source.buffer = this._soundBuffer
+    this._startTime = Date.now()
+    this._source.connect(this._destination)
+    this._source.start(this.delay, this._playingOffset, this.duration)
+    this._source.loop = this.loop
+  }
+  pause() {
+    this._source.stop()
+    let time = (Date.now() - this._startTime) / 1000 + this._playingOffset
+    this._playingOffset = this.duration <= time ? this.offset : time
   }
   disconnect() {
-    this.buffer.disconnect()
+    this._source.disconnect()
   }
   connect(node) {
-    this.buffer.connect(node)
+    this._source.disconnect()
+    this._source.connect(node)
   }
 }
 class AudioHandler {
@@ -38,9 +74,8 @@ class AudioHandler {
   baseUrl = ""
   _mute = 1
   constructor() {
-    this.toplay = {}
-    this.gainNodes = [this.ctx.createGain()]
-    this.gainNodes[0].connect(this.ctx.destination)
+    this.masterGainNode = this.ctx.createGain()
+    this.masterGainNode.connect(this.ctx.destination)
     this.canPlay = this.ctx.state == "running"
     let that = this
     window.addEventListener("pointerdown", function resume() {
@@ -48,7 +83,7 @@ class AudioHandler {
       if (that.ctx.state == "running") {
         removeEventListener("pointerdown", resume)
         that.canPlay = true
-        
+
       }
     })
   }
@@ -65,51 +100,64 @@ class AudioHandler {
         this.sfx[name] = e
         if (this._backname == name)
           this.playMusic(name)
+        if (name in this.toplay) {
+          this.playEffect(name)
+        }
       }).catch(err => console.log(err))
+  }
+  loadFromLoader(loader) {
+    for (var n in loader.sfx) {
+      let name = n
+      this.ctx.decodeAudioData(loader.sfx[n]).then(e => {
+        this.sfx[n] = e
+        if (this._backname == name)
+          this.playMusic(name)
+        if (name in this.toplay) {
+          this.playEffect(name)
+        }
+      })
+    }
   }
   playMusic(name) {
     this._backname = name
     if (!(name in this.sfx))
       return
     this._background = new Sfx(this, this.sfx[name])
-    this._background.connect(this.gainNodes[0])
+    this._background.connect(this.masterGainNode)
     this._background.play(0, 0, true)
   }
-  playEffect(name, loop = false) {
+  playEffect(name, offset = 0, duration = 0) {
     if (!(name in this.sfx)) {
-      this.toplay[name] = this.toplay[name] || 0
-      this.toplay[name] = +1
+      this.toplay[name] = 1
       return
     }
     let s = new Sfx(this, this.sfx[name])
     let id = this.playing.length
     s.id = id
-    s.connect(this.gainNodes[0])
+    s.offset = offset
+    if (duration)
+      s.duration = duration
     this.playing.push(s)
-    s.play(0, 0, loop)
-    return s
+    s.play()
   }
-  playAll() {
-    this.playing.forEach(sound => {
-      sound.play()
-    })
-  }
+  playAll()
   pauseAll() {
     this.playing.forEach(sound => {
       sound.stop()
     })
   }
   mute() {
-    this._mute = this.gainNodes[0].gain
+    this._mute = this.masterGainNode.gain
+    this.masterGainNode.gain = 0
+    
   }
   unmute() {
-    this.gainNodes[0].gain = this._mute
+    this.masterGainNode.gain = this._mute
   }
-  remove(id) {
-    if(id == -1)return
-    Utils.removeElement(this.playing,id)
-    if (id < this.playing.length)
-      this.playing[id].id = id
+  remove(sfx) {
+    let id = this.playing.indexOf(sfx)
+    if (id == -1) return
+    Utils.removeElement(this.playing, id)
   }
 }
 
