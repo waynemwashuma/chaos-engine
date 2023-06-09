@@ -318,19 +318,19 @@ class Vector {
    * @returns {this}
    */
   clamp(min = 0, max = 1) {
-      let length = this.magnitude()
-      if (length == 0) return this
-      if (length > max)
-        return this.multiply(max / length)
-      if (length < min)
-        return this.multiply(min / length)
-      return this
-    }
-    
+    let length = this.magnitude()
+    if (length == 0) return this
+    if (length > max)
+      return this.multiply(max / length)
+    if (length < min)
+      return this.multiply(min / length)
+    return this
+  }
+
   [Symbol.iterator] = function*() {
-      yield this.x
-      yield this.y
-    }
+    yield this.x
+    yield this.y
+  }
   /**
    * Gets the angle (in degrees) between two
    * vectors in the range 0° to 360° in the anticlockwise direction from v1 to v2
