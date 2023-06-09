@@ -242,10 +242,6 @@ class World {
     this.CLMDs = []
 
     this.applyGravity(length, dt)
-    /*for (var i = 0; i < length; i++) {
-      this.objects[i].velocity.add(this.objects[i].acceleration.clone().multiply(dt))
-    }*/
-    //this.intergrate(dt, length)
     this.updateBodies(length)
     this.broadphase.update()
     this.updateConstraints(dt)
@@ -254,10 +250,6 @@ class World {
     this.updateConstraints(dt)
     this.updateBodies(length)
     this.intergrate(dt, length)
-    /*for (var i = 0; i < length; i++) {
-      this.objects[i].position.add(this.objects[i].velocity.clone().multiply(dt))
-      this.objects[i].orientation.radian += this.objects[i].rotation.radian * dt
-    }*/
     this.count += 1
     this.perf.total = performance.now() - this.perf.lastTimestamp
   }
@@ -290,7 +282,7 @@ class World {
   }
   /**
    * Removes a body from the physics world
-   * @@param {Body} body Body to remove from world
+   * @param {Body} body Body to remove from world
    */
   removeBody(body) {
     this.broadphase.remove(body)
@@ -358,6 +350,3 @@ class World {
 export {
   World
 }
-/**
- * 
- */

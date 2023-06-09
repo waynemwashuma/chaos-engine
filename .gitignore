@@ -9,3 +9,4 @@ debug.js
 res.json
 *.mp3
 tests
+*.res.js
