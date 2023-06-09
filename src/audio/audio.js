@@ -1,6 +1,6 @@
 /**
  * This class is responsible for playing a singular sound.
-*/
+ */
 class Sfx {
   /**
    * @private
@@ -20,12 +20,12 @@ class Sfx {
   /**
    * @private
    * @type {AudioNode}
-  */
+   */
   _destination = null
   /**
    * @private
    * @type {number}
-  */
+   */
   _playingOffset = 0
   offset = 0
   loop = false
@@ -50,14 +50,14 @@ class Sfx {
   }
   /**
    * Plays an sfx from the beginning.
-  */
+   */
   play() {
     this._playingOffset = this.offset
     this.resume()
   }
   /**
    * Continues playing an sfx from where it was paused.
-  */
+   */
   resume() {
     this._source = this.ctx.createBufferSource()
     this._source.buffer = this._soundBuffer
@@ -68,7 +68,7 @@ class Sfx {
   }
   /**
    * Halts playing of an sfx.
-  */
+   */
   pause() {
     this._source.stop()
     let time = (Date.now() - this._startTime) / 1000 + this._playingOffset
@@ -76,7 +76,7 @@ class Sfx {
   }
   /**
    * Disconnects this sfx from its current destination.
-  */
+   */
   disconnect() {
     this._source.disconnect()
   }
@@ -84,11 +84,12 @@ class Sfx {
    * Sets the given audionode to be the output destination of an sfx
    * 
    * @param {AudioNode} node
-  */
+   */
   connect(node) {
     this._source.disconnect()
-    this._destination = node
-    this._source.connect(node)
+    if (node)
+      this._destination = node
+    this._source.connect(this._destination)
   }
 }
 export {

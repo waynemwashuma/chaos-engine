@@ -1,8 +1,9 @@
 import { Utils } from "../utils/index.js"
+import { Sfx } from "./audio.js"
 
 /**
  * Manages playing of audio using Web Audio.
-*/
+ */
 class AudioHandler {
   ctx = new AudioContext()
   sfx = {}
@@ -45,7 +46,7 @@ class AudioHandler {
   }
   /**
    * Loads all audio from the loader.
-  */
+   */
   loadFromLoader(loader) {
     for (var n in loader.sfx) {
       let name = n
@@ -63,7 +64,7 @@ class AudioHandler {
    * Plays a single audio as the background in a loop throughout the game
    * 
    * @param {string} name
-  */
+   */
   playBackgroundMusic(name) {
     this._backname = name
     if (!(name in this.sfx))
@@ -78,7 +79,7 @@ class AudioHandler {
    * @param {string} name Name of audio to play.
    * @param {number} [offset] Where to start playing the audio.It is in seconds.
    * @param {number} [duration] how long in seconds will the audio defaults to total duration of the selected audio. 
-  */
+   */
   playEffect(name, offset = 0, duration = 0) {
     if (!(name in this.sfx)) {
       this.toplay[name] = 1
@@ -95,7 +96,7 @@ class AudioHandler {
   }
   /**
    * Pauses currently playing sounds.
-  */
+   */
   pauseAll() {
     this.playing.forEach(sound => {
       sound.stop()
@@ -103,21 +104,21 @@ class AudioHandler {
   }
   /**
    * Sets the volume to zero.Sounds will continue playing but not be audible.
-  */
+   */
   mute() {
     this._mute = this.masterGainNode.gain
     this.masterGainNode.gain = 0
-    
+
   }
   /**
    * Restores the volume before it was muted.
-  */
+   */
   unmute() {
     this.masterGainNode.gain = this._mute
   }
   /**
    * Removes an sfx from the handler and disconnects it from its destination.
-  */
+   */
   remove(sfx) {
     let id = this.playing.indexOf(sfx)
     if (id == -1) return
