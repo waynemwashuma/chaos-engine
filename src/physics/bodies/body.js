@@ -171,7 +171,7 @@ class Body {
    * 
    * @param {number} index The position of the anchor.
    * @param {Vector} [target=Vector] Vector to store results in.
-   * @rerurns {Vector}
+   * @returns {Vector}
    */
   getLocalAnchor(index, target = new Vector()) {
     return target.copy(this._localanchors[index]).rotate(this.orientation.radian)

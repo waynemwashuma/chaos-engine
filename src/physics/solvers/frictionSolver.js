@@ -5,8 +5,11 @@ let tmp1 = new Vector(),
   tmp3 = new Vector(),
   tmp4 = new Vector(),
   tmp5 = new Vector()
-class FrictionSolver {
-  static solve(manifold) {
+
+/***/
+export const FrictionSolver = {
+  /***/
+  solve(manifold) {
     let { bodyA: a, bodyB: b, ca1, ca2, restitution, impulse } = manifold
     let { axis } = manifold.contactData
     if (impulse <= 0) return
@@ -30,11 +33,11 @@ class FrictionSolver {
       (a.inv_mass + b.inv_mass) +
       sq((ca1.dot(tangent)) * a.inv_inertia + sq(ca2.dot(tangent)) * b.inv_inertia)
     )
-    
+
     let jt
     if (Math.abs(j) <= impulse * sf) {
       jt = tangent.multiply(j)
-      
+
     } else {
       jt = tangent.multiply(j * kf)
     }
@@ -44,8 +47,4 @@ class FrictionSolver {
     manifold.rotA += ca1.cross(jt) * a.inv_inertia
     manifold.rotB += ca2.cross(jt) * -b.inv_inertia
   }
-}
-
-export {
-  FrictionSolver
 }

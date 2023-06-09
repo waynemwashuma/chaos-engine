@@ -5,8 +5,10 @@ let velocityLimit = 1
 let angularVelocityLimit = 1
 let impulselimit = 0.8
 
-class ContactSolver {
-  static solve(a, b, impulse, contactNo) {
+/**
+*/
+export const ContactSolver = {
+  solve(a, b, impulse, contactNo) {
     if (contactNo == 2) {
       if (Math.abs(a.angularVelocity) > angularVelocityLimit) a.angularVelocity = 0
       if (Math.abs(b.angularVelocity) > angularVelocityLimit) b.angularVelocity = 0
@@ -23,8 +25,4 @@ class ContactSolver {
     b.velocity = v
     b.acceleration = v
   }
-}
-
-export {
-  ContactSolver
 }
