@@ -320,9 +320,13 @@ class Vector {
   clamp(min = 0, max = 1) {
       let length = this.magnitude()
       if (length == 0) return this
-      let l = Math.max(min, Math.min(length, max)) / length
-      return this.multiply(l)
+      if (length > max)
+        return this.multiply(max / length)
+      if (length < min)
+        return this.multiply(min / length)
+      return this
     }
+    
   [Symbol.iterator] = function*() {
       yield this.x
       yield this.y
@@ -441,12 +445,12 @@ class Vector {
     let a = Math.atan2(v.y, v.x)
     return a < 0 ? TWO_PI + a : a
   }
-  
+
   /**
    * A vector whose x and y values will remain 0.
    * 
    * @type {Vector}
-  */
+   */
   static ZERO = Object.freeze(new Vector())
 
 }
