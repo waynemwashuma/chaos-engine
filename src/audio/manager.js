@@ -70,8 +70,8 @@ class AudioHandler {
     if (!(name in this.sfx))
       return
     this._background = new Sfx(this, this.sfx[name])
-    this._background.connect(this.masterGainNode)
-    this._background.play(0, 0, true)
+    this._background.loop = true
+    this._background.play()
   }
   /**
    * Plays a sound only once.
@@ -93,6 +93,10 @@ class AudioHandler {
       s.duration = duration
     this.playing.push(s)
     s.play()
+  }
+  createSfx(name){
+    ///throw error if name is not in this.
+    return new Sfx(this,this.sfx[name])
   }
   /**
    * Pauses currently playing sounds.
