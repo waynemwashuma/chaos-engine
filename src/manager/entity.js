@@ -1,5 +1,5 @@
 import { Vector, Angle } from "../utils/index.js"
-import { Body, AABBox } from "../physics/index.js"
+import { Body, BoundingBox } from "../physics/index.js"
 import { Transform, Movable } from "/src/index.js"
 
 /**
@@ -202,7 +202,7 @@ class Entity {
     return new Entity()
       .attach("transform", new Transform(x, y, a))
       .attach("movable", new Movable())
-      .attach("bounds", new AABBox())
+      .attach("bounds", new BoundingBox())
   }
   /**
    * Search an entity's manager for entities in a given bound.

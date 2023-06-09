@@ -1,4 +1,4 @@
-import { AABB } from "../AABB/index.js"
+import { Overlaps } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
 import { Utils } from "../../utils/index.js"
 class Node {
@@ -103,8 +103,8 @@ class Node {
   }
   intersects(bounds) {
     if (bounds.r)
-      return AABB.AABBvsSphere(this.bounds, bounds)
-    return AABB.AABBColliding(this.bounds, bounds)
+      return Overlaps.AABBvsSphere(this.bounds, bounds)
+    return Overlaps.AABBColliding(this.bounds, bounds)
   }
   contains(bounds) {
     return (

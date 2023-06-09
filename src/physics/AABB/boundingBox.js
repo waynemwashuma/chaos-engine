@@ -1,8 +1,8 @@
-import { AABB } from "./AABB.js"
+import { Overlaps } from "./AABB.js"
 import {Component} from "/src/manager/component.js"
 
 
-class AABBox extends Component{
+export class BoundingBox extends Component{
   constructor(minX, minY, maxX, maxY) {
     super()
     this.pos = {
@@ -22,14 +22,14 @@ class AABBox extends Component{
   /**
    * 
    * Checks to see if this intersects with another bounding box
-   * @param { AABBox} bound the bound to check  intersection with
+   * @param { BoundingBox} bound the bound to check  intersection with
    * 
-   * @param { BoundingSphere } bound the bound to check  intersection with
+   * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {
     if (bound.r)
-      return AABB.AABBvsSphere(this, bound)
-    return AABB.AABBColliding(this, bound)
+      return Overlaps.AABBvsSphere(this, bound)
+    return Overlaps.AABBColliding(this, bound)
   }
   /**
    * 
@@ -102,7 +102,7 @@ class AABBox extends Component{
     ctx.strokeStyle = "black"
   }
   static union(bound1, bound2, target) {
-    target = target || new AABBox()
+    target = target || new BoundingBox()
 
     target.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x
     target.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y
@@ -114,7 +114,7 @@ class AABBox extends Component{
     return (this.max.x - this.min.x) * (this.max.y - this.min.y)
   }
   clone(){
-    let r = new AABBox()
+    let r = new BoundingBox()
     
     r.min.x = this.min.x
     r.max.x = this.max.x
@@ -125,7 +125,4 @@ class AABBox extends Component{
     r.padding = this.padding
     return r
   }
-}
-export {
-  AABBox
 }

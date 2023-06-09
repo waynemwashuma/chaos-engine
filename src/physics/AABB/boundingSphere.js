@@ -1,6 +1,6 @@
-import { AABB } from "./AABB.js"
+import { Overlaps } from "./AABB.js"
 
-class BoundingSphere {
+class BoundingCircle {
   constructor(r = 0) {
     this.type = "sphere"
     this.r = r
@@ -8,8 +8,8 @@ class BoundingSphere {
   }
   intersects(bound) {
     if (bounding.r)
-      AABB.boundSpheresColliding(this, bound)
-    AABB.AABBvsSphere(bound, this)
+      Overlaps.boundSpheresColliding(this, bound)
+    Overlaps.AABBvsSphere(bound, this)
   }
   draw(ctx) {
     ctx.strokeStyle = "red"

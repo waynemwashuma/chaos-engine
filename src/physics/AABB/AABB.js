@@ -1,12 +1,12 @@
 /**
  * This module is used to check if bounds of a body overlap
  */
-export const AABB = {
+export const Overlaps = {
   /**
    * Checks if two AABB overlap
    * 
-   * @param {AABBox} a
-   * @param {AABBox} b
+   * @param {BoundingBox} a
+   * @param {BoundingBox} b
    */
   AABBColliding(a, b) {
     return (
@@ -30,8 +30,8 @@ export const AABB = {
     /**
      * Checks if An AABB and a CircleBound overlap
      * 
-     * @param {AABBox} a
-     * @param {AABBox} b
+     * @param {BoundingBox} a
+     * @param {BoundingCircle} b
      */
   AABBvsSphere(aabb, sphere) {
     const x = Math.max(box.min.x, Math.min(sphere.pos.x, box.max.x));

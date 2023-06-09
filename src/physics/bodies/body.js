@@ -1,6 +1,6 @@
 import { Vector, Utils, Angle, sq } from "../../utils/index.js"
 import { Component } from "/src/manager/component.js"
-import {AABBox} from "../AABB/index.js"
+import {BoundingBox} from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 
 let defaults = new Vector()
@@ -15,7 +15,7 @@ class Body {
   _acceleration = new Vector()
   _orientation = new Angle()
   _rotation = new Angle()
-  bounds = new AABBox()
+  bounds = new BoundingBox()
   _mass = 1
   _inertia = 0
   _type = null
@@ -194,7 +194,7 @@ class Body {
   init(entity,composited = false) {
     this.entity = entity
     if(composited){
-      this.bounds = new AABBox()
+      this.bounds = new BoundingBox()
       this.update()
       return
     }

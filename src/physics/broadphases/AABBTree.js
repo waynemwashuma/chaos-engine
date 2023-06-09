@@ -1,4 +1,4 @@
-import { AABBox } from "../AABB/index.js"
+import { BoundingBox } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
 import { Utils } from "../../utils/index.js"
 
