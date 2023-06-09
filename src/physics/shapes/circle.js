@@ -26,6 +26,7 @@ class Circle extends Shape {
     return mass * (radius * radius) / 4
   }
   /**
+   * @inheritoc
    * 
   */
   getVertices(axis, target) {

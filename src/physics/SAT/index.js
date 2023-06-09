@@ -24,7 +24,7 @@ const _arr = [],
   tmp5 = new Vector(),
   tmp6 = new Vector(),
   tmpArr1 = []
-const SAT = {
+export const SAT = {
   shapesInBodyCollided(body1, body2, manifold) {
     let shapesA = body1.shapes,
       shapesB = body2.shapes
@@ -222,7 +222,4 @@ const SAT = {
 
     return true;
   }
-}
-export {
-  SAT
 }
