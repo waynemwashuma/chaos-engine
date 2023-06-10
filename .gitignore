@@ -10,3 +10,4 @@ res.json
 *.mp3
 tests
 *.res.js
+*.txt
