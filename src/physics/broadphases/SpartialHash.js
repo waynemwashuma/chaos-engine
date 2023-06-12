@@ -1,5 +1,5 @@
 import { Broadphase } from "./broadphase.js"
-import { naturalizePair } from "../../utils/index.js"
+import { naturalizePair, Utils } from "../../utils/index.js"
 
 let floor = Math.floor
 class Client {
@@ -42,16 +42,17 @@ class Grid extends Broadphase {
     return key
   }
   insert(body) {
-    let [x1, y1] = this._hash(body.bounds.max.x, body.bounds.max.y)
+    let [x1, y1] = this._hash(body.bounds.min.x, body.bounds.min.y)
     let [x2, y2] = this._hash(body.bounds.max.x, body.bounds.max.y)
+
 
     if (x1 > this.divX - 1 || x1 < 0) return
     if (y1 > this.divY - 1 || y1 < 0) return
     if (x2 > this.divX - 1 || x2 < 0) return
     if (y2 > this.divY - 1 || y2 < 0) return
 
-    for (let i = x1; i < x2; i++) {
-      for (var j = y1; j < y2; j++) {
+    for (let i = x1; i <= x2; i++) {
+      for (var j = y1; j <= y2; j++) {
         this.bins[i][j].push(body)
       }
     }
@@ -65,10 +66,10 @@ class Grid extends Broadphase {
     if (x2 > this.divX - 1. || x2 < 0) return
     if (y2 > this.divY - 1. || y2 < 0) return
 
-    for (let i = x1; i < x2; i++) {
-      for (var j = y1; j < y2; j++) {
+    for (let i = x1; i <= x2; i++) {
+      for (let j = y1; j <= y2; j++) {
         let index = this.bins[i][j].indexOf(body)
-        this.bins[i][j].splice(index, 1)
+        Utils.removeElement(this.bins[i][j], index)
       }
     }
   }
@@ -77,7 +78,7 @@ class Grid extends Broadphase {
     remove(body)
     insert(body)
   }
-  update(bodies){
+  update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
       this._update(bodies[i])
     }
