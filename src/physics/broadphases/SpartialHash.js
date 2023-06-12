@@ -1,9 +1,11 @@
 import { Broadphase } from "./broadphase.js"
-import { naturalizePair } from "../utils/index.js"
+import { naturalizePair } from "../../utils/index.js"
 
+let floor = Math.floor
 class Client {
   constructor(obj) {
     this.object = obj
+    this.bounds = obj.bounds.clone()
   }
 }
 
@@ -13,33 +15,72 @@ class Client {
  * @extends Broadphase
  */
 class Grid extends Broadphase {
-  bins = [
-    [[], [], []],
-    [[], [], []]
-    ]
+  bins = []
   bounds = null
   constructor(bounds, divX, divY) {
+    super()
     this.bounds = bounds
+    this.divX = divX
+    this.divY = divY
     for (let i = 0; i < divX; i++) {
       let Xbin = []
-      for (var i = 0; i < divY; i++) {
+      for (let j = 0; j < divY; j++) {
         Xbin.push([])
       }
-      this.bin.push(Xbin)
+      this.bins.push(Xbin)
     }
   }
-  hash(x, y) {
+  _hash(x, y) {
+    let key = [0, 0],
+      minX = this.bounds.min.x,
+      minY = this.bounds.min.y,
+      width = this.bounds.max.x - this.bounds.min.x,
+      height = this.bounds.max.y - this.bounds.min.y
 
+    key[0] = floor(((x - minX) / width) * this.divX)
+    key[1] = floor(((y - minY) / height) * this.divY)
+    return key
   }
   insert(body) {
+    let [x1, y1] = this._hash(body.bounds.max.x, body.bounds.max.y)
+    let [x2, y2] = this._hash(body.bounds.max.x, body.bounds.max.y)
 
+    if (x1 > this.divX - 1 || x1 < 0) return
+    if (y1 > this.divY - 1 || y1 < 0) return
+    if (x2 > this.divX - 1 || x2 < 0) return
+    if (y2 > this.divY - 1 || y2 < 0) return
+
+    for (let i = x1; i < x2; i++) {
+      for (var j = y1; j < y2; j++) {
+        this.bins[i][j].push(body)
+      }
+    }
   }
   remove(body) {
+    let [x1, y1] = this._hash(body.bounds.max.x, body.bounds.max.y)
+    let [x2, y2] = this._hash(body.bounds.max.x, body.bounds.max.y)
 
+    if (x1 > this.divX - 1 || x1 < 0) return
+    if (y1 > this.divY - 1 || y1 < 0) return
+    if (x2 > this.divX - 1. || x2 < 0) return
+    if (y2 > this.divY - 1. || y2 < 0) return
+
+    for (let i = x1; i < x2; i++) {
+      for (var j = y1; j < y2; j++) {
+        let index = this.bins[i][j].indexOf(body)
+        this.bins[i][j].splice(index, 1)
+      }
+    }
   }
-  update(body) {
+
+  _update(body) {
     remove(body)
     insert(body)
+  }
+  update(bodies){
+    for (var i = 0; i < bodies.length; i++) {
+      this._update(bodies[i])
+    }
   }
   _naiveCheck(arr, ids, target) {
     for (var j = 0; j < arr.length; j++) {
@@ -63,12 +104,14 @@ class Grid extends Broadphase {
   getCollisionPairs(target) {
     //When bodies are in more than one bin,there is a possibility that they might show up in more than one collision,this remedies that.
     let ids = new Set()
-    for (var i = 0; i < this.bins.length; i++) {
-      this._naiveCheck(this.bins[i], ids, target)
+    for (let i = 0; i < divX; i++) {
+      for (let j = 0; j < divY; j++) {
+        this._naiveCheck(this.bins[i][j], ids, target)
+      }
     }
   }
 }
 
 export {
-  Grid // as GridBroadphase
+  Grid //as GridBroadphase
 }
