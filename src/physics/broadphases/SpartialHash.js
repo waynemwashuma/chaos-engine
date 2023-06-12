@@ -3,9 +3,9 @@ import { naturalizePair, Utils } from "../../utils/index.js"
 
 let floor = Math.floor
 class Client {
-  constructor(obj) {
-    this.object = obj
-    this.bounds = obj.bounds.clone()
+  constructor(body) {
+    this.body = body
+    this.bounds = body.bounds.clone()
   }
 }
 
@@ -37,17 +37,15 @@ class Grid extends Broadphase {
       width = this.bounds.max.x - this.bounds.min.x,
       height = this.bounds.max.y - this.bounds.min.y
 
-    key[0] = floor(((x - minX) / width) * this.divX)
+    key[0] = floor(
+      ((x - minX) / width) * this.divX)
     key[1] = floor(((y - minY) / height) * this.divY)
     return key
   }
-  insert(body) {
-    let client = body.client
-    if(client == null){
-      client = body.client = new Client(body)
-    }
-    let [x1, y1] = this._hash(body.bounds.min.x, body.bounds.min.y)
-    let [x2, y2] = this._hash(body.bounds.max.x, body.bounds.max.y)
+  _insert(client) {
+    client.bounds.copy(client.body.bounds)
+    let [x1, y1] = this._hash(client.bounds.min.x, client.bounds.min.y)
+    let [x2, y2] = this._hash(client.bounds.max.x, client.bounds.max.y)
 
 
     if (x1 > this.divX - 1 || x1 < 0) return
@@ -57,13 +55,20 @@ class Grid extends Broadphase {
 
     for (let i = x1; i <= x2; i++) {
       for (var j = y1; j <= y2; j++) {
-        this.bins[i][j].push(body)
+        this.bins[i][j].push(client)
       }
     }
   }
-  remove(body) {
-    let [x1, y1] = this._hash(body.bounds.max.x, body.bounds.max.y)
-    let [x2, y2] = this._hash(body.bounds.max.x, body.bounds.max.y)
+  insert(body) {
+    let client = body.client
+    if (client == null) {
+      client = body.client = new Client(body)
+    }
+    this._insert(client)
+  }
+  _remove(client){
+    let [x1, y1] = this._hash(client.bounds.max.x, client.bounds.max.y)
+    let [x2, y2] = this._hash(client.bounds.max.x, client.bounds.max.y)
 
     if (x1 > this.divX - 1 || x1 < 0) return
     if (y1 > this.divY - 1 || y1 < 0) return
@@ -72,15 +77,19 @@ class Grid extends Broadphase {
 
     for (let i = x1; i <= x2; i++) {
       for (let j = y1; j <= y2; j++) {
-        let index = this.bins[i][j].indexOf(body)
+        let index = this.bins[i][j].indexOf(client)
         Utils.removeElement(this.bins[i][j], index)
       }
     }
   }
+  remove(body) {
+    if(body.client === null) return
+    this._remove(body.client)
+  }
 
   _update(body) {
-    remove(body)
-    insert(body)
+    this._remove(body.client)
+    this._insert(body.client)
   }
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {

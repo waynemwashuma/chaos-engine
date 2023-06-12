@@ -1,16 +1,16 @@
 import { Overlaps } from "./AABB.js"
-import {Component} from "/src/manager/component.js"
+import { Component } from "/src/manager/component.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
-*/
-export class BoundingBox extends Component{
+ */
+export class BoundingBox extends Component {
   /**
    * @param {number} [minX=0]
    * @param {number} [minY=0]
    * @param {number} [maxX=0]
    * @param {number} [maxY=0]
-  */
+   */
   constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
     super()
     this.pos = {
@@ -91,7 +91,7 @@ export class BoundingBox extends Component{
   }
   /**
    * Translates this bound to the given position.
-  */
+   */
   update(pos) {
     let dx = pos.x - this.pos.x
     let dy = pos.y - this.pos.y
@@ -103,8 +103,16 @@ export class BoundingBox extends Component{
     this.min.y += dy
     this.max.y += dy
   }
-  clone(){
-    return new BoundingBox(this.min.x,this.min.y,this.max.x,this.max.y)
+  clone() {
+    return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
+  }
+  copy(bounds) {
+    this.pos.x = bounds.pos.x
+    this.pos.y = bounds.pos.y
+    this.min.x = bounds.min.x
+    this.min.y = bounds.min.y
+    this.max.x = bounds.max.x
+    this.max.y = bounds.max.y
   }
   /**
    * Combines two bounds to create a new one that covers the previous two.
@@ -112,7 +120,7 @@ export class BoundingBox extends Component{
    * @param {BoundingBox} bound1 
    * @param {BoundingBox} bound2 
    * @param {BoundingBox} target Bound to store results into.
-  */
+   */
   static union(bound1, bound2, target) {
     target = target || new BoundingBox()
 
