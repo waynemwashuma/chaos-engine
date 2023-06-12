@@ -42,6 +42,10 @@ class Grid extends Broadphase {
     return key
   }
   insert(body) {
+    let client = body.client
+    if(client == null){
+      client = body.client = new Client(body)
+    }
     let [x1, y1] = this._hash(body.bounds.min.x, body.bounds.min.y)
     let [x2, y2] = this._hash(body.bounds.max.x, body.bounds.max.y)
 

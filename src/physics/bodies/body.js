@@ -36,6 +36,7 @@ class Body {
   entity = null
   bounds = null
   shapes = null
+  client = null
   allowSleep = Settings.allowSleep
   sleeping = false
   aabbDetectionOnly = Settings.aabbDetectionOnly
