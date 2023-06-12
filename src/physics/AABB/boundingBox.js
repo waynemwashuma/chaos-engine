@@ -103,6 +103,9 @@ export class BoundingBox extends Component{
     this.min.y += dy
     this.max.y += dy
   }
+  clone(){
+    return new BoundingBox(this.min.x,this.min.y,this.max.x,this.max.y)
+  }
   /**
    * Combines two bounds to create a new one that covers the previous two.
    * 
