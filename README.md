@@ -49,6 +49,7 @@
  - Added documentation to the Vector class.
  
  - Renamed Mesh classes to Sprite.
+
 ### **** WARNING ****
 
 Upgrade from v0.0.0 to v0.1.0 as it is not yet stable
