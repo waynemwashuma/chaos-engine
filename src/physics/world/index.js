@@ -243,8 +243,8 @@ class World {
 
     this.applyGravity(length, dt)
     this.updateBodies(length)
-    this.broadphase.update()
     this.updateConstraints(dt)
+    this.broadphase.update()
     this.collisionDetection()
     this.collisionResponse(dt)
     this.updateConstraints(dt)
@@ -328,7 +328,7 @@ class World {
     }
   }
   
-  removeComposite(){
+  removeComposite(compositr){
     for (var i = 0; i < composite.bodies.length; i++) {
       this.removeBody(composite.bodies[i])
     }
