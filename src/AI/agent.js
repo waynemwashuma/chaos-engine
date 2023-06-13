@@ -45,8 +45,8 @@ class Agent {
   init(entity) {
     this.entity = entity
     this.requires("transform", "movable")
-    let move = this.get("movable"),
-      transform = this.get("transform")
+    let move = entity.get("movable"),
+      transform = entity.get("transform")
     this.velocity = move.velocity
     this.rotation = move.rotation
     this.position = transform.position
