@@ -42,8 +42,8 @@ class Agent {
    * @inheritdoc
    * @param {parent}
    */
-  init(parent) {
-    this.parent = parent
+  init(entity) {
+    this.entity = entity
     this.requires("transform", "movable")
     let move = this.get("movable"),
       transform = this.get("transform")
