@@ -1,6 +1,14 @@
 import { Overlaps } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
 import { Utils } from "../../utils/index.js"
+class Client {
+  constructor(body) {
+    this.body = body
+    this.bounds = body.bounds.clone()
+    this.node = null
+  }
+}
+
 class Node {
   constructor(bounds) {
     this.children = []
@@ -234,6 +242,7 @@ class Node {
         })
       }
     }
+
     for (var i = 0; i < length; i++) {
       for (var j = 0; j < obLength; j++) {
         a = stack[i]
@@ -283,11 +292,8 @@ class Tree extends Broadphase {
 
     if (maxdepth) this._root.split(maxdepth)
   }
-  /**
-   * @inheritdoc
-   * @param {Body} obj
-   */
-  insert(obj) {
+  _insert(client) {
+    client.bounds.copy(client.body.bounds)
     if (!this._root.contains(obj.bounds))
       return //console.log("out of bounds");
     this._root.insertObject(obj)
@@ -296,9 +302,23 @@ class Tree extends Broadphase {
    * @inheritdoc
    * @param {Body} obj
    */
+  insert(obj) {
+    let client = body.client
+    if (client == null) {
+      client = body.client = new Client(body)
+    }
+    this._insert(client)
+  }
+  _remove(client) {
+    return this._root.removeObject(obj)
+  }
+  /**
+   * @inheritdoc
+   * @param {Body} obj
+   */
   remove(obj) {
-    let r = this._root.removeObject(obj)
-    return r
+    if (obj.client == null) return false
+    return this._remove(obj.client)
   }
   /**
    * @inheritdoc
@@ -306,8 +326,8 @@ class Tree extends Broadphase {
    */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
-      this.remove(bodies[i])
-      this.insert(bodies[i])
+      this._remove(bodies[i].client)
+      this._insert(bodies[i].client)
     }
 
   }
@@ -342,12 +362,12 @@ class Tree extends Broadphase {
     ctx.fillStyle = "black"
   }
   /**
-   * Rezises a quadtree to a new bound size.
+   * Resizes a quadtree to a new bound size.
    * This method should not be used without care.
    * 
    * @param {Bounds} bounds.
    * 
-  */
+   */
   recalculateBounds(bounds) {
     if (!bounds) return
     let ob = this._root.traverse((e, arr) => {
