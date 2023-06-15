@@ -1,5 +1,4 @@
 import { Vector, Utils, Angle } from "../../utils/index.js"
-import { Component } from "/src/manager/component.js"
 
 let v = new Vector()
 

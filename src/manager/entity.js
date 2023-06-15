@@ -1,6 +1,7 @@
 import { Vector, Angle } from "../utils/index.js"
 import { Body, BoundingBox } from "../physics/index.js"
-import { Transform, Movable } from "/src/index.js"
+import { Movable } from "./movableComponent.js"
+import { Transform } from "./transformComponent.js"
 
 /**
  * This is a container to hold components,tags and event handlers.

@@ -1,4 +1,4 @@
-import { Sprite } from "../../index.js"
+import { Sprite } from "./sprite.js"
 import { Vector, rand } from "../../utils/index.js"
 
 let tmp1 = new Vector()

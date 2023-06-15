@@ -1,5 +1,5 @@
 import { Overlaps } from "./AABB.js"
-import { Component } from "/src/manager/component.js"
+import { Component } from "../../manager/component.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
