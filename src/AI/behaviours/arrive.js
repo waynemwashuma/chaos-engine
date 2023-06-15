@@ -8,8 +8,8 @@ let tmp1 = new Vector(),
  * Not complete.
 */
 class ArriveBehaviour extends Behaviour {
-  maxSpeed = 1000
-  maxForce = 2000
+  maxSpeed = 100
+  maxForce = 200
   arrive = false
   arrivespeed = 1
   radius = 1000

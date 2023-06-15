@@ -4,11 +4,11 @@ import { Vector,clamp,map } from "../../utils/index.js"
 let tmp1 = new Vector(),
   tmp2 = new Vector()
 class EvadeBehaviour extends Behaviour {
-  maxSpeed = 800
+  maxSpeed = 1200
   maxForce = 2000
   arrive = false
   arrivespeed = 1
-  radius = 100
+  radius = 200
   constructor(pursuer) {
     super()
     let transform = pursuer.get("transform")
