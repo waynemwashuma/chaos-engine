@@ -1,34 +1,37 @@
 {
   "name": "chaos",
-  "version": "0.1.1",
+  "version": "0.0.0",
   "description": "a 2D game engine",
   "homepage": "https://github.com/waynemwashuma/chaos-engine",
   "bugs": {
     "url": "https://github.com/waynemwashuma/chaos-engine/issues"
   },
   "license": "UNLICENSED",
-  "main": "/src/index.js",
-  "author": "wayne mwashuma",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/waynemwashuma/chaos-engine.git"
-  },
-  "scripts": {
-    "vite": "vite --host",
-    "start": "node ./server .js",
-    "build": "vite build"
-  },
-  "keywords": [
+  "main": "./dist/chaos.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/chaos.module.js",
+      "require": "./dist/chaos.umd.js"
+    },
+    "author": "Wayne Mwashuma",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/waynemwashuma/chaos-engine.git"
+    },
+    "scripts": {
+      "vite": "vite --host",
+      "dev": "npm run vite",
+      "build": "rollup --config rollup.config.js"
+    },
+    "keywords": [
     "game",
     "engine",
     "2D"
   ],
-
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "vite": "^4.3.9"
-  },
-  "files": ["dist"]
+    "devDependencies": {
+      "vite": "^4.3.9",
+      "rollup": "^2.79.1"
+    },
+    "files": ["dist"]
+  }
 }
