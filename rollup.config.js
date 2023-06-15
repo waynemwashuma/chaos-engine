@@ -1,23 +1,34 @@
 const input = "src/index.js";
+
+const created = "2023"
+const pkg ={
+  name:"chaos",
+  version:"0.7.0",
+  repository:"https://github.com/waynemwashuma/chaos-engine",
+  license:"MIT",
+  author:"Wayne Mwahuma"
+}
 const name = "chaos"
 
-let banner = `/*
- * Wayne Mwashuma
- * {@link https://github.com/waynemwashuma/chaos engine}
- * @copyright Wayne Mwashuma (@waynemwashuma)
- * @license MIT
+const banner = `/*
+ * @author ${pkg.author}
+ * {@link ${pkg.repository}}
+ * @copyright ${pkg.author} ${created}
+ * @license ${pkg.license}
+ *
+ * 
  */`
 export default [{
     // UMD
     input,
     plugins: [],
     output: {
-      file: `dist/${name}.umd.js`,
+      file: `dist/${pkg.name}.umd.js`,
       format: "umd",
-      name: "CHAOS",
+      name: pkg.name.toUpperCase(),
       esModule: false,
       exports: "named",
-      sourcemap: true,
+      sourcemap: false,
       banner
     },
   },
@@ -26,10 +37,11 @@ export default [{
     input,
     plugins: [],
     output: {
-      file: `dist/${name}.umd.js`,
+      file: `dist/${pkg.name}.module.js`,
       format: "esm",
       exports: "named",
-      sourcemap: true,
+      sourcemap: false,
+      banner
     },
   },
 ];
