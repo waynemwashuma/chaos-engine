@@ -175,7 +175,7 @@ class Renderer {
     this.ctx.clearRect(0, 0, w, h)
   }
   update(dt) {
-
+    this.camera.update(dt)
     this.perf.lastTimestamp = performance.now()
     //this.clear(this.ctx)
     if (this.background != void 0)
