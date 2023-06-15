@@ -1,24 +1,16 @@
+const pkg = require("./package.json")
+
 const input = "src/index.js";
-
 const created = "2023"
-const pkg ={
-  name:"chaos",
-  version:"0.7.0",
-  repository:"https://github.com/waynemwashuma/chaos-engine",
-  license:"MIT",
-  author:"Wayne Mwahuma"
-}
-const name = "chaos"
-
 const banner = `/*
  * @author ${pkg.author}
- * {@link ${pkg.repository}}
- * @copyright ${pkg.author} ${created}
+ * {@link ${pkg.repository}
+ * @copyright  ${created} ${pkg.author}
  * @license ${pkg.license}
  *
  * 
  */`
-export default [{
+module.exports = [{
     // UMD
     input,
     plugins: [],
