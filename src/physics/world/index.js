@@ -248,8 +248,8 @@ class World {
     this.collisionDetection()
     this.collisionResponse(dt)
     this.updateConstraints(dt)
-    this.updateBodies(length)
     this.intergrate(dt, length)
+    this.updateBodies(length)
     this.count += 1
     this.perf.total = performance.now() - this.perf.lastTimestamp
   }

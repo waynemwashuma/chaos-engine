@@ -29,8 +29,8 @@ class BodySprite extends Sprite {
    */
   constructor(options = {}) {
     super()
-    this.drawVelocity = options.drawVelocity || true
-    this.drawBounds = options.drawBounds || true
+    this.drawVelocity = options.drawVelocity || false
+    this.drawBounds = options.drawBounds || false
   }
   update(renderer, dt) {
 
@@ -61,7 +61,9 @@ class BodySprite extends Sprite {
   drawBound(body, renderer) {
     renderer.begin()
     if (body.bounds.r) {
-      renderer.circle(body.bounds.pos.x,body.bounds.pos.y, body.bounds.r)
+      //renderer.circle(body.bounds.pos.x,body.bounds.pos.y, body.bounds.r)
+    
+      renderer.circle(...body.position, body.bounds.r)
     } else {
       renderer.rect(
         body.bounds.min.x,
