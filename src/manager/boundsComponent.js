@@ -1,8 +1,8 @@
-import {BoundingBox} from "../physics/AABB/boundingBox.js"
+import {BoundingCircle} from "../physics/index.js"
 import { Component } from "./component.js"
 
 class Bound extends Component{
-  bounds = new BoundingBox()
+  bounds = new BoundingCircle()
 }
 3
 export {

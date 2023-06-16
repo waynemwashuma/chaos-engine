@@ -23,8 +23,8 @@ export const Overlaps = {
    * @param {CircleBound} b
    */
   boundSpheresColliding(a, b) {
-    const distance = (a.x - b.x) * (a.x - b.x) +
-      (a.y - b.y) * (a.y - b.y)
+    const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
+      (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y)
     return distance < a.r * a.r + b.r * b.r;
   },
     /**
@@ -33,13 +33,13 @@ export const Overlaps = {
      * @param {BoundingBox} a
      * @param {BoundingCircle} b
      */
-  AABBvsSphere(aabb, sphere) {
-    const x = Math.max(box.min.x, Math.min(sphere.pos.x, box.max.x));
-    const y = Math.max(box.min.y, Math.min(sphere.pos.y, box.max.y));
+  AABBvsSphere(a, b) {
+    const x = Math.max(a.min.x, Math.min(b.pos.x, a.max.x));
+    const y = Math.max(a.min.y, Math.min(b.pos.y, a.max.y));
     const distance =
-      (x - sphere.pos.x) * (x - sphere.pos.x) +
-      (y - sphere.pos.y) * (y - sphere.pos.y)
+      (x - b.pos.x) * (x - b.pos.x) +
+      (y - b.pos.y) * (y - b.pos.y)
 
-    return distance < sphere.radius;
+    return distance < b.r;
   }
 }

@@ -26,13 +26,14 @@ class BodySprite extends Sprite {
    * @param {{}} [options={}] 
    * @param {boolean} [options.drawVelocity=false] Determine whether to draw a representation of the velocity.
    * @param {boolean} [options.drawBounds=false] Determine whether to draw the bounding box.
-  */
+   */
   constructor(options = {}) {
     super()
-    this.drawVelocity = options.drawVelocity || false
-    this.drawBounds = options.drawBounds || false
+    this.drawVelocity = options.drawVelocity || true
+    this.drawBounds = options.drawBounds || true
   }
   update(renderer, dt) {
+
     if (this.body.physicsType == ObjType.COMPOSITE) {
       for (var i = 0; i < this.body.bodies.length; i++) {
         this.drawShapes(this.body.bodies[i], renderer)
@@ -40,13 +41,13 @@ class BodySprite extends Sprite {
       }
     } else {
       this.drawShapes(this.body, renderer)
-      if (this.drawVelocity == true)
-        this.drawVelocity(this.body, renderer)
-      if (this.drawBounds == true)
-        this.drawBounds(this.body, renderer)
     }
+    if (this.drawVelocity == true)
+      this._drawVelocity(this.body, renderer)
+    if (this.drawBounds == true)
+      this.drawBound(this.body, renderer)
   }
-  drawVelocity(body, ctx) {
+  _drawVelocity(body, ctx) {
     ctx.begin()
     ctx.line(
       body.position.x,
@@ -57,14 +58,18 @@ class BodySprite extends Sprite {
     ctx.stroke("cyan")
     ctx.close()
   }
-  drawBounds(body, renderer) {
+  drawBound(body, renderer) {
     renderer.begin()
-    renderer.rect(
-      body.bounds.min.x,
-      body.bounds.min.y,
-      body.bounds.max.x - this.body.bounds.min.x,
-      body.bounds.max.y - this.body.bounds.min.y
-    )
+    if (body.bounds.r) {
+      renderer.circle(body.bounds.pos.x,body.bounds.pos.y, body.bounds.r)
+    } else {
+      renderer.rect(
+        body.bounds.min.x,
+        body.bounds.min.y,
+        body.bounds.max.x - this.body.bounds.min.x,
+        body.bounds.max.y - this.body.bounds.min.y
+      )
+    }
     renderer.stroke("red")
     renderer.close()
 

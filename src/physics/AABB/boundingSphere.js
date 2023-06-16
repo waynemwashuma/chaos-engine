@@ -3,7 +3,7 @@ import { Overlaps } from "./AABB.js"
 /**
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
-class BoundingCircle {
+export class BoundingCircle {
 
   /**
    * @param {number} [r=0]
@@ -20,9 +20,9 @@ class BoundingCircle {
    * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {
-    if (bounding.r)
-      Overlaps.boundSpheresColliding(this, bound)
-    Overlaps.AABBvsSphere(bound, this)
+    if (bound.r)
+      return Overlaps.boundSpheresColliding(this, bound)
+    return Overlaps.AABBvsSphere(bound, this)
   }
   /**
    * Calculates the bounds of the body
@@ -33,7 +33,7 @@ class BoundingCircle {
   calculateBounds(body, padding = 0) {
     let radsq = 0,
       shape,
-      vertex,
+      vertices,
       tmp
     for (var i = 0; i < body.shapes.length; i++) {
       shape = body.shapes[i]
@@ -43,9 +43,12 @@ class BoundingCircle {
         continue
       }
       for (var j = 0; j < body.shapes[i].vertices.length; j++) {
-        vertex = body.shapes[i].vertices
-        tmp = vertex.distanceToSquared(body.position)
-        if (tmp > radsq) radsq = tmp
+        vertices = body.shapes[i].vertices
+        for (var j = 0; j < vertices.length; j++) {
+          tmp = vertices[j].distanceToSquared(body.position)
+          if (tmp > radsq) radsq = tmp
+        }
+        
       }
     }
     this.pos.x = body.position.x
@@ -56,8 +59,8 @@ class BoundingCircle {
    * Translates this bound to the given position.
    */
   update(pos) {
-    let dx = pos.x - this.pos.x
-    let dy = pos.y - this.pos.y
+    //let dx = pos.x - this.pos.x
+    //let dy = pos.y - this.pos.y
 
     this.pos.x = pos.x
     this.pos.y = pos.y

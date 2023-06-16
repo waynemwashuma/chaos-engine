@@ -7,7 +7,7 @@ class DebugMesh extends Sprite {
     this.count = 25
     this.now = 0
     this.lastPerf = {}
-    this.drawBounds = false
+    this.drawBounds = true
   }
   update(ctx, dt) {
     this.now++
