@@ -2,6 +2,7 @@ import { Vector, Angle } from "../utils/index.js"
 import { Body, BoundingBox } from "../physics/index.js"
 import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
+import { Bound } from "./boundsComponent.js"
 
 /**
  * This is a container to hold components,tags and event handlers.
@@ -203,7 +204,7 @@ class Entity {
     return new Entity()
       .attach("transform", new Transform(x, y, a))
       .attach("movable", new Movable())
-      .attach("bounds", new BoundingBox())
+      .attach("bounds", new Bound())
   }
   /**
    * Search an entity's manager for entities in a given bound.

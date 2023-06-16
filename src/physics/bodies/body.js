@@ -202,7 +202,7 @@ class Body {
     this.requires("transform", "movable", "bounds")
     
     let transform = entity.get("transform")
-    let bounds = entity.get("bounds")
+    let bounds = entity.get("bounds").bounds
     let move = entity.get("movable")
     this._acceleration = move.acceleration
     this._rotation = move.rotation
