@@ -4,7 +4,7 @@ import { Vector } from "../../utils/index.js"
 const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
-export class PathFollowing {
+export class PathFollowing extends Behaviour {
   constructor(path) {
     super()
     this.path = path

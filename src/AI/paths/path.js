@@ -44,7 +44,7 @@ export class Path {
     this._lerp_t = 0
     return true
   }
-  update(dt) {
+  update(dt,lerpdist) {
     let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitude()
     this._lerp_t += this._speed / dist
     if (this._lerp_t > 1) {
