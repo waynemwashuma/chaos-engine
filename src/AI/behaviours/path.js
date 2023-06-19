@@ -4,7 +4,7 @@ import { Vector } from "../../utils/index.js"
 const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
-class PathFollowing {
+export class PathFollowing {
   constructor(path) {
     super()
     this.path = path
@@ -12,8 +12,11 @@ class PathFollowing {
   calc(target,inv_dt){
     let arrive = this.path.update(1/inv_dt)
     tmp1.copy(this.position).add(this.velocity)
-    let dir = this.path.dir()
-    let proj = tmp2.dot(tmp3)
+    let [p1,p2] = this.path.current()
+    tmp1.sub(p1)
+    tmp2.copy(p2).sub(p1)
+    tmp2.normalize()
+    let proj = tmp3.dot(tmp1)
     
   }
   reset(){
@@ -32,8 +35,4 @@ class PathFollowing {
   get loop(){
     return this.path.loop
   }
-}
-
-export {
-  Pursuit
 }
