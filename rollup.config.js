@@ -4,7 +4,7 @@ const input = "src/index.js";
 const created = "2023"
 const banner = `/*
  * @author ${pkg.author}
- * {@link ${pkg.repository}
+ * {@link ${pkg.repository}}
  * @copyright  ${created} ${pkg.author}
  * @license ${pkg.license}
  *
