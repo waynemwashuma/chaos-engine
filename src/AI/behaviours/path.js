@@ -23,7 +23,6 @@ export class PathFollowing extends Behaviour {
     let projPoint = this.path.update(proj)
     
     tmp1.copy(projPoint).sub(this.position).multiply(10)
-    //tmp1.clamp(0,1000)
     target.add(tmp1)
     projPoint.draw(ctx)
     
