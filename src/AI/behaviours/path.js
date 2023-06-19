@@ -16,7 +16,7 @@ export class PathFollowing {
     tmp1.sub(p1)
     tmp2.copy(p2).sub(p1)
     tmp2.normalize()
-    let proj = tmp3.dot(tmp1)
+    let proj = tmp2.dot(tmp1)
     
   }
   reset(){
