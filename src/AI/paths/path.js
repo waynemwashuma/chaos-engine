@@ -45,11 +45,17 @@ export class Path {
     return true
   }
   update(dt) {
-    let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitudeSquared()
+    let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitude()
     this._lerp_t += this._speed / dist
     if (this._lerp_t > 1) {
       this.advance()
     }
+    Vector.lerp(
+      this._points[this._way[0]],
+      this._points[this._way[1]],
+      this._lerp_t,
+      this._lerpedPoint
+    )
     return this._lerpedPoint
   }
 }
