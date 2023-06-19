@@ -58,4 +58,10 @@ export class Path {
     )
     return this._lerpedPoint
   }
+  current() {
+    return [
+      this._points[this._way[0]],
+      this._points[this._way[1]]
+      ]
+  }
 }
