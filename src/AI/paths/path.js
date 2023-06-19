@@ -1,4 +1,4 @@
-import { Vector } from "../../utils/index.js"
+import { Vector,clamp } from "../../utils/index.js"
 
 let tmp = new Vector()
 export class Path {
@@ -6,6 +6,7 @@ export class Path {
   _index = 0
   _speed = 2
   _lerp_t = 0
+  _lerpdist = 0
   _way = [0, 1]
   _lerpedPoint = new Vector()
   loop = false
@@ -19,7 +20,7 @@ export class Path {
     this._points.length = 0
     this._way[0] = 0
     this._way[1] = 0
-    this._lerp_t = 1
+    this._lerp_t = 0
 
     return this
   }
@@ -44,12 +45,15 @@ export class Path {
     this._lerp_t = 0
     return true
   }
-  update(dt,lerpdist) {
+  update(lerpdist = this._lerpdist) {
     let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitude()
-    this._lerp_t += this._speed / dist
+    this._lerp_t = (this._speed + lerpdist) / dist
     if (this._lerp_t > 1) {
-      this.advance()
+      if(!this.advance())
+      return this._lerpedPoint
+      
     }
+    this._lerp_t = clamp(this._lerp_t,0,1)
     Vector.lerp(
       this._points[this._way[0]],
       this._points[this._way[1]],
