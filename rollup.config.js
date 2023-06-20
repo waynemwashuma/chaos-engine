@@ -1,7 +1,8 @@
 const pkg = require("./package.json")
-
+const fs = require("fs")
 const input = "src/index.js";
 const created = "2023"
+const license = fs.readFileSync('LICENSE', 'utf8');
 const banner = `/*
  * @author ${pkg.author}
  * {@link ${pkg.repository}}
@@ -9,6 +10,7 @@ const banner = `/*
  * @license ${pkg.license}
  *
  * 
+ * ${license}
  */`
 module.exports = [{
     // UMD
