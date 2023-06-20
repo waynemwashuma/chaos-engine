@@ -4,7 +4,7 @@ let tmp = new Vector()
 export class Path {
   _points = []
   _index = 0
-  _speed = 2
+  _speed = 20
   _lerp_t = 0
   _lerpdist = 0
   _way = [0, 1]
