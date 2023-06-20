@@ -11,27 +11,19 @@ class EvadeBehaviour extends Behaviour {
   radius = 200
   constructor(pursuer) {
     super()
-    let transform = pursuer.get("transform")
-    let move = pursuer.get("movable")
-    //TODO - Check if the above are undefined
-    this.pursuerPos = transform.position
-    this.pursuerVel = move.velocity
-    this.pursuerRot = move.rotation
-    this.pursuerOrt = transform.orientation
+    this.pursuer = pursuer
   }
   init(agent) {
-    this.pursuedPos = agent.position
-    this.pursuedVel = agent.velocity
-    this.pursuedPosRot = agent.rotation
-    this.pursuedOrt = agent.orientation
+    this.position = agent.position
+    this.velocity = agent.velocity
+    
   }
   calc(target,inv_dt) {
-    let difference = tmp1.copy(this.pursuedPos).sub(this.pursuerPos)
-    let velocity = tmp2.copy(this.pursuedVel)
+    let difference = tmp1.copy(this.position).sub(this.pursuer)
     let length = difference.magnitude()
-    if(length == 0 || length> this.radius)return
+    if(length == 0 || length > this.radius)return
     difference.setMagnitude(map(length,0,this.radius,this.maxSpeed,0))
-    let steering = difference.sub(velocity).multiply(inv_dt)
+    let steering = difference.sub(this.velocity).multiply(inv_dt)
     
     steering.clamp(0, this.maxForce)
     target.copy(steering)

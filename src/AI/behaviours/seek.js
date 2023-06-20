@@ -10,27 +10,18 @@ class SeekBehaviour extends Behaviour {
   arrive = false
   arrivespeed = 1
   radius = 100
-  constructor(pursuer) {
+  constructor(target) {
     super()
-    let transform = pursuer.get("transform")
-    let move = pursuer.get("movable")
-    //TODO - Check if the above are undefined
-    this.pursuedPos = transform.position
-    this.pursuedVel = move.velocity
-    this.pursuedRot = move.rotation
-    this.pursuedOrt = transform.orientation
+    this.target = target
   }
   init(agent) {
-    this.pursuerPos = agent.position
-    this.pursuerVel = agent.velocity
-    this.pursuerRot = agent.rotation
-    this.pursuerOrt = agent.orientation
+    this.position = agent.position
+    this.velocity = agent.velocity
   }
   calc(target,inv_dt) {
-    let difference = tmp1.copy(this.pursuedPos).sub(this.pursuerPos)
-    let velocity = tmp2.copy(this.pursuerVel)
+    let difference = tmp1.copy(this.target).sub(this.position)
     difference.setMagnitude(this.maxSpeed)
-    let steering = difference.sub(velocity).multiply(inv_dt)
+    let steering = difference.sub(this.velocity).multiply(inv_dt)
     
     steering.clamp(0, this.maxForce)
     target.copy(steering)
