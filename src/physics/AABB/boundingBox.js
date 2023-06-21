@@ -42,7 +42,6 @@ export class BoundingBox extends Component {
       x: minX,
       y: minY
     }
-    this.padding = 0
   }
   /**
    * 
