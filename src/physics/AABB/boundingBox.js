@@ -6,6 +6,23 @@ import { Component } from "../../manager/component.js"
  */
 export class BoundingBox extends Component {
   /**
+   * 
+   * @type Vector_like
+   */
+  pos = null
+  /**
+   * The upper limit of the bounding box
+   * 
+   * @type Vector_like
+   */
+  max = null
+  /**
+   * The lower limit of the bounding box
+   * 
+   * @type Vector_like
+   */
+  min = null
+  /**
    * @param {number} [minX=0]
    * @param {number} [minY=0]
    * @param {number} [maxX=0]
@@ -87,10 +104,11 @@ export class BoundingBox extends Component {
     this.max.y = maxY + padding
     this.pos.x = body.position.x
     this.pos.y = body.position.y
-    this.padding = padding
   }
   /**
    * Translates this bound to the given position.
+   * 
+   * @param {Vector} pos
    */
   update(pos) {
     let dx = pos.x - this.pos.x
@@ -103,9 +121,19 @@ export class BoundingBox extends Component {
     this.min.y += dy
     this.max.y += dy
   }
+  /**
+   * Deep copies a bounding box to a new one.
+   * 
+   * @returns BoundingBox
+  */
   clone() {
     return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
   }
+  /**
+   * Deep copies another bounding box.
+   * 
+   * @param {BoundingBox} bounds
+  */
   copy(bounds) {
     this.pos.x = bounds.pos.x
     this.pos.y = bounds.pos.y
@@ -120,6 +148,7 @@ export class BoundingBox extends Component {
    * @param {BoundingBox} bound1 
    * @param {BoundingBox} bound2 
    * @param {BoundingBox} target Bound to store results into.
+   * @returns BoundingBox
    */
   static union(bound1, bound2, target) {
     target = target || new BoundingBox()

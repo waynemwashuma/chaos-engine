@@ -4,7 +4,16 @@ import { Overlaps } from "./AABB.js"
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
 export class BoundingCircle {
-
+  /**
+   * 
+   * @type number
+  */
+  r = 0
+  /**
+   * 
+   * @type Vector_like
+  */
+  pos = null
   /**
    * @param {number} [r=0]
    */
