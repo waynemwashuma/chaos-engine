@@ -31,7 +31,6 @@ export class PathFollowing extends Behaviour {
     let steering = tmp1.sub(this.velocity).multiply(inv_dt)
 
     steering.clamp(0, this.maxForce)
-    steering.draw(ctx,...this.position)
     target.add(steering)
 
     return target
