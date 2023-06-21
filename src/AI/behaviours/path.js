@@ -7,11 +7,12 @@ const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
 export class PathFollowing extends Behaviour {
-  maxSpeed = 1000
-  maxForce = 200000
+  maxSpeed = 20
+  maxForce = 20
   constructor(path) {
     super()
     this.path = path
+    path.speed = this.maxSpeed
   }
   calc(target, inv_dt) {
     tmp1.copy(this.position)
@@ -32,7 +33,6 @@ export class PathFollowing extends Behaviour {
     steering.clamp(0, this.maxForce)
     steering.draw(ctx,...this.position)
     target.add(steering)
-    projPoint.draw(ctx)
 
     return target
   }
@@ -53,6 +53,13 @@ export class PathFollowing extends Behaviour {
     return this.path.loop
   }
   setPath(path) {
-
+    this.path = path
+  }
+  draw(renderer){
+    renderer.begin()
+    this.path.draw(renderer)
+    renderer.circle(...this.path.point(),2)
+    renderer.fill("black")
+    renderer.close()
   }
 }

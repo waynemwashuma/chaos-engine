@@ -4,7 +4,8 @@ let tmp = new Vector()
 export class Path {
   _points = []
   _index = 0
-  _speed = 20
+  speed = 20
+  tolerance= 20
   _lerp_t = 0
   _lerpdist = 0
   _way = [0, 1]
@@ -47,8 +48,9 @@ export class Path {
   update(lerpdist = this._lerpdist) {
     if (this._finished) return this._lerpedPoint
     let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitude()
-    this._lerp_t = (this._speed + lerpdist) / dist
-    if (this._lerp_t > 1) {
+    let current = lerpdist / dist
+    this._lerp_t = (this.speed + lerpdist) / dist
+    if (this._lerp_t > 1 && (dist - lerpdist) < this.tolerance) {
       if (!this.advance()) this._finished = true
     }
     this._lerp_t = clamp(this._lerp_t, 0, 1)
@@ -65,5 +67,17 @@ export class Path {
       this._points[this._way[0]],
       this._points[this._way[1]]
       ]
+  }
+  point(){
+    return this._lerpedPoint
+  }
+  get path(){
+    return this._points
+  }
+  draw(renderer){
+    renderer.begin()
+    renderer.vertices(this._points,this.loop)
+    renderer.stroke("lightgreen")
+    renderer.close()
   }
 }

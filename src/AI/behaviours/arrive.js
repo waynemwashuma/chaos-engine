@@ -48,7 +48,7 @@ class ArriveBehaviour extends Behaviour {
     steering.clamp(0, this.maxForce)
     steering.draw(ctx, ...this.position)
     this.target.draw(ctx)
-    target.copy(steering)
+    target.add(steering)
   }
 }
 
