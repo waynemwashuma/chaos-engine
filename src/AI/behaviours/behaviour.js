@@ -16,6 +16,8 @@ class Behaviour {
    * Calculates the amount of force required to satisfy a behavior
   */
   calc() {}
+  
+  draw(){}
 }
 export {
   Behaviour

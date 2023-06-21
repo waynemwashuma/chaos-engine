@@ -56,9 +56,9 @@ export class PathFollowing extends Behaviour {
   }
   draw(renderer){
     renderer.begin()
-    this.path.draw(renderer)
     renderer.circle(...this.path.point(),2)
-    renderer.fill("black")
+    renderer.fill("blue")
     renderer.close()
+    this.path.draw(renderer)
   }
 }

@@ -77,6 +77,9 @@ class Agent {
   update(inv_dt) {
     this.behaviours.update(inv_dt)
   }
+  draw(renderer){
+    this.behaviours.draw(renderer)
+  }
 }
 Utils.inheritComponent(Agent)
 export {

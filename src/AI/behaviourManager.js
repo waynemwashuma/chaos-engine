@@ -17,7 +17,7 @@ class BehaviourManager {
    */
   add(behaviour) {
     this._behaviours.push(behaviour)
-    if (this.active) behaviour.init(this._agent)
+    if(this.active)behaviour.init(this._agent)
   }
   /**
    * Removes a behavior to the manager
@@ -56,6 +56,9 @@ class BehaviourManager {
   */
   clear() {
     Utils.clearArr(this._behaviours)
+  }
+  draw(renderer){
+    this._behaviours.forEach(b=>b.draw(renderer))
   }
 }
 export {
