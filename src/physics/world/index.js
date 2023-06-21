@@ -8,23 +8,103 @@ import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { Settings } from "../settings.js"
 
+/**
+ * Class responsible for updating bodies,constraints and composites.
+ */
 class World {
+  /**
+   * Used to check if a manifold is persistent.
+   * 
+   * @type number
+   * @private
+   */
   count = 0
+  /**
+   * A record of collision manifolds.
+   * 
+   * @type Map<number,Manifold>
+   * @protected
+   */
   records = new Map()
+  /**
+   * A list of bodies.
+   * 
+   * @type Array<Body>
+   * @private
+   */
   objects = []
+  /**
+   * A list of constraints fixed to a static object.
+   * 
+   * @type Array<Constraint>
+   * @private
+   */
   fixedConstraits = []
+  /**
+   * A list of constraints fixed to two dynamic bodies.
+   * 
+   * @type Array<Constraint>
+   * @private
+   */
   constraints = []
+  /**
+   * A value between 0 and 1 used to dampen linear velocity of bodies.
+   * 
+   * @type number
+   */
   linearDamping = Settings.linearDamping
+  /**
+   * A value between 0 and 1 used to dampen angular velocity of bodies.
+   * 
+   * @type number
+   */
   angularDamping = Settings.angularDamping
+
+  /**
+   * The number of times to solve for velocity.A high number results in much more stable stacking.
+   * 
+   * @type number
+   */
   velocitySolverIterations = Settings.velocitySolverIterations
+  /**
+   * The collision manifolds that have passed narrowphase and verified to be colliding.
+   * 
+   * @type Array<Manifold>
+   */
   CLMDs = []
+  /**
+   * The collision manifolds that have passed broadphase and could be colliding
+   * 
+   * 
+   * @type Array<BroadManifold>
+   */
   contactList = []
+  /**
+   * The gravitational pull of the world.
+   * 
+   * @type Vector
+   */
   gravitationalAcceleration = new Vector(0, 0)
+  /**
+   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
+   * 
+   * @type number
+   */
   fixedFrameRate = Settings.fixedFrameRate
+  /**
+   * 
+   * @type { {lastTimestamp:number,total: number}}
+   * @ignore
+   */
   perf = {
     lastTimestamp: 0,
     total: 0
   }
+  /**
+   * This is a cheap way of determining which pairs of bodies could be colliding.
+   * 
+   * @type Broadphase
+   */
   broadphase = null
   /**
    * @constructor World
@@ -33,18 +113,15 @@ class World {
   constructor() {
     this.broadphase = new NaiveBroadphase(this)
   }
-  /**
-   * Sets the gravitational pull of the world
-   */
-
   set gravity(x) {
     if (typeof x === "object")
       return this.gravitationalAcceleration.copy(x)
     this.gravitationalAcceleration.set(0, x)
   }
   /**
-   * gets the gravitational pull of the world
-   * @returns {Vector}
+   * Gravitational pull of the world,will affect all bodies except static bodies.
+   * 
+   * @type {Vector }
    */
   get gravity() {
     return this.gravitationalAcceleration
@@ -140,6 +217,7 @@ class World {
   }
   /**
    * @private
+   * @param {number} dt 
    */
   collisionResponse(dt) {
     let length = this.CLMDs.length,
@@ -184,10 +262,10 @@ class World {
       )
     }
   }
-
-
   /**
    * @private
+   * @param {number} dt 
+   * @param {number} length 
    */
   intergrate(dt, length) {
     for (var i = 0; i < length; i++) {
@@ -198,6 +276,8 @@ class World {
   }
   /**
    * @private
+   * @param {number} length 
+   * @param {number} dt 
    */
   applyGravity(length, dt) {
     let frame = this.gravitationalAcceleration.clone().multiply(dt)
@@ -209,6 +289,7 @@ class World {
   }
   /**
    * @private
+   * @param {number} dt
    */
   updateConstraints(dt) {
     let length = this.constraints.length,
@@ -222,6 +303,7 @@ class World {
   }
   /**
    * @private
+   * @param {number} length 
    */
   updateBodies(length) {
     let ld = 1 - this.linearDamping
@@ -233,7 +315,9 @@ class World {
     }
   }
   /**
-   * @param {Number} dt the time passed between two frames
+   * 
+   * 
+   * @param {Number} dt the time passed between the last call and this call.
    */
   update(delta) {
     this.perf.lastTimestamp = performance.now()
@@ -254,9 +338,19 @@ class World {
     this.perf.total = performance.now() - this.perf.lastTimestamp
   }
 
+  /**
+   * Initializes the manager.
+   * 
+   * @param {Manager} manager
+   */
   init(manager) {
     manager.setComponentList("body", this.objects)
   }
+  /**
+   * Adds an object to the world.
+   * 
+   * @param {Body | Composite | Constraint} object
+   */
   add(object) {
     if (object.physicsType == ObjType.BODY) {
       this.addBody(object)
@@ -277,6 +371,10 @@ class World {
     this.objects.push(body)
     this.broadphase.insert(body)
   }
+  /**
+   * Removes an object from the world
+   * @param {Body | Composite | Constraint} object
+   */
   remove(object) {
     if (object.physicsType == ObjType.BODY) {
       this.removeBody(object)
@@ -289,6 +387,8 @@ class World {
   /**
    * Removes a body from the physics world
    * @param {Body} body Body to remove from world
+   * 
+   * @returns Body
    */
   removeBody(body) {
     this.broadphase.remove(body)
@@ -301,7 +401,7 @@ class World {
   }
   /**
    * Adds a constraint to the physics world
-   * @@param {Constraint} constraint constaint to add to world
+   * @param {Constraint} constraint constaint to add to world
    */
   addConstraint(constraint) {
     if (constraint.fixed) {
@@ -314,7 +414,9 @@ class World {
   }
   /**
    * Removes a constraint from the physics world
-   * @@param {Constraint} constraint constaint to add to world
+   * @param {Constraint} constraint constaint to add to world
+   * 
+   * @returns Constraint
    */
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints
@@ -325,6 +427,11 @@ class World {
     return constraint
   }
 
+  /**
+   * Adds a composite to the physics world.
+   * 
+   * @param {Composite} composite composite to add to world
+   */
   addComposite(composite) {
     for (var i = 0; i < composite.bodies.length; i++) {
       this.addBody(composite.bodies[i])
@@ -333,7 +440,11 @@ class World {
       this.addConstraint(composite.constraints[i])
     }
   }
-
+  /**
+   * Removes a composite from the physics world.
+   * 
+   * @param {Composite} composite composite to remove
+   */
   removeComposite(composite) {
     for (var i = 0; i < composite.bodies.length; i++) {
       this.removeBody(composite.bodies[i])
@@ -343,9 +454,11 @@ class World {
     }
   }
   /**
-   * Searches for objects in a given bounds and returns them
-   * @@param {} bound the region to search in
-   * @param {[]} [target = []] an array to store results in
+   * Searches for objects in a given bounds and returns them.
+   * 
+   * @param {Bounds} bound the region to search in
+   * @param {Array<Body>} [target = []] an array to store results in
+   * @returns Array<Body>
    */
   query(bound, target = []) {
     this.broadphase.query(bound, target)
