@@ -174,7 +174,7 @@ if (DEVICE.audio = !!ae.canPlayType)
     DEVICE.supportedAudio.push("wav")
   }
 
-  if (ae.canPlayType('audio/x-m4a;') || ae.canPlayType('audio/aac;').replace(/^no$/, ''))
+  if (ae.canPlayType('audio/x-m4a;').replace(/^no$/,'') || ae.canPlayType('audio/aac;').replace(/^no$/, ''))
   {
     DEVICE.supportedAudio.push("m4a")
   }
