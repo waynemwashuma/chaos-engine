@@ -258,11 +258,11 @@ class World {
     manager.setComponentList("body", this.objects)
   }
   add(object) {
-    if(object.physicsType == ObjType.BODY){
-    this.addBody(object )
-    }else if(object.physicsType == ObjType.CONSTRAINT){
+    if (object.physicsType == ObjType.BODY) {
+      this.addBody(object)
+    } else if (object.physicsType == ObjType.CONSTRAINT) {
       this.addConstraint(object)
-    }else if(object.physicsType == ObjType.COMPOSITE){
+    } else if (object.physicsType == ObjType.COMPOSITE) {
       this.addComposite(object)
     }
   }
@@ -278,7 +278,13 @@ class World {
     this.broadphase.insert(body)
   }
   remove(object) {
-    this.removeBody(object)
+    if (object.physicsType == ObjType.BODY) {
+      this.removeBody(object)
+    } else if (object.physicsType == ObjType.CONSTRAINT) {
+      this.removeContraint(object)
+    } else if (object.physicsType == ObjType.COMPOSITE) {
+      this.removeComposite(object)
+    }
   }
   /**
    * Removes a body from the physics world
@@ -318,8 +324,8 @@ class World {
     constraint.index = -1
     return constraint
   }
-  
-  addComposite(composite){
+
+  addComposite(composite) {
     for (var i = 0; i < composite.bodies.length; i++) {
       this.addBody(composite.bodies[i])
     }
@@ -327,8 +333,8 @@ class World {
       this.addConstraint(composite.constraints[i])
     }
   }
-  
-  removeComposite(compositr){
+
+  removeComposite(composite) {
     for (var i = 0; i < composite.bodies.length; i++) {
       this.removeBody(composite.bodies[i])
     }
