@@ -9,7 +9,6 @@ class BehaviourManager {
   constructor() {
     this._behaviours = []
     this._accumulated = new Vector()
-    this.active = false
   }
   /**
    * Adds a behavior to the manager
