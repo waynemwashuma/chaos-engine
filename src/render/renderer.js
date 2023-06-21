@@ -86,6 +86,7 @@ class Renderer {
       )
   }
   vertices(vertices, close = true) {
+    if(vertices.length < 2) return;
     this.ctx.moveTo(
       vertices[0].x - this.camera.position.x,
       vertices[0].y - this.camera.position.y)
@@ -120,7 +121,7 @@ class Renderer {
   }
   stroke(color = "black", width = 1) {
     this.ctx.strokeStyle = color
-    this.ctx.width = width
+    this.ctx.lineWidth = width
     this.ctx.stroke()
   }
   begin() {
