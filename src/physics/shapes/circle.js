@@ -6,28 +6,39 @@ let _vec2 = new Vector()
 let _arr = []
 
 /**
+ * A circular shape.
+ * 
+ * 
  * @augments Shape
 */
 class Circle extends Shape {
   position = new Vector()
   angle = 0
   radius = 0
-  type = Shape.CIRCLE
   /**
    * @param {number} radius 
    * @param {vector} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius, offset, offsetAngle) {
-    super([], offset, offsetAngle)
+    
+    //the first vertex is position 
+    super([new Vector()], offset, offsetAngle)
     this.radius = radius
+    this.type = Shape.CIRCLE
   }
+  /*get position(){
+    return this.vertices[0]
+  }*/
   static calcInertia(mass, radius) {
     return mass * (radius * radius) / 4
   }
   /**
-   * @inheritoc
+   * @inheritdoc
    * 
+   * @param {Vector} axis
+   * @param {Array<Vector>}} target 
+   * @returns {Array<Vector>}
   */
   getVertices(axis, target) {
     target = target || []
@@ -40,7 +51,8 @@ class Circle extends Shape {
   /**
    * 
    * @param {Shape} shape 
-   * @param {[]} [target=[]] target
+   * @param {Array<Vector>}} [target=[]] target
+   * @returns Array<Vector>
   */
   getNormals(shape, target=[]) {
     let min = null,
@@ -58,6 +70,10 @@ class Circle extends Shape {
   }
   /**
    * @inheritdoc
+   * 
+   * @param {Vector} position
+   * @param {number} angle
+   * @param {Vector} scale 
   */
   update(position, angle,scale) {
     this.position.copy(position).add(this.offPosition)

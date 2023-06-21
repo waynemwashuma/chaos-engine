@@ -61,6 +61,13 @@ class Shape {
     return "shape"
   }
   /**
+   * The area occupied by a shape.
+   * @type number
+  */
+  get area(){
+    return 0
+  }
+  /**
    * Returns the normals of the faces when rotated.
    * 
    * @param {} body
