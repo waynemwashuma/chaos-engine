@@ -11,7 +11,6 @@ export class PathFollowing extends Behaviour {
     super()
     this.path = path
     path.speed = this.maxSpeed
-    path.tolerance = 20
   }
   calc(target, inv_dt) {
     tmp1.copy(this.position)
