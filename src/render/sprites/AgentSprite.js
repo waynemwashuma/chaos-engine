@@ -23,7 +23,8 @@ export class AgentSprite extends Sprite {
     renderer.stroke("black")
   }
   update(renderer) {
-    super.update(renderer)
     this.agent.draw(renderer)
+    super.update(renderer)
+    
   }
 }

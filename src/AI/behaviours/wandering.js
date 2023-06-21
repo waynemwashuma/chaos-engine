@@ -1,6 +1,5 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector, rand } from "../../utils/index.js"
-//import { ctx } from "/src/debug.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector()

@@ -1,18 +1,17 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector, clamp,map } from "../../utils/index.js"
 
-import { ctx } from "/src/debug.js"
-
 const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
 export class PathFollowing extends Behaviour {
-  maxSpeed = 20
-  maxForce = 20
+  maxSpeed = 200
+  maxForce = 200
   constructor(path) {
     super()
     this.path = path
     path.speed = this.maxSpeed
+    path.tolerance = 20
   }
   calc(target, inv_dt) {
     tmp1.copy(this.position)
