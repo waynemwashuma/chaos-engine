@@ -10,9 +10,8 @@ let _arr = []
  * 
  * 
  * @augments Shape
-*/
+ */
 class Circle extends Shape {
-  position = new Vector()
   angle = 0
   radius = 0
   /**
@@ -21,15 +20,16 @@ class Circle extends Shape {
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius, offset, offsetAngle) {
-    
+
     //the first vertex is position 
-    super([new Vector()], offset, offsetAngle)
+    super([], offset, offsetAngle)
+    this.vertices = [new Vector(), new Vector(), new Vector()]
     this.radius = radius
     this.type = Shape.CIRCLE
   }
-  /*get position(){
+  get position() {
     return this.vertices[0]
-  }*/
+  }
   static calcInertia(mass, radius) {
     return mass * (radius * radius) / 4
   }
@@ -39,7 +39,7 @@ class Circle extends Shape {
    * @param {Vector} axis
    * @param {Array<Vector>}} target 
    * @returns {Array<Vector>}
-  */
+   */
   getVertices(axis, target) {
     target = target || []
     let v1 = _vec1.copy(axis).multiply(-this.radius).add(this.position)
@@ -53,8 +53,8 @@ class Circle extends Shape {
    * @param {Shape} shape 
    * @param {Array<Vector>}} [target=[]] target
    * @returns Array<Vector>
-  */
-  getNormals(shape, target=[]) {
+   */
+  getNormals(shape, target = []) {
     let min = null,
       vertex = null
     for (let i = 0; i < shape.vertices.length; i++) {
@@ -74,8 +74,8 @@ class Circle extends Shape {
    * @param {Vector} position
    * @param {number} angle
    * @param {Vector} scale 
-  */
-  update(position, angle,scale) {
+   */
+  update(position, angle, scale) {
     this.position.copy(position).add(this.offPosition)
     this.angle = this.offAngle + angle
   }
