@@ -1,4 +1,5 @@
-import { Vector, Utils } from "../utils/index.js"
+import { Utils } from "../utils/index.js"
+import { Vector } from "../math/index.js"
 
 /**
  * Manages the behaviours for an agent.

@@ -1,8 +1,6 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector, map, clamp }from "../../math/index.js"
 
-import {ctx} from "/src/debug.js"
-
 let tmp1 = new Vector(),
   tmp2 = new Vector()
   

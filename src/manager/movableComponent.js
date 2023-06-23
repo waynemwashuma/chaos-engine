@@ -1,5 +1,5 @@
 import { Component } from "./component.js"
-import { Vector, Angle } from "../utils/index.js"
+import { Vector, Angle } from "../math/index.js"
 
 class Movable extends Component {
   constructor(x, y, a) {

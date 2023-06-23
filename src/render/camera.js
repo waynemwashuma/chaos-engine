@@ -1,4 +1,4 @@
-import { Angle, Vector, Matrix } from "../utils/index.js"
+import { Angle, Vector, Matrix } from "../math/index.js"
 class Camera {
   _position = new Vector()
   constructor(renderer, position) {

@@ -1,4 +1,4 @@
-import {Vector} from"../../utils/index.js"
+import {Vector} from"../../math/index.js"
 import {Body} from"./body.js"
 import {Line} from "../shapes/index.js"
 

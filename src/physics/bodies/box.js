@@ -1,5 +1,5 @@
 import{Body} from "./body.js"
-import {Vector} from"../../utils/index.js"
+import {Vector} from"../../math/index.js"
 import {Rectangle} from "../shapes/index.js"
 
 /**

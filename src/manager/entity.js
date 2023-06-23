@@ -1,4 +1,4 @@
-import { Vector, Angle } from "../utils/index.js"
+import { Vector, Angle } from "../math/index.js"
 import { Body, BoundingBox } from "../physics/index.js"
 import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
