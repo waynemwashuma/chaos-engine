@@ -101,7 +101,7 @@ class System extends Sprite {
   /**
    * @inheritdoc
    */
-  update(ctx, dt) {
+  render(ctx, dt) {
     for (let i = this._children.length - 1; i > 0; i--) {
       let p = this._children[i]
       p.update(ctx, dt)

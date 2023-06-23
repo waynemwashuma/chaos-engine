@@ -32,7 +32,7 @@ class BodySprite extends Sprite {
     this.drawVelocity = options.drawVelocity || false
     this.drawBounds = options.drawBounds || false
   }
-  update(renderer, dt) {
+  render(renderer, dt) {
 
     if (this.body.physicsType == ObjType.COMPOSITE) {
       for (var i = 0; i < this.body.bodies.length; i++) {

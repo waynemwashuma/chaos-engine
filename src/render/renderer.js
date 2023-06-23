@@ -182,7 +182,7 @@ class Renderer {
     if (this.background != void 0)
       this.background.update(this, dt)
     for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].update(this, dt)
+      this.objects[i].render(this, dt)
     }
     for (var i = 0; i < this.renderLast.length; i++) {
       this.renderLast[i].update(this, dt, this.camera.transform)

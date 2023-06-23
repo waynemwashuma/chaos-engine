@@ -62,7 +62,5 @@ export class Mesh {
     this._orientation = transform.orientation
     this.bounds = parent.bounds
   }
-  update(renderer) {
-    this.render(renderer)
-  }
+  
 }

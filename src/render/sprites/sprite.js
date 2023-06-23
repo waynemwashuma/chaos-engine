@@ -53,7 +53,7 @@ class Sprite {
   draw(render) {
     render.circle(0, 0, 10)
   }
-  update(render, dt) {
+  render(render, dt) {
     let x = this._position.x,
       y = this._position.y
 
@@ -95,6 +95,7 @@ class Sprite {
     }
     return false
   }
+  update(){}
 }
 Utils.inheritComponent(Sprite)
 export {

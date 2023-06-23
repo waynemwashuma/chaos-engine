@@ -9,7 +9,7 @@ class DebugMesh extends Sprite {
     this.lastPerf = {}
     this.drawBounds = false
   }
-  update(ctx, dt) {
+  render(ctx, dt) {
     this.now++
     let renderer = this.manager.getSystem("renderer")
     let world = this.manager.getSystem("world")

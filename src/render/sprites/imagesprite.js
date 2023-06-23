@@ -75,7 +75,7 @@ class ImageSprite extends Sprite {
   /**
    * @inheritdoc
    */
-  update(renderer, dt) {
+  render(renderer, dt) {
     super.update(renderer, dt)
     this._accumulator += dt
     if (this._accumulator < this._frameRate) return

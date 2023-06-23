@@ -22,9 +22,8 @@ export class AgentSprite extends Sprite {
     renderer.fill("purple")
     renderer.stroke("black")
   }
-  update(renderer) {
+  render(renderer) {
     this.agent.draw(renderer)
-    super.update(renderer)
-    
+    super.render(renderer)
   }
 }
