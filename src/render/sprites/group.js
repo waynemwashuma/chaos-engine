@@ -2,6 +2,7 @@ import { Sprite } from "./sprite.js"
 
 export class Group extends Sprite {
   constructor(sprites = []) {
+    super()
     this._children = sprites
     this.parent = null
   }

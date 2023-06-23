@@ -1,5 +1,5 @@
-import { Vector, Angle }from "../../math/index.js"
-import {  Utils }from "../../utils/index.js"
+import { Vector, Angle } from "../../math/index.js"
+import { Utils } from "../../utils/index.js"
 
 let v = new Vector()
 
@@ -22,7 +22,13 @@ class Sprite {
   /**
    * @private
    */
+  geometry = null
+  material = null
   parent = null
+  constructor(geometry, material) {
+    this.geometry = geometry
+    this.material = material
+  }
   get angle() {
     return this._orientation.radian * 180 / Math.PI
   }
@@ -47,14 +53,12 @@ class Sprite {
    * 
    */
   draw(render) {
-    render.circle(0, 0, 10)
+    this.geometry.render(render)
+    this.material.render(render)
   }
   render(render, dt) {
-    let x = this._position.x,
-      y = this._position.y
-
     render.begin()
-    render.translate(x, y)
+    render.translate(...this._position)
     render.rotate(this._orientation.radian)
     render.scale(...this.scale)
     this.draw(render, dt)
@@ -67,11 +71,10 @@ class Sprite {
     let transform = entity.get("transform")
     this._position = transform.position
     this._orientation = transform.orientation
-    this.bounds = parent.bounds
   }
 
 
-  update(){}
+  update() {}
 }
 Utils.inheritComponent(Sprite)
 export {
