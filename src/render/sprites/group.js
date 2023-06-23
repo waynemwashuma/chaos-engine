@@ -1,6 +1,6 @@
 import { Sprite } from "./sprite.js"
 
-export class Group extends Sprite{
+export class Group extends Sprite {
   constructor(sprites = []) {
     this._children = sprites
     this.parent = null
@@ -11,8 +11,8 @@ export class Group extends Sprite{
   get CHAOS_OBJ_TYPE() {
     return "group"
   }
-  
-    /**
+
+  /**
    * Adds another sprite to this one
    */
   add(sprite) {
