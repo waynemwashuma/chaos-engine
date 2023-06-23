@@ -1,6 +1,6 @@
-//import { Sprite } from "./sprite.js"
+import { Sprite } from "./sprite.js"
 
-export class Group {
+export class Group extends Sprite{
   constructor(sprites = []) {
     this._children = sprites
     this.parent = null
