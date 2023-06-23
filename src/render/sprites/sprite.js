@@ -69,9 +69,8 @@ class Sprite {
     this._orientation = transform.orientation
     this.bounds = parent.bounds
   }
-  /**
-   * Adds another sprite to this one
-   */
+
+
   update(){}
 }
 Utils.inheritComponent(Sprite)

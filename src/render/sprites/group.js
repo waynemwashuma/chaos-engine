@@ -11,6 +11,10 @@ export class Group extends Sprite{
   get CHAOS_OBJ_TYPE() {
     return "group"
   }
+  
+    /**
+   * Adds another sprite to this one
+   */
   add(sprite) {
     this._children.push(sprite)
     sprite.parent = this
