@@ -22,10 +22,6 @@ class Sprite {
   /**
    * @private
    */
-  _children = []
-  /**
-   * @private
-   */
   parent = null
   get angle() {
     return this._orientation.radian * 180 / Math.PI
@@ -76,25 +72,6 @@ class Sprite {
   /**
    * Adds another sprite to this one
    */
-  add(sprite) {
-    this._children.push(sprite)
-  }
-  /**
-   * Removes another sprite to this one
-   */
-  remove(sprite, recursive = false, index) {
-    let inx = index ?? this._children.indexOf(sprite)
-    if (inx !== -1) {
-      Utils.removeElement(this._children, inx)
-      return true
-    }
-    if (!recursive) return false
-    for (var i = 0; i < this._children.length; i++) {
-      let t = this._children[i].remove(sprite, recursive, index)
-      if (t) return true
-    }
-    return false
-  }
   update(){}
 }
 Utils.inheritComponent(Sprite)
