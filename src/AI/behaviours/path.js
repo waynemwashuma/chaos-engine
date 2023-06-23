@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, clamp,map } from "../../utils/index.js"
+import { Vector, clamp,map } from "../../math/index.js"
 
 const tmp1 = new Vector()
 const tmp2 = new Vector()

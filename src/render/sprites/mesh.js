@@ -1,4 +1,4 @@
-import { Vector,Angle } from "../../utils/index.js"
+import { Vector,Angle }from "../../math/index.js"
 
 export class Mesh {
     /**

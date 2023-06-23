@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, rand } from "../../utils/index.js"
+import { Vector, rand } from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector()

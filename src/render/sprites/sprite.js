@@ -1,4 +1,5 @@
-import { Vector, Utils, Angle } from "../../utils/index.js"
+import { Vector, Angle }from "../../math/index.js"
+import {  Utils }from "../../utils/index.js"
 
 let v = new Vector()
 

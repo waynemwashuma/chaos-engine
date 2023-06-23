@@ -1,5 +1,5 @@
 import { Sprite } from "./sprite.js"
-import { Vector } from "../../utils/index.js"
+import { Vector }from "../../math/index.js"
 
 
 let path = [

@@ -1,6 +1,6 @@
 import { BoundingBox } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
-import { Utils } from "../../utils/index.js"
+import { Utils }from "../../utils/index.js"
 
 /**
  * This is an unbounded broadphase used to speed up collision testing.

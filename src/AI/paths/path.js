@@ -1,4 +1,4 @@
-import { Vector, clamp } from "../../utils/index.js"
+import { Vector,clamp } from "../../math/index.js"
 
 let tmp = new Vector()
 export class Path {

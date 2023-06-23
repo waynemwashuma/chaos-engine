@@ -1,6 +1,7 @@
 import { EulerSolver, VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
-import { Vector, naturalizePair, Utils } from "../../utils/index.js"
+import { Vector, naturalizePair }from "../../math/index.js"
+import {Utils} from  "../../utils/index.js"
 import { SAT } from "../SAT/index.js";
 import { ObjType } from "../settings.js"
 //import {ctx} from "../../debug.js"

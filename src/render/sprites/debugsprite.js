@@ -1,5 +1,5 @@
 import { Sprite } from "./sprite.js"
-import { round } from "../../utils/index.js"
+import { round }from "../../math/index.js"
 class DebugMesh extends Sprite {
   constructor(manager) {
     super()

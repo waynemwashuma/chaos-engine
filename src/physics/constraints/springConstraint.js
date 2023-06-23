@@ -1,5 +1,5 @@
 import { Constraint } from "./constraint.js";
-import { Vector } from "../../utils/index.js"
+import { Vector }from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector(),

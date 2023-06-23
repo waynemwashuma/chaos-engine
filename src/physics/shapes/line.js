@@ -1,5 +1,5 @@
 import { Shape } from "./shape.js"
-import { Vector } from "../../utils/index.js"
+import { Vector }from "../../math/index.js"
 
 class Line extends Shape {
   constructor(length,offset,offsetAngle) {

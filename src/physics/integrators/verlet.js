@@ -1,4 +1,4 @@
-import { Vector } from "../../utils/index.js"
+import { Vector }from "../../math/index.js"
 let position = new Vector()
 let acceleration = new Vector()
 let velocity = new Vector()

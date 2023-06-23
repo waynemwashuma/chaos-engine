@@ -1,4 +1,5 @@
-import { Vector, Utils, Angle, sq } from "../../utils/index.js"
+import { Vector, Angle, sq }from "../../math/index.js"
+import {Utils} from  "../../utils/index.js"
 import { Component } from "/src/manager/component.js"
 import {BoundingBox} from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"

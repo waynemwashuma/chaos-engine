@@ -1,6 +1,5 @@
-import { Vector } from "../../utils/index.js"
+import { Vector,Angle }from "../../math/index.js"
 import { Geometry } from "./geometry.js"
-import { Angle } from "../../utils/index.js"
 import { ShapeType } from "../settings.js"
 
 let tmp1 = new Vector()

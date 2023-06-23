@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, map, clamp } from "../../utils/index.js"
+import { Vector, map, clamp }from "../../math/index.js"
 
 import {ctx} from "/src/debug.js"
 

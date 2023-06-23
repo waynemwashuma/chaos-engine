@@ -1,4 +1,4 @@
-import { Vector, sq } from "../../utils/index.js"
+import { Vector, sq }from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector(),

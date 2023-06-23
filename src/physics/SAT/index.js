@@ -1,5 +1,5 @@
-import { Vector, Utils } from "../../utils/index.js"
-//import { ctx } from "/src/debug.js"
+import { Vector }from "../../math/index.js"
+import {Utils} from  "../../utils/index.js"
 
 const _arr = [],
   tmp1 = {

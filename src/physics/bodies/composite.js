@@ -1,4 +1,5 @@
-import { Utils, Vector } from "../../utils/index.js"
+import { Vector }from "../../math/index.js"
+import {Utils} from  "../../utils/index.js"
 import { ObjType } from "../settings.js"
 
 

@@ -1,5 +1,5 @@
 import { Shape } from "./shape.js"
-import { Vector } from "../../utils/index.js"
+import { Vector }from "../../math/index.js"
 
 let _vec1 = new Vector()
 let _vec2 = new Vector()

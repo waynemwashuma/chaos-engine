@@ -1,5 +1,6 @@
 import { Broadphase } from "./broadphase.js"
-import { naturalizePair, Utils } from "../../utils/index.js"
+import { naturalizePair }from "../../math/index.js"
+import {Utils} from  "../../utils/index.js"
 
 let floor = Math.floor
 class Client {
