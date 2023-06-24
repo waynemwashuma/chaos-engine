@@ -178,7 +178,7 @@ export class Renderer {
   update(dt) {
     this.camera.update(dt)
     this.perf.lastTimestamp = performance.now()
-    //this.clear(this.ctx)
+    this.clear()
     if (this.background != void 0)
       this.background.update(this, dt)
     for (var i = 0; i < this.objects.length; i++) {

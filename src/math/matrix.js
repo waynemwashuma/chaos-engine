@@ -1,56 +1,124 @@
-class Matrix {
-  constructor(a, b, c, d, e, f) {
-    this.a = a || 1
-    this.b = b || 0
-    this.c = c || 0
-    this.d = d || 1
-    this.e = e || 0
-    this.f = f || 0
+export class Matrix2 {
+  constructor(a = 1, b = 0, c = 0, d = 1, e = 0, f = 0) {
+
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.d = d;
+    this.e = e;
+    this.f = f;
   }
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
+
+  setFromTransform(x, y, scaleX, scaleY, rotation) {
+    let cos = Math.cos(rotation)
+    let sin = Math.sin(rotation)
+
+    this.a = cos * scaleX
+    this.b = sin * scaleX
+    this.c = -sin * scaleY
+    this.d = cos * scaleY
+    this.e = x
+    this.f = y
+    return this;
+  };
+  prepend(m) {
+    let x = this.e;
+    let a1 = this.a;
+    let c1 = this.c;
+    this.a = a1 * m.a + this.b * m.c;
+    this.b = a1 * m.b + this.b * m.d;
+    this.c = c1 * m.a + this.d * m.c;
+    this.d = c1 * m.b + this.d * m.d;
+    this.e = x * m.a + this.f * m.c + m.e;
+    this.f = x * m.b + this.f * m.d + m.f;
+    return this;
+  };
+  append(m) {
+    let a1 = this.a;
+    let b1 = this.b;
+    let c1 = this.c;
+    let d1 = this.d;
+    this.a = m.a * a1 + m.b * c1;
+    this.b = m.a * b1 + m.b * d1;
+    this.c = m.c * a1 + m.d * c1;
+    this.d = m.c * b1 + m.d * d1;
+    this.e = m.e * a1 + m.f * c1 + this.e;
+    this.f = m.e * b1 + m.f * d1 + this.f;
+    return this;
   }
-  get CHAOS_OBJ_TYPE() {
-    return "matrix"
-  }
-  rotate(radian) {
-    let sin = Math.sin(radian),
-      cos = Math.cos(radian)
-    this.a = cos
-    this.c = -sin
-    this.b = sin
-    this.d = cos
-    return this
-  }
+  identity() {
+    this.a = 1;
+    this.b = 0;
+    this.c = 0;
+    this.d = 1;
+    this.e = 0;
+    this.f = 0;
+    return this;
+  };
+  rotate(radians) {
+
+    let cos = Math.cos(radians);
+    let sin = Math.sin(radians);
+    let a1 = this.a;
+    let c1 = this.c;
+    let x = this.e;
+    this.a = a1 * cos - this.b * sin;
+    this.b = a1 * sin + this.b * cos;
+    this.c = c1 * cos - this.d * sin;
+    this.d = c1 * sin + this.d * cos;
+    this.e = x * cos - this.f * sin;
+    this.f = x * sin + this.f * cos;
+    return this;
+  };
   translate(x, y) {
-    this.e += x
-    this.f += y
-    return this
-  }
+    this.e += x;
+    this.f += y;
+    return this;
+  };
+  scale(x, y) {
+    this.a *= x;
+    this.d *= y;
+    return this;
+  };
   transform(v) {
-    let x = v.x,
-      y = v.y
+    let x = v.x
 
-    v.x = this.a * x + this.c * y + this.e
-    v.y = this.b * x + this.d * y + this.f
-    return v
-  }
-  
-  clone() {
-    return new Matrix(...this)
-  }
+    v.x = this.a * x + this.c * v.y + this.e;
+    v.y = this.b * x + this.d * v.y + this.f;
+    return v;
+  };
+  invert() {
+    let a = this.a;
+    let b = this.b;
+    let c = this.c;
+    let d = this.d;
+    let x = this.e;
+    let n = a * d - b * c;
+    this.a = d / n;
+    this.b = -b / n;
+    this.c = -c / n;
+    this.d = a / n;
+    this.e = (c * this.f - d * x) / n;
+    this.f = -(a * this.f - b * x) / n;
+    return this;
+  };
   copy(m) {
-    this.a = m.a
-    this.b = m.b
-    this.c = m.c
-    this.d = m.d
-    this.e = m.e
-    this.f = m.f
-
-    return this
+    this.a = m.a;
+    this.b = m.b;
+    this.c = m.c;
+    this.d = m.d;
+    this.e = m.e;
+    this.f = m.f;
+    return this;
+  }
+  clone() {
+    return new Matrix().copy(this);
+  }
+  equals(matrix) {
+    return (this.a === matrix.a && this.b === matrix.b && this.c === matrix.c && this.d === matrix.d && this.e === matrix.e && this.f === matrix.f);
   }
 
-  *[Symbol.iterator]() {
+  [Symbol.iterator] = function*() {
     yield this.a
     yield this.b
     yield this.c
@@ -60,123 +128,4 @@ class Matrix {
   }
 }
 
-
-
-class Matrix3 {
-  constructor(array) {
-    //X - basis vector
-    this.a = 1
-    this.b = 0
-    this.c = 0
-    //Y - basis vector
-    this.d = 0
-    this.e = 1
-    this.f = 0
-    //Z - basis vector
-    this.g = 0
-    this.h = 0
-    this.i = 1
-
-    //translation vector
-    this.j = 0
-    this.k = 0
-    this.l = 0
-  }
-  identity() {
-    this.a = 1
-    this.b = 0
-    this.c = 0
-    this.d = 1
-    this.e = 0
-    this.f = 0
-    this.j = 0
-    this.k = 0
-    this.l = 0
-    
-    return this
-  }
-  scale(x, y = 1, z = 1) {
-    this.a *= x
-    this.e *= y
-    this.i *= z
-    return this
-  }
-  translate(x = 0, y = 0, z = 0) {
-    this.j += x
-    this.k += y
-    this.l += z
-
-    return this
-  }
-  rotateX(rad) {
-    let cos = Math.cos(rad),
-      sin = Math.sin(rad),
-      e = this.e,
-      f = this.f,
-      h = this.h,
-      i = this.i
-
-    this.e = e * cos - f * sin;
-    this.f = e * sin + f * cos;
-    this.h = h * cos - i * sin;
-    this.i = h * sin + i * cos;
-
-    return this
-  }
-  rotateY(rad) {
-    let cos = Math.cos(rad),
-      sin = Math.sin(rad),
-      a = this.a,
-      c = this.c,
-      g = this.g,
-      i = this.i
-
-    this.a = a * cos - c * sin;
-    this.c = a * sin + c * cos;
-    this.g = g * cos - i * sin;
-    this.i = g * sin + i * cos;
-
-    return this
-  }
-  rotateZ(rad) {
-    let cos = Math.cos(rad),
-      sin = Math.sin(rad),
-      a = this.a,
-      b = this.b,
-      d = this.d,
-      e = this.e
-
-    this.a = a * cos - b * sin;
-    this.b = a * sin + b * cos;
-    this.d = d * cos - e * sin;
-    this.e = d * sin + e * cos;
-
-    return this
-  }
-  transform(v) {
-
-  }
-  clone() {
-    return new Matrix3().copy(this)
-  }
-  copy(m) {
-    this.a = m.a
-    this.b = m.b
-    this.c = m.c
-    this.d = m.d
-    this.e = m.e
-    this.f = m.f
-  }
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  get CHAOS_OBJ_TYPE() {
-    return "matrix"
-  }
-}
-
-//let matrix = new Matrix3().rotateZ(Math.PI / 2)
-//console.log(matrix);
-export {
-  Matrix
-}
+export { Matrix2 as Matrix }
