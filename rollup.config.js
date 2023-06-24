@@ -5,7 +5,7 @@ const created = `2023-${new Date().getFullYear()}`
 const license = fs.readFileSync('LICENSE', 'utf8');
 const banner = `/*
  * @author ${pkg.author}
- * {@link ${pkg.repository}}
+ * {@link ${pkg.repository.url}}
  * @copyright  ${created} ${pkg.author}
  * @license ${pkg.license}
  *
