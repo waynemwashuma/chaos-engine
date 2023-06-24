@@ -1,5 +1,5 @@
 import { World } from "../physics/index.js"
-import { Renderer } from "../render/index.js"
+import { Renderer2D } from "../render/index.js"
 import { Loader } from "../loader/index.js"
 import {
   Clock,
@@ -93,7 +93,7 @@ class Manager {
       this.events.add("precollision", defaultPrecollisionHandler)
     }
     if (options.renderer)
-      this.registerSystem("renderer", new Renderer())
+      this.registerSystem("renderer", new Renderer2D())
     this.loader.onfinish = e => {
       this.init()
       this.play()

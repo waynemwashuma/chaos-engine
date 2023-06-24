@@ -1,3 +1,7 @@
+import { Clock } from '../../utils/clock.js'
+import { Camera } from "../camera.js"
+
+
 export class Renderer {
   _accumulator = 0
   objects = []
@@ -5,32 +9,27 @@ export class Renderer {
     lastTimestamp: 0,
     total: 0
   }
-  background = null
   /** @type {HTMLCanvasElement}*/
   domElement = null
-  /**@type {CanvasRenderingContext2D}*/
+  /**@type {CanvasRenderingContext2D | WebGLRenderingContext}*/
   ctx = null
   camera = null
-  _update = ()=>{
-    this.update.call(this,...arguments)
-  }
   /**
   @param {HTMLCanvasElement} [canvas] element to draw on
   */
   constructor(canvas, context) {
-    this.domElement = canvas || document.createElement('canvas')
-    if (context == void 0)
-      throw "Context not provided to renderer."
+    this.domElement = canvas
     this.ctx = context
+    console.log(this);
     this.camera = new Camera(this)
     this.clock = new Clock()
   }
   init(manager) {
     manager.setComponentList("mesh", this.objects)
   }
-  
-  clear() { 
-    
+
+  clear() {
+
     throw "Override Renderer.clear()"
   }
   update(dt) {
@@ -61,7 +60,7 @@ export class Renderer {
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()
   }
-  setViewport(w,h){
+  setViewport(w, h) {
     canvas.style.width = w + "px"
     canvas.style.height = h + "px"
     canvas.width = w

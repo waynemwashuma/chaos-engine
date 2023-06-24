@@ -1,13 +1,11 @@
 import { Clock } from '../../utils/clock.js'
 import { Camera } from "../camera.js"
 import { Vector } from '../../math/index.js'
+import { Renderer } from "./renderer.js"
 
-/**
 
 
-*/
-export class Renderer {
-  _accumulator = 0
+export class Renderer2D extends Renderer {
   _transforms = []
   _rotation = 0
   _translation = new Vector()
@@ -15,27 +13,14 @@ export class Renderer {
   _fill = "black"
   _stroke = "black"
   frameRate = 1 / 60
-  objects = []
   renderLast = []
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
-  background = null
-  /** @type {HTMLCanvasElement}*/
-  domElement = null
-  /**@type {CanvasRenderingContext2D}*/
-  ctx = null
-  camera = null
   /**
   @param {HTMLCanvasElement} [canvas] element to draw on
   */
   constructor(canvas) {
-    this.domElement = canvas || document.createElement('canvas')
-
-    this.ctx = this.domElement.getContext('2d')
-    this.camera = new Camera(this)
-    this.clock = new Clock()
+    canvas = canvas || document.createElement("canvas")
+    super(canvas,canvas.getContext("2d"))
+    
   }
   init(manager) {
     manager.setComponentList("mesh", this.objects)
@@ -83,10 +68,10 @@ export class Renderer {
       x - this.camera.position.x,
       y - this.camera.position.y,
       r, 0, Math.PI * 2
-      )
+    )
   }
   vertices(vertices, close = true) {
-    if(vertices.length < 2) return;
+    if (vertices.length < 2) return;
     this.ctx.moveTo(
       vertices[0].x - this.camera.position.x,
       vertices[0].y - this.camera.position.y)
@@ -189,7 +174,7 @@ export class Renderer {
     }
     this.perf.total = performance.now() - this.perf.lastTimestamp
   }
-  _update = accumulate => {
+  _update = (accumulate)=> {
     let dt = this.clock.update(accumulate)
     if (this._accumulator < this.frameRate) {
       this._accumulator += dt
