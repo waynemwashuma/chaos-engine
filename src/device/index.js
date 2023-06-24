@@ -147,15 +147,15 @@ else if (/Firefox/.test(ua)) {
   DEVICE.firefox = true;
 }
 else if (/Trident/.test(ua)) {
-  this.edge = true;
+  DEVICE.edge = true;
 }
 else if (/Opera/.test(ua))
 {
-  this.opera = true;
+  DEVICE.opera = true;
 }
 else if (/Safari/.test(ua))
 {
-  this.safari = true;
+  DEVICE.safari = true;
 }
 
 if (DEVICE.audio = !!ae.canPlayType)
