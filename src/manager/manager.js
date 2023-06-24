@@ -1,5 +1,5 @@
 import { World } from "../physics/index.js"
-import { Renderer } from "../render/renderer.js"
+import { Renderer } from "../render/index.js"
 import { Loader } from "../loader/index.js"
 import {
   Clock,

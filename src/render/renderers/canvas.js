@@ -1,12 +1,12 @@
-import { Clock } from '../utils/clock.js'
-import { Camera } from "./camera.js"
-import { Vector } from '../math/index.js'
+import { Clock } from '../../utils/clock.js'
+import { Camera } from "../camera.js"
+import { Vector } from '../../math/index.js'
 
 /**
 
 
 */
-class Renderer {
+export class Renderer {
   _accumulator = 0
   _transforms = []
   _rotation = 0
@@ -228,7 +228,4 @@ class Renderer {
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()
   }
-}
-export {
-  Renderer
 }
