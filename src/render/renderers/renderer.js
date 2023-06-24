@@ -61,4 +61,10 @@ export class Renderer {
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()
   }
+  setViewport(w,h){
+    canvas.style.width = w + "px"
+    canvas.style.height = h + "px"
+    canvas.width = w
+    canvas.height = h
+  }
 }
