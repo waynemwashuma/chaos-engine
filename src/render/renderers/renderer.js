@@ -20,7 +20,6 @@ export class Renderer {
   constructor(canvas, context) {
     this.domElement = canvas
     this.ctx = context
-    console.log(this);
     this.camera = new Camera(this)
     this.clock = new Clock()
   }
