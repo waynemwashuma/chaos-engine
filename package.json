@@ -12,26 +12,26 @@
     ".": {
       "import": "./dist/chaos.module.js",
       "require": "./dist/chaos.umd.js"
-    },
-    "author": "Wayne Mwashuma",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/waynemwashuma/chaos-engine.git"
-    },
-    "scripts": {
-      "vite": "vite --host",
-      "dev": "npm run vite",
-      "build": "rollup --config rollup.config.js"
-    },
-    "keywords": [
+    }
+  },
+  "author": "Wayne Mwashuma",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/waynemwashuma/chaos-engine.git"
+  },
+  "scripts": {
+    "vite": "vite --host",
+    "dev": "npm run vite",
+    "build": "rollup --config rollup.config.js"
+  },
+  "keywords": [
     "game",
     "engine",
     "2D"
   ],
-    "devDependencies": {
-      "vite": "^4.3.9",
-      "rollup": "^2.79.1"
-    },
-    "files": ["dist"]
-  }
+  "devDependencies": {
+    "vite": "^4.3.9",
+    "rollup": "^2.79.1"
+  },
+  "files": ["dist"]
 }
