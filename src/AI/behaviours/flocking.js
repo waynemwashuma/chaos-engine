@@ -9,9 +9,17 @@ class Flock{
   constructor(){
     this.neighbours = []
   }
+    /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
   init(){
     
   }
+    /**
+     * @inheritdoc
+     * @param {Vector} target
+     */
   calc(target){
     
   }

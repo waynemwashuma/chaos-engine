@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, clamp,map } from "../../math/index.js"
+import { Vector, clamp, map } from "../../math/index.js"
 
 const tmp1 = new Vector()
 const tmp2 = new Vector()
@@ -12,6 +12,10 @@ export class PathFollowing extends Behaviour {
     this.path = path
     path.speed = this.maxSpeed
   }
+  /**
+   * @inheritdoc
+   * @param {Vector} target
+   */
   calc(target, inv_dt) {
     tmp1.copy(this.position)
     let [p1, p2] = this.path.current()
@@ -36,6 +40,10 @@ export class PathFollowing extends Behaviour {
   clear() {
     this.path.clear()
   }
+    /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
   init(agent) {
     this.position = agent.position
     this.velocity = agent.velocity
@@ -52,13 +60,13 @@ export class PathFollowing extends Behaviour {
   setPath(path) {
     this.path = path
   }
-  draw(renderer){
+  draw(renderer) {
     renderer.begin()
-    renderer.circle(...this.path.point(),4)
+    renderer.circle(...this.path.point(), 4)
     renderer.fill("blue")
     renderer.close()
     renderer.begin()
-    renderer.circle(...this.path.point(),this.path.tolerance)
+    renderer.circle(...this.path.point(), this.path.tolerance)
     renderer.stroke("blue")
     renderer.close()
     this.path.draw(renderer)

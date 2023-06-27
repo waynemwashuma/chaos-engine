@@ -5,17 +5,33 @@ let tmp1 = new Vector(),
   tmp2 = new Vector()
   
 /**
- * Not complete.
+ * This provides a seek behaviour which slows down when the agent approaches a target.
 */
 class ArriveBehaviour extends Behaviour {
+  /**
+   * The maximum speed this behaviour will reach when active
+   * 
+   * @type number
+  */
   maxSpeed = 1000
+  /**
+   * Maximum force this behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
+   * 
+   * @type number
+  */
   maxForce = 2000
   arrive = false
   arrivespeed = 1
+  /**
+   * Radius in which to expect the agent to start slowing down.
+  */
   radius = 1000
-  constructor(pursued) {
+  /**
+   * @param {Vector} target
+  */
+  constructor(target) {
     super()
-    this.target = pursued
+    this.target = target
   }
 
   /**
@@ -28,7 +44,7 @@ class ArriveBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {} target
+   * @param {Vector} target
    */
   calc(target, inv_dt) {
     let difference = tmp1.copy(this.target).sub(this.position)

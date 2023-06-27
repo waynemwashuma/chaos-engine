@@ -5,9 +5,17 @@ class Pursuit {
   constructor() {
 
   }
+    /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
   init(){
     
   }
+    /**
+     * @inheritdoc
+     * @param {Vector} target
+     */
   calc(target){
     
   }

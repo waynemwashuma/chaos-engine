@@ -8,16 +8,29 @@ class EvadeBehaviour extends Behaviour {
   maxForce = 2000
   arrive = false
   arrivespeed = 1
+  /**
+   * Distance in which to begin evading.
+   * 
+   * @type number
+  */
   radius = 200
   constructor(pursuer) {
     super()
     this.pursuer = pursuer
   }
+    /**
+   * @inheritdoc
+   * @param {Agent} agent
+   */
   init(agent) {
     this.position = agent.position
     this.velocity = agent.velocity
     
   }
+    /**
+   * @inheritdoc
+   * @param {Vector} target
+   */
   calc(target,inv_dt) {
     let difference = tmp1.copy(this.position).sub(this.pursuer)
     let length = difference.magnitude()
