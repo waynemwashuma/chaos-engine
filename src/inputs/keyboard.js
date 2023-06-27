@@ -3,6 +3,12 @@
 */
 class Keyboard {
   /**
+   * Dictionary of keys showing if they are active or not.
+   * 
+   * @type Object<string,boolean>
+  */
+  keys = {}
+  /**
    * @param {DOMEventHandler} eh
   */
   constructor(eh) {
@@ -27,7 +33,6 @@ class Keyboard {
   /**
    * Adds Keyboard events to the DOM.
    * 
-   * @private
    * @param {DOMEventHandler} eh
   */
   init(eh) {

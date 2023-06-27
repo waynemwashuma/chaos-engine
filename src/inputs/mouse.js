@@ -3,15 +3,57 @@
  */
 
 class Mouse {
+  /**
+   * Number of times the mouse has been clicked.
+   * 
+   * @type number
+   */
+  clickCount = 0
+  /**
+   * If the mouse is being dragged or not.
+   * 
+   * @type boolean
+   */
+  dragging = false
+  /**
+   * The position from which the mouse is being dragged.
+   * 
+   * @type Vector_like
+   */
+  dragLastPosition = { x: 0, y: 0 }
+  /**
+   * Distance vector between the last frame's position and current position.
+   * 
+   * @type Vector_like
+   */
+  delta = { x: 0, y: 0 }
+  /**
+   * Position of the mouse in current frame.
+   * 
+   * @type Vector_like
+   */
+  position = { x: 0, y: 0 }
+  /**
+   * If the left mouse button is pressed or not.
+   * 
+   * @type boolean
+   */
+  leftbutton = false
+  /**
+   * If the right mouse button is pressed or not.
+   * 
+   * @type boolean
+   */
+  rightbutton = false
+  /**
+   * @param {DOMEventHandler} eh
+   */
   constructor(eh) {
-    this.clickCount = 0
     this.dragging = false
     this.dragLastPosition = {}
-    this.delta = {x:0,y:0}
-    this.position = {x:0,y:0}
+    this.delta = { x: 0, y: 0 }
+    this.position = { x: 0, y: 0 }
     this.lastPosition = { x: 0, y: 0 }
-    this.leftbutton = null
-    this.rightbutton = null
 
     this.init(eh)
   }
@@ -34,8 +76,7 @@ class Mouse {
   }
   /**
    * Initializes the mouse by appending to the DOM
-   * 
-   * @private
+   *
    */
   init(eh) {
     eh.add('click', this._onClick)
@@ -104,7 +145,10 @@ class Mouse {
   onup(e) {}
   onwheel(e) {}
   oncontextmenu(e) {}
-
+  
+  /**
+   * Updates the mouse internals.
+  */
   update() {
     this.lastPosition = { ...this.position }
   }

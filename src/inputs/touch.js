@@ -12,7 +12,7 @@ class Touch {
   /**
    * Checks to see if the position is within the dragbox of the first two touches.
    * Not yet fully implemented
-  */
+   */
   inDragBox(pos) {
     if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
       pos.y > this.dragLastPosition.y && pos.y < this.dragLastPosition.y + this.position.y) {
@@ -20,6 +20,11 @@ class Touch {
     }
     return true
   }
+  /**
+   * Adds Touch events to the DOM.
+   * 
+   * @param {DOMEventHandler} eh
+   */
   init(eh) {
     eh.add('touchstart', this._onDown)
     eh.add('touchend', this._onUp)
