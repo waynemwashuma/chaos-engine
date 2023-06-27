@@ -2,10 +2,20 @@
  * This handles events created by the DOM.
  */
 class DOMEventHandler {
-  constructor() {
-    this.handlers = {}
-    this._evHandlers = {}
-  }
+  /**
+   * A dictionary of callback functions
+   * 
+   * @private
+   * @type Object<string,function[]>
+   */
+  handlers = {}
+  /**
+   * A dictionary of the main callback functions
+   * 
+   * @private
+   * @type Object<string,function>
+   */
+  _evHandlers = {}
   /**
    * Adds an eventlistener.
    * 
