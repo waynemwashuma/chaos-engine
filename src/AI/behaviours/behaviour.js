@@ -16,7 +16,7 @@ class Behaviour {
    * 
    * @type number
    */
-  maxForce = 2000
+  maxForce = 1000
   /**
    * Whether to exert a behaviour's calculated force onto its agent
   */

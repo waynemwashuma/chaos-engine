@@ -5,8 +5,6 @@ const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
 export class PathFollowing extends Behaviour {
-  maxSpeed = 200
-  maxForce = 200
   constructor(path) {
     super()
     this.path = path
@@ -40,10 +38,10 @@ export class PathFollowing extends Behaviour {
   clear() {
     this.path.clear()
   }
-    /**
-     * @inheritdoc
-     * @param {Agent} agent
-     */
+  /**
+   * @inheritdoc
+   * @param {Agent} agent
+   */
   init(agent) {
     this.position = agent.position
     this.velocity = agent.velocity

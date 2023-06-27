@@ -4,10 +4,6 @@ import { Vector,clamp,map } from "../../math/index.js"
 let tmp1 = new Vector(),
   tmp2 = new Vector()
 class EvadeBehaviour extends Behaviour {
-  maxSpeed = 1200
-  maxForce = 2000
-  arrive = false
-  arrivespeed = 1
   /**
    * Distance in which to begin evading.
    * 

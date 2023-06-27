@@ -8,8 +8,6 @@ let tmp1 = new Vector(),
  * Creates a behaviour that is used to make an agent wander in an organic manner.
 */
 class WanderBehaviour extends Behaviour {
-  maxSpeed = 200
-  maxForce = 100
   /**
    * This sets a point on the perimeter circle that is infront of the agent.
    * 

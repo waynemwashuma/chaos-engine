@@ -1,34 +1,20 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, map, clamp }from "../../math/index.js"
+import { Vector, map, clamp } from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector()
-  
+
 /**
  * This provides a seek behaviour which slows down when the agent approaches a target.
-*/
+ */
 class ArriveBehaviour extends Behaviour {
   /**
-   * The maximum speed this behaviour will reach when active
-   * 
-   * @type number
-  */
-  maxSpeed = 1000
-  /**
-   * Maximum force this behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
-   * 
-   * @type number
-  */
-  maxForce = 2000
-  arrive = false
-  arrivespeed = 1
-  /**
    * Radius in which to expect the agent to start slowing down.
-  */
+   */
   radius = 1000
   /**
    * @param {Vector} target
-  */
+   */
   constructor(target) {
     super()
     this.target = target
