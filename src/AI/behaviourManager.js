@@ -11,11 +11,11 @@ class BehaviourManager {
    * A list of behaviors
    * 
    * @type Behaviour[]
-  */
+   */
   _behaviours = []
   /**
    * Accumulated force from behaviours to apply to agent
-  */
+   */
   _accumulated = new Vector()
   /**
    * Adds a behavior to the manager
@@ -24,7 +24,7 @@ class BehaviourManager {
    */
   add(behaviour) {
     this._behaviours.push(behaviour)
-    if(this.active)behaviour.init(this._agent)
+    if (this.active) behaviour.init(this._agent)
   }
   /**
    * Removes a behavior to the manager
@@ -38,7 +38,7 @@ class BehaviourManager {
    * Boots up the behavoiurs of the agent that contains it.
    * 
    * @param {Agent} agent 
-  */
+   */
   init(agent) {
     this._agent = agent
     for (var i = 0; i < this._behaviours.length; i++) {
@@ -47,7 +47,9 @@ class BehaviourManager {
   }
   /**
    * Updates the behaviours of the agent and applies changes to agent.
-  */
+   * 
+   * @param {number} inv_dt
+   */
   update(inv_dt) {
     let result = new Vector()
     this._accumulated.set(0, 0)
@@ -60,15 +62,15 @@ class BehaviourManager {
   }
   /**
    * Removes all behaviours from a manager.
-  */
+   */
   clear() {
     Utils.clearArr(this._behaviours)
   }
   /**
    * Used for visually debugging items.
-  */
-  draw(renderer){
-    this._behaviours.forEach(b=>b.draw(renderer))
+   */
+  draw(renderer) {
+    this._behaviours.forEach(b => b.draw(renderer))
   }
 }
 export {
