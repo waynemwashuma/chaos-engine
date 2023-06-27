@@ -12,28 +12,40 @@ import { Bound } from "./boundsComponent.js"
  */
 class Entity {
   /**
+   * Dictionary of component to manage.
+   * 
    * @private
+   * @type Object<string,Component>
    */
   _components = {}
   /**
+   * Dictionary of handlers to call during an event.
+   * 
    * @private
+   * @type Object<string,function>
    */
   _handlers = {}
   /**
+   * A list of tags to identify an entity.
+   * 
    * @private
+   * @type Set<string>
    */
   _tags = new Set()
   /**
+   * The manager handling this entity.
+   * 
    * @private
+   * @type Manager
    */
   _global = null
   /**
-   * This is a flag to show if the entity is added to a manager.
+   * A flag to show if the entity is added to a manager.
    * 
    * @type {boolean}
-  */
+   */
   active = false
-  
+
   get CHAOS_OBJ_TYPE() {
     return "entity"
   }
@@ -78,7 +90,6 @@ class Entity {
    * Gets the current manager of an entity
    * 
    * @returns {Manager}
-   * @readonly
    */
   get manager() {
     return this._global
@@ -184,7 +195,7 @@ class Entity {
    * Initializes the components within an entity and marks it as active.
    * It is called by an instance of a game manager so no need to call it manually
    * 
-   * @private
+   * @package
    * @param {Manager} global
    */
   init(global) {
@@ -209,8 +220,8 @@ class Entity {
   /**
    * Search an entity's manager for entities in a given bound.
    * 
-   * @param {{}} bound the region to search entitities in.
-   * @param {[]} [target=[]] An array to store results in.
+   * @param {Bounds} bound the region to search entitities in.
+   * @param {array<Entity>} [target=[]] An array to store results in.
    * @returns {array<Entity>}
    */
   query(bound, target = []) {
