@@ -7,10 +7,16 @@ import { Vector } from "../math/index.js"
  * @package
  */
 class BehaviourManager {
-  constructor() {
-    this._behaviours = []
-    this._accumulated = new Vector()
-  }
+  /**
+   * A list of behaviors
+   * 
+   * @type Behaviour[]
+  */
+  _behaviours = []
+  /**
+   * Accumulated force from behaviours to apply to agent
+  */
+  _accumulated = new Vector()
   /**
    * Adds a behavior to the manager
    * 
@@ -58,6 +64,9 @@ class BehaviourManager {
   clear() {
     Utils.clearArr(this._behaviours)
   }
+  /**
+   * Used for visually debugging items.
+  */
   draw(renderer){
     this._behaviours.forEach(b=>b.draw(renderer))
   }
