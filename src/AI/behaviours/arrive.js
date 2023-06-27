@@ -6,6 +6,8 @@ let tmp1 = new Vector(),
 
 /**
  * This provides a seek behaviour which slows down when the agent approaches a target.
+ * 
+ * @augments Behaviour
  */
 class ArriveBehaviour extends Behaviour {
   /**
@@ -31,6 +33,7 @@ class ArriveBehaviour extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
     let difference = tmp1.copy(this.target).sub(this.position)

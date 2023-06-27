@@ -1,6 +1,12 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector } from "../../math/index.js"
 
+
+/**
+ * Not impemented.
+ * 
+ * @augments Behaviour
+*/
 class Pursuit {
   constructor() {
 
@@ -15,6 +21,7 @@ class Pursuit {
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @returns Vector the first parameter
      */
   calc(target){
     

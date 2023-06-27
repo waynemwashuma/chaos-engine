@@ -6,6 +6,8 @@ let tmp1 = new Vector(),
   
 /**
  * Creates a behaviour to seek out a target and move towards it.
+ * 
+ * @augments Behaviour
 */
 class SeekBehaviour extends Behaviour {
   /**
@@ -30,6 +32,7 @@ class SeekBehaviour extends Behaviour {
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @returns Vector the first parameter
      */
   calc(target,inv_dt) {
     let difference = tmp1.copy(this.target).sub(this.position)

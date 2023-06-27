@@ -4,7 +4,21 @@ import { Vector, clamp, map } from "../../math/index.js"
 const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
+/**
+ * Creates a behaviour that follows a certain path.
+ * 
+ * @augments Behaviour
+*/
 export class PathFollowing extends Behaviour {
+  /**
+   * The path taken by a pathfollowing behaviour.
+   * 
+   * @type Path
+  */
+  path = null
+  /**
+   * @param {Path} path
+  */
   constructor(path) {
     super()
     this.path = path
@@ -13,6 +27,7 @@ export class PathFollowing extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
     tmp1.copy(this.position)
@@ -35,6 +50,9 @@ export class PathFollowing extends Behaviour {
 
     return target
   }
+  /**
+   * Removes all points on the path.
+  */
   clear() {
     this.path.clear()
   }
@@ -46,15 +64,30 @@ export class PathFollowing extends Behaviour {
     this.position = agent.position
     this.velocity = agent.velocity
   }
+  /**
+   * Adds a point into the path.
+   * 
+   * @param {Vector} point
+  */
   add(point) {
     this.path.add(point)
   }
+  /**
+   * If the agent should start at the beginning after reaching the ent of the path.
+   * 
+   * @type boolean
+  */
   set loop(x) {
     this.path.loop = x
   }
   get loop() {
     return this.path.loop
   }
+  /**
+   * Sets a new path to follow.
+   *
+   * @param {Path} path
+  */
   setPath(path) {
     this.path = path
   }

@@ -4,6 +4,8 @@ import { Vector } from "../../math/index.js"
 
 /**
  * not complete.
+ * 
+ * @augments Behaviour
 */
 class Flock{
   constructor(){
@@ -12,6 +14,7 @@ class Flock{
     /**
      * @inheritdoc
      * @param {Agent} agent
+     * 
      */
   init(){
     
@@ -19,6 +22,7 @@ class Flock{
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @returns Vector the first parameter
      */
   calc(target){
     

@@ -6,6 +6,8 @@ let tmp1 = new Vector(),
   
 /**
  * Creates a behaviour that is used to make an agent wander in an organic manner.
+ * 
+ * @augments Behaviour
 */
 class WanderBehaviour extends Behaviour {
   /**
@@ -38,6 +40,7 @@ class WanderBehaviour extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
 

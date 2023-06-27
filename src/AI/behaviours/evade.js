@@ -3,6 +3,11 @@ import { Vector,clamp,map } from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector()
+/**
+ * Creates a behaviour to evade a certain position.
+ * 
+ * @augments Behaviour
+*/
 class EvadeBehaviour extends Behaviour {
   /**
    * Distance in which to begin evading.
@@ -10,6 +15,9 @@ class EvadeBehaviour extends Behaviour {
    * @type number
   */
   radius = 200
+  /**
+   * @param {Vector} pursuer
+  */
   constructor(pursuer) {
     super()
     this.pursuer = pursuer
@@ -26,6 +34,7 @@ class EvadeBehaviour extends Behaviour {
     /**
    * @inheritdoc
    * @param {Vector} target
+   * @returns Vector the first parameter
    */
   calc(target,inv_dt) {
     let difference = tmp1.copy(this.position).sub(this.pursuer)
