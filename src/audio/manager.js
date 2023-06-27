@@ -5,14 +5,69 @@ import { Sfx } from "./audio.js"
  * Manages playing of audio using Web Audio.
  */
 class AudioHandler {
+  /**
+   * Audio context to use.
+   * 
+   *  @private
+   * @type AudioContext
+   */
   ctx = new AudioContext()
+  /**
+   * List of audio buffers to use.
+   * 
+   *  @private
+   * @type Object<string,AudioBuffer>
+   */
   sfx = {}
+  /**
+   * The name of the background music playing.
+   * 
+   *  @private
+   * @type string
+   */
   _backname = ""
+  /**
+   * The audiobuffer of the background music.
+   * 
+   *  @private
+   * @type AudioBuffer
+   */
   _background = null
+  /**
+   * List of playing sounds
+   * 
+   * @deprecated
+   */
   playing = []
+  /**
+   * What to play after loading the audiobuffers.
+   * 
+   * @ignore
+   */
   toplay = {}
+  /**
+   * @ignore
+   */
   baseUrl = ""
+  /**
+   * Volume to resume playing when unmuted.
+   * 
+   * @private
+   * @type number
+   */
   _mute = 1
+  /**
+   * Master volume for all sounds.
+   * 
+   * @private
+   * @type AudioNode
+  */
+  masterGainNode = null
+  /**
+   * If the manager can play a sound.
+   * 
+   * @type boolean
+  */
   constructor() {
     this.masterGainNode = this.ctx.createGain()
     this.masterGainNode.connect(this.ctx.destination)
@@ -27,6 +82,7 @@ class AudioHandler {
     })
   }
   /**
+   * Load a sound into a sound manager
    * 
    * @param {string} src
    */
@@ -46,6 +102,8 @@ class AudioHandler {
   }
   /**
    * Loads all audio from the loader.
+   * 
+   * @param {Loader} loader
    */
   loadFromLoader(loader) {
     for (var n in loader.sfx) {
@@ -94,9 +152,16 @@ class AudioHandler {
     this.playing.push(s)
     s.play()
   }
-  createSfx(name){
+  
+  /**
+   * Creates and returns an SFX.
+   * 
+   * @param {string} name
+   * @rerurns Sfx
+  */
+  createSfx(name) {
     ///throw error if name is not in this.
-    return new Sfx(this,this.sfx[name])
+    return new Sfx(this, this.sfx[name])
   }
   /**
    * Pauses currently playing sounds.

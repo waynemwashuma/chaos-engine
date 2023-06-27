@@ -27,9 +27,28 @@ class Sfx {
    * @type {number}
    */
   _playingOffset = 0
+  /**
+   * Time on the sound to begin playing 
+   * 
+   * @type {number}
+   */
   offset = 0
+  /**
+   * Whether to start from the beginning after sound has finished playing.
+   * 
+   * @type {boolean}
+   */
   loop = false
+  /**
+   * @private
+   * @type {number}
+   */
   delay = 0
+  /**
+   * how long to play the sound.
+   * 
+   * @type {number}
+   */
   duration = 0
   /**
    * @param {AudioHandler} handler 
@@ -45,6 +64,9 @@ class Sfx {
     this.duration = buffer.duration
 
   }
+  /**
+   * Set callback when the sound finishes playing.
+  */
   set onended(x) {
     this._onended = x
   }
@@ -88,7 +110,7 @@ class Sfx {
   connect(node) {
     if (node)
       this._destination = node
-      if(!this._source) return;
+    if (!this._source) return;
     this._source.disconnect()
     this._source.connect(this._destination)
   }
