@@ -203,7 +203,7 @@ class Body {
    * @type boolean
    * @default Settings.collisionResponsefired
    */
-  collisionResponse = Settings.collisionResponsefired
+  collisionResponse = Settings.collisionResponse
   /**
    * Whether or not the bounds should be automatically updated.
    * 
