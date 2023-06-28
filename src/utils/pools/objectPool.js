@@ -1,49 +1,87 @@
+/**
+ * @template T
+ * An extendable object pool for optimizing performance.
+ */
+
 class Pool {
+  /**
+   * List of objects
+   * 
+   * @type []
+  */
+  _pool = []
+  /**
+   * @param {number} number Number of objects to create at the initialization.
+   */
   constructor(number = 100) {
-    this._pool = []
     for (var i = 0; i < number; i++) {
-      this._pool[i] = this.create()
+      this._pool.push(this.create())
     }
   }
-  get size(){
+  /**
+   * The number of objects available in the pool.
+  */
+  get size() {
     return this._pool.length
   }
-  set size(x){
+  set size(x) {
     let d = this._pool.length - x
-    if(d < 0){
+    if (d < 0) {
       for (var i = d; i < 0; i++) {
         this._pool.push(this.create())
       }
       return
     }
     if (d > 0) {
-      for (var i = d; i >0; i--) {
+      for (var i = d; i > 0; i--) {
         this._pool.pop()
       }
       return
     }
-    
   }
-  give(){
+  /**
+   * Gives an object ownership.
+   * 
+   * @returns Object
+   */
+  give() {
     if (this._pool.length) {
       return this.pool.pop()
     }
     return this.create()
   }
-  take(obj){
+  /**
+   * Takes an object's ownership.
+   * Do not use the taken object and remove all references of it outside otherwise you will get some wierd behaviour.
+   * 
+   * @param {Object} obj
+   */
+  take(obj) {
     this._pool.push(this.destroy(obj))
   }
-  destroy(obj){
+  /**
+   * Does some cleanup on a taken object.
+   * 
+   * @protected
+   * @param {Object} obj
+   */
+  destroy(obj) {
     for (var prop in obj) {
       delete obj[prop]
     }
     return obj
   }
-  create(){
+  /**
+   * Creates a new object.
+   * 
+   * @protected
+   * @returns object
+  */
+  create() {
     return {}
   }
 }
 
-export{
+export {
   Pool
 }
