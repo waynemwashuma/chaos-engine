@@ -1,5 +1,5 @@
 import { Constraint } from "./constraint.js";
-import { Vector }from "../../math/index.js"
+import { Vector } from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector(),
@@ -7,7 +7,17 @@ let tmp1 = new Vector(),
   tmp4 = new Vector(),
   tmp5 = new Vector(),
   zero = new Vector()
+
+/**
+ * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
+ */
 class DistanceConstraint extends Constraint {
+  /**
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {Vector} localA
+   * @param {Vector} localB
+   */
   constructor(body1, body2, localA, localB) {
     super(body1, body2)
     this.localA = new Vector().copy(localA || zero)
@@ -17,6 +27,9 @@ class DistanceConstraint extends Constraint {
     this.maxDistance = 1
     this.stiffness = 1
   }
+  /**
+   * @ignore
+  */
   behavior(body1, body2, dt) {
     let arm1 = tmp1.copy(this.localA).rotate(body1.angle * Math.PI / 180),
       arm2 = tmp2.copy(this.localB).rotate(body2.angle * Math.PI / 180),

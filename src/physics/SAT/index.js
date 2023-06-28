@@ -1,5 +1,5 @@
-import { Vector }from "../../math/index.js"
-import {Utils} from  "../../utils/index.js"
+import { Vector } from "../../math/index.js"
+import { Utils } from "../../utils/index.js"
 
 const _arr = [],
   tmp1 = {
@@ -24,7 +24,16 @@ const _arr = [],
   tmp5 = new Vector(),
   tmp6 = new Vector(),
   tmpArr1 = []
+
+/**
+ * Used for narrowphase collision detection and contact info generation.
+ */
 export const SAT = {
+  /**
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {Manifold} manifold
+   */
   shapesInBodyCollided(body1, body2, manifold) {
     let shapesA = body1.shapes,
       shapesB = body2.shapes
@@ -83,6 +92,11 @@ export const SAT = {
     manifold.contactNo = overload.length
     return manifold
   },
+  /**
+   * @param {Shape} shape1
+   * @param {Shape} shape2
+   * @param {Object} target
+   */
   shapesCollided(shape1, shape2, target) {
     let arr = _arr,
       boundary
@@ -93,6 +107,13 @@ export const SAT = {
 
     SAT.projectShapesToAxes(shape1, shape2, arr, target, boundary)
   },
+  /**
+   * @param {Shape} shapeA
+   * @param {Shape} shapeB
+   * @param {Vector[]} axes
+   * @param {Manifold} shapeA
+   * @param {number} iu
+   */
   projectShapesToAxes(shapeA, shapeB, axes, manifold, iu) {
     let temp = tmp1
     temp.vertex = null
@@ -148,6 +169,11 @@ export const SAT = {
     }
     return manifold
   },
+  /**
+   * @param {Vector[]} vertices
+   * @param {Vector} axis
+   * @param {Object} target
+   */
   projectVerticesToAxis(vertices, axis, target) {
     let min = Infinity,
       max = -Infinity,
@@ -169,6 +195,12 @@ export const SAT = {
     target.indexN = nearVertex
     return target
   },
+  /**
+   * @param {Vector[]} vertices
+   * @param {Vector} axis
+   * @param {Vector[]} target
+   * @param {number} nearVertexIndex
+   */
   findNearSupports(vertices, axis, target = [], nearVertexIndex) {
     let min = Infinity,
       nearVertices = target,
@@ -192,11 +224,20 @@ export const SAT = {
     }
     return nearVertices
   },
+  /**
+   * @param {Shape} shape
+   * @param {Vector} point
+   */
   shapeContains(shape, point) {
     if (shape.type == "circle")
       return SAT.circleContains(shape.position, shape.radius, point)
     return SAT.verticesContain(shape.vertices, point)
   },
+  /**
+   * @param {Vector} position
+   * @param {number} radius
+   * @param {Vector} point
+   */
   circleContains(position, radius, point) {
     let dx = point.x - position.x,
       dy = point.y - position.y
@@ -204,6 +245,10 @@ export const SAT = {
       return false
     return true
   },
+  /**
+   * @param {Vector[]} vertices
+   * @param {number} point 
+   */
   verticesContain(vertices, point) {
     var pointX = point.x,
       pointY = point.y,

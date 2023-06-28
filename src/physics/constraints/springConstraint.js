@@ -1,5 +1,5 @@
 import { Constraint } from "./constraint.js";
-import { Vector }from "../../math/index.js"
+import { Vector } from "../../math/index.js"
 
 let tmp1 = new Vector(),
   tmp2 = new Vector(),
@@ -8,7 +8,16 @@ let tmp1 = new Vector(),
   tmp5 = new Vector(),
   tmp6 = new Vector(),
   zero = new Vector()
+ /**
+  * A constraint that acts like a spring between two bodies
+ */
 class SpringConstraint extends Constraint {
+  /**
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {Vector} localA
+   * @param {Vector} localB
+   */
   constructor(body1, body2, localA, localB) {
     super(body1, body2)
     this.localA = new Vector().copy(localA || zero)
@@ -30,18 +39,18 @@ class SpringConstraint extends Constraint {
       return
     }
     let difference = (magnitude - this.maxDistance) / magnitude,
-      force = dist.multiply(difference * this.stiffness*this.dampen),
+      force = dist.multiply(difference * this.stiffness * this.dampen),
       massTotal = body1.inv_mass + body2.inv_mass,
       inertiaTotal = body1.inv_inertia + body2.inv_inertia
     tmp4.copy(force)
-    force.divide(massTotal*2)
+    force.divide(massTotal * 2)
 
     body1.velocity.add(tmp6.copy(force).multiply(-body1.inv_mass).divide(dt))
     body2.velocity.add(tmp5.copy(force).multiply(body2.inv_mass).divide(dt))
-    
+
     body1.position.add(tmp6.copy(force).multiply(-body1.inv_mass))
     body2.position.add(tmp5.copy(force).multiply(body2.inv_mass))
-    
+
     body1.rotation.radian += tmp4.cross(arm1) * body1.inv_inertia
     body2.rotation.radian += tmp4.cross(arm2) * -body2.inv_inertia
   }

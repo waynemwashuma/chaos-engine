@@ -6,14 +6,21 @@ import {Rectangle} from "../shapes/index.js"
  * A body with a rectangle shape on it.
  * 
  * @augments Body
- * @param {number} radius
 */
 class Box extends Body {
+  /**
+   * @param {number} w
+   * @param {number} h
+  */
   constructor(w,h) {
     super(new Rectangle(w,h))
     this.inertia = Rectangle.calcInertia(this._mass,w,h)
     
   }
+  /**
+   * @inheritdoc
+   * @type number 
+  */
   set mass(x){
     this._mass = x
     this.inv_mass = x === 0 ? 0 : 1 / x

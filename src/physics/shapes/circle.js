@@ -30,6 +30,11 @@ class Circle extends Shape {
   get position() {
     return this.vertices[0]
   }
+  /**
+   * @inheritdoc
+   * @param {number} mass
+   * @param {number} radius 
+  */
   static calcInertia(mass, radius) {
     return mass * (radius * radius) / 4
   }
@@ -51,7 +56,7 @@ class Circle extends Shape {
   /**
    * 
    * @param {Shape} shape 
-   * @param {Array<Vector>}} [target=[]] target
+   * @param {Vector[]} [target=[]] target
    * @returns Array<Vector>
    */
   getNormals(shape, target = []) {
