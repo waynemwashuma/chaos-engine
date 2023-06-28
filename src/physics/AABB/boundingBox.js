@@ -1,4 +1,4 @@
-import { Overlaps } from "./AABB.js"
+import { Overlaps } from "./overlap.js"
 import { Component } from "../../manager/component.js"
 
 /**
