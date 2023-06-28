@@ -1,6 +1,7886 @@
-(function(u,b){typeof exports=="object"&&typeof module<"u"?b(exports):typeof define=="function"&&define.amd?define(["exports"],b):(u=typeof globalThis<"u"?globalThis:u||self,b(u.Chaos={}))})(this,function(u){var pi;"use strict";var mi=Object.defineProperty;var fi=(u,b,I)=>b in u?mi(u,b,{enumerable:!0,configurable:!0,writable:!0,value:I}):u[b]=I;var o=(u,b,I)=>(fi(u,typeof b!="symbol"?b+"":b,I),I);const b={AABBColliding(a,t){return a.min.x<=t.max.x&&a.max.x>=t.min.x&&a.min.y<=t.max.y&&a.max.y>=t.min.y},boundSpheresColliding(a,t){return(a.x-t.x)*(a.x-t.x)+(a.y-t.y)*(a.y-t.y)<a.r*a.r+t.r*t.r},AABBvsSphere(a,t){const e=Math.max(box.min.x,Math.min(t.pos.x,box.max.x)),s=Math.max(box.min.y,Math.min(t.pos.y,box.max.y));return(e-t.pos.x)*(e-t.pos.x)+(s-t.pos.y)*(s-t.pos.y)<t.radius}},I=Math.PI/180,Yt=1/I;function R(a=0,t=1){return Math.random()*(t-a)+a}function M(a){return a*a}function zt(a,t=2){return a**t}function Wt(a){return Math.sqrt(a)}function Gt(a,t,e){return a+e*(t-a)}function F(a,t=4){return t=10**t,Math.round(a*t)/t}function Jt(a,t,e){return a<t?t:a>e?e:a}function it(a,t,e,s,n){return s+a*(n-s)/(e-t)}function dt(a,t){return a>t?(a+t)*(a+t+1)/2+a:(a+t)*(a+t+1)/2+t}function Xt(a){return a*I}function Kt(a){return a*Yt}let j={x:0,y:0},pt=Math.PI*2;/**
- * This is a 2D vector class.It has been optimized to reduce garbage collection and for perfomance when used properly
- * @author Wayne Mwashuma <mwashumawayne@gmail.com>
- * @license MIT
- */const w=class{constructor(t,e){o(this,pi,function*(){yield this.x,yield this.y});this.x=t||0,this.y=e||0}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"vector"}magnitude(){return Math.sqrt(this.magnitudeSquared())}setMagnitude(t){this.normalize().multiply(t)}magnitudeSquared(){return this.y**2+this.x**2}distanceTo(t){return j.x=this.x-t.x,j.y=this.y-t.y,Math.sqrt(w.prototype.magnitudeSquared.call(j))}distanceToSquared(t){return j.x=this.x-t.x,j.y=this.y-t.y,w.prototype.magnitudeSquared.call(j)}add(t){return this.x+=t.x,this.y+=t.y,this}addScalar(t){return this.x+=t,this.y+=t,this}sub(t){return this.x-=t.x,this.y-=t.y,this}subScalar(t){return this.x-=t,this.y-=t,this}dot(t){return this.x*t.x+this.y*t.y}cross(t){return this.x*t.y-this.y*t.x}multiply(t){return this.x*=t,this.y*=t,this}divide(t){return this.multiply(1/t),this}normalize(){const t=this.magnitude();return t==0?this:(this.x=this.x/t,this.y=this.y/t,this)}equals(t){return t.x===this.x&&t.y===this.y}equalsZero(){return this.x===0&&this.y===0}normal(t=1,e){return e=e||new w,e.copy(this).normalize(),e.set(-e.y*t,e.x*t)}rotate(t){let e=this.x,s=Math.cos(t),n=Math.sin(t);return this.x=e*s-this.y*n,this.y=e*n+this.y*s,this}toArray(t=[],e=0){return t[e]=this.x,t[e+1]=this.y,t}clone(){return new w(this.x,this.y)}copy(t){return this.x=t.x,this.y=t.y,this}set(t,e){return this.x=t,this.y=e,this}draw(t,e=0,s=0,n="red",r=1){return t.beginPath(),t.moveTo(e,s),t.lineTo(this.x*r+e,this.y*r+s),t.strokeStyle=n,t.stroke(),t.strokeStyle="black",t.closePath(),this}reverse(){return this.multiply(-1)}reflect(t,e){return e=e||new w,e.copy(t).multiply(this.dot(t)*2).sub(this)}clamp(t=0,e=1){let s=this.magnitude();if(s==0)return this;let n=Math.max(t,Math.min(s,e))/s;return this.multiply(n)}static getAbsDegBtwn(t,e){let s=t.cross(e),n=w.getDegBtwn(t,e);return s<0?n:360-n}static getAbsRadBtwn(t,e){let s=t.cross(e),n=w.getDegBtwn(t,e);return s<0?n:360-n}static getRadBtwn(t,e){return Math.acos(t.dot(e)/(t.magnitude()*e.magnitude()))}static getDegBtwn(t,e){return w.getRadBtwn(t,e)*180/Math.PI}static fromRad(t,e=new w){return e.set(Math.cos(t),Math.sin(t))}static fromDeg(t,e){return w.fromRad(t*Math.PI/180,e)}static random(t){return w.fromRad(Math.random()*pt,t)}static lerp(t,e,s,n){return n=n||new w,n.copy(t).set((e.x-t.x)*s+t.x,(e.y-t.y)*s+t.y)}static toDeg(t){return w.toRad(t)/Math.PI*180}static toRad(t){let e=Math.atan2(t.y,t.x);return e<0?pt+e:e}};let c=w;pi=Symbol.iterator,o(c,"ZERO",Object.freeze(new w));class B{constructor(t){this._deg=t||0,this._rad=t*Math.PI/2||0}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"angle"}set degree(t){this._deg=t,this._rad=t*Math.PI/180}set radian(t){this._rad=t,this._deg=t*180/Math.PI}get radian(){return this._rad}get degree(){return this._deg}copy(t){this.degree=t.degree}static fromJSON(t){return new B(t._deg)}}class Y{constructor(t,e,s,n,r,h){this.a=t||1,this.b=e||0,this.c=s||0,this.d=n||1,this.e=r||0,this.f=h||0}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"matrix"}rotate(t){let e=Math.sin(t),s=Math.cos(t);return this.a=s,this.c=-e,this.b=e,this.d=s,this}translate(t,e){return this.e+=t,this.f+=e,this}transform(t){let e=t.x,s=t.y;return t.x=this.a*e+this.c*s+this.e,t.y=this.b*e+this.d*s+this.f,t}clone(){return new Y(...this)}copy(t){return this.a=t.a,this.b=t.b,this.c=t.c,this.d=t.d,this.e=t.e,this.f=t.f,this}*[Symbol.iterator](){yield this.a,yield this.b,yield this.c,yield this.d,yield this.e,yield this.f}}let z=`🚀Chaos Engine Says::::
-`,mt=[];const v={};v.warn=function(a){console.warn(z+a)},v.throw=function(a){throw new Error(z+a)},v.error=function(a){console.error(z+a)},v.log=function(a){console.log(z+a)},v.warnOnce=function(a){mt.includes(a)||(mt.push(a),v.warn(a))},v.assert=function(a,t,e){return a||t(e),a};const y={};let Zt=0;y.appendArr=function(a,t){for(var e=0;e<t.length;e++)a.push(t[e])},y.clearArr=function(a){for(var t=a.length;t>0;t--)a.pop()},y.popArr=function(a,t){let e=a.length;for(var s=e;s>e-t;s--)a.pop()},y.removeElement=function(a,t){if(t==-1)return null;if(a.length-1==t)return a.pop();let e=a[t];return a[t]=a.pop(),e},y.generateID=function(){return Zt+=1},y.inheritComponent=function(a,t=!0,e=!0){if(a==null||typeof a!="function")return;let s=a.prototype;if(s.destroy){let n=a.destroy;s.destroy=function(){this.entity=null,n.call(this)}}else s.destroy=function(){this.entity=null};if(s.init&&t){let n=s.init;s.init=function(r){this.entity=r,n.call(this,r)}}else s.init||(s.init=function(n){this.entity=n});!s.update&&e&&(s.update=function(){v.warnOnce("Please override the update function in the component "+s.constructor.name)}),s.getComponent=function(n){return this.parent.getComponent(n)},s.requires=function(...n){for(var r=0;r<n.length;r++)this.entity.has(n[r])||v.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${n[r]}\` but cannot find it in the Entity with id ${this.entity.id}`)},s.query=function(n,r=[]){return this.parent.query(n,r)},Object.defineProperty(s,"CHOAS_CLASSNAME",{get:function(){return this.constructor.name.toLowerCase()},enumerable:!0,configurable:!1}),Object.defineProperty(s,"CHAOS_OBJ_TYPE",{get:function(){return"component"},enumerable:!0,configurable:!1})},y.inheritSystem=function(a){if(a==null||typeof a!="function")return;let t=a.prototype;t.init||(t.init=function(){v.warnOnce("Please override the init method in the system "+t.constructor.name)}),t.update||(t.update=function(){v.warnOnce("Please override the update method in the system "+t.constructor.name)}),t.add||(t.add=function(e){this.objects.push(e)}),t.remove||(t.remove=function(e){let s=this.objects.indexOf(e);y.removeElement(this.objects,s)})};class st{constructor(){this.lastcall=0,this.dt=0}getFrameRate(){return 1/(this.dt/1e3)}getRoundedFrameRate(){return Math.round(this.getFrameRate())}update(t){return this.dt=t-this.lastcall,this.framerate=this.getFrameRate(),this.lastcall=t,this.delta=this.dt/1e3,this.delta}}class W{constructor(){o(this,"entity",null)}}y.inheritComponent(W);class D extends W{constructor(t,e,s,n){super(),this.pos={x:0,y:0},this.max={x:s,y:n},this.min={x:t,y:e},this.padding=0}intersects(t){return t.r?b.AABBvsSphere(this,t):b.AABBColliding(this,t)}calculateBounds(t,e=0){let s=Number.MAX_SAFE_INTEGER,n=Number.MAX_SAFE_INTEGER,r=-Number.MAX_SAFE_INTEGER,h=-Number.MAX_SAFE_INTEGER;if(t.shapes.length==0){this.min.x=t.position.x,this.max.x=t.position.x,this.min.y=t.position.y,this.max.y=t.position.y,this.pos.x=t.position.x,this.pos.y=t.position.y;return}for(var l=0;l<t.shapes.length;l++){let f=t.shapes[l];if(f.type==0){let m=t.position.x-f.radius,d=t.position.y-f.radius,_=t.position.x+f.radius,S=t.position.y+f.radius;(!s||m<s)&&(s=m),(!r||_>r)&&(r=_),(!n||d<n)&&(n=d),(!h||S>h)&&(h=S);continue}for(var p=0;p<f.vertices.length;p++){let m=f.vertices[p];m.x<s&&(s=m.x),m.x>r&&(r=m.x),m.y<n&&(n=m.y),m.y>h&&(h=m.y)}}this.min.x=s-e,this.max.x=r+e,this.min.y=n-e,this.max.y=h+e,this.pos.x=t.position.x,this.pos.y=t.position.y,this.padding=e}update(t){let e=t.x-this.pos.x,s=t.y-this.pos.y;this.pos.x=t.x,this.pos.y=t.y,this.min.x+=e,this.max.x+=e,this.min.y+=s,this.max.y+=s}draw(t){t.strokeStyle="red",t.moveTo(this.min.x,this.min.y),t.lineTo(this.min.x,this.max.y),t.lineTo(this.max.x,this.max.y),t.lineTo(this.max.x,this.min.y),t.lineTo(this.min.x,this.min.y),t.stroke(),t.strokeStyle="black"}static union(t,e,s){return s=s||new D,s.max.x=t.max.x>e.max.x?t.max.x:e.max.x,s.max.y=t.max.y>e.max.y?t.max.y:e.max.y,s.min.x=t.min.x<e.min.x?t.min.x:e.min.x,s.min.y=t.min.y<e.min.y?t.min.y:e.min.y,s}get area(){return(this.max.x-this.min.x)*(this.max.y-this.min.y)}clone(){let t=new D;return t.min.x=this.min.x,t.max.x=this.max.x,t.min.y=this.min.y,t.max.y=this.max.y,t.pos.x=this.pos.x,t.pos.y=this.pos.y,t.padding=this.padding,t}}class ft{constructor(t){this.vertices=t,this.normals=this.calcFaceNormals(),this._dynNormals=this.normals.map(e=>e.clone())}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"geometry"}getNormals(t,e){e=e||[];for(var s=0;s<this.normals.length;s++)e.push(this._dynNormals[s].copy(this.normals[s]).rotate(t));return e}calcFaceNormals(){const t=[],{vertices:e}=this;for(var s=0;s<e.length;s++){let r=e[s>=e.length?e.length-1:s].clone().sub(e[s+1>=e.length?0:s+1]).normal();for(var n=0;n<t.length;n++)if(r.equals(t[n])||r.clone().reverse().equals(t[n])){r=null;break}r&&t.push(r)}return t}transform(t,e,s,n){for(let r=0;r<this.vertices.length;r++){let h=t[r];h.copy(this.vertices[r]),h.rotate(s),h.multiply(n),h.add(e)}}}const Qt=Object.freeze({CIRCLE:0,POLYGON:1}),C=Object.freeze({CONSTRAINT:0,BODY:1,COMPOSITE:2}),A={posDampen:.8,linearDamping:0,angularDamping:0,velocitySolverIterations:1,fixedFrameRate:.016,mass:1,restitution:.6,staticFriction:.4,kineticFriction:.2,boundPadding:0,allowSleep:!1,aabbDetectionOnly:!1,collisionResponse:!0,autoUpdateBound:!0,type:Object.freeze({DYNAMIC:2,KINEMATIC:1,STATIC:0}).DYNAMIC};let te=new c;class E{constructor(t,e=new c,s=0){o(this,"type",Qt.POLYGON);o(this,"offAngle",0);o(this,"offPosition",null);o(this,"vertices",null);o(this,"geometry",null);this.offPosition=e,this.offAngle=s*Math.PI/180,this.vertices=t.map(n=>n.clone()),this.geometry=new ft(t)}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"shape"}getNormals(t,e){return this.geometry.getNormals(this.angle,e)}drawNormals(t,e=10){const{vertices:s}=this;if(s.length<2)return;let n,r;t.beginPath(),t.strokeStyle="green";for(var h=0;h<s.length-1;h++)n=s[h+1].clone().sub(s[h]).multiply(.5),r=n.normal(),n=s[h].clone().add(n),t.moveTo(n.x,n.y),t.lineTo(r.x*e+n.x,r.y*e+n.y),t.stroke();n=s[0].clone().sub(s[s.length-1]).multiply(.5),r=n.normal(),n=s[s.length-1].clone().add(n),t.moveTo(n.x,n.y),t.lineTo(r.x*e+n.x,r.y*e+n.y),t.stroke(),t.strokeStyle="black",t.closePath()}draw(t,e){const{vertices:s}=this.geometry;t.beginPath(),t.strokeStyle="black",t.moveTo(s[0].x,s[0].y);for(var n=1;n<s.length;n++)t.lineTo(s[n].x,s[n].y);t.lineTo(s[0].x,s[0].y),t.stroke(),e&&(t.fillStyle=e,t.fill()),t.closePath(),t.beginPath(),t.arc(0,0,2,0,Math.PI*2),t.fillStyle="black",t.fill(),t.stroke(),t.closePath()}update(t,e,s){this.angle=this.offAngle+e,this.geometry.transform(this.vertices,te.copy(t).add(this.offPosition),this.angle,1,t)}getVertices(){return this.vertices}static calcInertia(){throw new Error("Implement in the children classes")}}o(E,"CIRCLE",0),o(E,"POLYGON",1);class yt extends E{constructor(t,e,s){let n=new c(1).multiply(t/2),r=new c(1).multiply(-t/2);super([n,r],e,s),this.length=t}}let gt=new c,ee=new c;class G extends E{constructor(e,s,n){super([],s,n);o(this,"position",new c);o(this,"angle",0);o(this,"radius",0);o(this,"type",E.CIRCLE);this.radius=e}static calcInertia(e,s){return e*(s*s)/4}getVertices(e,s){s=s||[];let n=gt.copy(e).multiply(-this.radius).add(this.position),r=ee.copy(e).multiply(this.radius).add(this.position);return s[0]=n.clone(),s[1]=r.clone(),s}getNormals(e,s=[]){let n=null,r=null;for(let h=0;h<e.vertices.length;h++){let l=this.position.distanceToSquared(e.vertices[h]);(!n||n>l)&&(r=e.vertices[h],n=l)}return r||(r=e.position),s.push(gt.copy(r).sub(this.position).normalize().clone()),s}update(e,s,n){this.position.copy(e).add(this.offPosition),this.angle=this.offAngle+s}draw(e,s){e.beginPath(),e.strokeStyle="black",e.arc(0,0,this.radius,0,Math.PI*2),e.lineWidth=1,e.stroke(),s&&(e.fillStyle=s,e.fill()),e.closePath(),e.beginPath(),e.arc(0,0,2,0,Math.PI*2),e.fillStyle="black",e.fill(),e.stroke(),e.closePath(),e.beginPath(),e.moveTo(0,0);let n=c.fromDeg(this.angle).multiply(this.radius);e.lineTo(...n),e.stroke(),e.closePath()}drawNormals(){}get area(){return Math.PI*this.radius*this.radius}}class J extends E{constructor(e,s,n,r){let h=new c(-e/2,-s/2),l=new c(-e/2,s/2),p=new c(e/2,s/2),f=new c(e/2,-s/2);super([h,l,p,f],n,r);o(this,"height",0);o(this,"width",0);this.height=s,this.width=e}static calcInertia(e,s,n){return e*(M(s)+M(n))/12}get area(){return this.width*this.height}}let ie=new c,se=new c;class ne extends E{constructor(t,e,s,n,r){let h=ie.set(1,0).multiply(t),l=c.fromDeg(s,se).multiply(e);super([new c(-h.x/2,-l.y/2),new c(h.x/2,-l.y/2),new c(l.x/2,l.y/2)],n,r)}}const et=class{constructor(...t){o(this,"id",y.generateID());o(this,"_position",new c);o(this,"_velocity",new c);o(this,"_acceleration",new c);o(this,"_orientation",new B);o(this,"_rotation",new B);o(this,"bounds",new D);o(this,"_mass",1);o(this,"_inertia",0);o(this,"_type",null);o(this,"_localanchors",[]);o(this,"anchors",[]);o(this,"lastPosition",new c);o(this,"inv_mass",0);o(this,"inv_inertia",0);o(this,"restitution",A.restitution);o(this,"staticFriction",A.staticFriction);o(this,"kineticFriction",A.kineticFriction);o(this,"boundPadding",A.boundPadding);o(this,"index",-1);o(this,"mask",{layer:0,group:0});o(this,"entity",null);o(this,"bounds",null);o(this,"shapes",null);o(this,"allowSleep",A.allowSleep);o(this,"sleeping",!1);o(this,"aabbDetectionOnly",A.aabbDetectionOnly);o(this,"collisionResponse",A.collisionResponse);o(this,"autoUpdateBound",A.autoUpdateBound);this.type=A.type,this.shapes=t,this.mass=1,this.inertia=1}set type(t){(t===et.STATIC||t===et.KINEMATIC)&&(this.mass=0),this._type=t}get type(){return this._type}get physicsType(){return C.BODY}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"body"}get acceleration(){return this._acceleration}set acceleration(t){this._acceleration.copy(t)}get velocity(){return this._velocity}set velocity(t){this._velocity.copy(t)}get rotation(){return this._rotation}set rotation(t){this._rotation.copy(t)}set angle(t){this.orientation.degree=t}get angle(){return this.orientation.degree}set mass(t){this._mass=t,this.inv_mass=t===0?0:1/t,t==0&&(this.inertia=0)}get mass(){return this._mass}set density(t){let e=0;for(var s=0;s<this.shapes.length;s++)e+=this.shapes[s].area;this.mass=t*e*.01}get density(){let t=0;for(var e=0;e<this.shapes.length;e++)t+=this.shapes[e].area;return 100*this.mass/t}set inertia(t){this._inertia=t,this.inv_inertia=t==0?0:1/t}get inertia(){return this._inertia}get position(){return this._position}set position(t){this._position.copy(t)}set orientation(t){this._orientation.copy(t)}get orientation(){return this._orientation}get angularVelocity(){return this.rotation.degree}set angularVelocity(t){this.rotation.degree=t}setAnchor(t){return this.anchors.push(new c(t.x,t.y).rotate(this.orientation.radian).add(this.position)),this._localanchors.push(t)-1}getAnchor(t){return this.anchors[t]}getLocalAnchor(t,e=new c){return e.copy(this._localanchors[t]).rotate(this.orientation.radian)}applyForce(t,e=c.ZERO){this.acceleration.add(t.multiply(this.inv_mass)),this.rotation.degree+=e.cross(t)*this.inv_inertia}init(t,e=!1){if(this.entity=t,e){this.bounds=new D,this.update();return}this.requires("transform","movable","bounds");let s=t.get("transform"),n=t.get("bounds"),r=t.get("movable");this._acceleration=r.acceleration,this._rotation=r.rotation,this._velocity=r.velocity,this._position=s.position,this._orientation=s.orientation,this.bounds=n,this.update()}update(){for(var t=0;t<this.shapes.length;t++)this.shapes[t].update(this.position,this._orientation.radian);for(var t=0;t<this.anchors.length;t++)this.anchors[t].copy(this._localanchors[t]).rotate(this.orientation.radian).add(this.position);this.autoUpdateBound&&this.bounds.calculateBounds(this,this.boundPadding),this.bounds.update(this.position)}};let T=et;o(T,"STATIC",C.STATIC),o(T,"KINEMATIC",C.KINEMATIC),o(T,"DYNAMIC",C.DYNAMIC),y.inheritComponent(T,!1,!1);class re extends T{constructor(t,e){let s=[],n=[];for(let r=0;r<e.length;r++)s.push(new c(t*r,e[r]));for(let r=1;r<s.length;r++){let h=new yt(s[r-1],s[r]);n.push(h)}super(new c,...n),this.mass=0,this.mask.layer=0}}class ae extends T{constructor(t){super(new G(t)),this.inertia=G.calcInertia(this.mass,t)}get mass(){return this._mass}set mass(t){this._mass=t,this.inv_mass=t===0?0:1/t,this.inertia=G.calcInertia(this.mass,this.shapes[0].radius)}}class oe extends T{constructor(t,e){super(new J(t,e)),this.inertia=J.calcInertia(this._mass,t,e)}set mass(t){this._mass=t,this.inv_mass=t===0?0:1/t,this.inertia=J.calcInertia(t,this.shapes[0].width,this.shapes[0].height)}get mass(){return this._mass}}class vt{constructor(){o(this,"entity",null);this.bodies=[],this.constraints=[]}get physicsType(){return C.COMPOSITE}init(t){this.bodies.forEach(e=>{e.init(t,!0)}),this.requires("transform")}add(t){if(t.physicsType===C.CONSTRAINT)return this.constraints.push(t);t.physicsType===C.BODY&&this.bodies.push(t)}update(){this.lastPosition.copy(this.position)}get acceleration(){let t=new c;for(var e=0;e<this.bodies.length;e++)t.copy(this.bodies[e].acceleration);return t.divide(this.bodies.length)}set acceleration(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].acceleration=t}get velocity(){let t=new c;for(var e=0;e<this.bodies.length;e++)t.add(this.bodies[e].velocity);return t.divide(this.bodies.length)}set velocity(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].velocity.copy(t)}set angle(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].angle=x}get angle(){let t=0;for(var e=0;e<this.bodies.length;e++)t+=this.bodies[e].angle}set mass(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].mass=t}get mass(){let t=0;for(var e=0;e<this.bodies.length;e++)t+=this.bodies[e].mass;return t}set density(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].density=t}get density(){let t=0;for(var e=0;e<this.bodies.length;e++)t+=this.bodies[e].density;return t/this.bodies.length}get position(){let t=new c;for(var e=0;e<this.shapes.length;e++)t.add(this.bodies[e].position);return t}set position(t){let e=t.clone().sub(this.position);for(var s=0;s<this.bodies.length;s++)this.bodies[s].position.add(e)}set orientation(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].orientation.copy(t)}get angularVelocity(){let t=0;for(var e=0;e<this.bodies.length;e++)t+=this.bodies[e].angularVelocity;return t}set angularVelocity(t){for(var e=0;e<this.bodies.length;e++)this.bodies[e].angularVelocity=t}}y.inheritComponent(vt);class nt{constructor(t,e){this.body1=t,this.body2=e,this.stiffness=50,this.dampening=.03}get physicsType(){return C.CONSTRAINT}get CHOAS_CLASSNAME(){return this.constructor.name.toLowerCase()}get CHAOS_OBJ_TYPE(){return"constraint"}behavior(t,e){e.position.copy(t.position)}update(t){this.behavior(this.body1,this.body2,t)}}let le=new c,he=new c,ce=new c,X=new c,K=new c,_t=new c;class ue extends nt{constructor(t,e,s,n){super(t,e),this.localA=new c().copy(s||_t),this.localB=new c().copy(n||_t),this.fixed=!t.mass||!e.mass,this.dampen=1,this.maxDistance=1,this.stiffness=1}behavior(t,e,s){let n=le.copy(this.localA).rotate(t.angle*Math.PI/180),r=he.copy(this.localB).rotate(e.angle*Math.PI/180),h=ce.copy(t.position).add(n),l=X.copy(e.position).add(r),p=h.sub(l),f=p.magnitude();if(f===0)return;let m=(f-this.maxDistance)/f,d=p.multiply(m*this.stiffness*this.dampen),_=t.inv_mass+e.inv_mass;t.inv_inertia+e.inv_inertia,X.copy(d),d.divide(_*2),t.velocity.add(K.copy(d).multiply(-t.inv_mass).divide(s)),e.velocity.add(K.copy(d).multiply(e.inv_mass).divide(s)),t.position.add(K.copy(d).multiply(-t.inv_mass)),e.position.add(K.copy(d).multiply(e.inv_mass)),t.rotation.radian+=X.cross(n)*t.inv_inertia,e.rotation.radian+=X.cross(r)*-e.inv_inertia}}let de=new c,pe=new c,me=new c,Z=new c,wt=new c,xt=new c,bt=new c;class fe extends nt{constructor(t,e,s,n){super(t,e),this.localA=new c().copy(s||bt),this.localB=new c().copy(n||bt),this.fixed=!t.mass||!e.mass,this.dampen=1,this.maxDistance=1,this.stiffness=1}behavior(t,e,s){let n=de.copy(this.localA).rotate(t.angle*Math.PI/180),r=pe.copy(this.localB).rotate(e.angle*Math.PI/180),h=me.copy(t.position).add(n),l=Z.copy(e.position).add(r),p=h.sub(l),f=p.magnitude();if(f===0)return;let m=(f-this.maxDistance)/f,d=p.multiply(m*this.stiffness*this.dampen),_=t.inv_mass+e.inv_mass;t.inv_inertia+e.inv_inertia,Z.copy(d),d.divide(_*2),t.velocity.add(xt.copy(d).multiply(-t.inv_mass).divide(s)),e.velocity.add(wt.copy(d).multiply(e.inv_mass).divide(s)),t.position.add(xt.copy(d).multiply(-t.inv_mass)),e.position.add(wt.copy(d).multiply(e.inv_mass)),t.rotation.radian+=Z.cross(n)*t.inv_inertia,e.rotation.radian+=Z.cross(r)*-e.inv_inertia}}let rt=new c,at=new c,St=new c;class ye{static solve(t,e){at.copy(t.acceleration).multiply(e*.5),St.copy(t.velocity),rt.copy(t.position),t.acceleration.set(0,0),t.velocity.add(at),rt.add(St.multiply(e)).add(at.multiply(e)),t.position=rt,t.angle+=t.angularVelocity*e}}let ge=new c,ve=new c,_e=new c,At=new c,Ct=new c;class we{static solve(t){let{bodyA:e,bodyB:s,ca1:n,ca2:r,restitution:h,impulse:l}=t,{axis:p}=t.contactData;if(l<=0)return;let f=ge.set(n.y*-e.rotation._rad,n.x*e.rotation._rad),m=ve.set(r.y*-s.rotation._rad,r.x*s.rotation._rad),d=_e.copy(e.velocity).add(f),_=At.copy(s.velocity).add(m),S=d.sub(_);if(S.magnitudeSquared()===0)return;let g=p.normal(1,At);if(g=g.multiply(g.dot(S)),g.magnitudeSquared()===0)return;g.normalize();let k=g.dot(S),H=Math.min(e.staticFriction,s.staticFriction),ut=Math.min(e.kineticFriction,s.kineticFriction),U=-k/(e.inv_mass+s.inv_mass+M(n.dot(g)*e.inv_inertia+M(r.dot(g))*s.inv_inertia)),L;Math.abs(U)<=l*H?L=g.multiply(U):L=g.multiply(U*ut),t.velA.add(Ct.copy(L).multiply(e.inv_mass)),t.velB.add(Ct.copy(L).multiply(-s.inv_mass)),t.rotA+=n.cross(L)*e.inv_inertia,t.rotB+=r.cross(L)*-s.inv_inertia}}let Q={x:0,y:0},Pt=1,tt=1,xe=.8;class be{static solve(t,e,s,n){n==2&&(Math.abs(t.angularVelocity)>tt&&(t.angularVelocity=0),Math.abs(e.angularVelocity)>tt&&(e.angularVelocity=0)),!(s>xe)&&(t.velocity.magnitude()>Pt&&Math.abs(t.angularVelocity)>tt||e.velocity.magnitude()>Pt&&Math.abs(e.angularVelocity)>tt||!t.allowSleep||!e.allowSleep||(t.sleeping=!0,t.velocity=Q,t.acceleration=Q,e.sleeping=!0,e.velocity=Q,e.acceleration=Q))}}const Tt=new c,Se=new c;let Ae=A.posDampen;class Ce{static warmstart(t,e){if(t.stmp!==e)return;let s=t.contactData.lastOverlap-t.contactData.overlap;t.contactData.overlap-=s*.2}static solve(t,e){let{bodyA:s,bodyB:n,ca1:r,ca2:h}=t,{axis:l,overlap:p}=t.contactData;const m=p*Ae/(s.inv_mass+n.inv_mass+M(r.cross(l))*s.inv_inertia+M(h.cross(l))*n.inv_inertia);let d=Se.copy(l).multiply(m);s.velocity.add(Tt.copy(d).multiply(s.inv_mass*e)),n.velocity.add(Tt.copy(d).multiply(-n.inv_mass*e)),s.rotation.radian+=r.cross(d)*s.inv_inertia*e,n.rotation.radian+=h.cross(d)*-n.inv_inertia*e,t.contactData.lastOverlap=p}}let Pe=new c,Te=new c,Me=new c,Be=new c;class Ee{static solve(t){let{bodyA:e,bodyB:s,ca1:n,ca2:r,restitution:h}=t,{axis:l}=t.contactData,p=Pe.set(n.y*-e.rotation.radian,n.x*e.rotation.radian),f=Te.set(r.y*-s.rotation.radian,r.x*s.rotation.radian),m=Me.copy(e.velocity).add(p),d=Be.copy(s.velocity).add(f),_=m.sub(d),S=l.dot(_);if(S>=0){t.impulse=0;return}let g=-h*S/(e.inv_mass+s.inv_mass+M(n.cross(l))*e.inv_inertia+M(r.cross(l))*s.inv_inertia),k=l.clone().multiply(g),H=n.cross(k)*e.inv_inertia,ut=r.cross(k)*-s.inv_inertia,U=k.clone().multiply(e.inv_mass),L=k.clone().multiply(-s.inv_mass);t.velA.copy(U),t.velB.copy(L),t.rotA=H,t.rotB=ut,t.impulse=g}}const ke=[],Ie={overlap:0,verticesA:null,verticesB:null,axis:new c,vertex:null,shape:null},Oe={min:0,max:0,indexN:0},Le={min:0,max:0,indexN:0},De=new c,Ne=new c,$=new c,P={shapesInBodyCollided(a,t,e){let s=a.shapes,n=t.shapes;for(var r=0;r<s.length;r++)for(var h=0;h<n.length;h++)P.shapesCollided(s[r],n[h],e);if(e.overlap<0)return e;let l=e.dorminantShape,p=Ne.copy(e.axis),f=e.shapes[0],m=e.shapes[1],d=[];const _=P.findNearSupports(e.vertShapeA,p,[]),S=P.findNearSupports(e.vertShapeB,$.copy(p).reverse(),[]);for(var r=0;r<_.length;r++)P.shapeContains(m,_[r])&&d.push(_[r]);if(d.length<2)for(var r=0;r<S.length;r++)P.shapeContains(f,S[r])&&(d.push(S[r]),d.length||(shape=m));return d.length==0&&d.push(_[0]),d=P.findNearSupports(d,p,[]),l==m&&p.reverse(),l==f&&(e.verticesA[0]=d[0],e.verticesB[0]=d[0].clone().add($.copy(p).multiply(e.overlap)),d.length==2&&(e.verticesA[1]=d[1],e.verticesB[1]=d[1].clone().add($.copy(p).multiply(e.overlap)))),l==m&&(e.verticesA[0]=d[0].clone().add($.copy(p).multiply(e.overlap)),e.verticesB[0]=d[0],d.length==2&&(e.verticesA[1]=d[1].clone().add($.copy(p).multiply(e.overlap)),e.verticesB[1]=d[1])),e.contactNo=d.length,e},shapesCollided(a,t,e){let s=ke,n;y.clearArr(s),a.getNormals(t,s),n=s.length,t.getNormals(a,s),P.projectShapesToAxes(a,t,s,e,n)},projectShapesToAxes(a,t,e,s,n){let r=Ie;r.vertex=null,r.body=null,r.overlap=1/0;for(let h=0;h<e.length;h++){let l=De.copy(e[h]),p=a.getVertices(l),f=t.getVertices(l),m=P.projectVerticesToAxis(p,l,Oe),d=P.projectVerticesToAxis(f,l,Le),_=m.max<d.max?m.max:d.max,S=m.min>d.min?m.min:d.min,g=_-S;if(g<0)return s;if(m.max<d.max&&l.reverse(),m.max>d.max&&m.min<d.min||d.max>m.max&&d.min<m.min){let k=Math.abs(m.max-d.max),H=Math.abs(m.min-d.min);H<k?g+=H:(g+=k,l.reverse())}g<r.overlap&&(r.overlap=g,r.axis.copy(l),r.shape=h<=n-1?t:a,r.indexA=m.indexN,r.indexB=d.indexN,r.verticesA=p,r.verticesB=f)}return r.overlap>s.overlap&&(s.overlap=r.overlap,s.axis.copy(r.axis),s.dorminantShape=r.shape,s.shapes[0]=a,s.shapes[1]=t,s.vertShapeA=r.verticesA,s.vertShapeB=r.verticesB,s.indexA=r.indexA,s.indexB=r.indexB,s.done=!0),s},projectVerticesToAxis(a,t,e){let s=1/0,n=-1/0,r=null,h=a.length;for(let l=0;l<h;l++){let p=t.dot(a[l]);p<s&&(s=p,r=l),p>n&&(n=p)}return e.min=s,e.max=n,e.indexN=r,e},findNearSupports(a,t,e=[],s){let n=1/0,r=e,h=a.length;for(let l=0;l<h;l++){let p=t.dot(a[l]);if(Math.abs(p-n)<=.1&&!r.includes(a[l])){r.push(a[l]);continue}p<n&&(n=p,y.clearArr(r),r.push(a[l]),l=-1)}return r},shapeContains(a,t){return a.type=="circle"?P.circleContains(a.position,a.radius,t):P.verticesContain(a.vertices,t)},circleContains(a,t,e){let s=e.x-a.x,n=e.y-a.y;return!(s*s+n*n>t*t)},verticesContain(a,t){var e=t.x,s=t.y,n=a.length,r=a[n-1],h;if(n<2)return!1;for(var l=0;l<n;l++){if(h=a[l],(e-r.x)*(h.y-r.y)+(s-r.y)*(r.x-h.x)<0)return!1;r=h}return!0}};class Re{canCollide(t,e){return!(t.mass==0&&e.mass==0||t.mask.group!==0&&e.mask.group!==0&&t.mask.group==e.mask.group||t.mask.layer&&e.mask.layer&&t.mask.layer!==e.mask.layer||t.sleeping&&e.sleeping)}insert(){}remove(){}traverse(t){}draw(t){}update(t){}remove(t){}}class Fe extends Re{constructor(t){super(),this.bodies=t.objects}query(t,e){closeObjects=e||[];for(var s=0;s<this.objects.length;s++){let n=this.world.objects[s];n.bounds.intersects(t)<dist&&closeObjects.push(n)}return closeObjects}getCollisionPairs(t){t=t||[];let e=this.bodies,s=e.length;for(let n=0;n<s;n++){let r=e[n];for(let h=n+1;h<s;h++){let l=e[h];if(!this.canCollide(r,l)||!r.bounds.intersects(l.bounds))continue;let p={a:r,b:l};r.aabbDetectionOnly||l.aabbDetectionOnly||!r.shapes.length||!l.shapes.length||t.push(p)}}return t}}class Mt{constructor(){o(this,"count",0);o(this,"records",new Map);o(this,"objects",[]);o(this,"fixedConstraits",[]);o(this,"constraints",[]);o(this,"linearDamping",A.linearDamping);o(this,"angularDamping",A.angularDamping);o(this,"velocitySolverIterations",A.velocitySolverIterations);o(this,"CLMDs",[]);o(this,"contactList",[]);o(this,"gravitationalAcceleration",new c(0,0));o(this,"fixedFrameRate",A.fixedFrameRate);o(this,"perf",{lastTimestamp:0,total:0});o(this,"broadphase",null);this.broadphase=new Fe(this)}set gravity(t){if(typeof t=="object")return this.gravitationalAcceleration.copy(t);this.gravitationalAcceleration.set(0,t)}get gravity(){return this.gravitationalAcceleration}narrowPhase(){let t,e;for(var s=0;s<this.contactList.length;s++){let{a:n,b:r}=this.contactList[s];n.sleeping=!1,r.sleeping=!1;let h=dt(n.id,r.id);this.records.has(h)||this.records.set(h,{bodyA:n,bodyB:r,contactData:{lastOverlap:0,overlap:-1/0,done:!1,axis:new c,verticesA:[],verticesB:[],vertShapeA:null,vertShapeB:null,contactNo:0,shapes:[],indexA:0,indexB:0},stmp:-1,impulse:0,persistent:!1,ca1:new c,ca2:new c,restitution:0,staticFriction:0,kineticFriction:0,velA:new c,velB:new c,rotA:0,rotB:0}),e=this.records.get(h),t=e.contactData,t.overlap=-1/0,t.done=!1,P.shapesInBodyCollided(n,r,t),!(t.overlap<0||!t.done)&&(t.contactNo==2?(c.lerp(t.verticesA[0],t.verticesA[1],.5,e.ca1).sub(n.position),c.lerp(t.verticesB[0],t.verticesB[1],.5,e.ca2).sub(r.position)):(e.ca1.copy(t.verticesA[0]).sub(n.position),e.ca2.copy(t.verticesB[0]).sub(r.position)),e.restitution=n.restitution<r.restitution?n.restitution:r.restitution,e.staticFriction=n.staticFriction<r.staticFriction?n.staticFriction:r.staticFriction,e.kineticFriction=n.kineticFriction<r.kineticFriction?n.kineticFriction:r.kineticFriction,n.collisionResponse&&r.collisionResponse&&this.CLMDs.push(e))}}broadPhase(){this.contactList=[],this.broadphase.getCollisionPairs(this.contactList)}collisionDetection(){this.broadPhase(),this.narrowPhase()}collisionResponse(t){let e=this.CLMDs.length,s,n=1/t;this.count-1;for(var r=0;r<this.velocitySolverIterations;r++){for(let l=0;l<e;l++)s=this.CLMDs[l],s.velA.set(0,0),s.velB.set(0,0),s.rotA=0,s.rotB=0,Ee.solve(s),we.solve(s);for(var h=0;h<e;h++)s=this.CLMDs[h],s.bodyA.velocity.add(s.velA),s.bodyB.velocity.add(s.velB),s.bodyA.rotation.radian+=s.rotA,s.bodyB.rotation.radian+=s.rotB}for(let l=0;l<e;l++)s=this.CLMDs[l],Ce.solve(s,n);for(let l=0;l<e;l++)s=this.CLMDs[l],s.stmp=this.count,be.solve(s.bodyA,s.bodyB,s.impulse,s.contactData.contactNo)}intergrate(t,e){for(var s=0;s<e;s++){let n=this.objects[s];n.sleeping||ye.solve(n,t)}}applyGravity(t,e){this.gravitationalAcceleration.clone().multiply(e);for(var s=0;s<t;s++){let n=this.objects[s];n.mass&&n.acceleration.add(this.gravitationalAcceleration)}}updateConstraints(t){let e=this.constraints.length,s=this.fixedConstraits.length;for(var n=0;n<s;n++)this.fixedConstraits[n].update(t);for(var n=0;n<e;n++)this.constraints[n].update(t)}updateBodies(t){let e=1-this.linearDamping,s=1-this.angularDamping;for(var n=0;n<t;n++)this.objects[n].update(),this.objects[n].velocity.multiply(e),this.objects[n].angularVelocity=this.objects[n].angularVelocity*s}update(t){this.perf.lastTimestamp=performance.now();let e=this.fixedFrameRate||t,s=this.objects.length;this.CLMDs=[],this.applyGravity(s,e),this.updateBodies(s),this.broadphase.update(),this.updateConstraints(e),this.collisionDetection(),this.collisionResponse(e),this.updateConstraints(e),this.updateBodies(s),this.intergrate(e,s),this.count+=1,this.perf.total=performance.now()-this.perf.lastTimestamp}init(t){t.setComponentList("body",this.objects)}add(t){t.physicsType==C.BODY?this.addBody(t):t.physicsType==C.CONSTRAINT?this.addConstraint(t):t.physicsType==C.COMPOSITE&&this.addComposite(t)}addBody(t){t.update(),t.index=this.objects.length,this.objects.push(t),this.broadphase.insert(t)}remove(t){this.removeBody(t)}removeBody(t){if(this.broadphase.remove(t),y.removeElement(this.objects,t.index)){if(t.index===this.objects.length)return;this.objects[t.index].index=t.index}return t}addConstraint(t){if(t.fixed){t.index=this.fixedConstraits.length,this.fixedConstraits.push(t);return}t.index=this.constraints.length,this.constraints.push(t)}removeContraint(t){let s=(t.fixed?this.fixedConstraits:this.constraints).pop();return this.objects[t.index]=temp1,s.index=t.index,t.index=-1,t}addComposite(t){for(var e=0;e<t.bodies.length;e++)this.addBody(t.bodies[e]);for(var e=0;e<t.constraints.length;e++)this.addConstraint(t.constraints[e])}removeComposite(){for(var t=0;t<composite.bodies.length;t++)this.removeBody(composite.bodies[t]);for(var t=0;t<composite.constraints.length;t++)this.removeContraint(composite.constraints[t])}query(t,e=[]){return this.broadphase.query(t,e),e}}class je{constructor(t,e){o(this,"_position",new c);this.transformMatrix=new Y,this.target=null,this.lerpFactor=.5,this.renderer=t,this.position.set((e==null?void 0:e.x)||0,(e==null?void 0:e.y)||0),this.orientation=new B}get position(){return this._position}set position(t){this._position.copy(t)}get transform(){return this.position}update(t){this.target&&this._position.lerp(this.target,this.lerpFactor)}clear(t){t.setTransform()}dispose(){this.renderer=null}follow(t){this.target=t}}class Bt{constructor(t){o(this,"_accumulator",0);o(this,"_transforms",[]);o(this,"_rotation",0);o(this,"_translation",new c);o(this,"_scale",new c);o(this,"_fill","black");o(this,"_stroke","black");o(this,"frameRate",1/60);o(this,"objects",[]);o(this,"renderLast",[]);o(this,"perf",{lastTimestamp:0,total:0});o(this,"background",null);o(this,"domElement",null);o(this,"ctx",null);o(this,"camera",null);o(this,"_update",t=>{let e=this.clock.update(t);if(this._accumulator<this.frameRate){this._accumulator+=e,this.RAF();return}this.update(e||this._accumulator),this.RAF(),this._accumulator=0});this.domElement=t||document.createElement("canvas"),this.ctx=this.domElement.getContext("2d"),this.camera=new je(this),this.clock=new st}init(t){t.setComponentList("mesh",this.objects)}push(){this._transforms.push(this.ctx.getTransform())}pop(){this.ctx.setTransform(this._transforms.pop())}reset(){this.ctx.setTransform()}translate(t,e){this.ctx.translate(t,e)}scale(t,e){this.ctx.scale(t,e)}rotate(t){this.ctx.rotate(t),this._rotation+=t}line(t,e,s,n){this.ctx.moveTo(t-this.camera.position.x,e-this.camera.position.y),this.ctx.lineTo(s-this.camera.position.x,n-this.camera.position.y)}rect(t,e,s,n){this.ctx.rect(t-this.camera.position.x,e-this.camera.position.y,s,n)}circle(t,e,s){this.ctx.arc(t-this.camera.position.x,e-this.camera.position.y,s,0,Math.PI*2)}vertices(t,e=!0){this.ctx.moveTo(t[0].x-this.camera.position.x,t[0].y-this.camera.position.y);for(var s=1;s<t.length;s++)this.ctx.lineTo(t[s].x-this.camera.position.x,t[s].y-this.camera.position.y);e&&this.ctx.lineTo(t[0].x-this.camera.position.x,t[0].y-this.camera.position.y)}arc(t,e,s,n,r){this.ctx.arc(t-this.camera.position.x,e-this.camera.position.y,s,n,r)}fillText(t,e,s){this.ctx.fillText(t,e-this.camera.position.x,s-this.camera.position.y)}fill(t="black",e){this.ctx.fillStyle=t,this.ctx.fill(e)}stroke(t="black",e=1){this.ctx.strokeStyle=t,this.ctx.width=e,this.ctx.stroke()}begin(){this.ctx.beginPath()}close(){this.ctx.closePath()}clip(){this.ctx.clip()}drawImage(t,e,s,n=t.width,r=t.height,h=0,l=0){this.ctx.drawImage(t,n*h,r*l,n,r,e-this.camera.position.y,s-this.camera.position.y,n,r)}get width(){return this.domElement.clientWidth}get height(){return this.domElement.clientHeight}set width(t){this.domElement.width=t}set height(t){this.domElement.height=t}setViewport(t,e){this.width=t,this.height=e}set CSSbackground(t){this.domElement.style.background=t}get CSSbackground(){return this.domElement.style.background}clear(){this.reset();let t=this.height,e=this.width;this.ctx.clearRect(0,0,e,t)}update(t){this.perf.lastTimestamp=performance.now(),this.background!=null&&this.background.update(this,t);for(var e=0;e<this.objects.length;e++)this.objects[e].update(this,t);for(var e=0;e<this.renderLast.length;e++)this.renderLast[e].update(this,t,this.camera.transform);this.perf.total=performance.now()-this.perf.lastTimestamp}RAF(){this._rafID=requestAnimationFrame(this._update)}play(){this.RAF()}pause(){cancelAnimationFrame(this._rafID)}bindTo(t,e=!0){let s=document.querySelector(t);this.domElement.remove(),this.domElement.style.backgroundColor="grey",this.domElement.style.touchAction="none",s.append(this.domElement)}add(t){this.objects.push(t)}remove(t){this.objects.splice(this.objects.indexOf(t),1)}addUI(t){this.renderLast.push(t)}requestFullScreen(){this.domElement.parentElement.requestFullscreen()}}const O={webgpu:!1,webgl:!1,canvas2d:!1,canvas:!1,webAudio:!1,supportedAudio:[],supportedImages:[],windows:!1,mac:!1,android:!1,linux:!1,ios:!1,chrome:!1,firefox:!1,edge:!1,safari:!1};let V=navigator.userAgent;new Audio,/Android/.test(V)?O.android=!0:/iP[ao]d|iPhone/i.test(V)?O.ios=!0:/Linux/.test(V)?O.linux=!0:/Mac OS/.test(V)?O.mac=!0:/Windows/.test(V)&&(O.windows=!0),window.AudioContext&&(O.webAudio=!0),Object.freeze(O);class Et{constructor(t){this._toload=[],this.imgs={},this.sfx={},this.json={},this._progressBytes=0,this._totalBytes=0,this._filesErr=0,this._filesLoaded=0,this._totalFileNo=0;const e=this;this.onfinish=null,this._handlers={onload:function(s,n){let r=e._getType(s.responseURL),h=e._getName(s.responseURL);if(n.lengthComputable===!1){e._handlers.onerror(s,n);return}if(r==="image")e.imgs[h]=new Image,e.imgs[h].src=URL.createObjectURL(s.response);else if(r==="audio")e.sfx[h]=s.response;else if(r==="json")e.json[h]=JSON.parse(s.response);else return v.warn(`The file in url ${s.responseURL} is not loaded into the loader because its extension name is not supported.`);e._filesLoaded+=1,e._filesLoaded+e._filesErr===e._totalFileNo&&e.onfinish&&e.onfinish()},onheadload:function(s){if(s.total===0||!s.lengthComputable)return;e._totalBytes+=s.total;let n=new XMLHttpRequest;n.open("GET",files.images[i],!0),n.onload=r=>e._handlers.onload(n),n.onerror=e._handlers.onerror(n),n.send()},onerror:function(s){e._filesErr+=1,v.warn(`The file ${s.responseURL} could not be loaded as the file might not exist in current url`),e._filesLoaded+e._filesErr===e._totalFileNo&&e.onfinish&&e.onfinish()}}}_getName(t){if(t.includes("/")){let e=t.split("/");t=e[e.length-1]}return t.split(".")[0]}_getType(t){let e;if(t.includes("/")){let s=t.split("/");t=s[s.length-1]}if(e=t.split(".")[1],e==="jpg"||e==="png"||e==="jpeg")return"image";if(e==="mp3"||e==="ogg")return"audio";if(e==="json")return"json"}loadAll(t={}){var s,n,r;if(this._totalFileNo=(((s=t.images)==null?void 0:s.length)||0)+(((n=t.audio)==null?void 0:n.length)||0)+(((r=t.json)==null?void 0:r.length)||0),this._totalFileNo===0){this.onfinish();return}if(t.images)for(var e=0;e<t.images.length;e++){let h=new XMLHttpRequest;h.open("GET",t.images[e],!0),h.responseType="blob",h.onload=l=>{this._handlers.onload(h,l)},h.onerror=l=>this._handlers.onerror(h),h.send()}if(t.audio)for(var e=0;e<t.audio.length;e++){let l=new XMLHttpRequest;l.responseType="arraybuffer",l.open("GET",t.audio[e],!0),l.onload=p=>this._handlers.onload(l,p),l.onerror=p=>this._handlers.onerror(l),l.send()}if(t.json)for(var e=0;e<t.json.length;e++){t.json[e];let l=new XMLHttpRequest;l.responseType="text",l.open("GET",t.json[e],!0),l.onload=p=>this._handlers.onload(l,p),l.onerror=p=>this._handlers.onerror(l),l.send()}}}class kt{constructor(){o(this,"handlers",{})}trigger(t,e){t in this.handlers&&this.handlers[t].forEach(s=>s(e))}init(){}add(t,e){if(t in this.handlers){this.handlers[t].push(e);return}this.handlers[t]=[e]}}class It{constructor(){this.handlers={},this._evHandlers={}}add(t,e){if(this.handlers[t])return this.handlers[t].push(e);this.handlers[t]=[e];let s=n=>{let r=this.handlers[t];for(var h=0;h<r.length;h++)r[h](n)};document.addEventListener(t,s),this._evHandlers[t]=s}remove(t,e){this.handlers[t].splice(this.handlers[t].indexOf(e),1),this.handlers[t].length||this.dispose(t)}disposeEvent(t){document.removeEventListener(t,this._evHandlers[t]),delete this.handlers[t],delete this._evHandlers[t]}clear(){for(var t in this.handlers)this.dispose(t)}init(){}}function Ot(a){let t,e;for(let s=0;s<a.length;s++)t=a[s].bodyA.entity.getHandler("collision"),e=a[s].bodyB.entity.getHandler("collision"),t&&t(a[s].bodyA.entity,a[s].bodyB.entity,a[s]),e&&e(a[s].bodyB.entity,a[s].bodyA.entity,a[s])}function Lt(a){let t,e;for(let s=0;s<a.length;s++)t=a[s].a.entity.getHandler("precollision"),e=a[s].b.entity.getHandler("precollision"),t&&t(a[s].a.entity,a[s].b.entity,a[s]),e&&e(a[s].b.entity,a[s].a.entity,a[s])}const He={COLLISION:"collision",PRECOLLISION:"precollision",PREUPDATE:"preupdate",POSTUPDATE:"postupdate",UPDATE:"postupdate",INITIALIZE:"init",ADD:"add",REMOVE:"remove",PAUSE:"pause",PLAY:"play"};class Dt{constructor(t){o(this,"_onDown",t=>{let e=this.normalize(t.code);this.keys[e]=!0,this.activeKeys.push(e),this.ondown(t)});o(this,"_onUp",t=>{this.keys[this.normalize(t.code)]=!1,this.onup(t)});this.keys={},this.activeKeys=[],this.init(t)}normalize(t){let e=t;return t.includes("Key")&&(e=e.slice(3,e.length)),e.toUpperCase()}init(t){t.add("keydown",this._onDown),t.add("keyup",this._onUp)}ondown(t){}onup(t){}}class Nt{constructor(t){o(this,"_onClick",t=>{++this.clickCount,this.onclick(t)});o(this,"_onMove",t=>{this.position.x=t.clientX,this.position.y=t.clientY,this.lastPosition.x===void 0&&(this.lastPosition={...this.position}),this.delta.x=this.position.x-this.lastPosition.x,this.delta.y=this.position.y-this.lastPosition.y,this.dragging=!!(this.leftbutton||this.rightbutton),this.dragging||(this.dragLastPosition.x=t.clientX,this.dragLastPosition.y=t.clientY),this.onmove(t)});o(this,"_onDown",t=>{switch(t.button){case 0:this.leftbutton=!0;break;case 2:this.rightbutton=!0;break}this.ondown(t)});o(this,"_onUp",t=>{switch(t.button){case 0:this.leftbutton=!1;break;case 2:this.rightbutton=!1;break}this.onup(t)});o(this,"_onWheel",t=>{this.onwheel(t)});o(this,"_onContextMenu",t=>{t.preventDefault(),this.oncontextmenu(t)});this.clickCount=0,this.dragging=!1,this.dragLastPosition={},this.delta={},this.position={},this.lastPosition={x:0,y:0},this.leftbutton=null,this.rightbutton=null,this.init(t)}inDragBox(t){return!(!this.dragging||t.x>this.dragLastPosition.x&&t.x<this.position.x&&t.y>this.dragLastPosition.y&&t.y<this.position.y)}init(t){t.add("click",this._onClick),t.add("mousedown",this._onDown),t.add("mouseup",this._onUp),t.add("mousewheel",this._onWheel),t.add("mousemove",this._onMove),t.add("contextmenu",this._onContextMenu)}onmove(t){}onclick(t){}ondown(t){}onup(t){}onwheel(t){}oncontextmenu(t){}update(){this.lastPosition={...this.position}}}class Rt{constructor(t){o(this,"_onMove",t=>{t.preventDefault(),this.onmove(t)});o(this,"_onDown",t=>{this.touches=t.touches,this.ondown(t)});o(this,"_onUp",t=>{this.touches=t.touches,this.onup(t)});this.clickCount=0,this.touches=[],this.init(t)}inDragBox(t){return!(t.x>this.dragLastPosition.x&&t.x<this.dragLastPosition.x+this.position.x&&t.y>this.dragLastPosition.y&&t.y<this.dragLastPosition.y+this.position.y)}init(t){t.add("touchstart",this._onDown),t.add("touchend",this._onUp),t.add("touchmove",this._onMove)}onmove(t){}onclick(t){}ondown(t){}onup(t){}onwheel(t){}update(){}}class Ft{constructor(t){this.DOMEventHandler=t||new It,this.mouse=new Nt(this.DOMEventHandler),this.touch=new Rt(this.DOMEventHandler),this.keyboard=new Dt(this.DOMEventHandler)}update(){this.mouse.update(),this.touch.update()}dispose(){this.mouse.dispose(),this.keyboard.dispose(),this.touch.dispose()}}class ot{constructor(t={}){o(this,"_rafID");o(this,"_classes",{});o(this,"_componentLists",{});o(this,"_systems",[]);o(this,"_coreSystems",{world:null,renderer:null,input:null,events:null,audio:null});o(this,"_initialized",!1);o(this,"playing",!1);o(this,"_systemsMap",{});o(this,"_compMap",{});o(this,"clock",new st);o(this,"objects",[]);o(this,"_accumulator",0);o(this,"frameRate",0);o(this,"perf",{lastTimestamp:0,total:0});o(this,"loader",new Et);o(this,"_update",t=>{let e=this.clock.update(t);if(this._accumulator<this.frameRate){this._accumulator+=e,this.RAF();return}this._coreSystems.events&&this._coreSystems.events.trigger("updateStart"),this.update(e),this._coreSystems.events&&(this._coreSystems.events.trigger("update"),this._coreSystems.events.trigger("updateEnd")),this._accumulator=0,this.RAF()});t=Object.assign({autoPlay:!0},t),this.loader.onfinish=e=>{this.init(),this.play()},this.loader.loadAll(t.files)}init(){for(var t=0;t<this.objects.length;t++)this.objects[t].init(this);this._coreSystems.events&&this._coreSystems.events.trigger("init",this),this.update(0),this._initialized=!0,this.playing&&this.play()}add(t){if(t.manager){v.warn(`The entity with id ${t.id} has already been added to a manager.It will be ignored and not added to the manager`,t);return}this.objects.push(t),t.init(this),this._coreSystems.events&&this._coreSystems.events.trigger("add",t)}addComponent(t,e){if(t==="body"){this._coreSystems.world.add(e);return}if(t==="mesh"){this._coreSystems.renderer.add(e);return}t in this._componentLists&&this._componentLists[t].push(e)}removeComponent(t,e){if(t==="body"){this._coreSystems.world.remove(e);return}if(t==="mesh"){this._coreSystems.renderer.remove(e);return}t in this._componentLists&&y.removeElement(this._componentLists[t],this._componentLists[t].indexOf(e))}remove(t){let e=this.objects.indexOf(t);t.removeComponents(),y.removeElement(this.objects,e),this._coreSystems.events&&this._coreSystems.events.trigger("remove",t)}clear(){for(let t=this.objects.length-1;t>=0;t--)this.remove(this.objects[t])}RAF(){this._rafID=requestAnimationFrame(this._update)}play(){if(!this._initialized){this.playing=!0;return}this.RAF(),this._coreSystems.events&&this._coreSystems.events.trigger("play")}pause(){if(!this._initialized){this.playing=!1;return}cancelAnimationFrame(this._rafID),this._coreSystems.events&&this._coreSystems.events.trigger("pause")}initSystems(){for(var t=0;t<this._systems.length;t++)for(var e=0;e<this._systems[t].length;e++)this._systems[t][e].init(this)}update(t=.016){let e=this._coreSystems.world,s=this._coreSystems.renderer,n=this._coreSystems.events,r=this._coreSystems.input,h=performance.now();s&&s.clear();for(var l=0;l<this._systems.length;l++)this._systems[l].update(t);r&&r.update(),e&&e.update(t),s&&s.update(t),e&&n&&(n.trigger("precollision",e.contactList),n.trigger("collision",e.CLMDs)),this.perf.total=performance.now()-h}registerClass(t,e=!1){let s=t.name.toLowerCase();if(s in this._classes&&!e)return v.warn(`The class \`${t.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`);this._classes[s]=t}registerSystem(t,e,s=t){if(e.init&&e.init(this),this._systemsMap[t]===void 0)switch(t){case"events":this._coreSystems.events=e;break;case"world":this._coreSystems.world=e;break;case"renderer":this._coreSystems.renderer=e;break;case"input":this._coreSystems.input=e;break;default:this._systemsMap[t]=this._systems.length,this._systems.push(e),this._compMap[s]=t}}getSystem(t){return t in this._coreSystems?this._coreSystems[t]:this._systems[this._systemsMap[t]]}unregisterSystem(t){if(t in this._coreSystems)return this._systems[this._systemsMap[t]]=null;delete this._systems[this._systemsMap[t]],delete this._systemsMap[t]}setComponentList(t,e=[]){this._componentLists[t]=e}getComponentList(t){return this._componentList[t]}getEntityByComponents(t,e=this.objects){for(let s=0;s<e.length;s++)for(let n=0;n<t.length;n++)if(e[s].has(t[n]))return e[s]}getEntitiesByComponents(t,e=this.objects,s=[]){for(let n=0;n<e.length;n++)for(let r=0;r<t.length;r++)e[n].has(t[r])&&s.push(e[n]);return s}getEntityByTags(t,e=this.objects){for(let s=0;s<e.length;s++)for(let n=0;n<t.length;n++)if(e[s].hasTag(t[n]))return e[s]}getEntitiesByTags(t,e=this.objects,s=[]){for(let n=0;n<e.length;n++)for(let r=0;r<t.length;r++)e[n].hasTag(t[r])&&s.push(e[n])}infertype(t){let e=t.CHOAS_CLASSNAME;if(e){if(e in this._classes)return new this._classes[e];v.throw(`Class \`${e}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`)}return t instanceof Array?[]:{}}clone(t){if(typeof t!="object")return t;let e=this.infertype(t);for(var s in t)e[s]=this.clone(t[s]);return e}static DefaultSystem(t){return{init(e){e.setComponentList(t)},update(e){let s=manager.getComponentList(t);for(let n=0;n<s.length;n++)s[n].update(e)}}}static Default(t){let e=new kt,s=new ot(t),n=new Bt,r=new Mt,h=new Ft;return e.add("collision",Ot),e.add("precollision",Lt),s.registerSystem("input",h),s.registerSystem("events",e),s.registerSystem("world",r),s.registerSystem("renderer",n),s}}class N{constructor(){o(this,"_position",new c);o(this,"_orientation",new B);o(this,"scale",new c(1,1));o(this,"_children",[]);o(this,"parent",null)}get angle(){return this._orientation.radian*180/Math.PI}set angle(t){this._orientation.degree=t}get position(){return this._position}set position(t){this._position.copy(t)}get orientation(){return this._orientation}set orientation(t){this._orientation.copy(t)}draw(t){t.circle(0,0,10)}update(t,e){let s=this._position.x,n=this._position.y;t.begin(),t.translate(s,n),t.rotate(this._orientation.radian),t.scale(this.scale),this.draw(t,e),t.close(),t.reset()}init(t){this.entity=t,this.requires("transform");let e=t.get("transform");this._position=e.position,this._orientation=e.orientation,this.bounds=parent.bounds}add(t){this._children.push(t)}remove(t,e=!1,s){let n=s??this._children.indexOf(t);if(n!==-1)return y.removeElement(this._children,n),!0;if(!e)return!1;for(var r=0;r<this._children.length;r++)if(this._children[r].remove(t,e,s))return!0;return!1}}y.inheritComponent(N);let lt=new c;class $e extends N{constructor(e={}){super();o(this,"drawVelocity",!1);o(this,"drawBounds",!1);this.drawVelocity=e.drawVelocity||!1,this.drawBounds=e.drawBounds||!1}update(e,s){if(this.body.physicsType==C.COMPOSITE)for(var n=0;n<this.body.bodies.length;n++)this.drawShapes(this.body.bodies[n],e);else this.drawShapes(this.body,e),this.drawVelocity==!0&&this.drawVelocity(this.body,e),this.drawBounds==!0&&this.drawBounds(this.body,e)}drawVelocity(e,s){s.begin(),s.line(e.position.x,e.position.y,e.position.x+e.velocity.x,e.position.y+e.velocity.y),s.stroke("cyan"),s.close}drawBounds(e,s){s.begin(),s.rect(e.bounds.min.x,e.bounds.min.y,e.bounds.max.x-this.body.bounds.min.x,e.bounds.max.y-this.body.bounds.min.y),s.stroke("red"),s.close()}drawShapes(e,s){s.begin();for(var n=0;n<e.shapes.length;n++){let r=e.shapes[n];r.type==E.CIRCLE?(s.circle(r.position.x,r.position.y,r.radius),c.fromRad(r.angle,lt).multiply(r.radius),s.line(...r.position,r.position.x+lt.x,r.position.y+lt.y)):s.vertices(r.vertices,!0)}s.stroke(),s.close()}init(e){this.body=e.get("body"),super.init(e)}}class Ve extends N{constructor(t){super(),this.manager=t,this.count=25,this.now=0,this.lastPerf={},this.drawBounds=!1}update(t,e){var p,f,m;this.now++;let s=this.manager.getSystem("renderer"),n=this.manager.getSystem("world"),r=(p=n==null?void 0:n.perf)==null?void 0:p.total,h=(f=s==null?void 0:s.perf)==null?void 0:f.total,l=1/e;this.now>this.count&&(this.lastPerf.rate=F(l,2),this.lastPerf.actual=F(1/(h+r)*1e3,2),this.lastPerf.phy=F(r,2),this.lastPerf.ren=F(h,2),this.lastPerf.tot=F(this.manager.perf.total,2),this.now=0),t.begin(),t.translate(s.width-80,80),t.fill("cyan"),t.fillText(this.lastPerf.actual+"afps",0,-20),t.fillText("render: "+this.lastPerf.ren+"ms",0,0),t.fillText("physics: "+this.lastPerf.phy+"ms",0,10),t.fillText("total: "+this.lastPerf.tot+"ms",0,20),t.fillText(`bodies: ${(m=n==null?void 0:n.objects)==null?void 0:m.length}`,0,30),this.lastPerf.rate>59?t.fill("cyan"):this.lastPerf.rate>29?t.fill("orange"):this.lastPerf.rate<=29&&t.fill("red"),t.fillText(this.lastPerf.rate+"fps",0,-30),t.close(),t.translate(-s.width+80,-80)}}class qe extends N{constructor(e,s,n){super();o(this,"_index",0);o(this,"_maxFrame",0);o(this,"_frame",0);o(this,"_accumulator",0);o(this,"_dt",0);o(this,"frameRate",1/60);o(this,"_maxFrames",null);o(this,"width",0);o(this,"height",0);o(this,"frameWidth",0);o(this,"frameHeight",0);this.img=e,this._maxFrame=(s||1)-1,e.onload=()=>{this.width=e.width,this.height=e.height,this.frameWidth=e.width/(s||1),this.frameHeight=e.height/(n||1)},this.width=0,this.height=0,this.frameWidth=0,this.frameHeight=0}setMaxFrames(...e){this._maxFrames=e}setIndex(e){this._maxFrame=this._maxFrames[e],this._index=e,this._frame=0}draw(e){e.drawImage(this.img,-this.frameWidth/2,-this.frameHeight/2,this.frameWidth,this.frameHeight,this._frame,this._index)}update(e,s){super.update(e,s),this._accumulator+=s,!(this._accumulator<this._frameRate)&&(this._accumulator=0,this._frame+=1,this._frame>this._maxFrame&&(this._frame=0))}}class Ue extends N{constructor(t,e,s){super(),this.img=t,t.onload=()=>{this.width=t.width,this.height=t.height},this.width=0,this.height=0,this.frameWidth=0,this.frameHeight=0}draw(t){t.drawImage(this.img,-this.frameWidth/2,-this.frameHeight/2,this.frameWidth,this.frameHeight,this._frame,this._index)}update(t,e){super.update(t,e),this._accumulator+=e,!(this._accumulator<this._frameRate)&&(this._accumulator=0,this._frame+=1,this._frame>this._maxFrame&&(this._frame=0))}}let Ye=new c;class jt{constructor(t,e,s=5){this.position=t,this.active=!0,this.velocity=new c,this.radius=e,this.color={r:100,g:255,b:255,a:1},this.lifespan=s,this._life=0}draw(t){t.begin(),t.circle(...this.position,this.radius),t.fill(`rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`),t.close()}update(t,e){this._life+=e,this.position.add(Ye.copy(this.velocity).multiply(e)),this.active=this._life<this.lifespan}init(){}}class ze extends N{constructor(t=1,e=100,s=5){super(),this.initial=t,this.frameIncrease=s,this.max=e}initParticles(t){for(var e=0;e<t;e++)this.add(this.create())}create(){return new jt(new c(...this.position),R(1,10),R(1,6))}init(t){super.init(t),this.initParticles(this.initial)}behavior(t){t.velocity.set(t.velocity.x+R(-1,1),t.velocity.y+R(0,.3))}update(t,e){for(let s=this._children.length-1;s>0;s--){let n=this._children[s];n.update(t,e),this.behavior(n),n.draw(t,e),n.active||this.remove(s)}this._children.length<this.max&&this.initParticles(this.frameIncrease)}remove(t){this._children.splice(t,1)}add(t){this._children.push(t)}}class We{constructor(t){o(this,"speed",1);this.img=t}draw(t,e,s){t.drawImage(this.img,e,s)}update(t,e){}}class Ge{constructor(...t){this.layers=t||[]}update(t,e){this.layers.forEach(s=>{s.draw(t,e)})}}class ht{constructor(){o(this,"_components",{});o(this,"_handlers",{});o(this,"_tags",new Set);o(this,"_global",null);o(this,"active",!1)}get CHAOS_OBJ_TYPE(){return"entity"}get CHAOS_CLASSNAME(){return this.constructor.name.toLowerCase()}destroy(){this.removeSelf();for(let t in this._components){let e=this._components[t];e.destroy&&e.destroy(),delete this._components[t]}for(let t in this._handlers)delete this._handlers[t]}removeSelf(){this._global&&this._global.remove(this),this.active=!1,this._global=null}removeComponents(){if(this._global!==void 0)for(var t in this._components)this._global.removeComponent(t,this._components[t])}get manager(){return this._global}attach(t,e){return this._components[t]=e,this.manager&&(e.init(this),this._global.addComponent(t,e)),this}remove(t){return this._global.removeComponent(t,this._components[t]),delete this._components[t],this}register(t,e){this._handlers[t]=e}unregister(t){t in this._handlers&&delete this._handlers[t]}getHandler(t){return this._handlers[t]}get(t){return this._components[t]}has(t){return t in this._components}addTag(t){this._tags.add(t)}removeTag(t){this._tags.delete(t)}hasTag(t){return this._tags.has(t)}init(t){this._global=t,this.active=!0;for(let e in this._components)this._components[e].init(this),t.addComponent(e,this._components[e])}static Default(t,e,s){return new ht().attach("transform",new Ht(t,e,s)).attach("movable",new $t).attach("bounds",new D)}query(t,e=[]){return this._global.query(t,e)}}class Ht{constructor(t,e,s){this.position=new c(t,e),this.orientation=new B(s)}init(){}}class $t extends W{constructor(t,e,s){super(),this.velocity=new c(t,e),this.rotation=new B(s),this.acceleration=new c}}class Vt{constructor(t,e){this.buffer=t.ctx.createBufferSource(),this.buffer.buffer=e,this.finished=!1,this.id=-1;let s=this;this.buffer.onended=()=>{t.remove(s.id),s.finished=!0}}play(t=0,e=0,s=!1){this.buffer.start(e,t),this.buffer.loop=s}disconnect(){this.buffer.disconnect()}connect(t){this.buffer.connect(t)}}class Je{constructor(){o(this,"ctx",new AudioContext);o(this,"sfx",{});o(this,"_backname","");o(this,"_background",null);o(this,"playing",[]);o(this,"toplay",{});o(this,"baseUrl","");o(this,"_mute",1);this.toplay={},this.gainNodes=[this.ctx.createGain()],this.gainNodes[0].connect(this.ctx.destination),this.canPlay=this.ctx.state=="running";let t=this;window.addEventListener("pointerdown",function e(){t.ctx.resume(),t.ctx.state=="running"&&(removeEventListener("pointerdown",e),t.canPlay=!0)})}load(t){let e=t.split(".")[0];fetch(this.baseUrl+"/"+t).then(s=>s.arrayBuffer()).then(s=>this.ctx.decodeAudioData(s)).then(s=>{this.sfx[e]=s,this._backname==e&&this.playMusic(e)}).catch(s=>console.log(s))}playMusic(t){this._backname=t,t in this.sfx&&(this._background=new Vt(this,this.sfx[t]),this._background.connect(this.gainNodes[0]),this._background.play(0,0,!0))}playEffect(t,e=!1){if(!(t in this.sfx)){this.toplay[t]=this.toplay[t]||0,this.toplay[t]=1;return}let s=new Vt(this,this.sfx[t]),n=this.playing.length;return s.id=n,s.connect(this.gainNodes[0]),this.playing.push(s),s.play(0,0,e),s}playAll(){this.playing.forEach(t=>{t.play()})}pauseAll(){this.playing.forEach(t=>{t.stop()})}mute(){this._mute=this.gainNodes[0].gain}unmute(){this.gainNodes[0].gain=this._mute}remove(t){t!=-1&&(y.removeElement(this.playing,t),t<this.playing.length&&(this.playing[t].id=t))}}class Xe{constructor(){this.objects=[]}init(t){t.setComponentList("agent",this.objects)}update(t){let e=1/t;for(var s=0;s<this.objects.length;s++)this.objects[s].update(e)}}class Ke{constructor(){this._behaviours=[],this._accumulated=new c,this.active=!1}add(t){this._behaviours.push(t),this.active&&t.init(this._agent)}remove(t){y.removeElement(this._behaviours,this._behaviours.indexOf(t))}init(t){this._agent=t;for(var e=0;e<this._behaviours.length;e++)this._behaviours[e].init(t)}update(t){let e=new c;this._accumulated.set(0,0);for(let s=0;s<this._behaviours.length;s++)this._behaviours[s].calc(e,t),this._accumulated.add(e);this._agent.acceleration.add(this._accumulated),this._agent.orientation.radian=c.toRad(this._agent.velocity)}clear(){y.clearArr(this._behaviours)}}class qt{constructor(){o(this,"velocity",null);o(this,"rotation",null);o(this,"maxSpeed",20);o(this,"maxTurnRate",5);o(this,"behaviours",new Ke)}init(t){this.parent=t,this.requires("transform","movable");let e=this.get("movable"),s=this.get("transform");this.velocity=e.velocity,this.rotation=e.rotation,this.position=s.position,this.orientation=s.orientation,this.acceleration=e.acceleration,this.behaviours.init(this)}add(t){this.behaviours.add(t)}remove(t){this.behaviours.remove(t)}update(t){this.behaviours.update(t)}}y.inheritComponent(qt);class q{constructor(){this.active=!0}init(){}update(){}calc(){}}let Ze=new c,Qe=new c;class ti extends q{constructor(e){super();o(this,"maxSpeed",800);o(this,"maxForce",2e3);o(this,"arrive",!1);o(this,"arrivespeed",1);o(this,"radius",100);let s=e.get("transform"),n=e.get("movable");this.pursuerPos=s.position,this.pursuerVel=n.velocity,this.pursuerRot=n.rotation,this.pursuerOrt=s.orientation}init(e){this.pursuedPos=e.position,this.pursuedVel=e.velocity,this.pursuedPosRot=e.rotation,this.pursuedOrt=e.orientation}calc(e,s){let n=Ze.copy(this.pursuedPos).sub(this.pursuerPos),r=Qe.copy(this.pursuedVel),h=n.magnitude();if(h==0||h>this.radius)return;n.setMagnitude(it(h,0,this.radius,this.maxSpeed,0));let l=n.sub(r).multiply(s);l.clamp(0,this.maxForce),e.copy(l)}}let ei=new c,Ut=new c;class ii extends q{constructor(){super();o(this,"maxSpeed",200);o(this,"maxForce",100);o(this,"_theta",90);o(this,"dtheta",10);o(this,"_radius",100)}init(e){this.pos=e.position,this.vel=e.velocity,this.pursuerRot=e.rotation,this.pursuerOrt=e.orientation}calc(e,s){this._theta+=R(-this.dtheta,+this.dtheta);let n=ei.copy(this.vel);n.equalsZero()&&c.random(n);let r=this._radius*.8;n.setMagnitude(this._radius),c.fromDeg(this._theta+c.toDeg(this.vel),Ut).multiply(r),n.add(Ut),n.setMagnitude(this.maxSpeed),n.sub(this.vel).multiply(s).clamp(0,this.maxForce),e.copy(n)}}class si{constructor(){}init(){}calc(t){}}class ni{constructor(){this.neighbours=[]}init(){}calc(t){}}let ri=new c,ai=new c;class oi extends q{constructor(e){super();o(this,"maxSpeed",1e3);o(this,"maxForce",2e3);o(this,"arrive",!1);o(this,"arrivespeed",1);o(this,"radius",100);let s=e.get("transform"),n=e.get("movable");this.pursuedPos=s.position,this.pursuedVel=n.velocity,this.pursuedRot=n.rotation,this.pursuedOrt=s.orientation}init(e){this.pursuerPos=e.position,this.pursuerVel=e.velocity,this.pursuerRot=e.rotation,this.pursuerOrt=e.orientation}calc(e,s){let n=ri.copy(this.pursuedPos).sub(this.pursuerPos),r=ai.copy(this.pursuerVel);n.setMagnitude(this.maxSpeed);let h=n.sub(r).multiply(s);h.clamp(0,this.maxForce),e.copy(h)}}let li=new c,hi=new c;class ci extends q{constructor(e){super();o(this,"maxSpeed",1e3);o(this,"maxForce",2e3);o(this,"arrive",!1);o(this,"arrivespeed",1);o(this,"radius",1e3);let s=e.get("transform"),n=e.get("movable");this.pursuedPos=s.position,this.pursuedVel=n.velocity,this.pursuedRot=n.rotation,this.pursuedOrt=s.orientation}init(e){this.pursuerPos=e.position,this.pursuerVel=e.velocity,this.pursuerRot=e.rotation,this.pursuerOrt=e.orientation}calc(e,s){let n=li.copy(this.pursuedPos).sub(this.pursuerPos),r=hi.copy(this.pursuerVel),h=n.magnitude();h<this.radius?n.setMagnitude(it(h,0,this.radius,0,this.maxSpeed)):n.setMagnitude(this.maxSpeed);let l=n.sub(r).multiply(s);l.clamp(0,this.maxForce),l.draw(ctx,...this.pursuerPos),e.copy(l)}}const ct={_pairs:null,split(){let a=document.cookie.split(";"),t={};for(let e=0;e<a.length;e++){let s=a[e].split("=");t[s[0]]=s[1]}return t},set(a,t,e=12e5){document.cookie=`${a}=${t};maxAge=${e}`},get(a){let t=document.cookie.split(";");for(var e=0;e<t.length;e++){let s=t[e].split("=");if(s[0].includes(a))return s[1]}},delete(a){document.cookie=`${a}=; max-age=0`},clear(){let a=document.cookie.split(";");for(var t=0;t<a.length;t++){let e=a[t].split("=");this.delete(e[0])}}};ct._pairs=ct.split();const ui={set(a,t){JSON.stringify(t),sessionStorage.setItem(a,t)},get(a){let t=sessionStorage.getItem(a);return JSON.parse(t)},clear(){sessionStorage.clear()}},di={set(a,t){JSON.stringify(t),localStorage.setItem(a,t)},get(a){let t=localStorage.getItem(a);return JSON.parse(t)},clear(){localStorage.clear()}};u.AABB=b,u.AABBox=D,u.Agent=qt,u.AgentManager=Xe,u.Angle=B,u.ArriveBehaviour=ci,u.AudioHandler=Je,u.Ball=ae,u.Behaviour=q,u.Body=T,u.BodyMesh=$e,u.Box=oe,u.Circle=G,u.Clock=st,u.Component=W,u.Composite=vt,u.Constraint=nt,u.Cookies=ct,u.DEVICE=O,u.DOMEventHandler=It,u.DebugMesh=Ve,u.DistanceConstraint=ue,u.Entity=ht,u.Err=v,u.EvadeBehaviour=ti,u.EventDispatcher=kt,u.Events=He,u.Flock=ni,u.Geometry=ft,u.HeightMap=re,u.ImageSprite=qe,u.Input=Ft,u.Keyboard=Dt,u.Layer=We,u.Line=yt,u.Loader=Et,u.Manager=ot,u.Matrix=Y,u.Mouse=Nt,u.Movable=$t,u.ParallaxBackground=Ge,u.Particle=jt,u.ParticleSystemSprite=ze,u.Pursuit=si,u.Rectangle=J,u.Renderer=Bt,u.SeekBehaviour=oi,u.Session=ui,u.Shape=E,u.SpringConstraint=fe,u.Sprite=N,u.StaticImageSprite=Ue,u.Storage=di,u.Touch=Rt,u.Transform=Ht,u.Triangle=ne,u.Utils=y,u.Vector=c,u.WanderBehaviour=ii,u.World=Mt,u.clamp=Jt,u.defaultCollisionHandler=Ot,u.defaultPrecollisionHandler=Lt,u.degToRad=Xt,u.exp=zt,u.lerp=Gt,u.map=it,u.naturalizePair=dt,u.radToDeg=Kt,u.rand=R,u.round=F,u.sq=M,u.sqrt=Wt,Object.defineProperty(u,Symbol.toStringTag,{value:"Module"})});
+/*
+ * @author Wayne Mwashuma
+ * {@link https://github.com/waynemwashuma/chaos-engine.git}
+ * @copyright  2023-2023 Wayne Mwashuma
+ * @license UNLICENSED
+ *
+ * 
+ * MIT License
+
+Copyright (c) 2023 Wayne Mwashuma
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+ */
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CHAOS = {}));
+})(this, (function (exports) { 'use strict';
+
+  /**
+   * This module is used to check if bounds of a body overlap
+   */
+  const Overlaps = {
+    /**
+     * Checks if two AABB overlap
+     * 
+     * @param {BoundingBox} a
+     * @param {BoundingBox} b
+     */
+    AABBColliding(a, b) {
+      return (
+        a.min.x <= b.max.x &&
+        a.max.x >= b.min.x &&
+        a.min.y <= b.max.y &&
+        a.max.y >= b.min.y
+      )
+    },
+    /**
+     * Checks if two CircleBounds overlap
+     * 
+     * @param {CircleBound} a
+     * @param {CircleBound} b
+     */
+    boundSpheresColliding(a, b) {
+      const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
+        (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
+      return distance < a.r * a.r + b.r * b.r;
+    },
+      /**
+       * Checks if An AABB and a CircleBound overlap
+       * 
+       * @param {BoundingBox} a
+       * @param {BoundingCircle} b
+       */
+    AABBvsSphere(a, b) {
+      const x = Math.max(a.min.x, Math.min(b.pos.x, a.max.x));
+      const y = Math.max(a.min.y, Math.min(b.pos.y, a.max.y));
+      const distance =
+        (x - b.pos.x) * (x - b.pos.x) +
+        (y - b.pos.y) * (y - b.pos.y);
+
+      return distance < b.r;
+    }
+  };
+
+  let marker = `🚀Chaos Engine Says::::\n`;
+  let mess = [];
+
+  /**
+   * A set of functions to streamline logging of items to the console
+  */
+  const Err = {};
+
+  /**
+   * Logs out a warning to the console.
+   * 
+   * @param {string} message
+   */
+  Err.warn = function(message) {
+    console.warn(marker + message);
+  };
+
+  /**
+   * Throws a fatal error.
+   * 
+   * @param {string} message
+   */
+  Err.throw = function(message) {
+    throw new Error(marker + message)
+  };
+
+  /**
+   * Logs out a non fatal error to the console.
+   * 
+   * @param {string} message
+   */
+  Err.error = function(message) {
+    console.error(marker + message);
+  };
+
+  /**
+   * Logs out a message to the console.
+   * 
+   * @param {string} message
+   */
+  Err.log = function(message) {
+    console.log(marker + message);
+  };
+  /**
+   * Logs out a warning once to the console.
+   * 
+   * @param {string} message
+   */
+  Err.warnOnce = function(message) {
+    if (mess.includes(message)) return
+    mess.push(message);
+    Err.warn(message);
+  };
+  /**
+   * Logs out a message,warning or error to the console according to the supplied log function.
+   * 
+   * @param {boolean} test
+   * @param {string} message
+   * @param {Function} errfunc
+   */
+  Err.assert = function(test, errfunc, message) {
+    if (!test) errfunc(message);
+    return test
+  };
+
+  /**
+   * Contains a subset of useful functionality.
+   * 
+   * @module Utils
+   */
+  const Utils = {};
+  let tmpID = 0;
+
+  /**
+   * Appends the second array to the first.
+   * 
+   * @param {[]} arr1
+   * @param {[]} arr1
+   */
+  Utils.appendArr = function(arr1, arr2) {
+    for (var i = 0; i < arr2.length; i++) {
+      arr1.push(arr2[i]);
+    }
+  };
+  /**
+   * Clears an array
+   * 
+   * @param {[]} arr
+   */
+  Utils.clearArr = function(arr) {
+    for (var i = arr.length; i > 0; i--) {
+      arr.pop();
+    }
+  };
+  /**
+   * Removes a number of items at the end of an array
+   * 
+   * @param {[]} arr
+   * @param {number} number
+   */
+  Utils.popArr = function(arr, number) {
+    let length = arr.length;
+    for (var i = length; i > length - number; i--) {
+      arr.pop();
+    }
+  };
+  /**
+   * Removes an element by its index from an array
+   * 
+   * @param {[]} arr
+   * @param {number} index
+   */
+  Utils.removeElement = function(arr, index) {
+    if (index == -1) return null
+    if (arr.length - 1 == index) return arr.pop()
+
+    let temp = arr[index];
+    arr[index] = arr.pop();
+    return temp
+  };
+  /**
+   * Generates a unique id when called
+   */
+  Utils.generateID = function() {
+    return (tmpID += 1)
+  };
+
+  /**
+   * Mixes the functions required by a component into a class.
+   * 
+   * @param {Object} component the class to add methods to.
+   * @param {boolean} overrideInit
+   * @param {boolean} overrideUpdate
+  */
+  Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate = true) {
+    if (component == void 0 || typeof component !== "function") return
+    let proto = component.prototype;
+
+    if (proto.destroy) {
+      let destroy = component.destroy;
+      proto.destroy = function() {
+        this.entity = null;
+        destroy.call(this);
+      };
+    } else {
+      proto.destroy = function() {
+        this.entity = null;
+      };
+    }
+    if (proto.init && overrideInit) {
+      let init = proto.init;
+      proto.init = function(entity) {
+        this.entity = entity;
+        init.call(this, entity);
+      };
+    } else if (!proto.init) {
+      proto.init = function(entity) {
+        this.entity = entity;
+      };
+    }
+    if (!proto.update && overrideUpdate) {
+      proto.update = function() {
+        Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
+
+      };
+    }
+    proto.getComponent = function(n) {
+      return this.parent.getComponent(n);
+    };
+    proto.requires = function(...names) {
+      for (var i = 0; i < names.length; i++)
+        if (!this.entity.has(names[i]))
+          Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
+    };
+
+    proto.query = function(bound, target = []) {
+      return this.parent.query(bound, target)
+    };
+    Object.defineProperty(proto, "CHOAS_CLASSNAME", {
+      get: function() {
+        return this.constructor.name.toLowerCase()
+      },
+      enumerable: true,
+      configurable: false
+    });
+    Object.defineProperty(proto, "CHAOS_OBJ_TYPE", {
+      get: function() {
+        return "component"
+      },
+      enumerable: true,
+      configurable: false
+    });
+  };
+
+  Utils.inheritSystem = function(system) {
+    if (system == void 0 || typeof system !== "function") return
+    let proto = system.prototype;
+    if (!proto.init) {
+      proto.init = function() {
+        Err.warnOnce("Please override the init method in the system " + proto.constructor.name);
+      };
+    }
+    if (!proto.update) {
+      proto.update = function() {
+        Err.warnOnce("Please override the update method in the system " + proto.constructor.name);
+
+      };
+    }
+    if (!proto.add) {
+      proto.add = function(component) {
+        this.objects.push(component);
+      };
+    }
+
+    if (!proto.remove) {
+      proto.remove = function(component) {
+        let index = this.objects.indexOf(component);
+        Utils.removeElement(this.objects, index);
+      };
+    }
+  };
+
+  /**
+   * Handles time management for the game.
+  */
+  class Clock {
+    /**
+     * Last time the clock was updated
+     * 
+     * @private
+     * @type number
+    */
+    lastcall = 0
+    /**
+     * Difference between the last call in the last frame and current call.
+     * 
+     * @type number 
+    */
+    dt = 0
+    /*getFrameRate(){
+      return 1/(this.dt/1000)
+    }
+    getRoundedFrameRate(){
+      return Math.round(this.getFrameRate())
+    }*/
+    update(accumulate){
+      this.dt = accumulate - this.lastcall || 0;
+      //this.framerate = this.getFrameRate()
+      this.lastcall = accumulate; 
+      this.delta = this.dt/1000;
+      return this.delta
+    }
+  }
+
+  /**
+   * A helper class.
+   * Since there are no inerfaces in JavaScript,
+   * you might have to extend this to create a component, but there is another solution.
+   * Use instead Utils.inheritComponent if you have your own hierarchy of classes.
+  */
+  class Component {
+    /**
+     * The entity this component belongs to.
+    */
+    entity = null
+  }
+  Utils.inheritComponent(Component);
+
+  /**
+   * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+   */
+  class BoundingBox extends Component {
+    /**
+     * 
+     * @type Vector_like
+     */
+    pos = null
+    /**
+     * The upper limit of the bounding box
+     * 
+     * @type Vector_like
+     */
+    max = null
+    /**
+     * The lower limit of the bounding box
+     * 
+     * @type Vector_like
+     */
+    min = null
+    /**
+     * @param {number} [minX=0]
+     * @param {number} [minY=0]
+     * @param {number} [maxX=0]
+     * @param {number} [maxY=0]
+     */
+    constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
+      super();
+      this.pos = {
+        x: 0,
+        y: 0
+      };
+      this.max = {
+        x: maxX,
+        y: maxY
+      };
+      this.min = {
+        x: minX,
+        y: minY
+      };
+    }
+    /**
+     * 
+     * Checks to see if this intersects with another bounding box
+     * @param { BoundingBox} bound the bound to check  intersection with
+     * 
+     * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
+     **/
+    intersects(bound) {
+      if (bound.r)
+        return Overlaps.AABBvsSphere(this, bound)
+      return Overlaps.AABBColliding(this, bound)
+    }
+    /**
+     * Calculates the bounds of the body
+     * 
+     * @param {Body} body Body to calculate max and min from
+     * @@param {Number} padding increases the size of the bounds
+     */
+    calculateBounds(body, padding = 0) {
+      let minX = Number.MAX_SAFE_INTEGER,
+        minY = Number.MAX_SAFE_INTEGER,
+        maxX = -Number.MAX_SAFE_INTEGER,
+        maxY = -Number.MAX_SAFE_INTEGER;
+
+      if (body.shapes.length == 0) {
+        this.min.x = body.position.x;
+        this.max.x = body.position.x;
+        this.min.y = body.position.y;
+        this.max.y = body.position.y;
+        this.pos.x = body.position.x;
+        this.pos.y = body.position.y;
+        return
+      }
+      for (var i = 0; i < body.shapes.length; i++) {
+        let shape = body.shapes[i];
+        if (shape.type == 0) {
+          let idx = body.position.x - shape.radius,
+            idy = body.position.y - shape.radius,
+            mdx = body.position.x + shape.radius,
+            mdy = body.position.y + shape.radius;
+          if (!minX || idx < minX) minX = idx;
+          if (!maxX || mdx > maxX) maxX = mdx;
+          if (!minY || idy < minY) minY = idy;
+          if (!maxY || mdy > maxY) maxY = mdy;
+          continue
+        }
+        for (var j = 0; j < shape.vertices.length; j++) {
+          let vertex = shape.vertices[j];
+          if (vertex.x < minX) minX = vertex.x;
+          if (vertex.x > maxX) maxX = vertex.x;
+          if (vertex.y < minY) minY = vertex.y;
+          if (vertex.y > maxY) maxY = vertex.y;
+        }
+      }
+      this.min.x = minX - padding;
+      this.max.x = maxX + padding;
+      this.min.y = minY - padding;
+      this.max.y = maxY + padding;
+      this.pos.x = body.position.x;
+      this.pos.y = body.position.y;
+    }
+    /**
+     * Translates this bound to the given position.
+     * 
+     * @param {Vector} pos
+     */
+    update(pos) {
+      let dx = pos.x - this.pos.x;
+      let dy = pos.y - this.pos.y;
+
+      this.pos.x = pos.x;
+      this.pos.y = pos.y;
+      this.min.x += dx;
+      this.max.x += dx;
+      this.min.y += dy;
+      this.max.y += dy;
+    }
+    /**
+     * Deep copies a bounding box to a new one.
+     * 
+     * @returns BoundingBox
+    */
+    clone() {
+      return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
+    }
+    /**
+     * Deep copies another bounding box.
+     * 
+     * @param {BoundingBox} bounds
+    */
+    copy(bounds) {
+      this.pos.x = bounds.pos.x;
+      this.pos.y = bounds.pos.y;
+      this.min.x = bounds.min.x;
+      this.min.y = bounds.min.y;
+      this.max.x = bounds.max.x;
+      this.max.y = bounds.max.y;
+    }
+    /**
+     * Combines two bounds to create a new one that covers the previous two.
+     * 
+     * @param {BoundingBox} bound1 
+     * @param {BoundingBox} bound2 
+     * @param {BoundingBox} target Bound to store results into.
+     * @returns BoundingBox
+     */
+    static union(bound1, bound2, target) {
+      target = target || new BoundingBox();
+
+      target.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x;
+      target.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y;
+      target.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x;
+      target.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y;
+      return target
+    }
+  }
+
+  /**
+   * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+   */
+  class BoundingCircle {
+    /**
+     * 
+     * @type number
+    */
+    r = 0
+    /**
+     * 
+     * @type Vector_like
+    */
+    pos = null
+    /**
+     * @param {number} [r=0]
+     */
+    constructor(r = 0) {
+      this.r = r;
+      this.pos = { x: 0, y: 0 };
+    }
+    /**
+     * 
+     * Checks to see if this intersects with another bounding box
+     * @param { BoundingBox} bound the bound to check  intersection with
+     * 
+     * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
+     **/
+    intersects(bound) {
+      if (bound.r)
+        return Overlaps.boundSpheresColliding(this, bound)
+      return Overlaps.AABBvsSphere(bound, this)
+    }
+    /**
+     * Calculates the bounds of the body
+     * 
+     * @param {Body} body Body to calculate max and min from
+     * @@param {Number} padding increases the size of the bounds
+     */
+    calculateBounds(body, padding = 0) {
+      let radsq = 0,
+        shape,
+        vertices,
+        tmp;
+      for (var i = 0; i < body.shapes.length; i++) {
+        shape = body.shapes[i];
+        if (shape.radius) {
+          tmp = shape.radius * shape.radius;
+          if (tmp > radsq) radsq = tmp;
+          continue
+        }
+        for (var j = 0; j < body.shapes[i].vertices.length; j++) {
+          vertices = body.shapes[i].vertices;
+          for (var j = 0; j < vertices.length; j++) {
+            tmp = vertices[j].distanceToSquared(body.position);
+            if (tmp > radsq) radsq = tmp;
+          }
+          
+        }
+      }
+      this.pos.x = body.position.x;
+      this.pos.y = body.position.y;
+      this.r = Math.sqrt(radsq);
+    }
+    /**
+     * Translates this bound to the given position.
+     */
+    update(pos) {
+      //let dx = pos.x - this.pos.x
+      //let dy = pos.y - this.pos.y
+
+      this.pos.x = pos.x;
+      this.pos.y = pos.y;
+    }
+  }
+
+  const RHI = Math.PI / 180,
+    RHI_INV = 1 / RHI;
+
+  /**
+   * Creates a random number between the parameters
+   * 
+   * @param {number} [min=0] The minimal bound of the random number
+   * @param {number} [max=1] The maximum bound of the random number
+   * @returns {number}
+   */
+  function rand(min = 0, max = 1) {
+    return Math.random() * (max - min) + min
+  }
+
+  /**
+   * Returns the square of a number
+   * 
+   * @param {number} x The number to square
+   *  @returns {number}
+  */
+  function sq(x) {
+    return x * x
+  }
+  /**
+   * Returns the power of a number by a given exponent.
+   * 
+   *  @param {number} x the number to power.
+   *  @param {number} [e=2] The number to power by.
+   *  @returns {number}
+  */
+  function exp(x, e = 2) {
+    return x ** e
+  }
+  /**
+   * Returns the square root pf a number
+   * 
+   * @param {number} x The number to root 
+   * @returns {number}
+  */
+  function sqrt(x) {
+    return Math.sqrt(x)
+  }
+
+
+  /**
+   * Interpolates between two numbers by a constant t.
+   * 
+   *  @param {number} a The minimal bound of the interpolation.
+   *  @param {number} b The maximum bound of the interpolation.
+   *  @param {number} t A number between 0 and 1 to interpopate by.Any other number greater than 1 or less than 0 will extapolate beyond b or a respectively.
+   *  @returns {number}
+  */
+  function lerp(a, b, t) {
+    return a + t * (b - a)
+  }
+
+  /**
+   * Rounds a given value to a given precision.
+   * 
+   *  @param {number} number The number to round.
+   *  @param {number} [precision=4] How many decimal places there should be.
+   *  @returns {number}
+  */
+  function round(number, precision = 4) {
+    precision = 10 ** precision;
+    return Math.round(number * precision) / precision
+  }
+
+  /**
+   * Clamps a value between two numbers.
+   * 
+   *  @param {number} value The number to clamp.
+   *  @param {number} min The minimal bound of the clamped number.
+   *  @param {number} max The maximum bound of the clamped number.
+   *  @returns {number}
+  */
+  function clamp(value, min, max) {
+    if (value < min) return min
+    if (value > max) return max
+    return value
+  }
+
+  /**
+   * Maps a value from one range to another.
+   * 
+   *  @param {number} v
+   *  @param {number} x1
+   *  @param {number} y1
+   *  @param {number} x2
+   *  @param {number} y2
+   *  @returns {number}
+  */
+  function map(v, x1, y1, x2, y2) {
+    return x2 + v * (y2 - x2) / (y1 - x1)
+  }
+  /**
+   * Returns a unique number given from a pair of numbers
+   *  @param {number} a
+   *  @param {number} b
+   *  @returns {number}
+  */
+  function naturalizePair(a, b) {
+    if (a > b)
+      return (a + b) * (a + b + 1) / 2 + a;
+    return (a + b) * (a + b + 1) / 2 + b;
+  }
+
+  /**
+   * Converts a degree to a radian.
+   * 
+   * @param {number} deg number to convert.
+   *  @returns {number}
+  */
+  function degToRad(deg) {
+    return deg * RHI
+  }
+
+  /**
+   * Converts a radian to a degree.
+   * 
+   * @param {number} rad number to convert.
+   *  @returns {number}
+  */
+  function radToDeg(rad) {
+    return rad * RHI_INV
+  }
+
+  let obj$1 = {
+    x: 0,
+    y: 0
+  };
+  let TWO_PI = Math.PI * 2;
+  /**
+   * This is a 2D vector class.
+   * 
+   * @author Wayne Mwashuma <mwashumawayne@gmail.com>
+   * @license MIT
+   */
+  class Vector {
+    /**
+     * @param {number} x the x coordinate of the vector
+     * @param {number} y the y coordinate of the vector
+     */
+    constructor(x, y) {
+      this.x = x || 0;
+      this.y = y || 0;
+    }
+    get CHOAS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    get CHAOS_OBJ_TYPE() {
+      return "vector"
+    }
+    /**
+     *Calculates length of this vector and returns 
+     * it
+     * 
+     * @returns {number}
+     */
+    magnitude() {
+      return Math.sqrt(this.magnitudeSquared());
+    };
+    /**
+     * Sets a vector to have the given length.
+     * 
+     * @param {number} length 
+     */
+    setMagnitude(length) {
+      this.normalize().multiply(length);
+    }
+    /**
+     *Calculates length squared of vector and returns it
+     */
+    magnitudeSquared() {
+      return this.y ** 2 + this.x ** 2
+    }
+    /**
+     *Calculates length of this vector to another vector
+     * @param {Vector} v the other vector
+     */
+    distanceTo(v) {
+      obj$1.x = this.x - v.x;
+      obj$1.y = this.y - v.y;
+      return Math.sqrt(Vector.prototype.magnitudeSquared.call(obj$1))
+    }
+    /**
+     *Calculates length squared of this vector to another vector
+     * 
+     * @param {Vector} v the other vector
+     * @returns {number}
+     */
+    distanceToSquared(v) {
+      obj$1.x = this.x - v.x;
+      obj$1.y = this.y - v.y;
+      return Vector.prototype.magnitudeSquared.call(obj$1)
+    }
+    /**
+     * Adds a given vector into this 
+     * 
+     * @param {Vector} v
+     * @returns {this}
+     */
+    add(v) {
+      this.x += v.x;
+      this.y += v.y;
+      return this
+    }
+    /**
+     * Adds a scalar value into this vector's
+     * x and y values
+     * 
+     * @param {number} n
+     * @returns {this}
+     */
+    addScalar(n) {
+      this.x += n;
+      this.y += n;
+      return this
+    }
+    /**
+     * Subtracts a given vector from this vector
+     * 
+     * @param {Vector} v
+     * @returns {this}
+     */
+    sub(v) {
+      this.x -= v.x;
+      this.y -= v.y;
+      return this
+    }
+    /**
+     * Subtracts a scalar value from this vector's x and y values.
+     * 
+     * @param {number} n
+     * @returns {this}
+     */
+    subScalar(n) {
+      this.x -= n;
+      this.y -= n;
+      return this
+    }
+    /**
+     * Calculates the dot product of two vectors.
+     * 
+     * @param {Vector} v
+     * @returns {number}
+     */
+    dot(v) {
+      return this.x * v.x + this.y * v.y
+    }
+    /**
+     * Calculates the cross product of two vectors.
+     * 
+     * @param {Vector} vproduct
+     * @returns {number}
+     */
+    cross(v) {
+      return this.x * v.y - this.y * v.x
+    }
+    /**
+     * Multiplies this vector with a scalar.
+     * 
+     * @param {number} n 
+     * @returns {this}
+     */
+    multiply(n) {
+      this.x *= n;
+      this.y *= n;
+      return this
+    }
+    /**
+     * Divides this vector with a scalar.
+     * 
+     * @param {number} n 
+     * @returns {this}
+     */
+    divide(n) {
+      this.multiply(1 / n);
+      return this
+    }
+    /**
+     * Makes this vector a unit vector by 
+     * dividing its components with its length.
+     * 
+     * @returns {this}
+     */
+    normalize() {
+      const length = this.magnitude();
+      if (length == 0) return this
+      this.x = this.x / length;
+      this.y = this.y / length;
+      return this
+    };
+    /**
+     * Checks to see if this vector is equal to
+     * another vector.
+     * 
+     * @param {Vector} v
+     * @returns {boolean}
+     */
+    equals(v) {
+      return v.x === this.x && v.y === this.y
+    }
+    /**
+     * Checks if the vector length is zero.
+     * 
+     * @returns {boolean}
+     */
+    equalsZero() {
+      return this.x === 0 && this.y === 0
+    }
+    /**
+     * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
+     * 
+     * @param {number} l the length of the vector returned.
+     * @param {Vector} [target = Vector] Vector in which results are stored.
+     * @returns {Vector}
+     */
+    normal(l = 1, target) {
+      target = target || new Vector();
+      target.copy(this).normalize();
+      return target.set(-target.y * l, target.x * l);
+    };
+    /**
+     * Returns the normal to a vector, the normal has the same length as the vector.
+     * 
+     * @param {Vector} [target = Vector] Vector in which results are stored.
+     *  @returns {Vector}
+     */
+    normalFast(target = new Vector()) {
+      return target.set(-this.y, this.x)
+    }
+    /**
+     * Rotates this vector by a given angle in radians.
+     * 
+     * @param {Vector} Angle in radians
+     * @returns {this}
+     */
+    rotate(rad) {
+      let
+        x = this.x,
+        cos = Math.cos(rad),
+        sin = Math.sin(rad);
+      this.x = x * cos - this.y * sin;
+      this.y = x * sin + this.y * cos;
+      return this
+    };
+    /**
+     * Returns an array with x and y values of
+     * this vector pushed into the array in
+     * that order.
+     * 
+     * @param {number[]} [target = []] The array to
+     * push values.Defaults to creating a new
+     * array if not provided one
+     * @returns number[]
+     */
+    toArray(target = [], offset = 0) {
+      target[offset] = this.x;
+      target[offset + 1] = this.y;
+      return target;
+    }
+    /**
+     * Copies x and y values of this vector to 
+     * a new vector and returns the new vector.
+     * 
+     * @return Vector
+     */
+    clone() {
+      return new Vector(this.x, this.y)
+    }
+    /**
+     * Copies x and y values of another vector
+     * to this vector.
+     * 
+     * @@param {Vector} v 
+     * @return this
+     */
+    copy(v) {
+      this.x = v.x;
+      this.y = v.y;
+      return this
+    }
+    /**
+     * Sets x and y values of this vector to the given parameter.
+     * 
+     * @param {Number} x 
+     * @param {Number} y
+     * @returns {this}
+     */
+    set(x, y) {
+      this.x = x;
+      this.y = y;
+      return this
+    }
+    /**
+     * Draws this vector to a 2D canvas.
+     * 
+     * @param {CanvasRenderingContext2D} ctx the context to draw on.
+     * @param {number} x Translates the x-coordinate origin of the vector
+     * @param {number} y Translates the y-coordinate origin of the vector
+     * @param {string} color a CSS string that
+     * is supplied to the rendering context.Can
+     *  be a hex(e.g "0xFFFFFF"),rgb(e.g "rgb(255,255,255)"),hsl or a color name(e.g "white")
+     * @param {Number} scale A value that
+     * lengthens or shortens the length of the vector
+     * @returns {this}
+     */
+    draw(ctx, x = 0, y = 0, color = "red", scale = 1) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(this.x * scale + x, this.y * scale + y);
+      //ctx.arc(this.x * scale + x, this.y * scale + y, 2, 0, Math.PI * 2)
+      ctx.strokeStyle = color;
+      ctx.stroke();
+      ctx.strokeStyle = "black";
+      ctx.closePath();
+      return this
+    }
+    /**
+     * Negates the values of this vector.
+     * 
+     * @returns {this}
+     */
+    reverse() {
+      return this.multiply(-1)
+    }
+    /**
+     * Returns a vector of this reflected on a sirface perpendicular to the normal.
+     * 
+     * @param {number} normal the unit vector perpendicular to reflection surface
+     * @return {Vector}
+     */
+    reflect(normal, target) {
+      target = target || new Vector();
+      return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
+    }
+    /**
+     * Forces this vector to have a length 
+     * between the min and max.
+     * 
+     * @param {number} [min = 0] The smallest value 
+     * the length of this vector is allowed to have.
+     * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
+     * @returns {this}
+     */
+    clamp(min = 0, max = 1) {
+      let length = this.magnitude();
+      if (length == 0) return this
+      if (length > max)
+        return this.multiply(max / length)
+      if (length < min)
+        return this.multiply(min / length)
+      return this
+    }
+
+    [Symbol.iterator] = function*() {
+      yield this.x;
+      yield this.y;
+    }
+    /**
+     * Gets the angle (in degrees) between two
+     * vectors in the range 0° to 360° in the anticlockwise direction from v1 to v2
+     * 
+     * @param {Vector} v1 start of the angle
+     * @param {Vector} v2 end of the angle
+     * @returns {number}
+     */
+    static getAbsDegBtwn(v1, v2) {
+      let a = v1.cross(v2);
+      let deg = Vector.getDegBtwn(v1, v2);
+      return a < 0 ? deg : 360 - deg
+    }
+    /**
+     * Same as `Vector.getAbsDegBtwn` but returns in radians.
+     * 
+     * @param { Vector } v1 start of the angle
+     * @param { Vector } v2 end of the angle
+     * @returns {number}
+     **/
+    static getAbsRadBtwn(v1, v2) {
+      let a = v1.cross(v2);
+      let deg = Vector.getDegBtwn(v1, v2);
+      return a < 0 ? deg : 360 - deg
+    }
+    /**
+     * Gets the angle (in radians) between two
+     * vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
+     * 
+     * @param {Vector} v1 start of the angle
+     * @param {Vector} v2 end of the angle
+     * @returns {number}
+     */
+    static getRadBtwn(v1, v2) {
+      return Math.acos(v1.dot(v2) / (v1.magnitude() * v2.magnitude()))
+    }
+    /**
+     * Gets the angle (in degrees) between two
+     * vectors in shortest direction from v1 to v2 in the range `0°` to `180°`
+     * 
+     * @param {Vector} v1 start of the angle
+     * @param {Vector} v2 end of the angle
+     * @returns {number}
+     */
+    static getDegBtwn(v1, v2) {
+      return Vector.getRadBtwn(v1, v2) * 180 / Math.PI
+    }
+    /**
+     * Returns a unit vector pointing in the
+     * given angle starting from the positive x axis.
+     * 
+     * @param {number} radian angle in radians from 0 to `Math.PI * 2`
+     * @param {Vector} target Vector to store results in.
+     * @returns {Vector}
+     */
+    static fromRad(radian, target = new Vector()) {
+      return target.set(Math.cos(radian), Math.sin(radian))
+    }
+    /**
+     * Returns a unit vector pointing in the
+     * given angle from the positive x axis
+     * 
+     * @param {number} degree angle in radians from `0°` to `360°`
+     * @param {Vector} target Vector to store results in.
+     * @returns {Vector}
+     */
+    static fromDeg(degree, target) {
+      return Vector.fromRad(degree * Math.PI / 180, target)
+    }
+    /**
+     * Generates a new unit Vector in a random direction
+     * 
+     * @returns {Vector}
+     */
+    static random(target) {
+      return Vector.fromRad(Math.random() * TWO_PI, target)
+    }
+    /**
+     * Returns a Vector that has been lerped between v1 and v2
+     * @param {Vector} v1 the vector to lerp from
+     * @param {Vector} v2 the vector to lerp from
+     * @param {number} t a value from 0 to 1 to scale the new Vector between v1 and v2
+     * @param {Vector} target the vector to store results into
+     * 
+     * @returns {Vector}
+     */
+    static lerp(v1, v2, t, target) {
+      target = target || new Vector();
+      return target.copy(v1).set(
+        (v2.x - v1.x) * t + v1.x,
+        (v2.y - v1.y) * t + v1.y
+      )
+    }
+
+    /**
+     * Returns the angle in degrees between the positive x-axis and the vector.
+     * 
+     * @param {Vector} v
+     * @returns {number}
+     */
+    static toDeg(v) {
+      return Vector.toRad(v) / Math.PI * 180
+    }
+
+    /**
+     * Returns the angle in radians between the positive x-axis and the vector.
+     * 
+     * @param {Vector} v
+     * @returns {number}
+     */
+    static toRad(v) {
+      let a = Math.atan2(v.y, v.x);
+      return a < 0 ? TWO_PI + a : a
+    }
+
+    /**
+     * A vector whose x and y values will remain 0.
+     * 
+     * @type {Vector}
+     */
+    static ZERO = Object.freeze(new Vector())
+
+  }
+
+  /**
+   * Wrapper class since JavaScript doesn't support references to numbers explicitly.
+   * Keeps record of the orientation of an entity.
+   */
+  class Angle {
+    /**
+     * Orientation in degrees.
+     * 
+     * @private
+     * @type number
+     */
+    _deg = 0
+    /**
+     * Orientation in radians.
+     * 
+     * @private
+     * @type number
+     */
+    _rad = 0
+    /**
+     * @param {number} [deg=0] Orientation in degrees.
+     */
+    constructor(deg = 0) {
+      this._deg = deg || 0;
+      this._rad = deg * Math.PI / 2 || 0;
+    }
+    get CHOAS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    get CHAOS_OBJ_TYPE() {
+      return "angle"
+    }
+    /**
+     * The orientation in degrees.
+     */
+    set degree(x) {
+      this._deg = x;
+      this._rad = x * Math.PI / 180;
+    }
+    /**
+     * The orientation in radians.
+     */
+    set radian(x) {
+      this._rad = x;
+      this._deg = x * 180 / Math.PI;
+    }
+    get radian() {
+      return this._rad
+    }
+    get degree() {
+      return this._deg
+    }
+    /**
+     * Copies the orientation of another angle.
+     * 
+     * @param {Angle} angle
+     */
+    copy(angle) {
+      this.degree = angle.degree;
+    }
+
+    static fromJSON(obj) {
+      return new Angle(obj._deg)
+    }
+  }
+
+  /**
+   * A class that is used to transform positions through rotation, scaling and translation.
+   */
+  class Matrix2 {
+    /**
+     *  @param {number} [a=1]
+     *  @param {number} [b=0]
+     *  @param {number} [c=0]
+     *  @param {number} [d=1]
+     *  @param {number} [e=0]
+     *  @param {number} [f=0]
+    */
+    constructor(a = 1, b = 0, c = 0, d = 1, e = 0, f = 0) {
+
+      this.a = a;
+      this.b = b;
+      this.c = c;
+      this.d = d;
+      this.e = e;
+      this.f = f;
+    }
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} scaleX
+     * @param {number} scaleY
+     * @param {number} rotation
+     * 
+     * @returns this
+     */
+    setFromTransform(x, y, scaleX, scaleY, rotation) {
+      let cos = Math.cos(rotation);
+      let sin = Math.sin(rotation);
+
+      this.a = cos * scaleX;
+      this.b = sin * scaleX;
+      this.c = -sin * scaleY;
+      this.d = cos * scaleY;
+      this.e = x;
+      this.f = y;
+      return this;
+    };
+    /**
+     * Multiplies with another matrix,
+     *  A * B = C, where B is this matrix
+     * 
+     * @param {Matrix2} m
+     * @returns this
+     */
+    prepend(m) {
+      let x = this.e;
+      let a1 = this.a;
+      let c1 = this.c;
+      this.a = a1 * m.a + this.b * m.c;
+      this.b = a1 * m.b + this.b * m.d;
+      this.c = c1 * m.a + this.d * m.c;
+      this.d = c1 * m.b + this.d * m.d;
+      this.e = x * m.a + this.f * m.c + m.e;
+      this.f = x * m.b + this.f * m.d + m.f;
+      return this;
+    };
+    /**
+     * Multiplies with another matrix,
+     *  A * B = C, where A is this matrix
+     * 
+     * @param {Matrix2} m
+     * @returns {this}
+     */
+    append(m) {
+      let a1 = this.a;
+      let b1 = this.b;
+      let c1 = this.c;
+      let d1 = this.d;
+      this.a = m.a * a1 + m.b * c1;
+      this.b = m.a * b1 + m.b * d1;
+      this.c = m.c * a1 + m.d * c1;
+      this.d = m.c * b1 + m.d * d1;
+      this.e = m.e * a1 + m.f * c1 + this.e;
+      this.f = m.e * b1 + m.f * d1 + this.f;
+      return this;
+    }
+    /**
+     * Makes a matrix to be an identity matrix.
+     * 
+     * @returns this
+     */
+    identity() {
+      this.a = 1;
+      this.b = 0;
+      this.c = 0;
+      this.d = 1;
+      this.e = 0;
+      this.f = 0;
+      return this;
+    };
+    /**
+     * Rotates the matrix by the given angle.
+     * 
+     * @param {number} radians
+     * @returns this
+     */
+    rotate(radians) {
+
+      let cos = Math.cos(radians);
+      let sin = Math.sin(radians);
+      let a1 = this.a;
+      let c1 = this.c;
+      let x = this.e;
+      this.a = a1 * cos - this.b * sin;
+      this.b = a1 * sin + this.b * cos;
+      this.c = c1 * cos - this.d * sin;
+      this.d = c1 * sin + this.d * cos;
+      this.e = x * cos - this.f * sin;
+      this.f = x * sin + this.f * cos;
+      return this;
+    };
+    /**
+     * Translates a matrix by a given amount.
+     * 
+     * @param {number} x
+     * @param {number} y
+     * @returns this
+     */
+    translate(x, y) {
+      this.e += x;
+      this.f += y;
+      return this;
+    };
+    /**
+     * Scales a matrix by a given amount.
+     * 
+     * @param {number} x
+     * @param {number} y
+     * @returns this
+     */
+    scale(x, y) {
+      this.a *= x;
+      this.d *= y;
+      return this;
+    };
+    /**
+     * Transforms the given vector.
+     * 
+     * @param {Vector} v
+     * @returns this
+     */
+    transform(v) {
+      let x = v.x;
+
+      v.x = this.a * x + this.c * v.y + this.e;
+      v.y = this.b * x + this.d * v.y + this.f;
+      return v;
+    };
+    /**
+     * Inverts the matrix.
+     *
+     * @returns this
+     */
+    invert() {
+      let a = this.a;
+      let b = this.b;
+      let c = this.c;
+      let d = this.d;
+      let x = this.e;
+      let n = a * d - b * c;
+      this.a = d / n;
+      this.b = -b / n;
+      this.c = -c / n;
+      this.d = a / n;
+      this.e = (c * this.f - d * x) / n;
+      this.f = -(a * this.f - b * x) / n;
+      return this;
+    };
+    /**
+     * Copies a matrix into this matrix.
+     * 
+     * @param {Matrix2} m
+     * @returns this
+     */
+    copy(m) {
+      this.a = m.a;
+      this.b = m.b;
+      this.c = m.c;
+      this.d = m.d;
+      this.e = m.e;
+      this.f = m.f;
+      return this;
+    }
+    /**
+     * Creates a new matrix,fills its values with this ones and returns the former.
+     * 
+     * @returns Matrix2
+     */
+    clone() {
+      return new Matrix2().copy(this);
+    }
+    /**
+     * Deeply checks if a matrix is equal to another.
+     * 
+     * @param {Matrix2} matrix
+     * @returns boolean
+     */
+    equals(matrix) {
+      return (this.a === matrix.a && this.b === matrix.b && this.c === matrix.c && this.d === matrix.d && this.e === matrix.e && this.f === matrix.f);
+    }
+
+    [Symbol.iterator] = function*() {
+      yield this.a;
+      yield this.b;
+      yield this.c;
+      yield this.d;
+      yield this.e;
+      yield this.f;
+    }
+  }
+
+  class Geometry {
+    constructor(vertices) {
+      this.vertices = vertices;
+      this.normals = this.calcFaceNormals();
+      this._dynNormals = this.normals.map(e=>e.clone());
+    }
+    get CHOAS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    get CHAOS_OBJ_TYPE() {
+      return "geometry"
+    }
+    getNormals(rad,target) {
+      target = target || [];
+      for (var i = 0; i < this.normals.length; i++) {
+        target.push(this._dynNormals[i].copy(this.normals[i]).rotate(rad));
+      }
+      return target
+    }
+    calcFaceNormals() {
+      const axes = [],
+        { vertices } = this;
+      for (var i = 0; i < vertices.length; i++) {
+        let axis = vertices[i >= vertices.length ? vertices.length - 1 : i]
+          .clone()
+          .sub(vertices[i + 1 >= vertices.length ? 0 : i + 1]).normal();
+        for (var j = 0; j < axes.length; j++) {
+          if (axis.equals(axes[j]) || axis.clone().reverse().equals(axes[j])) {
+            axis = null;
+            break
+          }
+        }
+        if (!axis) continue
+        axes.push(axis);
+      }
+      return axes
+    }
+    transform(vertices,pos, rad, n) {
+      for (let i = 0; i < this.vertices.length; i++) {
+        let vertex = vertices[i];
+        vertex.copy(this.vertices[i]);
+        vertex.rotate(rad);
+        vertex.multiply(n);
+        vertex.add(pos);
+      }
+    }
+  }
+
+  const ShapeType = Object.freeze({
+    CIRCLE: 0,
+    POLYGON: 1
+  });
+  const ObjType = Object.freeze({
+    CONSTRAINT: 0,
+    BODY: 1,
+    COMPOSITE: 2
+  });
+
+  const BodyType = Object.freeze({
+    DYNAMIC:2,
+    KINEMATIC:1,
+    STATIC:0
+  });
+
+  //Default settings 
+  const Settings = {
+    //For the world
+    posDampen: 0.80,
+    linearDamping: 0.001,
+    angularDamping: 0.001,
+    velocitySolverIterations: 10,
+    fixedFrameRate: 0.016,
+    
+    //For all bodies
+    mass: 1,
+    restitution: 0.6,
+    staticFriction: 0.4,
+    kineticFriction: 0.2,
+    boundPadding : 0,
+    allowSleep: false,
+    aabbDetectionOnly: false,
+    collisionResponse: true,
+    autoUpdateBound: true,
+    type:BodyType.DYNAMIC
+  };
+
+  let tmp1$d = new Vector();
+
+  /**
+   * This class makes a body tangible
+   * to collision detection and response.Without it,the body will not be able to interact with other bodies.
+   */
+  class Shape {
+    /**
+     * Used to determine what type of shape this is.
+     * 
+     * @type number
+     * @readonly
+     */
+    type = ShapeType.POLYGON
+    /**
+     * The offset angle of this shape from this body's angle.
+     * 
+     * @type number
+     */
+    offAngle = 0
+    /**
+     * The offset position of this shape from this body's position.
+     * 
+     * @type Vector
+     */
+    offPosition = null
+    /**
+     * The vertices describing the shape.
+     * 
+     * @type Array<Vector>
+    */
+    vertices = null
+    /**
+     * Keeps the original normals and vertices of this shape
+     * 
+     * @type Geometry
+    */
+    geometry = null
+
+    /**
+     * @param {array<vector>} vertices The vertices of the shape in local space coordinates.
+     * @param {Vector} [offset=vector] offset position relative to parent body
+     * @param {number} [offsetAngle=0] offset angle relative to parent body.
+     */
+    constructor(vertices, offset = new Vector(), offsetAngle = 0) {
+      this.offPosition = offset;
+      this.offAngle = offsetAngle * Math.PI / 180;
+      this.vertices = vertices.map(v => v.clone());
+      this.geometry = new Geometry(vertices);
+    }
+
+    get CHOAS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    get CHAOS_OBJ_TYPE() {
+      return "shape"
+    }
+    /**
+     * The area occupied by a shape.
+     * @type number
+    */
+    get area(){
+      return 0
+    }
+    /**
+     * Returns the normals of the faces when rotated.
+     * 
+     * @param {} body
+     * @param {} [target=[]] An array where results are stored.
+     * @returns {Array<Vector>}
+     */
+    getNormals(body, target) {
+      return this.geometry.getNormals(this.angle, target)
+    }
+    /**
+     * Transforms the local coordinates of the vertices to world coordinates.
+     * 
+     * @param {vector} position the world position of the body
+     * @param {number} angle the orientation of body
+     * @param {number} scale the scale of the body
+     */
+    update(position, angle, scale) {
+      this.angle = this.offAngle + angle;
+      this.geometry.transform(this.vertices, tmp1$d.copy(position).add(this.offPosition), this.angle, 1 , position);
+    }
+
+    /**
+     * Returns the world coordinates of the vertices.
+     * 
+     * @returns {Array<Vector>}
+     */
+    getVertices() {
+      return this.vertices
+    }
+
+    /**
+     * Calculates the inertia of a given shape.
+     * 
+     * @returns {number}
+     */
+    static calcInertia() {
+      throw new Error("Implement in the children classes")
+    }
+    static CIRCLE = 0
+    static POLYGON = 1
+  }
+
+  class Line extends Shape {
+    constructor(length,offset,offsetAngle) {
+      let start = new Vector(1).multiply(length / 2),
+        end = new Vector(1).multiply(-length / 2);
+      super([start, end],offset,offsetAngle);
+      this.length = length;
+    }
+  }
+
+  let _vec1 = new Vector();
+  let _vec2 = new Vector();
+
+  /**
+   * A circular shape.
+   * 
+   * 
+   * @augments Shape
+   */
+  class Circle extends Shape {
+    angle = 0
+    radius = 0
+    /**
+     * @param {number} radius 
+     * @param {vector} offset Positional offset from the body center.
+     *  @param {number} offsetAngle Angular offset from the body center.
+     */
+    constructor(radius, offset, offsetAngle) {
+
+      //the first vertex is position 
+      super([], offset, offsetAngle);
+      this.vertices = [new Vector(), new Vector(), new Vector()];
+      this.radius = radius;
+      this.type = Shape.CIRCLE;
+    }
+    get position() {
+      return this.vertices[0]
+    }
+    /**
+     * @inheritdoc
+     * @param {number} mass
+     * @param {number} radius 
+    */
+    static calcInertia(mass, radius) {
+      return mass * (radius * radius) / 4
+    }
+    /**
+     * @inheritdoc
+     * 
+     * @param {Vector} axis
+     * @param {Array<Vector>}} target 
+     * @returns {Array<Vector>}
+     */
+    getVertices(axis, target) {
+      target = target || [];
+      let v1 = _vec1.copy(axis).multiply(-this.radius).add(this.position);
+      let v2 = _vec2.copy(axis).multiply(this.radius).add(this.position);
+      target[0] = v1.clone();
+      target[1] = v2.clone();
+      return target
+    }
+    /**
+     * 
+     * @param {Shape} shape 
+     * @param {Vector[]} [target=[]] target
+     * @returns Array<Vector>
+     */
+    getNormals(shape, target = []) {
+      let min = null,
+        vertex = null;
+      for (let i = 0; i < shape.vertices.length; i++) {
+        let a = this.position.distanceToSquared(shape.vertices[i]);
+        if (!min || min > a) {
+          vertex = shape.vertices[i];
+          min = a;
+        }
+      }
+      if (!vertex) vertex = shape.position;
+      target.push(_vec1.copy(vertex).sub(this.position).normalize().clone());
+      return target
+    }
+    /**
+     * @inheritdoc
+     * 
+     * @param {Vector} position
+     * @param {number} angle
+     * @param {Vector} scale 
+     */
+    update(position, angle, scale) {
+      this.position.copy(position).add(this.offPosition);
+      this.angle = this.offAngle + angle;
+    }
+    get area() {
+      return Math.PI * this.radius * this.radius
+    }
+  }
+
+  class Rectangle extends Shape {
+    /**
+     * @type number
+     */
+    height = 0
+    /**
+     * @type number
+     */
+    width = 0
+    /**
+     * @param {number} width
+     * @param {number} height
+     * @param {vector} offset Positional offset from the body center.
+     *  @param {number} offsetAngle Angular offset from the body center.
+     */
+    constructor(width, height, offset, offsetAngle) {
+      let v1 = new Vector(-width / 2, -height / 2);
+      let v2 = new Vector(-width / 2, height / 2);
+      let v3 = new Vector(width / 2, height / 2);
+      let v4 = new Vector(width / 2, -height / 2);
+      super([v1, v2, v3, v4], offset, offsetAngle);
+      this.height = height;
+      this.width = width;
+    }
+    /**
+     * @inheritdoc
+     * @param {number} mass of the body
+     * @param {number} width
+     * @param {number} height
+     * @returns number
+     */
+    static calcInertia(mass, width, height) {
+      return mass * (sq(width) + sq(height)) / 12
+    }
+    get area() {
+      return this.width * this.height
+    }
+
+  }
+
+  let tmp1$c = new Vector(),
+    tmp2$9 = new Vector();
+
+  /**
+   * A triangular shape.
+   * 
+   * @augments Shape
+   */
+  class Triangle extends Shape {
+    /**
+     * @param {number} length1 Length of one side.
+     * @param {number} length2 Length of a second side.
+     * @param {number} angle The angle between the two sides.
+     * @param {vector} offset Positional offset from the body center.
+     * @param {number} offsetAngle Angular offset from the body center.
+     * 
+     */
+    constructor(length1, length2, angle, offset, offsetAngle) {
+      let l1 = tmp1$c.set(1, 0).multiply(length1);
+      let l2 = Vector.fromDeg(angle, tmp2$9).multiply(length2);
+      super([
+         new Vector(
+          -l1.x / 2,
+          -l2.y / 2
+        ),
+          new Vector(
+          l1.x / 2,
+          -l2.y / 2
+        ),
+          new Vector(
+          l2.x / 2,
+          l2.y / 2
+        )
+        ], offset, offsetAngle);
+    }
+  }
+
+  new Vector();
+
+  /**
+   * Holds information needed for collision detection and response.
+   */
+  class Body {
+    /**
+     * Unique identification of a body.
+     * 
+     * @type number
+     */
+    id = Utils.generateID()
+    /**
+     * World space coordinates of a body
+     * 
+     * @private
+     * @type Vector
+     */
+    _position = new Vector()
+    /**
+     * velocity of a body.Speed in pixels per second.
+     * 
+     * @private
+     * @type Vector
+     */
+    _velocity = new Vector()
+    /**
+     * acceleration of a body in pixels per second squared.
+     * 
+     * @private
+     * @type Vector
+     */
+    _acceleration = new Vector()
+    /**
+     * World space orientation of a body
+     * 
+     * @private
+     * @type Angle
+     */
+    _orientation = new Angle()
+    /**
+     * Rotation of a body
+     * 
+     * @private
+     * @type Angle
+     */
+    _rotation = new Angle()
+    /**
+     * Mass of the body.
+     * 
+     * @private
+     * @type number
+     * @default 1
+     */
+    _mass = 1
+    /**
+     * Rotational inertia of the body.
+     * 
+     * @private
+     * @type number
+     */
+    _inertia = 1
+    /**
+     * Type of the body e.g Dynamic, Kinematic or Static.
+     * 
+     * @private
+     * @type number
+     */
+    _type = 0
+    /**
+     * Anchors of the body in local space.
+     * 
+     * @private
+     * @type Vector[]
+     */
+    _localanchors = []
+    /**
+     * The original anchors of the body in local space.
+     * 
+     * @private
+     * @type Vector[]
+     */
+    anchors = []
+    /**
+     * Position of a body in the last frame..
+     * 
+     * @type Vector
+     */
+    lastPosition = new Vector()
+    /**
+     * Inverse mass of the body.
+     * 
+     * @type number
+     */
+    inv_mass = 0
+    /**
+     * Inverse inertia of the body.
+     * 
+     * @type number
+     */
+    inv_inertia = 0
+    /**
+     * The bounciness of the body between 0 and 1.
+     * 
+     * @type number
+     * @default Settings.restitution
+     */
+    restitution = Settings.restitution
+    /**
+     * The friction of the body between 0 and 1 that affects it before it moves.
+     * 
+     * @type number
+     * @default Settings.staticFriction
+     */
+    staticFriction = Settings.staticFriction
+    /**
+     * The friction of the body between 0 and 1that affects it after it moves.
+     * 
+     * @type number
+     * @default Settings.kineticFriction
+     */
+    kineticFriction = Settings.kineticFriction
+    /**
+     * The padding of the body's bounds.
+     * 
+     * @type number
+     * @default Settings.boundPadding
+     */
+    boundPadding = Settings.boundPadding
+    /**
+     * The index of the body in its manager.
+     * 
+     * @package
+     * @type number
+     * @default -1
+     */
+    index = -1
+    /**
+     * Used to describe how bodies will collide with each other.
+     * Bodies in the same layer or layer 0 will always collide with each other unless they are in different groups.
+     * Bodies in the same group will not collied with each other.
+     * 
+     * @type {{layer:number, group: number}}
+     * @default -1
+     */
+    mask = {
+      layer: 0,
+      group: 0
+    }
+    /**
+     * World space bounds of a body
+     * 
+     * @type Entity | null
+     */
+    entity = null
+    /**
+     * Wotld space bounds of a body.
+     * 
+     * @type BoundingBox | BoundingSphere | null
+     */
+    bounds = null
+    /**
+     * Shapes a body is comprised of.
+     * 
+     * @type Shape[]
+     */
+    shapes = null
+    /**
+     * Client of the body inside a broadphase.
+     * 
+     * @package
+     * @type Object | null
+     */
+    client = null
+    /**
+     * Whether the body should sleep when at rest or not.
+     * 
+     * @type boolean
+     * @default Settings.allowSleep
+     */
+    allowSleep = Settings.allowSleep
+    /**
+     * If the body is asleep or not.
+     * 
+     * @type boolean
+     */
+    sleeping = false
+    /**
+     * Whether the body should detect collisions with bounds only.If true,no collision response will occur.Precollision event only will be fired.
+     * 
+     * @type boolean
+     * @default Settings.aabbDetectionOnly
+     */
+    aabbDetectionOnly = Settings.aabbDetectionOnly
+    /**
+     * Whether the body should respond to collisions.If false,no collision response will occur but collision events will still be fired.
+     * 
+     * @type boolean
+     * @default Settings.collisionResponsefired
+     */
+    collisionResponse = Settings.collisionResponse
+    /**
+     * Whether or not the bounds should be automatically updated.
+     * 
+     * @type boolean
+     * @default Settings.autoUpdateBound
+     */
+    autoUpdateBound = Settings.autoUpdateBound
+    /**
+     * @param {Shape[]} shapes
+     */
+    constructor(...shapes) {
+      this.type = Settings.type;
+      this.shapes = shapes;
+      this.mass = 1;
+      this.inertia = 1;
+    }
+    /**
+     * Type of a body.It includes the static and dynamic for now.
+     * Static bodies do not move and do not react to collisions.
+     * Dynamic bodies move and respond to collisions.
+     * Kinematic bodies move but do not respond to collisions.
+     * 
+     * @example
+     * let body = new Body()
+     * body.type = Body.STATIC
+     * 
+     */
+    set type(x) {
+      if (x === Body.STATIC || x === Body.KINEMATIC) this.mass = 0;
+      this._type = x;
+    }
+    get type() {
+      return this._type
+    }
+    /**
+     * Used to determine what it is in a world.
+     * 
+     * @package
+     * @type number 
+     */
+    get physicsType() {
+      return ObjType.BODY
+    }
+    get CHOAS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    get CHAOS_OBJ_TYPE() {
+      return "body"
+    }
+    /**
+     * Acceleration of a body
+     * 
+     * @type Vector
+     */
+    get acceleration() {
+      return this._acceleration
+    }
+    set acceleration(x) {
+      this._acceleration.copy(x);
+    }
+    /**
+     * Velocity of a body
+     * 
+     * @type Vector
+     */
+    get velocity() {
+      return this._velocity
+    }
+    set velocity(x) {
+      this._velocity.copy(x);
+    }
+    /**
+     * Rotation of a body
+     * 
+     * @type Angle
+     */
+    get rotation() {
+      return this._rotation
+    }
+    set rotation(x) {
+      this._rotation.copy(x);
+    }
+    /**
+     * Orientation of a body in degrees.
+     * 
+     * @type number
+     */
+    set angle(angle) {
+      this.orientation.degree = angle;
+    }
+    get angle() {
+      return this.orientation.degree
+    }
+    /**
+     * Mass of a body.
+     * 
+     * @type number
+     */
+    set mass(x) {
+      this._mass = x;
+      this.inv_mass = x === 0 ? 0 : 1 / x;
+      if (x == 0) this.inertia = 0;
+    }
+    get mass() {
+      return this._mass
+    }
+    /**
+     * Density of a body.
+     *
+     * @type number
+     */
+    set density(x) {
+      let area = 0;
+      for (var i = 0; i < this.shapes.length; i++) {
+        area += this.shapes[i].area;
+      }
+      this.mass = x * area * 0.01;
+    }
+    get density() {
+      let area = 0;
+      for (var i = 0; i < this.shapes.length; i++) {
+        area += this.shapes[i].area;
+      }
+      return 100 * this.mass / area
+    }
+    /**
+     * Rotational inertia of a body.
+     * 
+     * @type number
+     */
+    set inertia(x) {
+      this._inertia = x;
+      this.inv_inertia = x == 0 ? 0 : 1 / x;
+    }
+    get inertia() {
+      return this._inertia
+    }
+    /**
+     * World space position of a body
+     * 
+     * @type Vector
+     */
+    get position() {
+      return this._position
+    }
+    set position(x) {
+      this._position.copy(x);
+    }
+    o
+    /**
+     * Orientation of a body
+     * 
+     * @type Angle
+     */
+    set orientation(r) {
+      this._orientation.copy(r);
+    }
+    get orientation() {
+      return this._orientation
+    }
+    /**
+     * Angular velocity of a body in degrees
+     * 
+     * @type number 
+     */
+    get angularVelocity() {
+      return this.rotation.degree
+    }
+    set angularVelocity(x) {
+      this.rotation.degree = x;
+    }
+    /**
+     * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
+     * 
+     * @param {Vector} v The anchor arm
+     * @returns {number}
+     */
+    setAnchor(v) {
+      this.anchors.push(new Vector(v.x, v.y).rotate(this.orientation.radian).add(this.position));
+      return this._localanchors.push(v) - 1
+    }
+    /**
+     * Gets an anchor in its world coordinate form.
+     * Treat the returned value as read-only.
+     * 
+     * @param {number} index the position of the
+     * @returns {Vector}
+     */
+    getAnchor(index) {
+      return this.anchors[index]
+    }
+    /**
+     * Returns a rotated anchor relative to the body.
+     * 
+     * @param {number} index The position of the anchor.
+     * @param {Vector} [target=Vector] Vector to store results in.
+     * @returns {Vector}
+     */
+    getLocalAnchor(index, target = new Vector()) {
+      return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
+    }
+    /**
+     * Applies a force to a body affecting its direction of travel and rotation.
+     * 
+     * 
+     * @param {number} index The force to be applied.
+     * @param {Vector} [arm=Vector] The collision arm.
+     */
+    applyForce(force, arm = Vector.ZERO) {
+      this.acceleration.add(force.multiply(this.inv_mass));
+      this.rotation.degree += arm.cross(force) * this.inv_inertia;
+    }
+
+    /**
+     * Initializes the body to its given.Called by the world or an entity manager.
+     * 
+     * @param {Entity | null} entity
+     * @param {boolean} composited
+     */
+    init(entity, composited = false) {
+      this.entity = entity;
+      if (composited) {
+        this.bounds = new BoundingBox();
+        this.update();
+        return
+      }
+      this.requires("transform", "movable", "bounds");
+
+      let transform = entity.get("transform");
+      let bounds = entity.get("bounds").bounds;
+      let move = entity.get("movable");
+      this._acceleration = move.acceleration;
+      this._rotation = move.rotation;
+      this._velocity = move.velocity;
+      this._position = transform.position;
+      this._orientation = transform.orientation;
+      this.bounds = bounds;
+
+      this.update();
+    }
+
+    /**
+     * This updates the world coordinates of shapes, anchors and bounds.
+     */
+    update() {
+      for (var i = 0; i < this.shapes.length; i++) {
+        this.shapes[i].update(this.position, this._orientation.radian);
+      }
+      for (var i = 0; i < this.anchors.length; i++) {
+        this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian).add(this.position);
+      }
+      if (this.autoUpdateBound)
+        this.bounds.calculateBounds(this, this.boundPadding);
+      this.bounds.update(this.position);
+      //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
+    }
+    /**
+     *Body type that dictates a body cannot move nor respond to collisions.
+     * 
+     * @type number*/
+    static STATIC = ObjType.STATIC
+    /**
+     * Body type that dictates a body can move but not respond to collisions.
+     * 
+     * @type number
+     */
+    static KINEMATIC = ObjType.KINEMATIC
+    /**
+     * Body type that dictates a body can move and respond to collisions.
+     * 
+     * @type number
+    */
+    static DYNAMIC = ObjType.DYNAMIC
+  }
+  Utils.inheritComponent(Body, false, false);
+
+  class HeightMap extends Body {
+    constructor(step, heights) {
+      let l = [],
+        j = [];
+      for (let i = 0; i < heights.length; i++) {
+        l.push(new Vector(step * i, heights[i]));
+      }
+      for (let i = 1; i < l.length; i++) {
+        let line = new Line(l[i - 1], l[i]);
+        j.push(line);
+      }
+      super(new Vector(), ...j);
+      this.mass = 0;
+      this.mask.layer = 0;
+    }
+  }
+
+  /**
+   * A body with a circle shape on it.
+   * 
+   * @augments Body
+   */
+  class Ball extends Body {
+    /**
+     * @param {number} radius
+    */
+    constructor(radius) {
+      super(new Circle(radius));
+      this.inertia = Circle.calcInertia(this.mass, radius);
+    }
+    /**
+     * @inheritdoc
+     * @type number 
+     */
+    get mass() {
+      return this._mass
+    }
+    set mass(x) {
+      this._mass = x;
+      this.inv_mass = x === 0 ? 0 : 1 / x;
+      this.inertia = Circle.calcInertia(this.mass, this.shapes[0].radius);
+    }
+  }
+
+  /**
+   * A body with a rectangle shape on it.
+   * 
+   * @augments Body
+  */
+  class Box extends Body {
+    /**
+     * @param {number} w
+     * @param {number} h
+    */
+    constructor(w,h) {
+      super(new Rectangle(w,h));
+      this.inertia = Rectangle.calcInertia(this._mass,w,h);
+      
+    }
+    /**
+     * @inheritdoc
+     * @type number 
+    */
+    set mass(x){
+      this._mass = x;
+      this.inv_mass = x === 0 ? 0 : 1 / x;
+      this.inertia = Rectangle.calcInertia(x,this.shapes[0].width,this.shapes[0].height);
+    }
+    get mass(){
+      return this._mass
+    }
+  }
+
+  /**
+   * Holds a group of related bodies and constraints.
+   */
+  class Composite {
+    /**
+     * Entity this belongs to.
+     * 
+     * @type Entity | null
+     */
+    entity = null
+    /**
+     * List of bodies contained.
+     *
+     * @type Body[]
+     */
+    bodies = []
+    /**
+     * List of bodies contained.
+     *
+     * @type Body[]
+     */
+    constraints = []
+    /**
+     * Used to determine what it is in a world.
+     * 
+     * @package
+     * @type number 
+     */
+    get physicsType() {
+      return ObjType.COMPOSITE
+    }
+    /**
+     * Initializes the body to its given.Called by the world or an entity manager.
+     * 
+     * @param {Entity | null} entity
+     * @param {boolean} composited
+     */
+    init(entity) {
+      this.bodies.forEach(e => {
+        e.init(entity, true);
+      });
+      this.requires("transform");
+
+    }
+    /**
+     * @param {Constraint | Body} object
+     */
+    add(object) {
+      if (object.physicsType === ObjType.CONSTRAINT)
+        return this.constraints.push(object)
+      if (object.physicsType === ObjType.BODY)
+        this.bodies.push(object);
+    }
+    /**
+     * This updates the world coordinates of shapes, anchors and bounds.
+     */
+    update() {
+      this.lastPosition.copy(this.position);
+    }
+    /**
+     * Acceleration of a body
+     * 
+     * @type Vector
+     */
+    get acceleration() {
+      let acceleration = new Vector();
+      for (var i = 0; i < this.bodies.length; i++) {
+        acceleration.copy(this.bodies[i].acceleration);
+      }
+      return acceleration.divide(this.bodies.length)
+    }
+    set acceleration(x) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].acceleration = x;
+      }
+    }
+    /**
+     * Velocity of a body
+     * 
+     * @type Vector
+     */
+    get velocity() {
+      let velocity = new Vector();
+
+      for (var i = 0; i < this.bodies.length; i++) {
+        velocity.add(this.bodies[i].velocity);
+      }
+      return velocity.divide(this.bodies.length)
+    }
+    set velocity(x) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].velocity.copy(x);
+      }
+    }
+      /**
+       * Orientation of a body in degrees.
+       * 
+       * @type number
+       */
+    set angle(angle) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].angle = x;
+      }
+    }
+    get angle() {
+      let angle = 0;
+      for (var i = 0; i < this.bodies.length; i++) {
+        angle += this.bodies[i].angle;
+      }
+    }
+      /**
+       * Mass of a body.
+       * 
+       * @type number
+       */
+    set mass(x) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].mass = x;
+      }
+    }
+    get mass() {
+      let mass = 0;
+      for (var i = 0; i < this.bodies.length; i++) {
+        mass += this.bodies[i].mass;
+      }
+      return mass
+    }
+      /**
+       * Density of a body.
+       * 
+       * @type number
+       */
+    set density(x) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].density = x;
+      }
+    }
+    get density() {
+      let density = 0;
+      for (var i = 0; i < this.bodies.length; i++) {
+        density += this.bodies[i].density;
+      }
+      return density / this.bodies.length
+    }
+    /**
+     * Position of a body
+     * 
+     * @type Vector
+     */
+    get position() {
+      let position = new Vector();
+      for (var i = 0; i < this.shapes.length; i++) {
+        position.add(this.bodies[i].position);
+      }
+      return position
+    }
+    set position(x) {
+      let dp = x.clone().sub(this.position);
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].position.add(dp);
+      }
+    }
+    /**
+     * Orientation of a body
+     * 
+     * @type Angle
+     */
+    set orientation(r) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].orientation.copy(r);
+      }
+    }
+      /**
+       * Angular velocity of a body.
+       * 
+       * @type number
+       */
+    get angularVelocity() {
+      let ang = 0;
+      for (var i = 0; i < this.bodies.length; i++) {
+        ang += this.bodies[i].angularVelocity;
+      }
+      return ang
+    }
+    set angularVelocity(x) {
+      for (var i = 0; i < this.bodies.length; i++) {
+        this.bodies[i].angularVelocity = x;
+      }
+    }
+  }
+  Utils.inheritComponent(Composite);
+
+  /**
+   * Base class for constructing different types of constraints.
+   * 
+   * @abstract
+   * @see DistanceConstraint
+   * @see SpringConstraint
+   */
+  class Constraint {
+    /**
+     * @param {Body} body1
+     * @param {Body} body2
+     */
+    constructor(body1, body2) {
+      this.body1 = body1;
+      this.body2 = body2;
+      this.stiffness = 50;
+      this.dampening = 0.03;
+    }
+    /**
+     * Determine type of object this is in the world.
+     * 
+     * @package
+     * @type number
+    */
+    get physicsType() {
+      return ObjType.CONSTRAINT
+    }
+    get CHOAS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    get CHAOS_OBJ_TYPE() {
+      return "constraint"
+    }
+    /**
+     * @ignore
+     * Will refactor this out
+    */
+    behavior(body1, body2) {
+      body2.position.copy(body1.position);
+    }
+    /**
+     * Updates constraint forces
+     *
+     * @param {number} dt
+    */
+    update(dt) {
+      this.behavior(this.body1, this.body2, dt);
+    }
+  }
+
+  let tmp1$b = new Vector(),
+    tmp2$8 = new Vector(),
+    tmp3$5 = new Vector(),
+    tmp4$4 = new Vector(),
+    tmp5$3 = new Vector(),
+    zero$1 = new Vector();
+
+  /**
+   * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
+   */
+  class DistanceConstraint extends Constraint {
+    /**
+     * @param {Body} body1
+     * @param {Body} body2
+     * @param {Vector} localA
+     * @param {Vector} localB
+     */
+    constructor(body1, body2, localA, localB) {
+      super(body1, body2);
+      this.localA = new Vector().copy(localA || zero$1);
+      this.localB = new Vector().copy(localB || zero$1);
+      this.fixed = !body1.mass || !body2.mass;
+      this.dampen = 1;
+      this.maxDistance = 1;
+      this.stiffness = 1;
+    }
+    /**
+     * @ignore
+    */
+    behavior(body1, body2, dt) {
+      let arm1 = tmp1$b.copy(this.localA).rotate(body1.angle * Math.PI / 180),
+        arm2 = tmp2$8.copy(this.localB).rotate(body2.angle * Math.PI / 180),
+        pos1 = tmp3$5.copy(body1.position).add(arm1),
+        pos2 = tmp4$4.copy(body2.position).add(arm2),
+        dist = pos1.sub(pos2),
+        magnitude = dist.magnitude();
+
+      if (magnitude === 0) {
+        return
+      }
+      let difference = (magnitude - this.maxDistance) / magnitude,
+        force = dist.multiply(difference * this.stiffness * this.dampen),
+        massTotal = body1.inv_mass + body2.inv_mass;
+        body1.inv_inertia + body2.inv_inertia;
+      tmp4$4.copy(force);
+      force.divide(massTotal * 2);
+
+      body1.velocity.add(tmp5$3.copy(force).multiply(-body1.inv_mass).divide(dt));
+      body2.velocity.add(tmp5$3.copy(force).multiply(body2.inv_mass).divide(dt));
+
+      body1.position.add(tmp5$3.copy(force).multiply(-body1.inv_mass));
+      body2.position.add(tmp5$3.copy(force).multiply(body2.inv_mass));
+
+      body1.rotation.radian += tmp4$4.cross(arm1) * body1.inv_inertia;
+      body2.rotation.radian += tmp4$4.cross(arm2) * -body2.inv_inertia;
+    }
+  }
+
+  let tmp1$a = new Vector(),
+    tmp2$7 = new Vector(),
+    tmp3$4 = new Vector(),
+    tmp4$3 = new Vector(),
+    tmp5$2 = new Vector(),
+    tmp6$1 = new Vector(),
+    zero = new Vector();
+   /**
+    * A constraint that acts like a spring between two bodies
+   */
+  class SpringConstraint extends Constraint {
+    /**
+     * @param {Body} body1
+     * @param {Body} body2
+     * @param {Vector} localA
+     * @param {Vector} localB
+     */
+    constructor(body1, body2, localA, localB) {
+      super(body1, body2);
+      this.localA = new Vector().copy(localA || zero);
+      this.localB = new Vector().copy(localB || zero);
+      this.fixed = !body1.mass || !body2.mass;
+      this.dampen = 1;
+      this.maxDistance = 1;
+      this.stiffness = 1;
+    }
+    behavior(body1, body2, dt) {
+      let arm1 = tmp1$a.copy(this.localA).rotate(body1.angle * Math.PI / 180),
+        arm2 = tmp2$7.copy(this.localB).rotate(body2.angle * Math.PI / 180),
+        pos1 = tmp3$4.copy(body1.position).add(arm1),
+        pos2 = tmp4$3.copy(body2.position).add(arm2),
+        dist = pos1.sub(pos2),
+        magnitude = dist.magnitude();
+
+      if (magnitude === 0) {
+        return
+      }
+      let difference = (magnitude - this.maxDistance) / magnitude,
+        force = dist.multiply(difference * this.stiffness * this.dampen),
+        massTotal = body1.inv_mass + body2.inv_mass;
+        body1.inv_inertia + body2.inv_inertia;
+      tmp4$3.copy(force);
+      force.divide(massTotal * 2);
+
+      body1.velocity.add(tmp6$1.copy(force).multiply(-body1.inv_mass).divide(dt));
+      body2.velocity.add(tmp5$2.copy(force).multiply(body2.inv_mass).divide(dt));
+
+      body1.position.add(tmp6$1.copy(force).multiply(-body1.inv_mass));
+      body2.position.add(tmp5$2.copy(force).multiply(body2.inv_mass));
+
+      body1.rotation.radian += tmp4$3.cross(arm1) * body1.inv_inertia;
+      body2.rotation.radian += tmp4$3.cross(arm2) * -body2.inv_inertia;
+    }
+  }
+
+  new Vector();
+
+  let position = new Vector();
+  let acceleration = new Vector();
+  let velocity = new Vector();
+
+  /**
+   * Verlet intergration.
+   * Used so that constraints can be stable at little performance cost.
+  */
+  class VerletSolver {
+    /**
+     * @param {Body} body
+     * @param {number} dt
+     */
+    static solve(body, dt) {
+      acceleration.copy(body.acceleration).multiply(dt * 0.5);
+      velocity.copy(body.velocity);
+      position.copy(body.position);
+      body.acceleration.set(0, 0);
+      body.velocity.add(acceleration);
+      position.add(velocity.multiply(dt)).add(acceleration.multiply(dt));
+      body.position = position;
+      body.angle += body.angularVelocity * dt;
+    }
+  }
+
+  let tmp1$9 = new Vector(),
+    tmp2$6 = new Vector(),
+    tmp3$3 = new Vector(),
+    tmp4$2 = new Vector(),
+    tmp5$1 = new Vector();
+
+  /**
+   * Solves for impulse along collision tangent for a given body pair.
+  */
+  const FrictionSolver = {
+    /***/
+    solve(manifold) {
+      let { bodyA: a, bodyB: b, ca1, ca2, restitution, impulse } = manifold;
+      let { axis } = manifold.contactData;
+      if (impulse <= 0) return
+      let a$va = tmp1$9.set(ca1.y * -a.rotation._rad, ca1.x * a.rotation._rad);
+      let a$vb = tmp2$6.set(ca2.y * -b.rotation._rad, ca2.x * b.rotation._rad);
+      let va = tmp3$3.copy(a.velocity).add(a$va);
+      let vb = tmp4$2.copy(b.velocity).add(a$vb);
+      let relVel = va.sub(vb);
+      if (relVel.magnitudeSquared() === 0)
+        return
+      let tangent = axis.normal(1, tmp4$2);
+      tangent = tangent.multiply(tangent.dot(relVel));
+      if (tangent.magnitudeSquared() === 0) return
+      tangent.normalize();
+
+      let relV = tangent.dot(relVel);
+
+      let sf = Math.min(a.staticFriction, b.staticFriction);
+      let kf = Math.min(a.kineticFriction, b.kineticFriction);
+      let j = -relV / (
+        (a.inv_mass + b.inv_mass) +
+        sq((ca1.dot(tangent)) * a.inv_inertia + sq(ca2.dot(tangent)) * b.inv_inertia)
+      );
+
+      let jt;
+      if (Math.abs(j) <= impulse * sf) {
+        jt = tangent.multiply(j);
+
+      } else {
+        jt = tangent.multiply(j * kf);
+      }
+
+      manifold.velA.add(tmp5$1.copy(jt).multiply(a.inv_mass));
+      manifold.velB.add(tmp5$1.copy(jt).multiply(-b.inv_mass));
+      manifold.rotA += ca1.cross(jt) * a.inv_inertia;
+      manifold.rotB += ca2.cross(jt) * -b.inv_inertia;
+    }
+  };
+
+  let v = { x: 0, y: 0 };
+
+  let velocityLimit = 1;
+  let angularVelocityLimit = 1;
+  let impulselimit = 0.8;
+
+  /**
+   * Determines if the body pair should be put to sleep.
+  */
+  const ContactSolver = {
+    solve(a, b, impulse, contactNo) {
+      if (contactNo == 2) {
+        if (Math.abs(a.angularVelocity) > angularVelocityLimit) a.angularVelocity = 0;
+        if (Math.abs(b.angularVelocity) > angularVelocityLimit) b.angularVelocity = 0;
+      }
+      if (impulse > impulselimit) return
+      if (a.velocity.magnitude() > velocityLimit && Math.abs(a.angularVelocity) > angularVelocityLimit) return
+      if (b.velocity.magnitude() > velocityLimit && Math.abs(b.angularVelocity) > angularVelocityLimit) return
+      if (!a.allowSleep || !b.allowSleep)
+        return
+      a.sleeping = true;
+      a.velocity = v;
+      a.acceleration = v;
+      b.sleeping = true;
+      b.velocity = v;
+      b.acceleration = v;
+    }
+  };
+
+  const tmp1$8 = new Vector(),
+    tmp2$5 = new Vector();
+  let dampen = Settings.posDampen;
+
+  /**
+   * Solves the interpenetration of bodies.
+  */
+  const PenetrationSolver = {
+    solve(manifold, inv_dt) {
+      let { bodyA, bodyB, ca1, ca2 } = manifold;
+      let { axis, overlap } = manifold.contactData;
+
+      const dampened = overlap * dampen;
+      const a = dampened / (bodyA.inv_mass + bodyB.inv_mass + sq(ca1.cross(axis)) * bodyA.inv_inertia + sq(ca2.cross(axis)) * bodyB.inv_inertia);
+      let jp = tmp2$5.copy(axis).multiply(a);
+      bodyA.velocity.add(tmp1$8.copy(jp).multiply(bodyA.inv_mass * inv_dt));
+      bodyB.velocity.add(tmp1$8.copy(jp).multiply(-bodyB.inv_mass * inv_dt));
+      bodyA.rotation.radian += ca1.cross(jp) * bodyA.inv_inertia * inv_dt;
+      bodyB.rotation.radian += ca2.cross(jp) * -bodyB.inv_inertia * inv_dt;
+      manifold.contactData.lastOverlap = overlap;
+    }
+  };
+
+  let tmp1$7 = new Vector(),
+    tmp2$4 = new Vector(),
+    tmp3$2 = new Vector(),
+    tmp4$1 = new Vector();
+
+  /**
+   * Solves for the collision normal impulse of a given body pair.
+  */
+  const ImpulseSolver = {
+    solve(manifold) {
+      let { bodyA, bodyB, ca1, ca2, restitution } = manifold;
+      let { axis } = manifold.contactData;
+      let a$va = tmp1$7.set(ca1.y * -bodyA.rotation.radian, ca1.x * bodyA.rotation.radian);
+      let a$vb = tmp2$4.set(ca2.y * -bodyB.rotation.radian, ca2.x * bodyB.rotation.radian);
+      let va = tmp3$2.copy(bodyA.velocity).add(a$va);
+      let vb = tmp4$1.copy(bodyB.velocity).add(a$vb);
+      let vp = va.sub(vb);
+      let vp_p = axis.dot(vp);
+
+      if (vp_p >= 0) {
+        manifold.impulse = 0;
+        return
+      }
+      ////this used to be -(1 + restitution) but when i changed it,stability ensued.
+      //i think the reason of the previous instability is because i changed the penetration solver to be impulse based from position based.
+      //so.. i came back to that....
+      let j = -(restitution) * vp_p / (
+        (bodyA.inv_mass + bodyB.inv_mass) +
+        sq(ca1.cross(axis)) * bodyA.inv_inertia +
+        sq(ca2.cross(axis)) * bodyB.inv_inertia);
+
+      let jn = axis.clone().multiply(j);
+      let ang1 = ca1.cross(jn) * bodyA.inv_inertia;
+      let ang2 = ca2.cross(jn) * -bodyB.inv_inertia;
+      let vel1 = jn.clone().multiply(bodyA.inv_mass);
+      let vel2 = jn.clone().multiply(-bodyB.inv_mass);
+      manifold.velA.copy(vel1);
+      manifold.velB.copy(vel2);
+      manifold.rotA = ang1;
+      manifold.rotB = ang2;
+      manifold.impulse = j;
+    }
+  };
+
+  const _arr = [],
+    tmp1$6 = {
+      overlap: 0,
+      verticesA: null,
+      verticesB: null,
+      axis: new Vector(),
+      vertex: null,
+      shape: null
+    },
+    tmp2$3 = {
+      min: 0,
+      max: 0,
+      indexN: 0
+    },
+    tmp3$1 = {
+      min: 0,
+      max: 0,
+      indexN: 0
+    },
+    tmp4 = new Vector(),
+    tmp5 = new Vector(),
+    tmp6 = new Vector();
+
+  /**
+   * Used for narrowphase collision detection and contact info generation.
+   */
+  const SAT = {
+    /**
+     * @param {Body} body1
+     * @param {Body} body2
+     * @param {Manifold} manifold
+     */
+    shapesInBodyCollided(body1, body2, manifold) {
+      let shapesA = body1.shapes,
+        shapesB = body2.shapes;
+      for (var i = 0; i < shapesA.length; i++) {
+        for (var j = 0; j < shapesB.length; j++) {
+          SAT.shapesCollided(shapesA[i], shapesB[j], manifold);
+        }
+      }
+      if (manifold.overlap < 0) return manifold
+      let body = manifold.dorminantShape,
+        axis = tmp5.copy(manifold.axis),
+        shape1 = manifold.shapes[0],
+        shape2 = manifold.shapes[1];
+      let overload = [];
+      const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, []);
+      const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), []);
+      for (var i = 0; i < vertices1.length; i++) {
+        if (SAT.shapeContains(shape2, vertices1[i])) {
+          overload.push(vertices1[i]);
+        }
+      }
+      if (overload.length < 2) {
+        for (var i = 0; i < vertices2.length; i++) {
+          if (SAT.shapeContains(shape1, vertices2[i])) {
+            overload.push(vertices2[i]);
+            if (!overload.length)
+              shape = shape2;
+          }
+        }
+      }
+      //some random error happened when this is not there.
+      //Dont know if it isnt there now but i dont want to risk it ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯
+      if (overload.length == 0) {
+        overload.push(vertices1[0]);
+      }
+
+      overload = SAT.findNearSupports(overload, axis, []);
+      if (body == shape2) axis.reverse();
+      if (body == shape1) {
+        manifold.verticesA[0] = overload[0];
+        manifold.verticesB[0] = overload[0].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
+        if (overload.length == 2) {
+          manifold.verticesA[1] = overload[1];
+          manifold.verticesB[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
+        }
+      }
+      if (body == shape2) {
+        manifold.verticesA[0] = overload[0].clone()
+          .add(tmp6.copy(axis).multiply(manifold.overlap));
+        manifold.verticesB[0] = overload[0];
+        if (overload.length == 2) {
+          manifold.verticesA[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
+          manifold.verticesB[1] = overload[1];
+        }
+      }
+      manifold.contactNo = overload.length;
+      return manifold
+    },
+    /**
+     * @param {Shape} shape1
+     * @param {Shape} shape2
+     * @param {Object} target
+     */
+    shapesCollided(shape1, shape2, target) {
+      let arr = _arr,
+        boundary;
+      Utils.clearArr(arr);
+      shape1.getNormals(shape2, arr);
+      boundary = arr.length;
+      shape2.getNormals(shape1, arr);
+
+      SAT.projectShapesToAxes(shape1, shape2, arr, target, boundary);
+    },
+    /**
+     * @param {Shape} shapeA
+     * @param {Shape} shapeB
+     * @param {Vector[]} axes
+     * @param {Manifold} shapeA
+     * @param {number} iu
+     */
+    projectShapesToAxes(shapeA, shapeB, axes, manifold, iu) {
+      let temp = tmp1$6;
+      temp.vertex = null;
+      temp.body = null;
+      temp.overlap = Infinity;
+      for (let i = 0; i < axes.length; i++) {
+        let axis = tmp4.copy(axes[i]);
+
+        let verticesA = shapeA.getVertices(axis);
+        let verticesB = shapeB.getVertices(axis);
+        let p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2$3);
+        let p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3$1);
+        let min = p1.max < p2.max ? p1.max : p2.max;
+        let max = p1.min > p2.min ? p1.min : p2.min;
+        let overlap = min - max;
+        if (overlap < 0) return manifold
+
+        if (p1.max < p2.max) axis.reverse();
+        if (
+          (p1.max > p2.max && p1.min < p2.min) ||
+          (p2.max > p1.max && p2.min < p1.min)
+        ) {
+          let max = Math.abs(p1.max - p2.max),
+            min = Math.abs(p1.min - p2.min);
+          if (min < max) {
+            overlap += min;
+          } else {
+            overlap += max;
+            axis.reverse();
+          }
+        }
+        if (overlap < temp.overlap) {
+          temp.overlap = overlap;
+          temp.axis.copy(axis);
+          temp.shape = i <= iu - 1 ? shapeB : shapeA;
+          temp.indexA = p1.indexN;
+          temp.indexB = p2.indexN;
+          temp.verticesA = verticesA;
+          temp.verticesB = verticesB;
+        }
+      }
+      if (temp.overlap > manifold.overlap) {
+        manifold.overlap = temp.overlap;
+        manifold.axis.copy(temp.axis);
+        manifold.dorminantShape = temp.shape;
+        manifold.shapes[0] = shapeA;
+        manifold.shapes[1] = shapeB;
+        manifold.vertShapeA = temp.verticesA;
+        manifold.vertShapeB = temp.verticesB;
+        manifold.indexA = temp.indexA;
+        manifold.indexB = temp.indexB;
+        manifold.done = true;
+      }
+      return manifold
+    },
+    /**
+     * @param {Vector[]} vertices
+     * @param {Vector} axis
+     * @param {Object} target
+     */
+    projectVerticesToAxis(vertices, axis, target) {
+      let min = Infinity,
+        max = -Infinity,
+        nearVertex = null,
+        length = vertices.length;
+
+      for (let i = 0; i < length; i++) {
+        let point = axis.dot(vertices[i]);
+        if (point < min) {
+          min = point;
+          nearVertex = i;
+        }
+        if (point > max) {
+          max = point;
+        }
+      }
+      target.min = min;
+      target.max = max;
+      target.indexN = nearVertex;
+      return target
+    },
+    /**
+     * @param {Vector[]} vertices
+     * @param {Vector} axis
+     * @param {Vector[]} target
+     * @param {number} nearVertexIndex
+     */
+    findNearSupports(vertices, axis, target = [], nearVertexIndex) {
+      let min = Infinity,
+        nearVertices = target,
+        length = vertices.length;
+
+      for (let i = 0; i < length; i++) {
+        let point = axis.dot(vertices[i]);
+        if (
+          Math.abs(point - min) <= 0.1 &&
+          !nearVertices.includes(vertices[i])
+        ) {
+          nearVertices.push(vertices[i]);
+          continue
+        }
+        if (point < min) {
+          min = point;
+          Utils.clearArr(nearVertices);
+          nearVertices.push(vertices[i]);
+          i = -1;
+        }
+      }
+      return nearVertices
+    },
+    /**
+     * @param {Shape} shape
+     * @param {Vector} point
+     */
+    shapeContains(shape, point) {
+      if (shape.type == "circle")
+        return SAT.circleContains(shape.position, shape.radius, point)
+      return SAT.verticesContain(shape.vertices, point)
+    },
+    /**
+     * @param {Vector} position
+     * @param {number} radius
+     * @param {Vector} point
+     */
+    circleContains(position, radius, point) {
+      let dx = point.x - position.x,
+        dy = point.y - position.y;
+      if (dx * dx + dy * dy > radius * radius)
+        return false
+      return true
+    },
+    /**
+     * @param {Vector[]} vertices
+     * @param {number} point 
+     */
+    verticesContain(vertices, point) {
+      var pointX = point.x,
+        pointY = point.y,
+        length = vertices.length,
+        vertex = vertices[length - 1],
+        nextVertex;
+      if (length < 2) return false
+      for (var i = 0; i < length; i++) {
+        nextVertex = vertices[i];
+        if ((pointX - vertex.x) * (nextVertex.y - vertex.y) +
+          (pointY - vertex.y) * (vertex.x - nextVertex.x) < 0) {
+          return false;
+        }
+        vertex = nextVertex;
+      }
+
+      return true;
+    }
+  };
+
+  /**
+   * This is an abstract class that extended to classes that are used to filter out unnecessary collision checks to boost performance.
+   * 
+   * @abstract
+   * @see QuadtreeBroadphase
+   * @see GridBroadphase
+   * @see AABBBroadphase
+   */
+  class Broadphase {
+    /**
+     * Checks to see if two bodies can proceed to have their bounding boxes checked 
+     * 
+     * @param {Body} a
+     * @param {Body} b
+     */
+    canCollide(a, b) {
+      if (a.mass == 0 && b.mass == 0)
+        return false
+      if (
+        (a.mask.group !== 0 && b.mask.group !== 0) &&
+        a.mask.group == b.mask.group
+      ) return false
+      if (a.mask.layer && b.mask.layer && a.mask.layer !== b.mask.layer)
+        return false
+      if (a.sleeping && b.sleeping) return false
+      //console.log(a.mass,b.mass);
+      return true
+    }
+    /**
+     * Adds a body to the broadphase
+     * 
+     * @param {Body} obj
+     */
+    insert(obj) {}
+    /**
+     * Removes a body from the broadphase
+     * 
+     * @param {Body} obj
+     */
+    remove(obj) {}
+
+    /**
+     * Renders a representation of a broadphase
+    */
+    draw(ctx) {}
+    /**
+     * Updates the internals of the broadphase if needed.
+     * 
+     * @param {array<Body>} bodies
+    */
+    update(bodies) {}
+    /**
+     * Gets all possibly colliding pairs.
+     * 
+     * @param {array} target Empty array to store results.
+     * @returns {array<Body>}
+    */
+    getCollisionPairs(target){}
+    
+    /**
+     * Returns bodies that are within the given bound.
+     * 
+     * @param {Bounds} bounds Region to check in.
+     * @param {array} target Empty array to store results.
+     * @returns {array<Body>}
+    */
+    query(bounds,target){}
+  }
+
+  /**
+   * @typedef Bounds
+   * @property {Vector_like} max
+   * @property {Vector_like} min
+   */
+
+  /**
+   * @typedef Vector_like
+   * @property {number} x
+   * @property {number} y
+   */
+
+  /**
+   * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
+  */
+  class NaiveBroadphase extends Broadphase {
+    constructor(world) {
+      super();
+      this.bodies = world.objects;
+    }
+    /**
+     * @inheritdoc
+     * @param {Bounds} bounds Region to check in.
+     * @param {array} target Empty array to store results.
+     * @returns {array<Body>}
+    */
+    query(bound, target) {
+      closeObjects = target || [];
+      for (var i = 0; i < this.objects.length; i++) {
+        let ob = this.world.objects[i];
+        if (ob.bounds.intersects(bound) < dist)
+          closeObjects.push(ob);
+      }
+      return closeObjects
+    }
+    /**
+     * @inheritdoc
+     * @param {array} target Empty array to store results.
+     * @returns {array<Body>}
+    */
+    getCollisionPairs(target) {
+      target = target || [];
+      let bodies = this.bodies,
+        length = bodies.length;
+      for (let i = 0; i < length; i++) {
+        let a = bodies[i];
+        for (let j = i + 1; j < length; j++) {
+          let b = bodies[j];
+          if(!this.canCollide(a,b))continue
+          if (!a.bounds.intersects(b.bounds))
+            continue
+          let list = {
+            a,
+            b
+          };
+          if (a.aabbDetectionOnly || b.aabbDetectionOnly) continue
+          if (!a.shapes.length || !b.shapes.length) continue
+          target.push(list);
+        }
+      }
+      return target
+    }
+
+  }
+
+  class Client$1 {
+    constructor(body) {
+      this.body = body;
+      this.bounds = body.bounds.clone();
+      this.node = null;
+    }
+  }
+
+  class Node {
+    constructor(bounds) {
+      this.children = [];
+      this.objects = [];
+      this.parent = null;
+      this.global = null;
+      this.index = -1;
+      this.root = null;
+      this.bounds = bounds;
+      this.hasObjects = false;
+      this.depth = -1;
+      this.dims = {
+        x: this.bounds.max.x - this.bounds.min.x,
+        y: this.bounds.max.y - this.bounds.min.y
+      };
+    }
+    add(node) {
+      node.index = this.children.length;
+      this.children.push(node);
+      node.depth = this.depth + 1;
+      node.parent = this;
+      node.global = this.global;
+    }
+    clear() {
+      for (var i = 0; i < this.children.length; i++) {
+        const node = nodes[i];
+
+        this.children.remove(node);
+        node.parent = null;
+        node.global = null;
+      }
+    }
+    split(depth = 1) {
+      let w = this.dims.x / 2;
+      let h = this.dims.y / 2;
+      let topLeft = new Node({
+        min: {
+          x: this.bounds.min.x,
+          y: this.bounds.min.y
+        },
+        max: {
+          x: this.bounds.min.x + w,
+          y: this.bounds.min.y + h
+        }
+      });
+      let topRight = new Node({
+        min: {
+          x: this.bounds.min.x + w,
+          y: this.bounds.min.y
+        },
+        max: {
+          x: this.bounds.max.x,
+          y: this.bounds.max.y - h
+        }
+      });
+      let bottomLeft = new Node({
+        min: {
+          x: this.bounds.min.x,
+          y: this.bounds.min.y + h
+        },
+        max: {
+          x: this.bounds.max.x - w,
+          y: this.bounds.max.y
+        }
+      });
+      let bottomRight = new Node({
+        min: {
+          x: this.bounds.min.x + w,
+          y: this.bounds.min.y + h
+        },
+        max: {
+          x: this.bounds.max.x,
+          y: this.bounds.max.y
+        }
+      });
+      this.add(topLeft);
+      this.add(topRight);
+      this.add(bottomLeft);
+      this.add(bottomRight);
+      if (depth <= 1) return
+      this.children.forEach(e => e.split(depth - 1));
+    }
+    draw(ctx) {
+      ctx.beginPath();
+      ctx.strokeStyle = "blue";
+      ctx.strokeRect(this.bounds.min.x, this.bounds.min.y, this.dims.x, this.dims.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    isLeafNode() {
+      return this.children.length == 0
+    }
+    childrenHaveObj() {
+      return this.children.length > 0 || (
+        this.children[0].hasObjects ||
+        this.children[1].hasObjects ||
+        this.children[2].hasObjects ||
+        this.children[3].hasObjects
+      )
+    }
+    intersects(bounds) {
+      if (bounds.r)
+        return Overlaps.AABBvsSphere(this.bounds, bounds)
+      return Overlaps.AABBColliding(this.bounds, bounds)
+    }
+    contains(bounds) {
+      return (
+        bounds.max.x < this.bounds.max.x &&
+        bounds.max.y < this.bounds.max.y &&
+        bounds.min.x > this.bounds.min.x &&
+        bounds.min.y > this.bounds.min.y
+      )
+    }
+    query(bounds, target) {
+      if (!this.intersects(bounds))
+        return target
+      if (!this.isLeafNode()) {
+        for (var i = 0; i < this.children.length; i++) {
+          this.children[i].query(bounds, target);
+        }
+      }
+      for (var i = 0; i < this.objects.length; i++) {
+        let a = this.objects[i];
+        if (a.bounds.intersects(bounds))
+          target.push(a);
+      }
+      return target
+    }
+    insertObject(obj) {
+      if (!this.contains(obj.bounds))
+        return false
+      if (!this.isLeafNode()) {
+        for (var i = 0; i < this.children.length; i++) {
+          let r = this.children[i].insertObject(obj);
+          if (r) {
+            this.hasObjects = true;
+            return true
+          }
+        }
+      }
+      if (this.contains(obj.bounds)) {
+        this.objects.push(obj);
+        obj.lastPosition.copy(obj.bounds.pos);
+        this.hasObjects = true;
+        return true
+      }
+      return false
+    }
+    isInNode(position) {
+      if (
+        position.x > this.bounds.min.x &&
+        position.y > this.bounds.min.y &&
+        position.x < this.bounds.max.x &&
+        position.y < this.bounds.max.y
+      )
+        return true
+      return false
+    }
+    isRootNode() {
+      return !this.parent
+    }
+    updateObject(obj) {
+      this.removeObject(obj);
+      this.global.insert(obj);
+      return true
+    }
+    removeObject(obj) {
+      if (!this.isInNode(obj.lastPosition))
+        return false
+      let t = this.objects.indexOf(obj);
+      if (t !== -1) {
+        Utils.removeElement(this.objects, t);
+        if (
+          this.objects.length == 0 &&
+          this.childrenHaveObj()
+        ) this.hasObjects = false;
+        return true
+      }
+      if (!this.isLeafNode()) {
+        for (var i = 0; i < this.children.length; i++) {
+
+          let r = this.children[i].removeObject(obj);
+          if (r) {
+            if (
+              this.objects.length == 0 &&
+              this.childrenHaveObj()
+            ) this.hasObjects = false;
+            return true
+          }
+        }
+      }
+      return false
+    }
+    traverse(func, target) {
+      if (!this.isLeafNode()) {
+        for (var i = 0; i < 4; i++) {
+          let t = this.children[i].traverse(func, target);
+          if (t != undefined &&
+            (typeof t == "object" && t.length)) return target
+        }
+      }
+      func(this, target);
+      if (this.isRootNode()) {
+        return target
+      }
+    }
+    getCollisionPairs(target, stack) {
+      if (!this.hasObjects) return
+      if (!this.isLeafNode()) {
+        Utils.appendArr(stack, this.objects);
+        for (var i = 0; i < 4; i++) {
+          this.children[i].getCollisionPairs(target, stack);
+        }
+        Utils.popArr(stack, this.objects.length);
+      }
+      let length = stack.length,
+        obLength = this.objects.length,
+        a, b;
+      if (obLength == 0) return
+      for (var i = 0; i < obLength; i++) {
+        for (var j = i + 1; j < obLength; j++) {
+          a = this.objects[i];
+          b = this.objects[j];
+          if (a.index == b.index) continue
+          if (!this.global.canCollide(a, b)) continue
+          if (!a.bounds.intersects(b.bounds))
+            continue
+          target.push({
+            a,
+            b
+          });
+        }
+      }
+
+      for (var i = 0; i < length; i++) {
+        for (var j = 0; j < obLength; j++) {
+          a = stack[i];
+          b = this.objects[j];
+          if (!this.global.canCollide(a, b)) continue
+          if (!a.bounds.intersects(b.bounds))
+            continue
+          target.push({
+            a,
+            b
+          });
+        }
+      }
+
+
+    }
+  }
+
+  /**
+   * This is a bounded broadphase that is used to speed up collision testing on sparse number of objects over a large area.
+   * 
+   * @extends Broadphase
+   */
+  class Tree extends Broadphase {
+    /**
+     * @param {Bounds} bounds The region it operates on.
+     * @param {number} [maxdepth=3] Maximum number of branches.
+     * 
+     */
+    constructor(bounds, maxdepth = 3) {
+      bounds = bounds || {
+        min: {
+          x: 0,
+          y: 0
+        },
+        max: {
+          x: 1000,
+          y: 1000
+        }
+      };
+      super();
+      this._root = new Node(bounds);
+      this._root.global = this;
+      this._root.depth = 0;
+      this.maxDepth = maxdepth;
+      this.bounds = bounds;
+
+      if (maxdepth) this._root.split(maxdepth);
+    }
+    _insert(client) {
+      client.bounds.copy(client.body.bounds);
+      if (!this._root.contains(obj.bounds))
+        return //console.log("out of bounds");
+      this._root.insertObject(obj);
+    }
+    /**
+     * @inheritdoc
+     * @param {Body} obj
+     */
+    insert(obj) {
+      let client = body.client;
+      if (client == null) {
+        client = body.client = new Client$1(body);
+      }
+      this._insert(client);
+    }
+    _remove(client) {
+      return this._root.removeObject(obj)
+    }
+    /**
+     * @inheritdoc
+     * @param {Body} obj
+     */
+    remove(obj) {
+      if (obj.client == null) return false
+      return this._remove(obj.client)
+    }
+    /**
+     * @inheritdoc
+     * @param {array<Body>} bodies
+     */
+    update(bodies) {
+      for (var i = 0; i < bodies.length; i++) {
+        this._remove(bodies[i].client);
+        this._insert(bodies[i].client);
+      }
+
+    }
+    /**
+     * @inheritdoc
+     * @param {Bounds} bounds Region to check in.
+     * @param {array} target Empty array to store results.
+     * @returns {array<Body>}
+     */
+    query(bounds, target) {
+      this._root.query(bounds, target);
+      return target
+    }
+    /**
+     * A depth first search of the quadtree that applies the given function to its nodes.
+     * 
+     * @param {function} func The function that checks every node unless it returns true.
+     * 
+     */
+    traverse(func) {
+      return this._root.traverse(func)
+    }
+    /**
+     * @inheritdoc
+     */
+    draw(ctx) {
+      this._root.traverse(e => {
+        if (e.hasObjects) {
+          e.children.forEach(r => r.draw(ctx));
+        }
+      });
+      ctx.fillStyle = "black";
+    }
+    /**
+     * Resizes a quadtree to a new bound size.
+     * This method should not be used without care.
+     * 
+     * @param {Bounds} bounds.
+     * 
+     */
+    recalculateBounds(bounds) {
+      if (!bounds) return
+      let ob = this._root.traverse((e, arr) => {
+        let length = e.objects.length;
+        for (var i = 0; i < length; i++) {
+          arr.push(e.objects[i]);
+        }
+      }, []);
+      this._root = new Node(bounds);
+      this._root.split();
+      ob.forEach(e => {
+        this.insert(ob);
+      });
+    }
+    /**
+     * @inheritdoc
+     * @param {array} target Empty array to store results.
+     * @returns {array<Body>}
+     */
+    getCollisionPairs(target) {
+      this._root.getCollisionPairs(target, []);
+    }
+  }
+
+
+  /**
+   * @typedef Bounds
+   * @property {Vector_like} max
+   * @property {Vector_like} min
+   */
+
+  /**
+   * @typedef Vector_like
+   * @property {number} x
+   * @property {number} y
+   */
+
+  let floor = Math.floor;
+  class Client {
+    constructor(body) {
+      this.body = body;
+      this.bounds = body.bounds.clone();
+    }
+  }
+
+  /**
+   * This is a bounded broadphase that is used to speed up collision testing on dense number of objects over a small area.
+   * 
+   * @extends Broadphase
+   */
+  class Grid extends Broadphase {
+    bins = []
+    bounds = null
+    constructor(bounds, divX, divY) {
+      super();
+      this.bounds = bounds;
+      this.divX = divX;
+      this.divY = divY;
+      for (let i = 0; i < divX; i++) {
+        let Xbin = [];
+        for (let j = 0; j < divY; j++) {
+          Xbin.push([]);
+        }
+        this.bins.push(Xbin);
+      }
+    }
+    _hash(x, y) {
+      let key = [0, 0],
+        minX = this.bounds.min.x,
+        minY = this.bounds.min.y,
+        width = this.bounds.max.x - this.bounds.min.x,
+        height = this.bounds.max.y - this.bounds.min.y;
+
+      key[0] = floor(
+        ((x - minX) / width) * this.divX);
+      key[1] = floor(((y - minY) / height) * this.divY);
+      return key
+    }
+    _insert(client) {
+      client.bounds.copy(client.body.bounds);
+      let [x1, y1] = this._hash(client.bounds.min.x, client.bounds.min.y);
+      let [x2, y2] = this._hash(client.bounds.max.x, client.bounds.max.y);
+
+
+      if (x1 > this.divX - 1 || x1 < 0) return
+      if (y1 > this.divY - 1 || y1 < 0) return
+      if (x2 > this.divX - 1 || x2 < 0) return
+      if (y2 > this.divY - 1 || y2 < 0) return
+
+      for (let i = x1; i <= x2; i++) {
+        for (var j = y1; j <= y2; j++) {
+          this.bins[i][j].push(client);
+        }
+      }
+    }
+    insert(body) {
+      let client = body.client;
+      if (client == null) {
+        client = body.client = new Client(body);
+      }
+      this._insert(client);
+    }
+    _remove(client){
+      let [x1, y1] = this._hash(client.bounds.max.x, client.bounds.max.y);
+      let [x2, y2] = this._hash(client.bounds.max.x, client.bounds.max.y);
+
+      if (x1 > this.divX - 1 || x1 < 0) return
+      if (y1 > this.divY - 1 || y1 < 0) return
+      if (x2 > this.divX - 1. || x2 < 0) return
+      if (y2 > this.divY - 1. || y2 < 0) return
+
+      for (let i = x1; i <= x2; i++) {
+        for (let j = y1; j <= y2; j++) {
+          let index = this.bins[i][j].indexOf(client);
+          Utils.removeElement(this.bins[i][j], index);
+        }
+      }
+    }
+    remove(body) {
+      if(body.client === null) return
+      this._remove(body.client);
+    }
+
+    _update(body) {
+      this._remove(body.client);
+      this._insert(body.client);
+    }
+    update(bodies) {
+      for (var i = 0; i < bodies.length; i++) {
+        this._update(bodies[i]);
+      }
+    }
+    _naiveCheck(arr, ids, target) {
+      for (var j = 0; j < arr.length; j++) {
+        for (var k = j + 1; k < arr.length; k++) {
+          let a = arr[j];
+          let b = arr[k];
+          let id = naturalizePair(a.id, b.id);
+
+          if (ids.has(id)) continue
+          if (!this.canCollide(a, b)) continue
+          if (!a.bounds.intersects(b.bounds))
+            continue
+          ids.add(id);
+          target.push({
+            a,
+            b
+          });
+        }
+      }
+    }
+    getCollisionPairs(target) {
+      //When bodies are in more than one bin,there is a possibility that they might show up in more than one collision,this remedies that.
+      let ids = new Set();
+      for (let i = 0; i < divX; i++) {
+        for (let j = 0; j < divY; j++) {
+          this._naiveCheck(this.bins[i][j], ids, target);
+        }
+      }
+    }
+  }
+
+  /**
+   * Class responsible for updating bodies,constraints and composites.
+   */
+  class World {
+    /**
+     * Used to check if a manifold is persistent.
+     * 
+     * @type number
+     * @private
+     */
+    count = 0
+    /**
+     * A record of collision manifolds.
+     * 
+     * @type Map<number,Manifold>
+     * @protected
+     */
+    records = new Map()
+    /**
+     * A list of bodies.
+     * 
+     * @type Array<Body>
+     * @private
+     */
+    objects = []
+    /**
+     * A list of constraints fixed to a static object.
+     * 
+     * @type Array<Constraint>
+     * @private
+     */
+    fixedConstraits = []
+    /**
+     * A list of constraints fixed to two dynamic bodies.
+     * 
+     * @type Array<Constraint>
+     * @private
+     */
+    constraints = []
+    /**
+     * A value between 0 and 1 used to dampen linear velocity of bodies.
+     * 
+     * @type number
+     */
+    linearDamping = Settings.linearDamping
+    /**
+     * A value between 0 and 1 used to dampen angular velocity of bodies.
+     * 
+     * @type number
+     */
+    angularDamping = Settings.angularDamping
+
+    /**
+     * The number of times to solve for velocity.A high number results in much more stable stacking.
+     * 
+     * @type number
+     */
+    velocitySolverIterations = Settings.velocitySolverIterations
+    /**
+     * The collision manifolds that have passed narrowphase and verified to be colliding.
+     * 
+     * @type Array<Manifold>
+     */
+    CLMDs = []
+    /**
+     * The collision manifolds that have passed broadphase and could be colliding
+     * 
+     * 
+     * @type Array<BroadManifold>
+     */
+    contactList = []
+    /**
+     * The gravitational pull of the world.
+     * 
+     * @type Vector
+     */
+    gravitationalAcceleration = new Vector(0, 0)
+    /**
+     * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
+     * 
+     * @type number
+     */
+    fixedFrameRate = Settings.fixedFrameRate
+    /**
+     * 
+     * @type { {lastTimestamp:number,total: number}}
+     * @ignore
+     */
+    perf = {
+      lastTimestamp: 0,
+      total: 0
+    }
+    /**
+     * This is a cheap way of determining which pairs of bodies could be colliding.
+     * 
+     * @type Broadphase
+     */
+    broadphase = null
+    /**
+     * @constructor World
+     * 
+     */
+    constructor() {
+      this.broadphase = new NaiveBroadphase(this);
+    }
+    set gravity(x) {
+      if (typeof x === "object")
+        return this.gravitationalAcceleration.copy(x)
+      this.gravitationalAcceleration.set(0, x);
+    }
+    /**
+     * Gravitational pull of the world,will affect all bodies except static bodies.
+     * 
+     * @type {Vector }
+     */
+    get gravity() {
+      return this.gravitationalAcceleration
+    }
+    /**
+     * @private
+     */
+    narrowPhase() {
+      let
+        collisionData,
+        manifold;
+
+      for (var i = 0; i < this.contactList.length; i++) {
+        let { a, b } = this.contactList[i];
+        a.sleeping = false;
+        b.sleeping = false;
+        let id = naturalizePair(a.id, b.id);
+        if (!this.records.has(id))
+          this.records.set(id, {
+            bodyA: a,
+            bodyB: b,
+            contactData: {
+              lastOverlap: 0,
+              overlap: -Infinity,
+              done: false,
+              axis: new Vector(),
+              verticesA: [],
+              verticesB: [],
+              vertShapeA: null,
+              vertShapeB: null,
+              contactNo: 0,
+              shapes: [],
+              indexA: 0,
+              indexB: 0
+            },
+            stmp: -1,
+            impulse: 0,
+            persistent: false,
+            ca1: new Vector(),
+            ca2: new Vector(),
+            restitution: 0,
+            staticFriction: 0,
+            kineticFriction: 0,
+            velA: new Vector(),
+            velB: new Vector(),
+            rotA: 0,
+            rotB: 0
+          });
+        manifold = this.records.get(id);
+        collisionData = manifold.contactData;
+        collisionData.overlap = -Infinity;
+        collisionData.done = false;
+        SAT.shapesInBodyCollided(a, b, collisionData);
+        if (collisionData.overlap < 0 || !collisionData.done) continue
+        if (collisionData.contactNo == 2) {
+          Vector.lerp(
+            collisionData.verticesA[0],
+            collisionData.verticesA[1],
+            0.5,
+            manifold.ca1
+          ).sub(a.position);
+          Vector.lerp(
+            collisionData.verticesB[0],
+            collisionData.verticesB[1],
+            0.5,
+            manifold.ca2
+          ).sub(b.position);
+        } else {
+          manifold.ca1.copy(collisionData.verticesA[0]).sub(a.position);
+          manifold.ca2.copy(collisionData.verticesB[0]).sub(b.position);
+        }
+        manifold.restitution = a.restitution < b.restitution ? a.restitution : b.restitution;
+        manifold.staticFriction = a.staticFriction < b.staticFriction ? a.staticFriction : b.staticFriction;
+        manifold.kineticFriction = a.kineticFriction < b.kineticFriction ? a.kineticFriction : b.kineticFriction;
+        if (a.collisionResponse && b.collisionResponse)
+          this.CLMDs.push(manifold);
+
+      }
+    }
+    /*
+     * @private
+     */
+    broadPhase() {
+      this.contactList = [];
+      this.broadphase.getCollisionPairs(this.contactList);
+    }
+    /**
+     * @private
+     */
+    collisionDetection() {
+      this.broadPhase();
+      this.narrowPhase();
+    }
+    /**
+     * @private
+     * @param {number} dt 
+     */
+    collisionResponse(dt) {
+      let length = this.CLMDs.length,
+        manifold,
+        inv_dt = 1 / dt;
+        this.count - 1;
+
+
+
+      for (var j = 0; j < this.velocitySolverIterations; j++) {
+        for (let i = 0; i < length; i++) {
+          manifold = this.CLMDs[i];
+          manifold.velA.set(0, 0);
+          manifold.velB.set(0, 0);
+          manifold.rotA = 0;
+          manifold.rotB = 0;
+          ImpulseSolver.solve(manifold);
+          FrictionSolver.solve(manifold);
+        }
+        for (var i = 0; i < length; i++) {
+          manifold = this.CLMDs[i];
+          manifold.bodyA.velocity.add(manifold.velA);
+          manifold.bodyB.velocity.add(manifold.velB);
+          manifold.bodyA.rotation.radian += manifold.rotA;
+          manifold.bodyB.rotation.radian += manifold.rotB;
+        }
+      }
+
+      for (let i = 0; i < length; i++) {
+        manifold = this.CLMDs[i];
+        PenetrationSolver.solve(manifold, inv_dt);
+      }
+
+      for (let i = 0; i < length; i++) {
+        manifold = this.CLMDs[i];
+        manifold.stmp = this.count;
+        ContactSolver.solve(
+          manifold.bodyA,
+          manifold.bodyB,
+          manifold.impulse,
+          manifold.contactData.contactNo
+        );
+      }
+    }
+    /**
+     * @private
+     * @param {number} dt 
+     * @param {number} length 
+     */
+    intergrate(dt, length) {
+      for (var i = 0; i < length; i++) {
+        let a = this.objects[i];
+        if (!a.sleeping)
+          VerletSolver.solve(a, dt);
+      }
+    }
+    /**
+     * @private
+     * @param {number} length 
+     * @param {number} dt 
+     */
+    applyGravity(length, dt) {
+      this.gravitationalAcceleration.clone().multiply(dt);
+      for (var i = 0; i < length; i++) {
+        let a = this.objects[i];
+        if (a.mass)
+          a.acceleration.add(this.gravitationalAcceleration);
+      }
+    }
+    /**
+     * @private
+     * @param {number} dt
+     */
+    updateConstraints(dt) {
+      let length = this.constraints.length,
+        fixedlength = this.fixedConstraits.length;
+      for (var i = 0; i < fixedlength; i++) {
+        this.fixedConstraits[i].update(dt);
+      }
+      for (var i = 0; i < length; i++) {
+        this.constraints[i].update(dt);
+      }
+    }
+    /**
+     * @private
+     * @param {number} length 
+     */
+    updateBodies(length) {
+      let ld = 1 - this.linearDamping;
+      let ad = 1 - this.angularDamping;
+      for (var i = 0; i < length; i++) {
+        this.objects[i].update();
+        this.objects[i].velocity.multiply(ld);
+        this.objects[i].angularVelocity = this.objects[i].angularVelocity * ad;
+      }
+    }
+    /**
+     * 
+     * 
+     * @param {Number} dt the time passed between the last call and this call.
+     */
+    update(delta) {
+      this.perf.lastTimestamp = performance.now();
+      let dt = this.fixedFrameRate || delta;
+      let length = this.objects.length;
+      this.CLMDs = [];
+
+      this.applyGravity(length, dt);
+      this.updateBodies(length);
+      this.updateConstraints(dt);
+      this.broadphase.update();
+      this.collisionDetection();
+      this.collisionResponse(dt);
+      this.updateConstraints(dt);
+      this.intergrate(dt, length);
+      this.updateBodies(length);
+      this.count += 1;
+      this.perf.total = performance.now() - this.perf.lastTimestamp;
+    }
+
+    /**
+     * Initializes the manager.
+     * 
+     * @param {Manager} manager
+     */
+    init(manager) {
+      manager.setComponentList("body", this.objects);
+    }
+    /**
+     * Adds an object to the world.
+     * 
+     * @param {Body | Composite | Constraint} object
+     */
+    add(object) {
+      if (object.physicsType == ObjType.BODY) {
+        this.addBody(object);
+      } else if (object.physicsType == ObjType.CONSTRAINT) {
+        this.addConstraint(object);
+      } else if (object.physicsType == ObjType.COMPOSITE) {
+        this.addComposite(object);
+      }
+    }
+    /**
+     * Adds a body to the physics world
+     * @param {Body} body Body to insert to world
+     */
+    addBody(body) {
+      //must update vertices and bounds so that Broadphase works properly
+      body.update();
+      body.index = this.objects.length;
+      this.objects.push(body);
+      this.broadphase.insert(body);
+    }
+    /**
+     * Removes an object from the world
+     * @param {Body | Composite | Constraint} object
+     */
+    remove(object) {
+      if (object.physicsType == ObjType.BODY) {
+        this.removeBody(object);
+      } else if (object.physicsType == ObjType.CONSTRAINT) {
+        this.removeContraint(object);
+      } else if (object.physicsType == ObjType.COMPOSITE) {
+        this.removeComposite(object);
+      }
+    }
+    /**
+     * Removes a body from the physics world
+     * @param {Body} body Body to remove from world
+     * 
+     * @returns Body
+     */
+    removeBody(body) {
+      this.broadphase.remove(body);
+      if (Utils.removeElement(this.objects, body.index)) {
+        if (body.index === this.objects.length)
+          return
+        this.objects[body.index].index = body.index;
+      }
+      return body
+    }
+    /**
+     * Adds a constraint to the physics world
+     * @param {Constraint} constraint constaint to add to world
+     */
+    addConstraint(constraint) {
+      if (constraint.fixed) {
+        constraint.index = this.fixedConstraits.length;
+        this.fixedConstraits.push(constraint);
+        return
+      }
+      constraint.index = this.constraints.length;
+      this.constraints.push(constraint);
+    }
+    /**
+     * Removes a constraint from the physics world
+     * @param {Constraint} constraint constaint to add to world
+     * 
+     * @returns Constraint
+     */
+    removeContraint(constraint) {
+      let arr = constraint.fixed ? this.fixedConstraits : this.constraints;
+      let temp = arr.pop();
+      this.objects[constraint.index] = temp1;
+      temp.index = constraint.index;
+      constraint.index = -1;
+      return constraint
+    }
+
+    /**
+     * Adds a composite to the physics world.
+     * 
+     * @param {Composite} composite composite to add to world
+     */
+    addComposite(composite) {
+      for (var i = 0; i < composite.bodies.length; i++) {
+        this.addBody(composite.bodies[i]);
+      }
+      for (var i = 0; i < composite.constraints.length; i++) {
+        this.addConstraint(composite.constraints[i]);
+      }
+    }
+    /**
+     * Removes a composite from the physics world.
+     * 
+     * @param {Composite} composite composite to remove
+     */
+    removeComposite(composite) {
+      for (var i = 0; i < composite.bodies.length; i++) {
+        this.removeBody(composite.bodies[i]);
+      }
+      for (var i = 0; i < composite.constraints.length; i++) {
+        this.removeContraint(composite.constraints[i]);
+      }
+    }
+    /**
+     * Searches for objects in a given bounds and returns them.
+     * 
+     * @param {Bounds} bound the region to search in
+     * @param {Array<Body>} [target = []] an array to store results in
+     * @returns Array<Body>
+     */
+    query(bound, target = []) {
+      this.broadphase.query(bound, target);
+      return target
+    }
+  }
+
+  class Camera {
+    _position = new Vector()
+    constructor(renderer, position) {
+      this.transformMatrix = new Matrix2();
+      this.target = null;
+      this.lerpFactor = 0.5;
+      this.renderer = renderer;
+      this.offset = new Vector();
+      this._position = new Vector();
+      this._actualPosition = new Vector();
+      this.position.set(position?.x || 0, position?.y || 0);
+      this.orientation = new Angle();
+    }
+    get position() {
+      return this._actualPosition
+    }
+    set position(x) {
+      this._actualPosition.copy(x);
+    }
+    get transform() {
+      return this.position
+    }
+    update() {
+      if (this.target)
+        Vector.lerp(
+          this._position,
+          this.target,
+          this.lerpFactor,
+          this._position
+        );
+      this._actualPosition
+        .copy(this._position)
+        .add(this.offset);
+    }
+    clear(ctx) {
+      ctx.setTransform();
+    }
+    dispose() {
+      this.renderer = null;
+    }
+    follow(position) {
+      this.target = position;
+    }
+  }
+
+  class Renderer {
+    _accumulator = 0
+    objects = []
+    perf = {
+      lastTimestamp: 0,
+      total: 0
+    }
+    /** @type {HTMLCanvasElement}*/
+    domElement = null
+    /**@type {CanvasRenderingContext2D | WebGLRenderingContext}*/
+    ctx = null
+    camera = null
+    /**
+    @param {HTMLCanvasElement} [canvas] element to draw on
+    */
+    constructor(canvas, context) {
+      this.domElement = canvas;
+      this.ctx = context;
+      this.camera = new Camera(this);
+      this.clock = new Clock();
+    }
+    init(manager) {
+      manager.setComponentList("mesh", this.objects);
+    }
+
+    clear() {
+
+      throw "Override Renderer.clear()"
+    }
+    update(dt) {
+      throw "Override Renderer.update()"
+    }
+    RAF() {
+      this._rafID = requestAnimationFrame(this._update);
+    }
+    play() {
+      this.RAF();
+    }
+    pause() {
+      cancelAnimationFrame(this._rafID);
+    }
+    bindTo(selector, focus = true) {
+      let element = document.querySelector(selector);
+      this.domElement.remove();
+      this.domElement.style.backgroundColor = "grey";
+      this.domElement.style.touchAction = "none";
+      element.append(this.domElement);
+    }
+    add(mesh) {
+      this.objects.push(mesh);
+    }
+    remove(mesh) {
+      this.objects.splice(this.objects.indexOf(mesh), 1);
+    }
+    requestFullScreen() {
+      this.domElement.parentElement.requestFullscreen();
+    }
+    setViewport(w, h) {
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  class Renderer2D extends Renderer {
+    _transforms = []
+    _rotation = 0
+    _translation = new Vector()
+    _scale = new Vector()
+    _fill = "black"
+    _stroke = "black"
+    frameRate = 1 / 60
+    renderLast = []
+    /**
+    @param {HTMLCanvasElement} [canvas] element to draw on
+    */
+    constructor(canvas) {
+      canvas = canvas || document.createElement("canvas");
+      super(canvas,canvas.getContext("2d"));
+      
+    }
+    init(manager) {
+      manager.setComponentList("mesh", this.objects);
+    }
+    push() {
+      this._transforms.push(this.ctx.getTransform());
+    }
+    pop() {
+      this.ctx.setTransform(this._transforms.pop());
+
+    }
+    reset() {
+      this.ctx.setTransform();
+    }
+    translate(x, y) {
+      this.ctx.translate(x, y);
+    }
+    scale(x, y) {
+      this.ctx.scale(x, y);
+    }
+    rotate(rad) {
+      this.ctx.rotate(rad);
+      this._rotation += rad;
+    }
+    line(x1, y1, x2, y2) {
+      this.ctx.moveTo(
+        x1 - this.camera.position.x,
+        y1 - this.camera.position.y
+      );
+      this.ctx.lineTo(
+        x2 - this.camera.position.x,
+        y2 - this.camera.position.y
+      );
+    }
+    rect(x, y, w, h) {
+      this.ctx.rect(
+        x - this.camera.position.x,
+        y - this.camera.position.y,
+        w,
+        h
+      );
+    }
+    circle(x, y, r) {
+      this.ctx.arc(
+        x - this.camera.position.x,
+        y - this.camera.position.y,
+        r, 0, Math.PI * 2
+      );
+    }
+    vertices(vertices, close = true) {
+      if (vertices.length < 2) return;
+      this.ctx.moveTo(
+        vertices[0].x - this.camera.position.x,
+        vertices[0].y - this.camera.position.y);
+      for (var i = 1; i < vertices.length; i++) {
+        this.ctx.lineTo(
+          vertices[i].x - this.camera.position.x,
+          vertices[i].y - this.camera.position.y
+        );
+      }
+      if (close)
+        this.ctx.lineTo(
+          vertices[0].x - this.camera.position.x,
+          vertices[0].y - this.camera.position.y
+        );
+    }
+    arc(x, y, r, start, end) {
+      this.ctx.arc(
+        x - this.camera.position.x,
+        y - this.camera.position.y,
+        r, start, end
+      );
+    }
+    fillText(text, x, y) {
+      this.ctx.fillText(text,
+        x - this.camera.position.x,
+        y - this.camera.position.y
+      );
+    }
+    fill(color = "black", fillRule) {
+      this.ctx.fillStyle = color;
+      this.ctx.fill(fillRule);
+    }
+    stroke(color = "black", width = 1) {
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = width;
+      this.ctx.stroke();
+    }
+    begin() {
+      this.ctx.beginPath();
+    }
+    close() {
+      this.ctx.closePath();
+    }
+    clip() {
+      this.ctx.clip();
+    }
+    drawImage(
+      img,
+      x,
+      y,
+      w = img.width,
+      h = img.height,
+      ix = 0,
+      iy = 0
+    ) {
+      this.ctx.drawImage(img, w * ix, h * iy, w, h,
+        x - this.camera.position.y,
+        y - this.camera.position.y,
+        w, h);
+    }
+    get width() {
+      return this.domElement.clientWidth
+    }
+    get height() {
+      return this.domElement.clientHeight
+    }
+    set width(x) {
+      this.domElement.width = x;
+    }
+    set height(x) {
+      this.domElement.height = x;
+    }
+    setViewport(w, h) {
+      this.width = w;
+      this.height = h;
+    }
+    set CSSbackground(x) {
+      this.domElement.style.background = x;
+    }
+    get CSSbackground() {
+      return this.domElement.style.background
+    }
+    clear() {
+      this.reset();
+      let h = this.height,
+        w = this.width;
+      this.ctx.clearRect(0, 0, w, h);
+    }
+    update(dt) {
+      this.camera.update(dt);
+      this.perf.lastTimestamp = performance.now();
+      this.clear();
+      if (this.background != void 0)
+        this.background.update(this, dt);
+      for (var i = 0; i < this.objects.length; i++) {
+        this.objects[i].render(this, dt);
+      }
+      for (var i = 0; i < this.renderLast.length; i++) {
+        this.renderLast[i].update(this, dt, this.camera.transform);
+      }
+      this.perf.total = performance.now() - this.perf.lastTimestamp;
+    }
+    _update = (accumulate)=> {
+      let dt = this.clock.update(accumulate);
+      if (this._accumulator < this.frameRate) {
+        this._accumulator += dt;
+        this.RAF();
+        return
+      }
+      this.update(dt || this._accumulator);
+      this.RAF();
+      this._accumulator = 0;
+    }
+    RAF() {
+      this._rafID = requestAnimationFrame(this._update);
+    }
+    play() {
+      this.RAF();
+    }
+    pause() {
+      cancelAnimationFrame(this._rafID);
+    }
+    bindTo(selector, focus = true) {
+      let element = document.querySelector(selector);
+      this.domElement.remove();
+      this.domElement.style.backgroundColor = "grey";
+      this.domElement.style.touchAction = "none";
+      element.append(this.domElement);
+    }
+    add(mesh) {
+      this.objects.push(mesh);
+    }
+    remove(mesh) {
+      this.objects.splice(this.objects.indexOf(mesh), 1);
+    }
+    addUI(mesh) {
+      this.renderLast.push(mesh);
+    }
+    requestFullScreen() {
+      this.domElement.parentElement.requestFullscreen();
+    }
+  }
+
+  //Dont get too excited yet :)
+
+  class WebGPURenderer extends Renderer{
+    constructor(){
+      throw new Error("Dont get too excited yet :)")
+    }
+  }
+
+  class WebGLRenderer extends Renderer{
+    constructor(){
+      throw new Error("Hold your horses there!I haven't implemented this yet!")
+    }
+  }
+
+  new Vector();
+
+  /**
+   * This is the base class used to render images and paths onto the renderer.
+   * Extend it to create your custom behaviour.
+   * 
+   * @class
+   */
+  class Sprite {
+    /**
+     * @private
+     */
+    _position = new Vector()
+    /**
+     * @private
+     */
+    _orientation = new Angle()
+    scale = new Vector(1, 1)
+    /**
+     * @private
+     */
+    geometry = null
+    material = null
+    parent = null
+    constructor(geometry, material) {
+      this.geometry = geometry;
+      this.material = material;
+    }
+    get angle() {
+      return this._orientation.radian * 180 / Math.PI
+    }
+    set angle(x) {
+      this._orientation.degree = x;
+    }
+    get position() {
+      return this._position
+    }
+    set position(x) {
+      this._position.copy(x);
+    }
+    get orientation() {
+      return this._orientation
+    }
+    set orientation(x) {
+      this._orientation.copy(x);
+    }
+    /**
+     * Override this function.
+     * The canvas is already transformed to the position and rotation of the sprite.
+     * 
+     */
+    draw(render) {
+      this.geometry.render(render);
+      this.material.render(render);
+    }
+    render(render, dt) {
+      render.begin();
+      render.translate(...this._position);
+      render.rotate(this._orientation.radian);
+      render.scale(...this.scale);
+      this.draw(render, dt);
+      render.close();
+      render.reset();
+    }
+    init(entity) {
+      this.entity = entity;
+      this.requires("transform");
+      let transform = entity.get("transform");
+      this._position = transform.position;
+      this._orientation = transform.orientation;
+    }
+
+
+    update() {}
+  }
+  Utils.inheritComponent(Sprite);
+
+  /**
+   * This draws a body from the physics System.
+   * 
+   * @augments Sprite
+   */
+  let r = new Vector();
+  class BodySprite extends Sprite {
+    /**
+     * Determine whether to draw a representation of the velocity.
+     * 
+     * @type {boolean}
+     */
+    drawVelocity = false
+    /**
+     * Determine whether to draw the bounding box.
+     * 
+     * @type {boolean}
+     */
+    drawBounds = false
+    /**
+     * @param {{}} [options={}] 
+     * @param {boolean} [options.drawVelocity=false] Determine whether to draw a representation of the velocity.
+     * @param {boolean} [options.drawBounds=false] Determine whether to draw the bounding box.
+     */
+    constructor(options = {}) {
+      super();
+      this.drawVelocity = options.drawVelocity || false;
+      this.drawBounds = options.drawBounds || false;
+    }
+    render(renderer, dt) {
+
+      if (this.body.physicsType == ObjType.COMPOSITE) {
+        for (var i = 0; i < this.body.bodies.length; i++) {
+          this.drawShapes(this.body.bodies[i], renderer);
+
+        }
+      } else {
+        this.drawShapes(this.body, renderer);
+      }
+      if (this.drawVelocity == true)
+        this._drawVelocity(this.body, renderer);
+      if (this.drawBounds == true)
+        this.drawBound(this.body, renderer);
+    }
+    _drawVelocity(body, ctx) {
+      ctx.begin();
+      ctx.line(
+        body.position.x,
+        body.position.y,
+        body.position.x + body.velocity.x,
+        body.position.y + body.velocity.y
+      );
+      ctx.stroke("cyan");
+      ctx.close();
+    }
+    drawBound(body, renderer) {
+      renderer.begin();
+      if (body.bounds.r) {
+        //renderer.circle(body.bounds.pos.x,body.bounds.pos.y, body.bounds.r)
+      
+        renderer.circle(...body.position, body.bounds.r);
+      } else {
+        renderer.rect(
+          body.bounds.min.x,
+          body.bounds.min.y,
+          body.bounds.max.x - this.body.bounds.min.x,
+          body.bounds.max.y - this.body.bounds.min.y
+        );
+      }
+      renderer.stroke("red");
+      renderer.close();
+
+    }
+    drawShapes(body, renderer) {
+      renderer.begin();
+      for (var i = 0; i < body.shapes.length; i++) {
+        let shape = body.shapes[i];
+        if (shape.type == Shape.CIRCLE) {
+          renderer.circle(
+            shape.position.x,
+            shape.position.y,
+            shape.radius);
+          Vector.fromRad(shape.angle, r).multiply(shape.radius);
+          renderer.line(...shape.position,
+            shape.position.x + r.x,
+            shape.position.y + r.y);
+        } else {
+          renderer.vertices(shape.vertices, true);
+        }
+      }
+      renderer.stroke();
+      renderer.close();
+    }
+    init(parent) {
+      this.body = parent.get("body");
+      super.init(parent);
+    }
+  }
+
+  let path = [
+    new Vector(-10,-10),
+    new Vector(-10,10),
+    new Vector(20,0)
+    ];
+  class AgentSprite extends Sprite {
+    constructor() {
+      super();
+      this.agent = null;
+    }
+    init(entity) {
+      super.init(entity);
+      this.requires("agent");
+      this.agent = entity.get("agent");
+    }
+    draw(renderer){
+      renderer.vertices(path,true);
+      renderer.fill("purple");
+      renderer.stroke("black");
+    }
+    render(renderer) {
+      this.agent.draw(renderer);
+      super.render(renderer);
+    }
+  }
+
+  class DebugMesh extends Sprite {
+    constructor(manager) {
+      super();
+      this.manager = manager;
+      this.count = 25;
+      this.now = 0;
+      this.lastPerf = {};
+      this.drawBounds = false;
+    }
+    render(ctx, dt) {
+      this.now++;
+      let renderer = this.manager.getSystem("renderer");
+      let world = this.manager.getSystem("world");
+      let phy = world?.perf?.total,
+        rend = renderer?.perf?.total,
+        framerate = 1 / dt;
+
+      if (this.now > this.count) {
+        this.lastPerf.rate = round(framerate, 2);
+        this.lastPerf.actual = round(1 / (rend + phy) * 1000, 2);
+        this.lastPerf.phy = round(phy, 2);
+        this.lastPerf.ren = round(rend, 2);
+        this.lastPerf.tot = round(this.manager.perf.total, 2);
+        this.now = 0;
+      }
+      ctx.begin();
+      ctx.translate( renderer.width - 80, 80);
+      ctx.fill("cyan");
+      ctx.fillText(this.lastPerf.actual + "afps", 0, -20);
+      ctx.fillText("render: " + this.lastPerf.ren + "ms", 0, 0);
+      ctx.fillText("physics: " + this.lastPerf.phy + "ms", 0, 10);
+      ctx.fillText("total: " + this.lastPerf.tot + "ms", 0, 20);
+      ctx.fillText(`bodies: ${world?.objects?.length}`, 0, 30);
+
+      if (this.lastPerf.rate > 59)
+        ctx.fill("cyan");
+      else if (this.lastPerf.rate > 29)
+        ctx.fill("orange");
+      else if (this.lastPerf.rate <= 29)
+        ctx.fill("red");
+
+      ctx.fillText(this.lastPerf.rate + "fps", 0, -30);
+      ctx.close();
+      ctx.translate( -renderer.width + 80, -80);
+    }
+  }
+
+  /**
+   * Renders an image-sprite frame by frame.
+   * The frames of the image should have equal width and height in respect to each other.
+   * 
+   * @augments Sprite
+   */
+  class ImageSprite extends Sprite {
+    _index = 0
+    _maxFrame = 0
+    _frame = 0
+    _accumulator = 0
+    _dt = 0
+    frameRate = 1 / 60
+    _maxFrames = null
+    width = 0
+    height = 0
+    frameWidth = 0
+    frameHeight = 0
+    /**
+     * @param {HTMLImageElement} img Image to draw
+     * @param {number} frames Maximum number of cutouts in the sprite in the X axis of the image.
+     * @param {number} actions Maximum number of cutouts in the sprite in the Y axis of the image.
+     */
+    constructor(img, frames, actions) {
+      super();
+      this.img = img;
+      this._maxFrame = (frames || 1) - 1;
+      img.onload = () => {
+        this.width = img.width;
+        this.height = img.height;
+        this.frameWidth = img.width / (frames || 1);
+        this.frameHeight = img.height / (actions || 1);
+      };
+      this.width = 0;
+      this.height = 0;
+      this.frameWidth = 0;
+      this.frameHeight = 0;
+    }
+    /**
+     * Sets max number of frames for a given action
+     * 
+     * @param {number} action 
+     * @paran {number} max
+     */
+    setMaxFrames(action, max) {
+      this._maxFrames = max;
+    }
+    /**
+     * Sets a given action to be rendered
+     * 
+     * @param {number} action 
+     * @paran {number} max
+     */
+    setAction(index) {
+      this._maxFrame = this._maxFrames[index];
+      this._index = index;
+      this._frame = 0;
+    }
+    /**
+     * @inheritdoc
+     */
+    draw(renderer) {
+      renderer.drawImage(
+        this.img,
+        -this.frameWidth / 2,
+        -this.frameHeight / 2,
+        this.frameWidth,
+        this.frameHeight,
+        this._frame,
+        this._index
+      );
+    }
+    /**
+     * @inheritdoc
+     */
+    render(renderer, dt) {
+      super.update(renderer, dt);
+      this._accumulator += dt;
+      if (this._accumulator < this._frameRate) return
+      this._accumulator = 0;
+      this._frame += 1;
+      if (this._frame > this._maxFrame)
+        this._frame = 0;
+    }
+  }
+
+  /**
+   * Renders a single image with no frames.
+   * 
+   * @augments Sprite
+  */
+  class StaticImageSprite extends Sprite {
+    /**
+     * @param {HTMLImageElement} img Image to draw
+    */
+    constructor(img) {
+      super();
+      this.img = img;
+      img.onload = () => {
+        this.width = img.width;
+        this.height = img.height;
+      };
+      this.width = 0;
+      this.height = 0;
+      this.frameWidth = 0;
+      this.frameHeight = 0;
+    }
+    /**
+     * @param {Renderer} ctx
+     */
+    draw(renderer) {
+      renderer.drawImage(
+        this.img,
+        -this.frameWidth / 2,
+        -this.frameHeight / 2,
+        this.frameWidth,
+        this.frameHeight,
+        this._frame,
+        this._index
+      );
+    }
+    render(renderer, dt) {
+      super.update(renderer, dt);
+      this._accumulator += dt;
+      if (this._accumulator < this._frameRate) return
+      this._accumulator = 0;
+      this._frame += 1;
+      if (this._frame > this._maxFrame)
+        this._frame = 0;
+
+    }
+  }
+
+  let tmp1$5 = new Vector();
+
+  /**
+   * Its a fricking particle!
+  */
+  class Particle {
+    /**
+     * @param {Vector} pos
+     * @param {number} radius
+     * @param {number} [lifespan=5] In seconds
+    */
+    constructor(pos, radius, lifespan = 5) {
+      this.position = pos;
+      this.active = true;
+      this.velocity = new Vector();
+      this.radius = radius;
+      this.color = {
+        r: 100,
+        g: 255,
+        b: 255,
+        a: 1
+      };
+      this.lifespan = lifespan;
+      this._life = 0;
+    }
+    /**
+     * Renders a particle.
+    */
+    draw(ctx) {
+      ctx.begin();
+      ctx.circle(...this.position, this.radius);
+      ctx.fill(`rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`);
+      ctx.close();
+    }
+    /**
+     * Updates a particle's lifetime
+    */
+    update(ctx, dt) {
+      this._life += dt;
+      this.position.add(tmp1$5.copy(this.velocity).multiply(dt));
+      this.active = this._life < this.lifespan;
+    }
+  }
+
+  /**
+   * This creates a particle system 
+   * @augments Sprite
+   */
+  class System extends Sprite {
+    /**
+     * @param {number} [initial=1] Number of particles to start with.
+     * @param {number} [max=100] Maximum number of particles.
+     */
+    constructor(initial = 1, max = 100, increment = 5) {
+      super();
+      this.initial = initial;
+      this.frameIncrease = increment;
+      this.max = max;
+    }
+
+    /**
+     * @protected
+     */
+    initParticles(n) {
+      for (var i = 0; i < n; i++) {
+        this.add(this.create());
+      }
+    }
+
+    /**
+     * override this to return an object created from your own class extending the particle class
+     * 
+     * @protected
+     */
+    create() {
+      return new Particle(
+        new Vector(...this.position),
+        rand(1, 10),
+        rand(1, 6)
+      )
+    }
+    /**
+     * @inheritdoc
+     */
+    init(entity) {
+      super.init(entity);
+      this.initParticles(this.initial);
+    }
+    /**
+     * @protected
+     */
+    behavior(p) {
+      p.velocity.set(
+        p.velocity.x + rand(-1, 1),
+        p.velocity.y + rand(0, 0.3)
+      );
+    }
+    /**
+     * @inheritdoc
+     */
+    render(ctx, dt) {
+      for (let i = this._children.length - 1; i > 0; i--) {
+        let p = this._children[i];
+        p.update(ctx, dt);
+        this.behavior(p);
+        p.draw(ctx, dt);
+        if (!p.active) {
+          this.remove(i);
+        }
+      }
+      if (this._children.length < this.max) {
+        this.initParticles(this.frameIncrease);
+      }
+    }
+  }
+
+  class Layer{
+    speed = 1
+    constructor(img){
+      this.img = img;
+    }
+    draw(ctx,x,y){
+      ctx.drawImage(this.img,x,y);
+    }
+    update(ctx,dt){
+      
+    }
+  }
+
+  class ParallaxBackground {
+    constructor(...layers) {
+      this.layers =layers || [];
+    }
+    update(ctx,dt){
+      this.layers.forEach(layer=>{
+        layer.draw(ctx,dt);
+      });
+    }
+  }
+
+  class BufferGeometry{
+    constructor(vertices){
+      this.vertices = vertices || [];
+    }
+    render(renderer){
+      renderer.vertices(this.vertices,true);
+    }
+  }
+
+  class CircleGeometry{
+    constructor(radius){
+      this.radius = radius;
+    }
+    render(renderer){
+      renderer.circle(0,0,this.radius);
+    }
+  }
+
+  class Material{
+    constructor(){
+    }
+    render(){
+      
+    }
+  }
+
+  class BasicMaterial{
+    constructor(){
+      this.fill = "red";
+      this.lineWidth = 1;
+      this.stroke = "green";
+      this.wireframe = true;
+    }
+    render(ctx){
+      if(!this.wireframe){
+        ctx.fill(this.fill);
+      }
+      ctx.stroke(this.stroke,this.lineWidth);
+    }
+  }
+
+  /**
+   * Contains values showing which features are supported,general model of the device and browser used.
+   */
+
+  const DEVICE = {
+    /**
+     * Whether this device supports WebGPU
+     * 
+     * @type boolean
+     */
+    webgpu: false,
+    /**
+     * Whether this device supports WebGL
+     * 
+     * @type boolean
+     */
+    webgl: false,
+    /**
+     * Whether this device supports 2D canvas
+     * 
+     * @type boolean
+     */
+    canvas: false,
+    /**
+     * Whether this device supports WebAudio
+     * 
+     * @type boolean
+     */
+    webAudio: false,
+    /**
+     * Whether this device supports Audio tag.
+     * 
+     * @type boolean
+     */
+    audio: false,
+
+    /**
+     * A list of audio extensions this device supports.
+     * 
+     * @type array<string>
+     */
+    supportedAudio: [],
+    /**
+     * A list of audio extensions this device supports.
+     * 
+     * @type array<string>
+     */
+    supportedImages: [],
+
+    /**
+     * Whether this device uses windows
+     * 
+     * @type boolean
+     */
+    windows: false,
+    /**
+     * Whether this device uses MacOS
+     * 
+     * @type boolean
+     */
+    mac: false,
+    /**
+     * Whether this device uses android
+     * 
+     * @type boolean
+     */
+    android: false,
+    /**
+     * Whether this device uses linux
+     * 
+     * @type boolean
+     */
+    linux: false,
+    /**
+     * Whether this device uses IOS
+     * 
+     * @type boolean
+     */
+    ios: false,
+
+    /**
+     * If browser used is Chrome.
+     * 
+     * @type boolean
+     */
+    chrome: false,
+    /**
+     * If browser used is FireFox.
+     * 
+     * @type boolean
+     */
+    firefox: false,
+    /**
+     * If browser used is Edge.
+     * 
+     * @type boolean
+     */
+    edge: false,
+    /**
+     * If browser used is Internet Explorer.
+     * 
+     * @type boolean
+     */
+    ie: false,
+    /**
+     * If browser used is Safari.
+     * 
+     * @type boolean
+     */
+    safari: false,
+    /**
+     * If browser used is Opera.
+     * 
+     * @type boolean
+     */
+    opera: false
+
+  };
+  const ua = navigator.userAgent;
+  const ae = new Audio();
+
+  if (/Android/.test(ua)) {
+    DEVICE.android = true;
+  }
+  else if (/iP[ao]d|iPhone/i.test(ua)) {
+    DEVICE.ios = true;
+  }
+  else if (/Linux/.test(ua)) {
+    DEVICE.linux = true;
+  }
+  else if (/Mac OS/.test(ua)) {
+    DEVICE.mac = true;
+  }
+  else if (/Windows/.test(ua)) {
+    DEVICE.windows = true;
+  }
+
+
+  if (window.AudioContext && window.AudioBuffer && window.AudioBufferSourceNode) {
+    DEVICE.webAudio = true;
+  }
+
+  if (/Chrome/.test(ua)) {
+    DEVICE.chrome = true;
+  }
+  else if (/Firefox/.test(ua)) {
+    DEVICE.firefox = true;
+  }
+  else if (/Trident/.test(ua)) {
+    DEVICE.edge = true;
+  }
+  else if (/Opera/.test(ua))
+  {
+    DEVICE.opera = true;
+  }
+  else if (/Safari/.test(ua))
+  {
+    DEVICE.safari = true;
+  }
+
+  if (DEVICE.audio = !!ae.canPlayType)
+  {
+    if (ae.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, ''))
+    {
+      DEVICE.supportedAudio.push("ogg");
+    }
+
+    if (ae.canPlayType('audio/mpeg;').replace(/^no$/, ''))
+    {
+      DEVICE.supportedAudio.push("mp3");
+    }
+    if (ae.canPlayType('audio/wav; codecs="1"').replace(/^no$/, ''))
+    {
+      DEVICE.supportedAudio.push("wav");
+    }
+
+    if (ae.canPlayType('audio/x-m4a;').replace(/^no$/,'') || ae.canPlayType('audio/aac;').replace(/^no$/, ''))
+    {
+      DEVICE.supportedAudio.push("m4a");
+    }
+  }
+
+  DEVICE.canvas = !!window.CanvasRenderingContext2D;
+  DEVICE.webgl = !!window.WebGLRenderingContext;
+
+  Object.freeze(DEVICE);
+  Object.freeze(DEVICE.supportedAudio);
+  Object.freeze(DEVICE.supportedImages);
+
+  class Loader {
+    constructor(manager) {
+      this._toload = [];
+      this.imgs = {};
+      this.sfx = {};
+      this.json = {};
+      this._progressBytes = 0;
+      this._totalBytes = 0;
+      this._filesErr = 0;
+      this._filesLoaded = 0;
+      this._totalFileNo = 0;
+      const that = this;
+      this.onfinish = null;
+      this._handlers = {
+        onload: function(xhr, e) {
+          let type = that._getType(xhr.responseURL);
+          let name = that._getName(xhr.responseURL);
+          if (e.lengthComputable === false) {
+            that._handlers.onerror(xhr, e);
+            return
+          }
+          if (type === "image") {
+            that.imgs[name] = new Image();
+            that.imgs[name].src = URL.createObjectURL(xhr.response);
+          } else if (type === "audio") {
+            that.sfx[name] = xhr.response;
+            //if using webAudio,just set it to the buffer 
+            //else find a way to put this buffer into an audio tag
+          } else if (type === "json") {
+            that.json[name] = JSON.parse(xhr.response);
+          } else {
+            return Err.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
+          }
+          that._filesLoaded += 1;
+
+          if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) {
+            that.onfinish();
+          }
+
+        },
+        onheadload: function(e) {
+          if (e.total === 0 || !e.lengthComputable) return
+          that._totalBytes += e.total;
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', files.images[i], true);
+
+          xhr.onload = e => that._handlers.onload(xhr);
+          xhr.onerror = that._handlers.onerror(xhr);
+          xhr.send();
+        },
+        onerror: function(e) {
+          that._filesErr += 1;
+          Err.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
+          if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish();
+        }
+      };
+    }
+    _getName(url) {
+      if (url.includes("/")) {
+        let tmp = url.split("/");
+        url = tmp[tmp.length - 1];
+      }
+      return url.split(".")[0]
+    }
+    _getType(url) {
+      let ext;
+      if (url.includes("/")) {
+        let tmp = url.split("/");
+        url = tmp[tmp.length - 1];
+      }
+      ext = url.split(".")[1];
+
+      if (ext === "jpg" || ext === "png" || ext === "jpeg") return "image"
+      if (ext === "mp3" || ext === "ogg") return "audio"
+      if (ext === "json") return "json"
+    }
+    loadAll(files = {}) {
+      this._totalFileNo =
+        (files.images?.length || 0) +
+        (files.audio?.length || 0) +
+        (files.json?.length || 0);
+      if (this._totalFileNo === 0) {
+        this.onfinish();
+        return
+      }
+      if (files.images) {
+        for (var i = 0; i < files.images.length; i++) {
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', files.images[i], true);
+          xhr.responseType = "blob";
+          xhr.onload = e => {
+            this._handlers.onload(xhr, e);
+
+          };
+          xhr.onerror = e => this._handlers.onerror(xhr);
+          xhr.send();
+
+        }
+      }
+      if (files.audio) {
+        for (var i = 0; i < files.audio.length; i++) {
+          let xhr = new XMLHttpRequest();
+          xhr.responseType = "arraybuffer";
+          xhr.open('GET', files.audio[i], true);
+          xhr.onload = e => this._handlers.onload(xhr, e);
+          xhr.onerror = e => this._handlers.onerror(xhr);
+          xhr.send();
+
+        }
+      }
+      if (files.json) {
+        for (var i = 0; i < files.json.length; i++) {
+          files.json[i];
+          let xhr = new XMLHttpRequest();
+          xhr.responseType = "text";
+          xhr.open('GET', files.json[i], true);
+          xhr.onload = e => this._handlers.onload(xhr, e);
+          xhr.onerror = e => this._handlers.onerror(xhr);
+          xhr.send();
+        }
+
+      }
+    }
+  }
+
+  /**
+   * This class manages all events by a game manager.
+   * When adding a handler to an event with another handler,the latter will not be overriden,rather,the former will be added to complement the latter.
+   */
+  class EventDispatcher {
+    /**
+     * A dictionary of callback functions
+     * 
+     * @private
+     * @type Object<string,function[]>
+     */
+    handlers = {}
+    /**
+     * This fires all event handlers of a certain event.
+     * 
+     * @param {string} n the name of event fired.
+     * @param {any} data The payload of the event.
+     */
+    trigger(n, data) {
+      if (n in this.handlers)
+        this.handlers[n].forEach(h => h(data));
+    }
+    /**
+     * Ignore this,must be here for it to be a system.Might make this class not a system later
+     */
+    init() {}
+    /**
+     * Adds an event handler to an event dispatcher.
+     * 
+     * @param {string} name name of the event.
+     * @param {function} handler Function to be called when the event is triggered.
+     */
+    add(name, handler) {
+      if (name in this.handlers) {
+        this.handlers[name].push(handler);
+        return
+      }
+      this.handlers[name] = [handler];
+    }
+  }
+
+  /**
+   * This handles events created by the DOM.
+   */
+  class DOMEventHandler {
+    /**
+     * A dictionary of callback functions
+     * 
+     * @private
+     * @type Object<string,function[]>
+     */
+    handlers = {}
+    /**
+     * A dictionary of the main callback functions
+     * 
+     * @private
+     * @type Object<string,function>
+     */
+    _evHandlers = {}
+    /**
+     * Adds an eventlistener.
+     * 
+     * @param {string} e Name of the DOMEvent.
+     * @param {function} h The eventlistener.
+     */
+    add(e, h) {
+      if (this.handlers[e])
+        return this.handlers[e].push(h)
+      this.handlers[e] = [h];
+      let listener = (event) => {
+        let handlers = this.handlers[e];
+        for (var i = 0; i < handlers.length; i++) {
+          handlers[i](event);
+        }
+      };
+      document.addEventListener(e, listener);
+      this._evHandlers[e] = listener;
+    }
+    /**
+     * Removes an eventlistener.
+     * 
+     * @param {string} e Name of the DOMEvent.
+     * @param {function} h The eventlistener.
+     */
+    remove(e, h) {
+      this.handlers[e].splice(this.handlers[e].indexOf(h), 1);
+      if (!this.handlers[e].length)
+        this.dispose(e);
+    }
+    /**
+     * Removes all eventlisteners of an event.
+     * 
+     * @param {string} e Name of the DOMEvent.
+     * @param {function} h The eventlistener.
+     */
+    disposeEvent(e) {
+      document.removeEventListener(e, this._evHandlers[e]);
+      delete this.handlers[e];
+      delete this._evHandlers[e];
+    }
+    /**
+     * Clears all eventlisteners of every event registered.
+     */
+    clear() {
+      for (var ev in this.handlers) {
+        this.dispose(ev);
+      }
+    }
+    /* 
+    Donno why this is here,but i do know past me has a reason for this being here.
+    Ill leave it for now.
+    */
+    init() {}
+  }
+
+  /**
+   * This provides a way to fire off an entity's collision event handler registered to it.
+   * 
+   * @param {array<{}>} clmds an array of collision manifolds
+  */
+  function defaultCollisionHandler(clmds) {
+    let a, b;
+    for (let i = 0; i < clmds.length; i++) {
+      a = clmds[i].bodyA.entity.getHandler("collision");
+      b = clmds[i].bodyB.entity.getHandler("collision");
+
+      if (a) a.call(
+        clmds[i].bodyA.entity,
+        clmds[i].bodyB.entity,
+        clmds[i]
+      );
+      if (b) b.call(
+        clmds[i].bodyB.entity,
+        clmds[i].bodyA.entity,
+        clmds[i]
+      );
+    }
+  }
+
+  /**
+   * This provides a way to fire off an entity's precollision event handler registered to it
+   * 
+   * @param {array<{}>} clmds an array of collision manifolds
+  */
+  function defaultPrecollisionHandler(clmds) {
+    let a, b;
+    for (let i = 0; i < clmds.length; i++) {
+      a = clmds[i].a.entity.getHandler("precollision");
+      b = clmds[i].b.entity.getHandler("precollision");
+
+      if (a) a.call(
+        clmds[i].a.entity,
+        clmds[i].b.entity,
+        clmds[i]
+      );
+      if (b) b.call(
+        clmds[i].b.entity,
+        clmds[i].a.entity,
+        clmds[i]
+      );
+    }
+  }
+
+  const Events = {
+    COLLISION : "collision",
+    PRECOLLISION : "precollision",
+    PREUPDATE : "preupdate",
+    POSTUPDATE : "postupdate",
+     UPDATE : "postupdate",  
+     INITIALIZE : "init",
+     ADD : "add",
+     REMOVE : "remove",
+     PAUSE : "pause",
+     PLAY : "play"
+  };
+
+  /**
+   * Handled the keyboard input of an application on a PC.
+  */
+  class Keyboard {
+    /**
+     * Dictionary of keys showing if they are active or not.
+     * 
+     * @type Object<string,boolean>
+    */
+    keys = {}
+    /**
+     * @param {DOMEventHandler} eh
+    */
+    constructor(eh) {
+      this.keys = {};
+      this.activeKeys = [];
+      this.init(eh);
+    }
+    /**
+     * Ensures that keycodes are produced in a consistent manner
+     * 
+     * @private
+     * @param {string} keycode
+     * @returns {string}
+    */
+    normalize(keycode) {
+      let r = keycode;
+      if (keycode.includes('Key')) {
+        r = r.slice(3, r.length);
+      }
+      return r.toUpperCase()
+    }
+    /**
+     * Adds Keyboard events to the DOM.
+     * 
+     * @param {DOMEventHandler} eh
+    */
+    init(eh) {
+      eh.add('keydown',this._onDown);
+      eh.add('keyup',this._onUp);
+    }
+    _onDown = e => {
+      let key = this.normalize(e.code);
+      this.keys[key] = true;
+      this.activeKeys.push(key);
+      this.ondown(e);
+    }
+    _onUp = e =>{
+      this.keys[this.normalize(e.code)] = false;
+      this.onup(e);
+    }
+    ondown(e) {}
+    onup(e) {}
+  }
+
+  /**
+   * This handles all inputs from mouse and touchpad on laptops
+   */
+
+  class Mouse {
+    /**
+     * Number of times the mouse has been clicked.
+     * 
+     * @type number
+     */
+    clickCount = 0
+    /**
+     * If the mouse is being dragged or not.
+     * 
+     * @type boolean
+     */
+    dragging = false
+    /**
+     * The position from which the mouse is being dragged.
+     * 
+     * @type Vector_like
+     */
+    dragLastPosition = { x: 0, y: 0 }
+    /**
+     * Distance vector between the last frame's position and current position.
+     * 
+     * @type Vector_like
+     */
+    delta = { x: 0, y: 0 }
+    /**
+     * Position of the mouse in current frame.
+     * 
+     * @type Vector_like
+     */
+    position = { x: 0, y: 0 }
+    /**
+     * If the left mouse button is pressed or not.
+     * 
+     * @type boolean
+     */
+    leftbutton = false
+    /**
+     * If the right mouse button is pressed or not.
+     * 
+     * @type boolean
+     */
+    rightbutton = false
+    /**
+     * @param {DOMEventHandler} eh
+     */
+    constructor(eh) {
+      this.dragging = false;
+      this.dragLastPosition = {};
+      this.delta = { x: 0, y: 0 };
+      this.position = { x: 0, y: 0 };
+      this.lastPosition = { x: 0, y: 0 };
+
+      this.init(eh);
+    }
+    /**
+     * Checks to see if the vector provided is
+     * within a dragbox if mouse is being dragged with a right or left button down
+     * 
+     * @param {Vector} pos an object containing x and y coordinates to be checked
+     * @returns {Boolean}
+     * 
+     */
+    inDragBox(pos) {
+      if (!this.dragging) return false
+      if (pos.x > this.dragLastPosition.x && pos.x < this.position.x &&
+        pos.y > this.dragLastPosition.y &&
+        pos.y < this.position.y) {
+        return false
+      }
+      return true
+    }
+    /**
+     * Initializes the mouse by appending to the DOM
+     *
+     */
+    init(eh) {
+      eh.add('click', this._onClick);
+      eh.add('mousedown', this._onDown);
+      eh.add('mouseup', this._onUp);
+      eh.add('mousewheel', this._onWheel);
+      eh.add('mousemove', this._onMove);
+      eh.add("contextmenu", this._onContextMenu);
+    }
+    _onClick = (e) => {
+      ++this.clickCount;
+      this.onclick(e);
+    }
+    _onMove = (e) => {
+      this.position.x = e.clientX;
+
+      this.position.y = e.clientY;
+
+      if (this.lastPosition.x === undefined) {
+        this.lastPosition = { ...this.position };
+      }
+      this.delta.x = this.position.x - this.lastPosition.x;
+      this.delta.y = this.position.y - this.lastPosition.y;
+      this.dragging = this.leftbutton || this.rightbutton ? true : false;
+      if (!this.dragging) {
+        this.dragLastPosition.x = e.clientX;
+        this.dragLastPosition.y = e.clientY;
+      }
+      this.onmove(e);
+    }
+    _onDown = (e) => {
+      switch (e.button) {
+
+        case 0:
+
+          this.leftbutton = true;
+          break;
+        case 2:
+          this.rightbutton = true;
+          break;
+      }
+      this.ondown(e);
+    }
+    _onUp = (e) => {
+      switch (e.button) {
+        case 0:
+          this.leftbutton = false;
+          break;
+        case 2:
+          this.rightbutton = false;
+          break;
+      }
+      this.onup(e);
+    }
+    _onWheel = (e) => {
+      this.onwheel(e);
+    }
+    _onContextMenu = (e) => {
+      e.preventDefault();
+      this.oncontextmenu(e);
+    }
+
+    onmove(e) {}
+    onclick(e) {}
+    ondown(e) {}
+    onup(e) {}
+    onwheel(e) {}
+    oncontextmenu(e) {}
+    
+    /**
+     * Updates the mouse internals.
+    */
+    update() {
+      this.lastPosition = { ...this.position };
+    }
+  }
+
+  /**
+   * Handles the touch input of an application from a smartphone,tablet or PCs with touchscreens.
+   * 
+   * Realized i need to massively change this to make it work well.
+   */
+  class Touch {
+    constructor(eh) {
+      this.clickCount = 0;
+      this.touches = [];
+      this.init(eh);
+    }
+    /**
+     * Checks to see if the position is within the dragbox of the first two touches.
+     * Not yet fully implemented
+     */
+    inDragBox(pos) {
+      if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
+        pos.y > this.dragLastPosition.y && pos.y < this.dragLastPosition.y + this.position.y) {
+        return false
+      }
+      return true
+    }
+    /**
+     * Adds Touch events to the DOM.
+     * 
+     * @param {DOMEventHandler} eh
+     */
+    init(eh) {
+      eh.add('touchstart', this._onDown);
+      eh.add('touchend', this._onUp);
+      eh.add('touchmove', this._onMove);
+    }
+    _onMove = (e) => {
+      e.preventDefault();
+      this.onmove(e);
+    }
+    _onDown = (e) => {
+      this.touches = e.touches;
+      this.ondown(e);
+    }
+    _onUp = (e) => {
+      this.touches = e.touches;
+      this.onup(e);
+    }
+    onmove(e) {}
+    onclick(e) {}
+    ondown(e) {}
+    onup(e) {}
+    onwheel(e) {}
+    update() {}
+  }
+
+  /**
+   * This handles all inputs from the mouse,touch and keyboards.
+   * 
+   */
+  class Input {
+    /**
+     * This attaches callbacks to the DOM.
+     * 
+     * @type DOMEventHandler
+    */
+    DOMEventHandler = null
+    /**
+     * 
+     * @type Mouse
+    */
+    mouse = null
+    /**
+     * 
+     * @type Touch
+    */
+    touch = null
+    /**
+     * 
+     * @type Keyboard
+    */
+    keyboard = null
+    /**
+     * @param {DOMEventHandler} eventHandler
+    */
+    constructor(eventHandler) {
+      this.DOMEventHandler = eventHandler || new DOMEventHandler();
+      this.mouse = new Mouse(this.DOMEventHandler);
+      this.touch = new Touch(this.DOMEventHandler);
+      this.keyboard = new Keyboard(this.DOMEventHandler);
+    }
+    /**
+     * Updates all inputs.
+    */
+    update() {
+      this.mouse.update();
+      this.touch.update();
+    }
+    /**
+     * Remove all bindings to the DOM for all input types.
+    */
+    dispose() {
+      //TODO remove eventlisteners
+      this.mouse.dispose();
+      this.keyboard.dispose();
+      this.touch.dispose();
+    }
+  }
+
+  /**
+   * 
+   */
+  /**
+   * This class is responsible for managing all
+   * entities and ensuring that systems are updated every frame.
+   * 
+   */
+  class Manager {
+    _rafID = undefined
+    _classes = {}
+    _componentLists = {}
+    _systems = []
+    _coreSystems = {
+      world: null,
+      renderer: null,
+      input: null,
+      events: null,
+      audio: null
+    }
+    _initialized = false
+    playing = false
+    _systemsMap = {}
+    _compMap = {}
+    clock = new Clock()
+    objects = []
+    _accumulator = 0
+    frameRate = 0
+    perf = {
+      lastTimestamp: 0,
+      total: 0
+    }
+    loader = new Loader()
+    events = new EventDispatcher()
+    /**
+     * @private
+     */
+    _update = accumulate => {
+      let dt = this.clock.update(accumulate);
+
+      if (this._accumulator < this.frameRate) {
+        this._accumulator += dt;
+        this.RAF();
+        return
+      }
+      this.events.trigger("updateStart");
+      this.update(dt);
+      this.events.trigger("update");
+      this.events.trigger("updateEnd");
+      this._accumulator = 0;
+      this.RAF();
+    }
+    /**
+     * Creates a new instance of Manager class
+     * 
+     * @param {Object} [options] 
+     * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
+     * @param {Object} [options.files={}] This is passed onto the Loader.Please check `Loader.load()` for more information on it.
+     * @param {boolean} [options.physics=true] Adds physics world as a System.
+     * @param {boolean} [options.renderer=true] Adds a renderer as a system.
+     * @param {boolean} [options.input=true] Adds input as a system.
+     * 
+     **/
+    constructor(options = {}) {
+      options = Object.assign({
+        autoPlay: true,
+        physics: true,
+        renderer: true,
+        input: true
+      }, options);
+      if (options.input)
+        this.registerSystem("input", new Input());
+      if (options.physics) {
+        this.registerSystem("world", new World());
+        this.events.add("collision", defaultCollisionHandler);
+        this.events.add("precollision", defaultPrecollisionHandler);
+      }
+      if (options.renderer)
+        this.registerSystem("renderer", new Renderer2D());
+      this.loader.onfinish = e => {
+        this.init();
+        this.play();
+      };
+      this.loader.loadAll(options.files);
+    }
+    /**
+     * This initializes the manager.
+     * No need to call this function directly.
+     * This is called after the preloader finishes loading all its files.
+     * 
+     */
+    init() {
+      for (var i = 0; i < this.objects.length; i++) {
+        this.objects[i].init(this);
+      }
+      //this.initSystems()
+      this.events.trigger("init", this);
+      this.update(0);
+      this._initialized = true;
+      if (this.playing) this.play();
+    }
+    /**
+     * Adds an entity to the manager and initializes it.
+     * 
+     * @param {Entity} The entity to add
+     */
+    add(object) {
+      if (object.manager) {
+        Err.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object);
+        return
+      }
+      this.objects.push(object);
+      object.init(this);
+      this.events.trigger("add", object);
+    }
+    /**
+     * This adds a component to a componentList
+     * if the componentList is there else exits
+     * without an error.
+     * There is no need for you to use this method
+     * as it is for internal use only and may change in the future 
+     * 
+     * @param {string} n name of the component
+     * @param {object} c An object implementing Component
+     */
+    addComponent(n, c) {
+      if (n === "body") {
+        this._coreSystems.world.add(c);
+        return
+      }
+      if (n === "mesh") {
+        this._coreSystems.renderer.add(c);
+        return
+      }
+      if (n in this._componentLists)
+        this._componentLists[n].push(c);
+    }
+    /**
+     * This removes a component from a componentList
+     * if the componentList is there else exits
+     * without an error.
+     * There is no need for you to use this method
+     * as it is for internal use only and may change in the future 
+     * @param { string } n name of the component *
+     * @param { object } c An object implementing Component interface
+     */
+    removeComponent(n, c) {
+      if (n === "body") {
+        this._coreSystems.world.remove(c);
+        return
+      }
+      if (n === "mesh") {
+        this._coreSystems.renderer.remove(c);
+        return
+      }
+      if (n in this._componentLists)
+        Utils.removeElement(this._componentLists[n], this._componentLists[n].indexOf(c));
+    }
+    /**
+     * Removes an entity from the manager.
+     * Note that this doesn't destroy the entity, only removes it and its components from the manager.
+     * To destroy the entity,use `Entity.destroy()` method.
+     * 
+     * @param {Entity} The entity to remove
+     */
+    remove(object) {
+      let index = this.objects.indexOf(object);
+      object.removeComponents();
+      Utils.removeElement(this.objects, index);
+      this.events.trigger("remove", object);
+
+    }
+    /**
+     * This removes all of the entities and components from the manager
+     */
+    clear() {
+      for (let i = this.objects.length - 1; i >= 0; i--) {
+        this.remove(this.objects[i]);
+      }
+    }
+    /**
+     * This method requests an animation frame from the browser
+     * 
+     * @private
+     */
+    RAF() {
+      this._rafID = requestAnimationFrame(this._update);
+    }
+    /**
+     * This starts up the update loop of the manager
+     */
+    play() {
+      if (!this._initialized) {
+        this.playing = true;
+        return
+      }
+      this.RAF();
+      this.events.trigger("play");
+    }
+    /**
+     * This stops the update loop of the manager
+     */
+    pause() {
+      if (!this._initialized) {
+        this.playing = false;
+        return
+      }
+      cancelAnimationFrame(this._rafID);
+      this.events.trigger("pause");
+    }
+    /**
+     * This method might be useless as systems are initialized on being added
+     * 
+     * @private 
+     */
+    initSystems() {
+      for (var i = 0; i < this._systems.length; i++) {
+        for (var j = 0; j < this._systems[i].length; j++) {
+          this._systems[i][j].init(this);
+        }
+      }
+    }
+
+    /**
+     * Marches the update loop forward,updating
+     * the systems
+     * You shouldn't mess with this/call it or everything will explode with undetectable errors.
+     * 
+     * @private
+     */
+    update(dt = 0.016) {
+      let world = this._coreSystems["world"],
+        renderer = this._coreSystems["renderer"],
+        input = this._coreSystems["input"];
+
+      let totalTS = performance.now();
+
+      //the only reason this is here is that
+      //i need to debug stuff visually - ill remove it later.
+      if (renderer) renderer.clear();
+
+      for (var i = 0; i < this._systems.length; i++) {
+        this._systems[i].update(dt);
+      }
+      if (input) input.update();
+      if (world) world.update(dt);
+      if (renderer) renderer.update(dt);
+      if (world) {
+        this.events.trigger("precollision", world.contactList);
+        this.events.trigger("collision", world.CLMDs);
+      }
+      this.perf.total = performance.now() - totalTS;
+    }
+    /**
+     * This registers a class into the manager so that ot can be used in cloning an entity.
+     * 
+     * @param {function} obj The class or constructor function to register
+     * @param {boolean} override Whether to override an existing class
+     */
+    registerClass(obj, override = false) {
+      let n = obj.name.toLowerCase();
+      if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
+      this._classes[n] = obj;
+    }
+    /**
+     * Used to register a system
+     * 
+     * @param {string} n The name for the system
+     * @param {Object} sys The system to be addad
+     * 
+     * @param {string} [cn=n] The componentList name that the system will primarily take care of
+     */
+    registerSystem(n, sys, cn = n) {
+      if (sys.init) sys.init(this);
+      if (this._systemsMap[n] !== undefined) return
+      switch (n) {
+        case "events":
+          this._coreSystems.events = sys;
+          break
+        case "world":
+          this._coreSystems.world = sys;
+          break
+        case "renderer":
+          this._coreSystems.renderer = sys;
+          break
+        case "input":
+          this._coreSystems.input = sys;
+          break
+        default:
+          this._systemsMap[n] = this._systems.length;
+          this._systems.push(sys);
+          this._compMap[cn] = n;
+      }
+    }
+    /**
+     * Gets the named system
+     * 
+     * @param {string} n the name the system was registered with.
+     * 
+     * @return {System}
+     */
+    getSystem(n) {
+      if (n in this._coreSystems)
+        return this._coreSystems[n]
+      return this._systems[this._systemsMap[n]]
+    }
+    /**
+     * Removes a system from the manager.
+     * 
+     * @param {string} n The name of the system.
+     * 
+     */
+    unregisterSystem(n) {
+      if (n in this._coreSystems)
+        return this._systems[this._systemsMap[n]] = null
+      delete this._systems[this._systemsMap[n]];
+      delete this._systemsMap[n];
+    }
+    /**
+     * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
+     * 
+     * @param {string} n The name of the components to store into the created componentlist
+     * @param {[]} [arr=[]] A reference to the array to store components in.
+     */
+    setComponentList(n, arr = []) {
+      this._componentLists[n] = arr;
+    }
+    /**
+     * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
+     * 
+     * @param {string} n The name of the components to store into the created componentlist
+     * @returns {Array} An array of components
+     */
+    getComponentList(n) {
+      return this._componentList[n]
+    }
+    /**
+     * Finds the first entity with all the components and returns it.
+     * 
+     * @param {Array<String>} comps An array containing the component names to be searched
+     * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+     * 
+     * @returns {Entity} 
+     */
+    getEntityByComponents(comps, entities = this.objects) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < comps.length; j++) {
+          if (!entities[i].has(comps[j])) continue
+          return entities[i]
+        }
+      }
+    }
+    /**
+     * Finds the first entity with all the tag and returns it.
+     * 
+     * @param {Array<String>} comps An array containing the component names to be searched
+     * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+     * 
+     * @returns {Array<Entity>} 
+     */
+    getEntitiesByComponents(comps, entities = this.objects, target = []) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < comps.length; j++) {
+          if (!entities[i].has(comps[j])) continue
+          target.push(entities[i]);
+        }
+      }
+      return target
+    }
+    /**
+     * Finds the first entity with all the tag and returns it.
+     * 
+     * @param {Array<String>} tags An array containing the tags to be searched
+     * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+     * 
+     * @returns {Entity} 
+     */
+    getEntityByTags(tags, entities = this.objects) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < tags.length; j++) {
+          if (!entities[i].hasTag(tags[j])) continue
+          return entities[i]
+        }
+      }
+    }
+    /**
+     * Finds the entities with all the tag and returns them in an array.
+     * 
+     * @param {Array<String>} tags An array containing the tags to be searched
+     * @param {[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
+     * 
+     * @returns {Array<Entity>} 
+     */
+    getEntitiesByTags(tags, entities = this.objects, target = []) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < tags.length; j++) {
+          if (!entities[i].hasTag(tags[j])) continue
+          target.push(entities[i]);
+        }
+      }
+    }
+    /**
+     * Ignore this,im going to remove it and the rest of cloning utilities.
+     * @private
+     * @deprecated
+     */
+    infertype(obj) {
+      let n = obj.CHOAS_CLASSNAME;
+      if (n) {
+        if (n in this._classes)
+          return new this._classes[n]()
+        Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`);
+      }
+      return obj instanceof Array ? [] : {}
+    }
+    /**
+     * Deep copies an entity
+     * 
+     * @deprecated
+     * @returns {Entity}
+     */
+    clone(obj) {
+      if (typeof obj !== "object") return obj
+      let object = this.infertype(obj);
+      for (var key in obj) {
+        object[key] = this.clone(obj[key]);
+      }
+      return object
+    }
+    /**
+     * Creates a system that allows you to use the `Component.update` method for the given componentList whose name is given.
+     * 
+     * @param {string} name The name of componentList this system is taking care of.
+     * 
+     * @returns {System}
+     */
+    static DefaultSystem(name) {
+      let n = name;
+      return {
+        init(manager) {
+          manager.setComponentList(n);
+        },
+        update(dt) {
+          let comp = manager.getComponentList(n);
+          for (let i = 0; i < comp.length; i++) {
+            comp[i].update(dt);
+          }
+        },
+        add(comp) {
+          manager.getComponentList(n).push(comp);
+        },
+        remove(comp) {
+          let list = manager.getComponentList(n),
+            index = list.indexOf(comp);
+          Utils.removeElement(list, index);
+        }
+      }
+    }
+  }
+
+  class Movable extends Component {
+    constructor(x, y, a) {
+      super();
+      this.velocity = new Vector(x,y);
+      this.rotation = new Angle(a);
+      this.acceleration = new Vector();
+    }
+  }
+
+  class Transform {
+    constructor(x,y,a){
+      this.position = new Vector(x,y);
+      this.orientation = new Angle(a);
+    }
+    init(){}
+  }
+
+  /**
+   * Component to hold the bounds of an entity.
+   */
+  class Bound extends Component {
+    /**
+     * The actual bounds.Used for collision detection.
+     * 
+     * @type BoundingBox | BoundingCircle
+     */
+    bounds = new BoundingBox()
+  }
+
+  /**
+   * This is a container to hold components,tags and event handlers.
+   * 
+   * @class
+   * @public
+   */
+  class Entity {
+    /**
+     * Dictionary of component to manage.
+     * 
+     * @private
+     * @type Object<string,Component>
+     */
+    _components = {}
+    /**
+     * Dictionary of handlers to call during an event.
+     * 
+     * @private
+     * @type Object<string,function>
+     */
+    _handlers = {}
+    /**
+     * A list of tags to identify an entity.
+     * 
+     * @private
+     * @type Set<string>
+     */
+    _tags = new Set()
+    /**
+     * The manager handling this entity.
+     * 
+     * @private
+     * @type Manager
+     */
+    _global = null
+    /**
+     * A flag to show if the entity is added to a manager.
+     * 
+     * @type {boolean}
+     */
+    active = false
+
+    get CHAOS_OBJ_TYPE() {
+      return "entity"
+    }
+    get CHAOS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
+    }
+    /**
+     * Removes all components and handlers from an entity while removing it from its manager
+     */
+    destroy() {
+      this.removeSelf();
+      for (let k in this._components) {
+        let comp = this._components[k];
+        if (comp.destroy)
+          comp.destroy();
+        delete this._components[k];
+      }
+      for (let k in this._handlers) {
+        delete this._handlers[k];
+      }
+
+    }
+    /**
+     * Removes an entity and its components from its manager whilst retaining its components and handlers
+     */
+    removeSelf() {
+      if (this._global) this._global.remove(this);
+      this.active = false;
+      this._global = null;
+    }
+    /**
+     * Removes all components of an entity from its manager but keeps the entity inside the manager.
+     * This is an internal function so no need on your part to use it.
+     */
+    removeComponents() {
+      if (this._global === void 0) return
+      for (var k in this._components) {
+        this._global.removeComponent(k, this._components[k]);
+      }
+    }
+    /**
+     * Gets the current manager of an entity
+     * 
+     * @returns {Manager}
+     */
+    get manager() {
+      return this._global
+    }
+    /**
+     * Adds a component into an entity
+     * 
+     * @param {String} n Name of the component.
+     * @param {Component} c The component to add.
+     * 
+     * @returns {this}
+     */
+    attach(n, c) {
+      this._components[n] = c;
+      if (this.manager) {
+        c.init(this);
+        this._global.addComponent(n, c);
+      }
+      return this
+    }
+    /**
+     * Removes a component from an entity.
+     * 
+     * @param {String} n Name pf the component
+     * @rerurns {this}
+     */
+    remove(n) {
+      this._global.removeComponent(n, this._components[n]);
+      delete this._components[n];
+      return this
+    }
+    /**
+     * Registers a function to handle a named event.
+     * 
+     * @param {string} n Name of the event
+     * @param {function} h The function to be called when an event is fired.
+     */
+    register(n, h) {
+      this._handlers[n] = h;
+    }
+    /**
+     * Removes an event handler function of the given name
+     * 
+     * @param {string} n Name of the event
+     */
+    unregister(n) {
+      if (!(n in this._handlers)) return
+      delete this._handlers[n];
+    }
+    /**
+     * Returns an event handler which can be fired during an event
+     * 
+     * @param {string} n Name of the event
+     * @returns {function | undefined}
+     */
+    getHandler(n) {
+      return this._handlers[n]
+    }
+    /**
+     * Returns the named component.
+     * 
+     * @param {string} n Name of the component.
+     * @returns {Component | undefined }
+     */
+    get(n) {
+      return this._components[n]
+    }
+    /**
+     * Used to check if the component exists in an entity
+     * 
+     * @param {string} n Name of the component.
+     * @returns {boolean}
+     */
+    has(n) {
+      return n in this._components
+    }
+    /**
+     * Adds a tag into an entity.
+     * 
+     * @param {string} n The tag to be added
+     */
+    addTag(n) {
+      this._tags.add(n);
+    }
+    /**
+     * Removes a tag from an entity.
+     * 
+     * @param {string} n The tag to be added
+     */
+    removeTag(n) {
+      this._tags.delete(n);
+    }
+    /**
+     * Checks if a tag exists in an entity.
+     * 
+     * @param {string} n The tag to be added
+     * @returns {boolean}
+     */
+    hasTag(n) {
+      return this._tags.has(n)
+    }
+    /**
+     * Initializes the components within an entity and marks it as active.
+     * It is called by an instance of a game manager so no need to call it manually
+     * 
+     * @package
+     * @param {Manager} global
+     */
+    init(global) {
+      this._global = global;
+      this.active = true;
+      for (let k in this._components) {
+        this._components[k].init(this);
+        global.addComponent(k, this._components[k]);
+      }
+    }
+    /**
+     * A helper function to create a new Entity with transform,movable and bounds components.
+     * 
+     * @returns {Entity}
+     */
+    static Default(x, y, a) {
+      return new Entity()
+        .attach("transform", new Transform(x, y, a))
+        .attach("movable", new Movable())
+        .attach("bounds", new Bound())
+    }
+    /**
+     * Search an entity's manager for entities in a given bound.
+     * 
+     * @param {Bounds} bound the region to search entitities in.
+     * @param {array<Entity>} [target=[]] An array to store results in.
+     * @returns {array<Entity>}
+     */
+    query(bound, target = []) {
+      return this._global.query(bound, target)
+    }
+  }
+
+  /**
+   * This class is responsible for playing a singular sound.
+   */
+  class Sfx {
+    /**
+     * @private
+     * @type {AudioBuffer}
+     */
+    _soundBuffer = null
+    /**
+     * @private
+     * @type {AudioBufferSourceNode}
+     */
+    _source = null
+    /**
+     * @private
+     * @type {function}
+     */
+    _onended = null
+    /**
+     * @private
+     * @type {AudioNode}
+     */
+    _destination = null
+    /**
+     * @private
+     * @type {number}
+     */
+    _playingOffset = 0
+    /**
+     * Time on the sound to begin playing 
+     * 
+     * @type {number}
+     */
+    offset = 0
+    /**
+     * Whether to start from the beginning after sound has finished playing.
+     * 
+     * @type {boolean}
+     */
+    loop = false
+    /**
+     * @private
+     * @type {number}
+     */
+    delay = 0
+    /**
+     * how long to play the sound.
+     * 
+     * @type {number}
+     */
+    duration = 0
+    /**
+     * @param {AudioHandler} handler 
+     * @param {AudioBuffer} buffer
+     */
+    constructor(handler, buffer) {
+      this.handler = handler;
+      this.ctx = handler.ctx;
+      this._soundBuffer = buffer;
+      this._destination = handler.masterGainNode;
+      this.finished = false;
+      this.id = -1;
+      this.duration = buffer.duration;
+
+    }
+    /**
+     * Set callback when the sound finishes playing.
+    */
+    set onended(x) {
+      this._onended = x;
+    }
+    /**
+     * Plays an sfx from the beginning.
+     */
+    play() {
+      this._playingOffset = this.offset;
+      this.resume();
+    }
+    /**
+     * Continues playing an sfx from where it was paused.
+     */
+    resume() {
+      this._source = this.ctx.createBufferSource();
+      this._source.buffer = this._soundBuffer;
+      this._startTime = Date.now();
+      this._source.connect(this._destination);
+      this._source.start(this.delay, this._playingOffset, this.duration);
+      this._source.loop = this.loop;
+    }
+    /**
+     * Halts playing of an sfx.
+     */
+    pause() {
+      this._source.stop();
+      let time = (Date.now() - this._startTime) / 1000 + this._playingOffset;
+      this._playingOffset = this.duration <= time ? this.offset : time;
+    }
+    /**
+     * Disconnects this sfx from its current destination.
+     */
+    disconnect() {
+      this._source.disconnect();
+    }
+    /**
+     * Sets the given audionode to be the output destination of an sfx
+     * 
+     * @param {AudioNode} node
+     */
+    connect(node) {
+      if (node)
+        this._destination = node;
+      if (!this._source) return;
+      this._source.disconnect();
+      this._source.connect(this._destination);
+    }
+  }
+
+  /**
+   * Manages playing of audio using Web Audio.
+   */
+  class AudioHandler {
+    /**
+     * Audio context to use.
+     * 
+     *  @private
+     * @type AudioContext
+     */
+    ctx = new AudioContext()
+    /**
+     * List of audio buffers to use.
+     * 
+     *  @private
+     * @type Object<string,AudioBuffer>
+     */
+    sfx = {}
+    /**
+     * The name of the background music playing.
+     * 
+     *  @private
+     * @type string
+     */
+    _backname = ""
+    /**
+     * The audiobuffer of the background music.
+     * 
+     *  @private
+     * @type AudioBuffer
+     */
+    _background = null
+    /**
+     * List of playing sounds
+     * 
+     * @deprecated
+     */
+    playing = []
+    /**
+     * What to play after loading the audiobuffers.
+     * 
+     * @ignore
+     */
+    toplay = {}
+    /**
+     * @ignore
+     */
+    baseUrl = ""
+    /**
+     * Volume to resume playing when unmuted.
+     * 
+     * @private
+     * @type number
+     */
+    _mute = 1
+    /**
+     * Master volume for all sounds.
+     * 
+     * @private
+     * @type AudioNode
+    */
+    masterGainNode = null
+    /**
+     * If the manager can play a sound.
+     * 
+     * @type boolean
+    */
+    constructor() {
+      this.masterGainNode = this.ctx.createGain();
+      this.masterGainNode.connect(this.ctx.destination);
+      this.canPlay = this.ctx.state == "running";
+      let that = this;
+      window.addEventListener("pointerdown", function resume() {
+        that.ctx.resume();
+        if (that.ctx.state == "running") {
+          removeEventListener("pointerdown", resume);
+          that.canPlay = true;
+        }
+      });
+    }
+    /**
+     * Load a sound into a sound manager
+     * 
+     * @param {string} src
+     */
+    load(src) {
+      let name = src.split(".")[0];
+      fetch(this.baseUrl + "/" + src)
+        .then(e => e.arrayBuffer())
+        .then(e => this.ctx.decodeAudioData(e))
+        .then(e => {
+          this.sfx[name] = e;
+          if (this._backname == name)
+            this.playMusic(name);
+          if (name in this.toplay) {
+            this.playEffect(name);
+          }
+        }).catch(err => console.log(err));
+    }
+    /**
+     * Loads all audio from the loader.
+     * 
+     * @param {Loader} loader
+     */
+    loadFromLoader(loader) {
+      for (var n in loader.sfx) {
+        let name = n;
+        this.ctx.decodeAudioData(loader.sfx[n]).then(e => {
+          this.sfx[n] = e;
+          if (this._backname == name)
+            this.playMusic(name);
+          if (name in this.toplay) {
+            this.playEffect(name);
+          }
+        });
+      }
+    }
+    /**
+     * Plays a single audio as the background in a loop throughout the game
+     * 
+     * @param {string} name
+     */
+    playBackgroundMusic(name) {
+      this._backname = name;
+      if (!(name in this.sfx))
+        return
+      this._background = new Sfx(this, this.sfx[name]);
+      this._background.loop = true;
+      this._background.play();
+    }
+    /**
+     * Plays a sound only once.
+     * 
+     * @param {string} name Name of audio to play.
+     * @param {number} [offset] Where to start playing the audio.It is in seconds.
+     * @param {number} [duration] how long in seconds will the audio defaults to total duration of the selected audio. 
+     */
+    playEffect(name, offset = 0, duration = 0) {
+      if (!(name in this.sfx)) {
+        this.toplay[name] = 1;
+        return
+      }
+      let s = new Sfx(this, this.sfx[name]);
+      let id = this.playing.length;
+      s.id = id;
+      s.offset = offset;
+      if (duration)
+        s.duration = duration;
+      this.playing.push(s);
+      s.play();
+    }
+    
+    /**
+     * Creates and returns an SFX.
+     * 
+     * @param {string} name
+     * @rerurns Sfx
+    */
+    createSfx(name) {
+      ///throw error if name is not in this.
+      return new Sfx(this, this.sfx[name])
+    }
+    /**
+     * Pauses currently playing sounds.
+     */
+    pauseAll() {
+      this.playing.forEach(sound => {
+        sound.stop();
+      });
+    }
+    /**
+     * Sets the volume to zero.Sounds will continue playing but not be audible.
+     */
+    mute() {
+      this._mute = this.masterGainNode.gain;
+      this.masterGainNode.gain = 0;
+
+    }
+    /**
+     * Restores the volume before it was muted.
+     */
+    unmute() {
+      this.masterGainNode.gain = this._mute;
+    }
+    /**
+     * Removes an sfx from the handler and disconnects it from its destination.
+     */
+    remove(sfx) {
+      let id = this.playing.indexOf(sfx);
+      if (id == -1) return
+      sfx.disconnect();
+      Utils.removeElement(this.playing, id);
+    }
+  }
+
+  /**
+   * A system that manages agent components by updating them.
+   */
+  class AgentManager {
+    /**
+     * A list of agents to update every frame.
+     * 
+     * @type Agent[]
+    */
+    objects = []
+    /**
+     * Initializes the manager.
+     * 
+     * @param {Manager} manager
+    */
+    init(manager) {
+      manager.setComponentList("agent", this.objects);
+    }
+    /**
+     * Update all registered agents.
+     * 
+     * @param {number} dt
+    */
+    update(dt) {
+      let inv_dt = 1 / dt;
+      for (var i = 0; i < this.objects.length; i++) {
+        this.objects[i].update(inv_dt);
+      }
+    }
+  }
+
+  /**
+   * Manages the behaviours for an agent.
+   * 
+   * @package
+   */
+  class BehaviourManager {
+    /**
+     * A list of behaviors
+     * 
+     * @type Behaviour[]
+     */
+    _behaviours = []
+    /**
+     * Accumulated force from behaviours to apply to agent
+     */
+    _accumulated = new Vector()
+    /**
+     * Adds a behavior to the manager
+     * 
+     * @param {Behaviour} behaviour 
+     */
+    add(behaviour) {
+      this._behaviours.push(behaviour);
+      if (this.active) behaviour.init(this._agent);
+    }
+    /**
+     * Removes a behavior to the manager
+     * 
+     * @param {Behaviour} behaviour 
+     */
+    remove(behaviour) {
+      Utils.removeElement(this._behaviours, this._behaviours.indexOf(behaviour));
+    }
+    /**
+     * Boots up the behavoiurs of the agent that contains it.
+     * 
+     * @param {Agent} agent 
+     */
+    init(agent) {
+      this._agent = agent;
+      for (var i = 0; i < this._behaviours.length; i++) {
+        this._behaviours[i].init(agent);
+      }
+    }
+    /**
+     * Updates the behaviours of the agent and applies changes to agent.
+     * 
+     * @param {number} inv_dt
+     */
+    update(inv_dt) {
+      let result = new Vector();
+      this._accumulated.set(0, 0);
+      for (let i = 0; i < this._behaviours.length; i++) {
+        this._behaviours[i].calc(result, inv_dt);
+        this._accumulated.add(result);
+      }
+      this._agent.acceleration.add(this._accumulated);
+      this._agent.orientation.radian = Vector.toRad(this._agent.velocity);
+    }
+    /**
+     * Removes all behaviours from a manager.
+     */
+    clear() {
+      Utils.clearArr(this._behaviours);
+    }
+    /**
+     * Used for visually debugging items.
+     */
+    draw(renderer) {
+      this._behaviours.forEach(b => b.draw(renderer));
+    }
+  }
+
+  /**
+   * This is a component class used to add AI behavior to an entity.
+   * 
+   * @implements Component
+   */
+  class Agent {
+    /**
+     * The velocity of the entity.
+     * 
+     * @package
+     * @type Vector
+     */
+    velocity = null
+    /**
+     * The rotation of the entity.
+     * 
+     * @package
+     * @type Angle
+     */
+    rotation = null
+    /**
+     * The maximum speed of the agent in pixels per second.
+     * 
+     * @type number
+     */
+    maxSpeed = 20
+    /**
+     * Maximum rotation of the agent in radians per second
+     * Not yet implemented.
+    */
+    maxTurnRate = 5
+    /**
+     * 
+     * @private
+     * @type BehaviourManager
+    */
+    behaviours = new BehaviourManager()
+    /**
+     * @inheritdoc
+     * @param {parent}
+     */
+    init(entity) {
+      this.entity = entity;
+      this.requires("transform", "movable");
+      let move = entity.get("movable"),
+        transform = entity.get("transform");
+      this.velocity = move.velocity;
+      this.rotation = move.rotation;
+      this.position = transform.position;
+      this.orientation = transform.orientation;
+      this.acceleration = move.acceleration;
+      this.behaviours.init(this);
+    }
+    /**
+     * Adds a behavior to the agent.
+     * 
+     * @param {Behavior} behaviour
+     */
+    add(behaviour) {
+      this.behaviours.add(behaviour);
+    }
+    /**
+     * Removes a behavior to the agent.
+     * 
+     * @param {Behavior} behaviour
+     */
+    remove(behaviour) {
+      this.behaviours.remove(behaviour);
+    }
+    /**
+     * @inheritdoc
+     * @param {number} inv_dt Inverse of delta time i.e frameRate.
+     */
+    update(inv_dt) {
+      this.behaviours.update(inv_dt);
+    }
+    draw(renderer){
+      this.behaviours.draw(renderer);
+    }
+  }
+  Utils.inheritComponent(Agent);
+
+  /**
+   * Base class for implementing customized behaviours.
+   * 
+   * @abstract
+   */
+
+  class Behaviour {
+    /**
+     * The maximum speed a behaviour will reach when active.
+     * 
+     * @type number
+     */
+    maxSpeed = 1000
+    /**
+     * Maximum force a behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
+     * 
+     * @type number
+     */
+    maxForce = 1000
+    /**
+     * Whether to exert a behaviour's calculated force onto its agent
+    */
+    active = true
+    
+    /**
+     * Sets up a behavior to work on an agent.
+     */
+    init() {}
+    /**
+     * Calculates the amount of force required to satisfy a behavior.
+     */
+    calc() {}
+    /**
+     * Used to debug a behavior visually.
+    */
+    draw() {}
+  }
+
+  let tmp1$4 = new Vector();
+    new Vector();
+  /**
+   * Creates a behaviour to evade a certain position.
+   * 
+   * @augments Behaviour
+  */
+  class EvadeBehaviour extends Behaviour {
+    /**
+     * Distance in which to begin evading.
+     * 
+     * @type number
+    */
+    radius = 200
+    /**
+     * @param {Vector} pursuer
+    */
+    constructor(pursuer) {
+      super();
+      this.pursuer = pursuer;
+    }
+      /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
+    init(agent) {
+      this.position = agent.position;
+      this.velocity = agent.velocity;
+      
+    }
+      /**
+     * @inheritdoc
+     * @param {Vector} target
+     * @returns Vector the first parameter
+     */
+    calc(target,inv_dt) {
+      let difference = tmp1$4.copy(this.position).sub(this.pursuer);
+      let length = difference.magnitude();
+      if(length == 0 || length > this.radius)return
+      difference.setMagnitude(map(length,0,this.radius,this.maxSpeed,0));
+      let steering = difference.sub(this.velocity).multiply(inv_dt);
+      
+      steering.clamp(0, this.maxForce);
+      target.copy(steering);
+    }
+  }
+
+  let tmp1$3 = new Vector(),
+    tmp2$2 = new Vector();
+    
+  /**
+   * Creates a behaviour that is used to make an agent wander in an organic manner.
+   * 
+   * @augments Behaviour
+  */
+  class WanderBehaviour extends Behaviour {
+    /**
+     * This sets a point on the perimeter circle that is infront of the agent.
+     * 
+     * @type number
+     */
+    _theta = 90
+    /**
+     * This clamps the offset that modify the WandererBehaviour#theta value each frame.
+     * 
+    * @type number
+    */
+    dtheta = 10
+    /**
+     * How big should the circle in front of the agent be.
+    */
+    _radius = 100
+    constructor() {
+      super();
+    }
+    /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
+    init(agent) {
+      this.position = agent.position;
+      this.velocity = agent.velocity;
+    }
+    /**
+     * @inheritdoc
+     * @param {Vector} target
+     * @returns Vector the first parameter
+     */
+    calc(target, inv_dt) {
+
+      this._theta += rand(-this.dtheta, +this.dtheta);
+      let forward = tmp1$3.copy(this.velocity);
+      if (forward.equalsZero())
+        Vector.random(forward);
+      let radius = this._radius * 0.8;
+      forward.setMagnitude(this._radius);
+      //ctx.arc(...tmp2.copy(this.position).add(forward), radius, 0, Math.PI * 2)
+      //ctx.stroke()
+      Vector.fromDeg(this._theta + Vector.toDeg(this.velocity), tmp2$2).multiply(radius);
+      forward.add(tmp2$2);
+      //forward.draw(ctx,...this.position)
+      forward.setMagnitude(this.maxSpeed);
+      forward.sub(this.velocity).multiply(inv_dt).clamp(0, this.maxForce);
+      target.copy(forward);
+    }
+
+  }
+
+  /**
+   * Not impemented.
+   * 
+   * @augments Behaviour
+  */
+  class Pursuit {
+    constructor() {
+
+    }
+      /**
+       * @inheritdoc
+       * @param {Agent} agent
+       */
+    init(){
+      
+    }
+      /**
+       * @inheritdoc
+       * @param {Vector} target
+       * @returns Vector the first parameter
+       */
+    calc(target){
+      
+    }
+  }
+
+  /**
+   * not complete.
+   * 
+   * @augments Behaviour
+  */
+  class Flock{
+    constructor(){
+      this.neighbours = [];
+    }
+      /**
+       * @inheritdoc
+       * @param {Agent} agent
+       * 
+       */
+    init(){
+      
+    }
+      /**
+       * @inheritdoc
+       * @param {Vector} target
+       * @returns Vector the first parameter
+       */
+    calc(target){
+      
+    }
+  }
+
+  let tmp1$2 = new Vector();
+    new Vector();
+    
+  /**
+   * Creates a behaviour to seek out a target and move towards it.
+   * 
+   * @augments Behaviour
+  */
+  class SeekBehaviour extends Behaviour {
+    /**
+     * Not implemented.
+     * Radius in which to seek out the target.
+     * 
+     * @type number
+    */
+    radius = 100
+    constructor(target) {
+      super();
+      this.target = target;
+    }
+      /**
+       * @inheritdoc
+       * @param {Agent} agent
+       */
+    init(agent) {
+      this.position = agent.position;
+      this.velocity = agent.velocity;
+    }
+      /**
+       * @inheritdoc
+       * @param {Vector} target
+       * @returns Vector the first parameter
+       */
+    calc(target,inv_dt) {
+      let difference = tmp1$2.copy(this.target).sub(this.position);
+      difference.setMagnitude(this.maxSpeed);
+      let steering = difference.sub(this.velocity).multiply(inv_dt);
+      
+      steering.clamp(0, this.maxForce);
+      target.copy(steering);
+    }
+  }
+
+  let tmp1$1 = new Vector(),
+    tmp2$1 = new Vector();
+
+  /**
+   * This provides a seek behaviour which slows down when the agent approaches a target.
+   * 
+   * @augments Behaviour
+   */
+  class ArriveBehaviour extends Behaviour {
+    /**
+     * Radius in which to expect the agent to start slowing down.
+     */
+    radius = 1000
+    /**
+     * @param {Vector} target
+     */
+    constructor(target) {
+      super();
+      this.target = target;
+    }
+
+    /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
+    init(agent) {
+      this.position = agent.position;
+      this.velocity = agent.velocity;
+    }
+    /**
+     * @inheritdoc
+     * @param {Vector} target
+     * @returns Vector the first parameter
+     */
+    calc(target, inv_dt) {
+      let difference = tmp1$1.copy(this.target).sub(this.position);
+      let velocity = tmp2$1.copy(this.velocity);
+      let length = difference.magnitude();
+
+      if (length < this.radius) {
+        difference.setMagnitude(map(length, 0, this.radius, 0, this.maxSpeed));
+      } else {
+        difference.setMagnitude(this.maxSpeed);
+      }
+
+      let steering = difference.sub(velocity).multiply(inv_dt);
+
+      steering.clamp(0, this.maxForce);
+      steering.draw(ctx, ...this.position);
+      target.add(steering);
+    }
+  }
+
+  const tmp1 = new Vector();
+  const tmp2 = new Vector();
+  const tmp3 = new Vector();
+  /**
+   * Creates a behaviour that follows a certain path.
+   * 
+   * @augments Behaviour
+  */
+  class PathFollowing extends Behaviour {
+    /**
+     * The path taken by a pathfollowing behaviour.
+     * 
+     * @type Path
+    */
+    path = null
+    /**
+     * @param {Path} path
+    */
+    constructor(path) {
+      super();
+      this.path = path;
+      path.speed = this.maxSpeed;
+    }
+    /**
+     * @inheritdoc
+     * @param {Vector} target
+     * @returns Vector the first parameter
+     */
+    calc(target, inv_dt) {
+      tmp1.copy(this.position);
+      let [p1, p2] = this.path.current();
+      tmp2.copy(p2).sub(p1).magnitude();
+      tmp2.normalize();
+
+      let proj = tmp2.dot(tmp1.sub(p1));
+      tmp3.copy(tmp2).multiply(proj);
+      let projPoint = this.path.update(proj);
+      tmp1.copy(projPoint).sub(this.position);
+      let length = tmp1.magnitude();
+      if (length < this.velocity.magnitude()) {
+        tmp1.setMagnitude(map(length, 0, this.maxSpeed, 0, this.maxSpeed));
+      }
+      let steering = tmp1.sub(this.velocity).multiply(inv_dt);
+
+      steering.clamp(0, this.maxForce);
+      target.add(steering);
+
+      return target
+    }
+    /**
+     * Removes all points on the path.
+    */
+    clear() {
+      this.path.clear();
+    }
+    /**
+     * @inheritdoc
+     * @param {Agent} agent
+     */
+    init(agent) {
+      this.position = agent.position;
+      this.velocity = agent.velocity;
+    }
+    /**
+     * Adds a point into the path.
+     * 
+     * @param {Vector} point
+    */
+    add(point) {
+      this.path.add(point);
+    }
+    /**
+     * If the agent should start at the beginning after reaching the ent of the path.
+     * 
+     * @type boolean
+    */
+    set loop(x) {
+      this.path.loop = x;
+    }
+    get loop() {
+      return this.path.loop
+    }
+    /**
+     * Sets a new path to follow.
+     *
+     * @param {Path} path
+    */
+    setPath(path) {
+      this.path = path;
+    }
+    draw(renderer) {
+      renderer.begin();
+      renderer.circle(...this.path.point(), 4);
+      renderer.fill("blue");
+      renderer.close();
+      renderer.begin();
+      renderer.circle(...this.path.point(), this.path.tolerance);
+      renderer.stroke("blue");
+      renderer.close();
+      this.path.draw(renderer);
+    }
+  }
+
+  let tmp = new Vector();
+  class Path {
+    _points = []
+    _index = 0
+    speed = 20
+    tolerance= 20
+    _lerp_t = 0
+    _lerpdist = 0
+    _way = [0, 1]
+    _finished = false
+    _lerpedPoint = new Vector()
+    loop = false
+    add(point) {
+      this._points.push(point);
+
+      return this
+    }
+
+    clear() {
+      this._points.length = 0;
+      this._way[0] = 0;
+      this._way[1] = 0;
+      this._lerp_t = 0;
+      this._finished = false;
+
+      return this
+    }
+    advance() {
+      if (this._points.length < 2) return false
+      if (this._way[1] == this._points.length - 1 &&
+        !this.loop) return false
+      if (
+        this._way[1] == this._points.length - 1 &&
+        this.loop
+      ) {
+        this._way[0] = this._points.length - 1;
+        this._way[1] = 0;
+        this._lerp_t = 0;
+        return true
+      }
+      this._way[0] = this._way[1];
+      this._way[1] += 1;
+      this._lerp_t = 0;
+      return true
+    }
+    update(lerpdist = this._lerpdist) {
+      if (this._finished) return this._lerpedPoint
+      let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitude();
+      this._lerp_t = (this.speed + lerpdist) / dist;
+      if (this._lerp_t > 1 && (dist - lerpdist) < this.tolerance) {
+        if (!this.advance()) this._finished = true;
+      }
+      this._lerp_t = clamp(this._lerp_t, 0, 1);
+      Vector.lerp(
+        this._points[this._way[0]],
+        this._points[this._way[1]],
+        this._lerp_t,
+        this._lerpedPoint
+      );
+      return this._lerpedPoint
+    }
+    current() {
+      return [
+        this._points[this._way[0]],
+        this._points[this._way[1]]
+        ]
+    }
+    point(){
+      return this._lerpedPoint
+    }
+    get path(){
+      return this._points
+    }
+    draw(renderer){
+      renderer.begin();
+      renderer.vertices(this._points,this.loop);
+      renderer.stroke("lightgreen");
+      renderer.close();
+    }
+  }
+
+  /**
+   * Used to manipulate and read from the cookie string.
+   * 
+   * @module Cookie
+  */
+
+  const Cookies = {
+    /**
+     * Adds a cookie pair to cookies.
+     * 
+     * @param {string} n Key of the cookie.
+     * @param {string} v The value of the cookie.
+     * @param {number} [=12000] Max age of the cookie before it is deleted.
+    */
+    set(n, v, maxAge= 12000) {
+      document.cookie = `${n}=${v};maxAge=${maxAge}`;
+    },
+    /**
+     * Returns the value of the given key.
+     * 
+     * @param {string} n Key of the cookie
+     * @returns {string}
+    */
+    get(n) {
+      let arr = document.cookie.split(";");
+      for (var i = 0; i < arr.length; i++) {
+        let pair = arr[i].split('=');
+        if (pair[0].includes(n))
+          return pair[1]
+      }
+    },
+    /**
+     * Removes a cookie by its key from cookies.
+     * 
+     * @param {string} n Key of the cookie
+    */
+    delete(n){
+      document.cookie = `${n}=; max-age=0`;
+    },
+    /**
+     * Removes all cookies that are contained on the document.
+    */
+    clear() {
+      let arr = document.cookie.split(";");
+      for (var i = 0; i < arr.length; i++) {
+        let pair = arr[i].split('=');
+        this.delete(pair[0]);
+      }
+    }
+  };
+
+  /**
+   * This provides temporary storage when your application tab is open.
+   * 
+   * @module Session
+  */
+  const Session = {
+    /**
+     * Adds a value to sessions
+     * 
+     * @param {string} k 
+     * @param {any} v
+    */
+    set(k,v) {
+      JSON.stringify(v);
+      sessionStorage.setItem(k,v);
+    },
+    /**
+     * Gets a value from sessions using a key
+     * 
+     * @param {string} k A key to retrieve a value
+    */
+    get(k) {
+      let json = sessionStorage.getItem(k);
+      return JSON.parse(json)
+    },
+    /**
+     * Removes everything from sessions
+    */
+    clear() {
+      sessionStorage.clear();
+    }
+  };
+
+  /**
+   * This provides permanent storage
+  */
+
+  const Storage = {
+    /**
+     * Adds a value to local storage
+     * 
+     * @param {string} k 
+     * @param {any} v
+    */
+    set(k,v) {
+      JSON.stringify(v);
+      localStorage.setItem(k,v);
+    },
+    /**
+     * Gets a value from local storage by its key.
+     * 
+     * @param {string} k
+    */
+    get(k) {
+      let json = localStorage.getItem(k);
+      return JSON.parse(json)
+    },
+    /**
+     * Removes everything from local storage 
+    */
+    clear() {
+      localStorage.clear();
+    }
+  };
+
+  exports.Agent = Agent;
+  exports.AgentManager = AgentManager;
+  exports.AgentSprite = AgentSprite;
+  exports.Angle = Angle;
+  exports.ArriveBehaviour = ArriveBehaviour;
+  exports.AudioHandler = AudioHandler;
+  exports.Ball = Ball;
+  exports.BasicMaterial = BasicMaterial;
+  exports.Behaviour = Behaviour;
+  exports.Body = Body;
+  exports.BodySprite = BodySprite;
+  exports.BoundingBox = BoundingBox;
+  exports.BoundingCircle = BoundingCircle;
+  exports.Box = Box;
+  exports.BufferGeometry = BufferGeometry;
+  exports.Circle = Circle;
+  exports.CircleGeometry = CircleGeometry;
+  exports.Clock = Clock;
+  exports.Component = Component;
+  exports.Composite = Composite;
+  exports.Constraint = Constraint;
+  exports.Cookies = Cookies;
+  exports.DEVICE = DEVICE;
+  exports.DOMEventHandler = DOMEventHandler;
+  exports.DebugMesh = DebugMesh;
+  exports.DistanceConstraint = DistanceConstraint;
+  exports.Entity = Entity;
+  exports.Err = Err;
+  exports.EvadeBehaviour = EvadeBehaviour;
+  exports.EventDispatcher = EventDispatcher;
+  exports.Events = Events;
+  exports.Flock = Flock;
+  exports.Geometry = Geometry;
+  exports.Grid = Grid;
+  exports.HeightMap = HeightMap;
+  exports.ImageSprite = ImageSprite;
+  exports.Input = Input;
+  exports.Keyboard = Keyboard;
+  exports.Layer = Layer;
+  exports.Line = Line;
+  exports.Loader = Loader;
+  exports.Manager = Manager;
+  exports.Material = Material;
+  exports.Matrix = Matrix2;
+  exports.Matrix2 = Matrix2;
+  exports.Mouse = Mouse;
+  exports.Movable = Movable;
+  exports.NaiveBroadphase = NaiveBroadphase;
+  exports.Overlaps = Overlaps;
+  exports.ParallaxBackground = ParallaxBackground;
+  exports.Particle = Particle;
+  exports.ParticleSystemSprite = System;
+  exports.Path = Path;
+  exports.PathFollowing = PathFollowing;
+  exports.Pursuit = Pursuit;
+  exports.QuadTreeBroadphase = Tree;
+  exports.Rectangle = Rectangle;
+  exports.Renderer = Renderer;
+  exports.Renderer2D = Renderer2D;
+  exports.SeekBehaviour = SeekBehaviour;
+  exports.Session = Session;
+  exports.Sfx = Sfx;
+  exports.Shape = Shape;
+  exports.SpringConstraint = SpringConstraint;
+  exports.Sprite = Sprite;
+  exports.StaticImageSprite = StaticImageSprite;
+  exports.Storage = Storage;
+  exports.Touch = Touch;
+  exports.Transform = Transform;
+  exports.Triangle = Triangle;
+  exports.Utils = Utils;
+  exports.Vector = Vector;
+  exports.WanderBehaviour = WanderBehaviour;
+  exports.WebGLRenderer = WebGLRenderer;
+  exports.WebGPURenderer = WebGPURenderer;
+  exports.World = World;
+  exports.clamp = clamp;
+  exports.defaultCollisionHandler = defaultCollisionHandler;
+  exports.defaultPrecollisionHandler = defaultPrecollisionHandler;
+  exports.degToRad = degToRad;
+  exports.exp = exp;
+  exports.lerp = lerp;
+  exports.map = map;
+  exports.naturalizePair = naturalizePair;
+  exports.radToDeg = radToDeg;
+  exports.rand = rand;
+  exports.round = round;
+  exports.sq = sq;
+  exports.sqrt = sqrt;
+
+}));
