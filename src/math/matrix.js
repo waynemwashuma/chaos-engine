@@ -1,4 +1,15 @@
+/**
+ * A class that is used to transform positions through rotation, scaling and translation.
+ */
 export class Matrix2 {
+  /**
+   *  @param {number} [a=1]
+   *  @param {number} [b=0]
+   *  @param {number} [c=0]
+   *  @param {number} [d=1]
+   *  @param {number} [e=0]
+   *  @param {number} [f=0]
+  */
   constructor(a = 1, b = 0, c = 0, d = 1, e = 0, f = 0) {
 
     this.a = a;
@@ -8,7 +19,15 @@ export class Matrix2 {
     this.e = e;
     this.f = f;
   }
-
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {number} scaleX
+   * @param {number} scaleY
+   * @param {number} rotation
+   * 
+   * @returns this
+   */
   setFromTransform(x, y, scaleX, scaleY, rotation) {
     let cos = Math.cos(rotation)
     let sin = Math.sin(rotation)
@@ -21,6 +40,13 @@ export class Matrix2 {
     this.f = y
     return this;
   };
+  /**
+   * Multiplies with another matrix,
+   *  A * B = C, where B is this matrix
+   * 
+   * @param {Matrix2} m
+   * @returns this
+   */
   prepend(m) {
     let x = this.e;
     let a1 = this.a;
@@ -33,6 +59,13 @@ export class Matrix2 {
     this.f = x * m.b + this.f * m.d + m.f;
     return this;
   };
+  /**
+   * Multiplies with another matrix,
+   *  A * B = C, where A is this matrix
+   * 
+   * @param {Matrix2} m
+   * @returns {this}
+   */
   append(m) {
     let a1 = this.a;
     let b1 = this.b;
@@ -46,6 +79,11 @@ export class Matrix2 {
     this.f = m.e * b1 + m.f * d1 + this.f;
     return this;
   }
+  /**
+   * Makes a matrix to be an identity matrix.
+   * 
+   * @returns this
+   */
   identity() {
     this.a = 1;
     this.b = 0;
@@ -55,6 +93,12 @@ export class Matrix2 {
     this.f = 0;
     return this;
   };
+  /**
+   * Rotates the matrix by the given angle.
+   * 
+   * @param {number} radians
+   * @returns this
+   */
   rotate(radians) {
 
     let cos = Math.cos(radians);
@@ -70,16 +114,36 @@ export class Matrix2 {
     this.f = x * sin + this.f * cos;
     return this;
   };
+  /**
+   * Translates a matrix by a given amount.
+   * 
+   * @param {number} x
+   * @param {number} y
+   * @returns this
+   */
   translate(x, y) {
     this.e += x;
     this.f += y;
     return this;
   };
+  /**
+   * Scales a matrix by a given amount.
+   * 
+   * @param {number} x
+   * @param {number} y
+   * @returns this
+   */
   scale(x, y) {
     this.a *= x;
     this.d *= y;
     return this;
   };
+  /**
+   * Transforms the given vector.
+   * 
+   * @param {Vector} v
+   * @returns this
+   */
   transform(v) {
     let x = v.x
 
@@ -87,6 +151,11 @@ export class Matrix2 {
     v.y = this.b * x + this.d * v.y + this.f;
     return v;
   };
+  /**
+   * Inverts the matrix.
+   *
+   * @returns this
+   */
   invert() {
     let a = this.a;
     let b = this.b;
@@ -102,6 +171,12 @@ export class Matrix2 {
     this.f = -(a * this.f - b * x) / n;
     return this;
   };
+  /**
+   * Copies a matrix into this matrix.
+   * 
+   * @param {Matrix2} m
+   * @returns this
+   */
   copy(m) {
     this.a = m.a;
     this.b = m.b;
@@ -111,9 +186,20 @@ export class Matrix2 {
     this.f = m.f;
     return this;
   }
+  /**
+   * Creates a new matrix,fills its values with this ones and returns the former.
+   * 
+   * @returns Matrix2
+   */
   clone() {
-    return new Matrix().copy(this);
+    return new Matrix2().copy(this);
   }
+  /**
+   * Deeply checks if a matrix is equal to another.
+   * 
+   * @param {Matrix2} matrix
+   * @returns boolean
+   */
   equals(matrix) {
     return (this.a === matrix.a && this.b === matrix.b && this.c === matrix.c && this.d === matrix.d && this.e === matrix.e && this.f === matrix.f);
   }

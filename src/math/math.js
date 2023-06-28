@@ -6,6 +6,7 @@ const RHI = Math.PI / 180,
  * 
  * @param {number} [min=0] The minimal bound of the random number
  * @param {number} [max=1] The maximum bound of the random number
+ * @returns {number}
  */
 function rand(min = 0, max = 1) {
   return Math.random() * (max - min) + min
@@ -15,6 +16,7 @@ function rand(min = 0, max = 1) {
  * Returns the square of a number
  * 
  * @param {number} x The number to square
+ *  @returns {number}
 */
 function sq(x) {
   return x * x
@@ -24,6 +26,7 @@ function sq(x) {
  * 
  *  @param {number} x the number to power.
  *  @param {number} [e=2] The number to power by.
+ *  @returns {number}
 */
 function exp(x, e = 2) {
   return x ** e
@@ -45,6 +48,7 @@ function sqrt(x) {
  *  @param {number} a The minimal bound of the interpolation.
  *  @param {number} b The maximum bound of the interpolation.
  *  @param {number} t A number between 0 and 1 to interpopate by.Any other number greater than 1 or less than 0 will extapolate beyond b or a respectively.
+ *  @returns {number}
 */
 function lerp(a, b, t) {
   return a + t * (b - a)
@@ -55,6 +59,7 @@ function lerp(a, b, t) {
  * 
  *  @param {number} number The number to round.
  *  @param {number} [precision=4] How many decimal places there should be.
+ *  @returns {number}
 */
 function round(number, precision = 4) {
   precision = 10 ** precision
@@ -67,6 +72,7 @@ function round(number, precision = 4) {
  *  @param {number} value The number to clamp.
  *  @param {number} min The minimal bound of the clamped number.
  *  @param {number} max The maximum bound of the clamped number.
+ *  @returns {number}
 */
 function clamp(value, min, max) {
   if (value < min) return min
@@ -75,12 +81,24 @@ function clamp(value, min, max) {
 }
 
 /**
- * TODO - Will add documentation later.
+ * Maps a value from one range to another.
+ * 
+ *  @param {number} v
+ *  @param {number} x1
+ *  @param {number} y1
+ *  @param {number} x2
+ *  @param {number} y2
+ *  @returns {number}
 */
 function map(v, x1, y1, x2, y2) {
   return x2 + v * (y2 - x2) / (y1 - x1)
 }
-
+/**
+ * Returns a unique number given from a pair of numbers
+ *  @param {number} a
+ *  @param {number} b
+ *  @returns {number}
+*/
 function naturalizePair(a, b) {
   if (a > b)
     return (a + b) * (a + b + 1) / 2 + a;
@@ -91,6 +109,7 @@ function naturalizePair(a, b) {
  * Converts a degree to a radian.
  * 
  * @param {number} deg number to convert.
+ *  @returns {number}
 */
 function degToRad(deg) {
   return deg * RHI
@@ -100,6 +119,7 @@ function degToRad(deg) {
  * Converts a radian to a degree.
  * 
  * @param {number} rad number to convert.
+ *  @returns {number}
 */
 function radToDeg(rad) {
   return rad * RHI_INV
