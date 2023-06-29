@@ -51,20 +51,20 @@
  
  - Renamed Mesh classes to Sprite.
 
-### Usage
+# Usage
 ## Downloading and installing.
 In order to get a copy of the engine ,enter the following command on your node project
 
 ```bash
-npm i chaos
+npm i chaos-studio
 ```
 Import it into your project like this:
 ```javascript
-import * as CHAOS from "chaos"
+import * as CHAOS from "chaos-studio"
 ```
-# OR:
+### OR:
 
-Get the umd file from the dist folder of the [repository][https://github.com/waynemwashuma/chaos-engine],put it in your root directory and add it to your html page like so:
+Get the umd file from the dist folder of the [repository](https://github.com/waynemwashuma/chaos-engine),put it in your root directory and add it to your html page like so:
 
 ```html
 <html>
@@ -75,7 +75,7 @@ Get the umd file from the dist folder of the [repository][https://github.com/way
 This way,the "CHAOS" module name will be available on the window object.
 
 ## Creating an example
-# Setup game
+### Setup game
 Now we can create a small demo.
 Add this to your html file in the body tag for this example to work
 ```html
@@ -107,6 +107,7 @@ renderer.setViewport(innerWidth, innerHeight)
 world.gravity = 900
 ```
 # Add a box to the game
+
 So far there is nothing on the screen... Lets fix that.
 ```javascript
 //Creates an entity on which we can add(attach) component to.
@@ -127,7 +128,8 @@ box.attach("mesh", boxMesh)
 //Adds the box to the game to be updated every frame.
 game.add(box)
 ```
-# Adding ground
+### Adding groundhttp
+
 Now you should see a box falling into nothingness.
 Lets add ground it can land on.
 ```javascript
@@ -154,13 +156,13 @@ game.add(ground)
 ```
 
 
-### **** WARNING ****
+# **** WARNING ****
 
 Upgrade from v0.0.0 to v0.1.0 as it is not yet stable
 
- Some of these include breaking changes like 
- the transfer from inheritance model to the 
- entity component systems model
+Some of these include breaking changes like 
+the transfer from inheritance model to the 
+entity component systems model
  
 The legacy folder contains the last working
 form of the inheritance model,check the differences between the last commit and it(many changes were realised between the two)
@@ -171,16 +173,16 @@ This is not yet a stable version hence dont rely on it to make production apps
 
  
  
-### **** FUTURE WORK ****
+# **** FUTURE WORK ****
  
- - Add a webgl renderer(dont have a direct plan for this yet)
+ - Add a webgl renderer(dont have a direct plan for this yet)🟠
  - Stabilize the collision response to work well with large forces such as (gravity =  10000)
  - Stabilize rotational stacking in the physics engine
  - Add game state class for managing the game
  
- - Migrate some other parts of the code to the new model( Meshes for example )
+ - Migrate some other parts of the code to the new model( Meshes for example )✅
  - Add an animation system.
  - Add tutorials to this game engine
- - Add documentation to every file in this project.
- - Add appropriate demos to the project and get a website running for them
- - Add some error handling mechanisms 
+ - Add documentation to every file in this project.✅
+ - Add appropriate demos to the project and get a website running for them 🟠
+ - Add some error handling mechanisms 🟠

@@ -1,12 +1,12 @@
 {
-  "name": "chaos",
+  "name": "chaos-studio",
   "version": "0.2.0",
   "description": "a 2D game engine",
   "homepage": "https://github.com/waynemwashuma/chaos-engine",
   "bugs": {
     "url": "https://github.com/waynemwashuma/chaos-engine/issues"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "./dist/chaos.umd.js",
   "exports": {
     ".": {
