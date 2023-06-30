@@ -53,7 +53,9 @@
 
 # Usage
 ## Downloading and installing.
-In order to get a copy of the engine ,enter the following command on your node project
+In order to get a copy of the engine ,enter the following command on your node project.
+
+#### registration on npm is yet to be done so skip this.
 
 ```bash
 npm i chaos-studio

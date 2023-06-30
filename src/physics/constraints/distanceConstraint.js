@@ -19,9 +19,7 @@ class DistanceConstraint extends Constraint {
    * @param {Vector} localB
    */
   constructor(body1, body2, localA, localB) {
-    super(body1, body2)
-    this.localA = new Vector().copy(localA || zero)
-    this.localB = new Vector().copy(localB || zero)
+    super(body1, body2,localA,localB)
     this.fixed = !body1.mass || !body2.mass
     this.dampen = 1
     this.maxDistance = 1
