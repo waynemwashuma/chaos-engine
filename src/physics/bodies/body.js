@@ -386,7 +386,7 @@ class Body {
     return this._localanchors.push(v) - 1
   }
   /**
-   * Gets an anchor in its world coordinate form.
+   * Gets an anchor in its local space coordinate form.
    * Treat the returned value as read-only.
    * 
    * @param {number} index the position of the
@@ -453,7 +453,7 @@ class Body {
       this.shapes[i].update(this.position, this._orientation.radian)
     }
     for (var i = 0; i < this.anchors.length; i++) {
-      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian).add(this.position)
+      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian)//.add(this.position)
     }
     if (this.autoUpdateBound)
       this.bounds.calculateBounds(this, this.boundPadding)

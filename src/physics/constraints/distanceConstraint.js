@@ -29,8 +29,8 @@ class DistanceConstraint extends Constraint {
    * @ignore
   */
   behavior(body1, body2, dt) {
-    let arm1 = tmp1.copy(this.localA).rotate(body1.angle * Math.PI / 180),
-      arm2 = tmp2.copy(this.localB).rotate(body2.angle * Math.PI / 180),
+    let arm1 = tmp1.copy(this.localA),
+      arm2 = tmp2.copy(this.localB),
       pos1 = tmp3.copy(body1.position).add(arm1),
       pos2 = tmp4.copy(body2.position).add(arm2),
       dist = pos1.sub(pos2),
