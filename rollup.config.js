@@ -1,4 +1,5 @@
 const pkg = require("./package.json")
+pkg.name = "chaos"
 const fs = require("fs")
 const input = "src/index.js";
 const created = `2023-${new Date().getFullYear()}`

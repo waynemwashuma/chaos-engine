@@ -2,7 +2,7 @@
  * @author Wayne Mwashuma
  * {@link https://github.com/waynemwashuma/chaos-engine.git}
  * @copyright  2023-2023 Wayne Mwashuma
- * @license UNLICENSED
+ * @license MIT
  *
  * 
  * MIT License
@@ -31,7 +31,7 @@ SOFTWARE.
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CHAOS = {}));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global["CHAOS-STUDIO"] = {}));
 })(this, (function (exports) { 'use strict';
 
   /**
@@ -2198,7 +2198,7 @@ SOFTWARE.
       return this._localanchors.push(v) - 1
     }
     /**
-     * Gets an anchor in its world coordinate form.
+     * Gets an anchor in its local space coordinate form.
      * Treat the returned value as read-only.
      * 
      * @param {number} index the position of the
@@ -2265,7 +2265,7 @@ SOFTWARE.
         this.shapes[i].update(this.position, this._orientation.radian);
       }
       for (var i = 0; i < this.anchors.length; i++) {
-        this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian).add(this.position);
+        this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian);//.add(this.position)
       }
       if (this.autoUpdateBound)
         this.bounds.calculateBounds(this, this.boundPadding);
@@ -2568,10 +2568,14 @@ SOFTWARE.
     /**
      * @param {Body} body1
      * @param {Body} body2
+     * @param {Vector} localA
+     * @param {Vector} localB
      */
-    constructor(body1, body2) {
+    constructor(body1, body2, localA, localB) {
       this.body1 = body1;
       this.body2 = body2;
+      this.localA = localA || new Vector();
+      this.localB = localB || new Vector();
       this.stiffness = 50;
       this.dampening = 0.03;
     }
@@ -2580,7 +2584,7 @@ SOFTWARE.
      * 
      * @package
      * @type number
-    */
+     */
     get physicsType() {
       return ObjType.CONSTRAINT
     }
@@ -2593,7 +2597,7 @@ SOFTWARE.
     /**
      * @ignore
      * Will refactor this out
-    */
+     */
     behavior(body1, body2) {
       body2.position.copy(body1.position);
     }
@@ -2601,7 +2605,7 @@ SOFTWARE.
      * Updates constraint forces
      *
      * @param {number} dt
-    */
+     */
     update(dt) {
       this.behavior(this.body1, this.body2, dt);
     }
@@ -2611,8 +2615,8 @@ SOFTWARE.
     tmp2$8 = new Vector(),
     tmp3$5 = new Vector(),
     tmp4$4 = new Vector(),
-    tmp5$3 = new Vector(),
-    zero$1 = new Vector();
+    tmp5$3 = new Vector();
+    new Vector();
 
   /**
    * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
@@ -2625,9 +2629,7 @@ SOFTWARE.
      * @param {Vector} localB
      */
     constructor(body1, body2, localA, localB) {
-      super(body1, body2);
-      this.localA = new Vector().copy(localA || zero$1);
-      this.localB = new Vector().copy(localB || zero$1);
+      super(body1, body2,localA,localB);
       this.fixed = !body1.mass || !body2.mass;
       this.dampen = 1;
       this.maxDistance = 1;
@@ -2637,8 +2639,8 @@ SOFTWARE.
      * @ignore
     */
     behavior(body1, body2, dt) {
-      let arm1 = tmp1$b.copy(this.localA).rotate(body1.angle * Math.PI / 180),
-        arm2 = tmp2$8.copy(this.localB).rotate(body2.angle * Math.PI / 180),
+      let arm1 = tmp1$b.copy(this.localA),
+        arm2 = tmp2$8.copy(this.localB),
         pos1 = tmp3$5.copy(body1.position).add(arm1),
         pos2 = tmp4$4.copy(body2.position).add(arm2),
         dist = pos1.sub(pos2),
@@ -2669,9 +2671,9 @@ SOFTWARE.
     tmp2$7 = new Vector(),
     tmp3$4 = new Vector(),
     tmp4$3 = new Vector(),
-    tmp5$2 = new Vector(),
-    tmp6$1 = new Vector(),
-    zero = new Vector();
+    tmp5$2 = new Vector();
+    new Vector();
+    let zero = new Vector();
    /**
     * A constraint that acts like a spring between two bodies
    */
@@ -2688,12 +2690,12 @@ SOFTWARE.
       this.localB = new Vector().copy(localB || zero);
       this.fixed = !body1.mass || !body2.mass;
       this.dampen = 1;
-      this.maxDistance = 1;
+      this.maxDistance = 100;
       this.stiffness = 1;
     }
     behavior(body1, body2, dt) {
-      let arm1 = tmp1$a.copy(this.localA).rotate(body1.angle * Math.PI / 180),
-        arm2 = tmp2$7.copy(this.localB).rotate(body2.angle * Math.PI / 180),
+      let arm1 = tmp1$a.copy(this.localA),
+        arm2 = tmp2$7.copy(this.localB),
         pos1 = tmp3$4.copy(body1.position).add(arm1),
         pos2 = tmp4$3.copy(body2.position).add(arm2),
         dist = pos1.sub(pos2),
@@ -2704,19 +2706,14 @@ SOFTWARE.
       }
       let difference = (magnitude - this.maxDistance) / magnitude,
         force = dist.multiply(difference * this.stiffness * this.dampen),
-        massTotal = body1.inv_mass + body2.inv_mass;
-        body1.inv_inertia + body2.inv_inertia;
-      tmp4$3.copy(force);
-      force.divide(massTotal * 2);
-
-      body1.velocity.add(tmp6$1.copy(force).multiply(-body1.inv_mass).divide(dt));
-      body2.velocity.add(tmp5$2.copy(force).multiply(body2.inv_mass).divide(dt));
-
-      body1.position.add(tmp6$1.copy(force).multiply(-body1.inv_mass));
-      body2.position.add(tmp5$2.copy(force).multiply(body2.inv_mass));
-
-      body1.rotation.radian += tmp4$3.cross(arm1) * body1.inv_inertia;
-      body2.rotation.radian += tmp4$3.cross(arm2) * -body2.inv_inertia;
+        massTotal = body1.inv_mass + body2.inv_mass,
+        inertiaTotal = body1.inv_inertia + body2.inv_inertia;
+        force.divide(massTotal + inertiaTotal);
+        body1.velocity.add(tmp5$2.copy(force).multiply(-body1.inv_mass));
+        body2.velocity.add(tmp5$2.copy(force).multiply(body2.inv_mass));
+        
+        body1.rotation.radian += force.cross(arm1) * body1.inv_inertia;
+        body2.rotation.radian += force.cross(arm2) * -body2.inv_inertia;
     }
   }
 
