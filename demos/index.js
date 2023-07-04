@@ -3,6 +3,7 @@ import { bridge } from "./bridge.js"
 import { stacking } from "./stacking.js"
 import { pyramid } from "./pyramid.js"
 import { random } from "./random.js"
+import { constraint } from "./constraints.js"
 
 import {
   Manager,
@@ -74,6 +75,7 @@ export const demos = {
   manager:new Manager(),
   renderer:new Renderer2D(),
   world:new World(),
+  examples:{},
   init: function(selector) {
     this.manager.registerSystem("renderer",this.renderer)
     this.manager.registerSystem("world",this.world)
@@ -88,22 +90,21 @@ export const demos = {
   setup: function(name) {
     this.manager.clear()
     this.manager.add(new CanvasBounds())
-    switch (name) {
-      case "random":
-        random(this.manager)
-        break
-      case "bridge":
-        bridge(this.manager)
-        break
-      case "car":
-        car(this.manager)
-        break
-      case "pyramid":
-        pyramid(this.manager)
-        break
-      case "stacking":
-        stacking(this.manager)
-        break
-    }
+    this.examples[name](this.manager)
+  },
+  play(n){
+    this.setup(n)
+  },
+  register(n,f){
+    this.examples[n] = f
   }
 }
+demos.register("random",random)
+demos.register("bridge",bridge)
+demos.register("car",car)
+demos.register("pyramid",pyramid)
+demos.register("stack",stacking)
+demos.register("constraints",constraint)
+demos.register("random",random)
+demos.register("random",random)
+demos.register("random",random)
