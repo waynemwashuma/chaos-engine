@@ -9,6 +9,7 @@ export const Err = {}
 /**
  * Logs out a warning to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.warn = function(message) {
@@ -18,6 +19,7 @@ Err.warn = function(message) {
 /**
  * Throws a fatal error.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.throw = function(message) {
@@ -27,6 +29,7 @@ Err.throw = function(message) {
 /**
  * Logs out a non fatal error to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.error = function(message) {
@@ -36,6 +39,7 @@ Err.error = function(message) {
 /**
  * Logs out a message to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.log = function(message) {
@@ -44,6 +48,7 @@ Err.log = function(message) {
 /**
  * Logs out a warning once to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.warnOnce = function(message) {
@@ -54,6 +59,7 @@ Err.warnOnce = function(message) {
 /**
  * Logs out a message,warning or error to the console according to the supplied log function.
  * 
+ * @memberof Err
  * @param {boolean} test
  * @param {string} message
  * @param {Function} errfunc

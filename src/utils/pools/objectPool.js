@@ -7,7 +7,7 @@ class Pool {
   /**
    * List of objects
    * 
-   * @type []
+   * @type any[]
   */
   _pool = []
   /**

@@ -337,16 +337,16 @@ class Manager {
    * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @param {[]} [arr=[]] A reference to the array to store components in.
+   * @param {Component[]} [arr=[]] A reference to the array to store components in.
    */
   setComponentList(n, arr = []) {
     this._componentLists[n] = arr
   }
   /**
-   * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
+   * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @returns {Array} An array of components
+   * @returns {Component[]} An array of components
    */
   getComponentList(n) {
     return this._componentList[n]
@@ -355,7 +355,7 @@ class Manager {
    * Finds the first entity with all the components and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
    * @returns {Entity} 
    */
@@ -371,9 +371,9 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
-   * @returns {Array<Entity>} 
+   * @returns {Entity[]} 
    */
   getEntitiesByComponents(comps, entities = this.objects, target = []) {
     for (let i = 0; i < entities.length; i++) {
@@ -388,7 +388,7 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
    * @returns {Entity} 
    */
@@ -403,8 +403,8 @@ class Manager {
   /**
    * Finds the entities with all the tag and returns them in an array.
    * 
-   * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
+   * @param {string[]} tags An array containing the tags to be searched
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
    * 
    * @returns {Array<Entity>} 
    */
