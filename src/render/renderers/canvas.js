@@ -10,10 +10,6 @@ import { Renderer } from "./renderer.js"
  * @extends Renderer
 */
 export class Renderer2D extends Renderer {
-  _transforms = []
-  _rotation = 0
-  _translation = new Vector()
-  _scale = new Vector()
   _fill = "black"
   _stroke = "black"
   frameRate = 1 / 60
@@ -26,14 +22,11 @@ export class Renderer2D extends Renderer {
     super(canvas,canvas.getContext("2d"))
     
   }
-  init(manager) {
-    manager.setComponentList("mesh", this.objects)
-  }
   push() {
-    this._transforms.push(this.ctx.getTransform())
+    this.ctx.save()
   }
   pop() {
-    this.ctx.setTransform(this._transforms.pop())
+    this.ctx.restore()
 
   }
   reset() {
@@ -47,7 +40,6 @@ export class Renderer2D extends Renderer {
   }
   rotate(rad) {
     this.ctx.rotate(rad)
-    this._rotation += rad
   }
   line(x1, y1, x2, y2) {
     this.ctx.moveTo(
@@ -136,28 +128,6 @@ export class Renderer2D extends Renderer {
       y - this.camera.position.y,
       w, h)
   }
-  get width() {
-    return this.domElement.clientWidth
-  }
-  get height() {
-    return this.domElement.clientHeight
-  }
-  set width(x) {
-    this.domElement.width = x
-  }
-  set height(x) {
-    this.domElement.height = x
-  }
-  setViewport(w, h) {
-    this.width = w
-    this.height = h
-  }
-  set CSSbackground(x) {
-    this.domElement.style.background = x
-  }
-  get CSSbackground() {
-    return this.domElement.style.background
-  }
   clear() {
     this.reset()
     let h = this.height,
@@ -189,28 +159,7 @@ export class Renderer2D extends Renderer {
     this.RAF()
     this._accumulator = 0
   }
-  RAF() {
-    this._rafID = requestAnimationFrame(this._update)
-  }
-  play() {
-    this.RAF()
-  }
-  pause() {
-    cancelAnimationFrame(this._rafID)
-  }
-  bindTo(selector, focus = true) {
-    let element = document.querySelector(selector)
-    this.domElement.remove()
-    this.domElement.style.backgroundColor = "grey"
-    this.domElement.style.touchAction = "none"
-    element.append(this.domElement)
-  }
-  add(mesh) {
-    this.objects.push(mesh)
-  }
-  remove(mesh) {
-    this.objects.splice(this.objects.indexOf(mesh), 1)
-  }
+  
   addUI(mesh) {
     this.renderLast.push(mesh)
   }
