@@ -23,7 +23,10 @@
     "vite": "vite --host",
     "dev": "npm run vite",
     "build": "rollup --config rollup.config.js",
-    "docs":"jsdoc -c jsdoc.json"
+    "docs":"jsdoc -c jsdoc.json",
+    "types":"tsc -c tsconfig.json",
+    "test":"echo test done",
+    "full":"npm run test & npm run build & npm run docs"
   },
   "keywords": [
     "game",
