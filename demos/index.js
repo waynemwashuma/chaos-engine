@@ -6,12 +6,14 @@ import { random } from "./random.js"
 
 import {
   Manager,
+  Renderer2D,
+  World,
   DebugMesh,
   Entity,
   Box,
-  BodyMesh,
+  BodySprite,
   Body
-} from "/dist/chaos.es.js"
+} from "/dist/chaos.module.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
   let l1 = {
@@ -60,7 +62,7 @@ class CanvasBounds extends Entity {
       let bound = Entity.Default(w.pos.x, w.pos.y)
       let body = new Box(w.w, w.h)
       bound.attach("body", body)
-        .attach("mesh", new BodyMesh())
+        .attach("mesh", new BodySprite())
       body.type = Body.STATIC
       this.manager.add(bound)
     })
@@ -69,9 +71,13 @@ class CanvasBounds extends Entity {
 }
 
 export const demos = {
-  manager: Manager.Default(),
+  manager:new Manager(),
+  renderer:new Renderer2D(),
+  world:new World(),
   init: function(selector) {
-    let renderer = this.manager.getSystem("renderer")
+    this.manager.registerSystem("renderer",this.renderer)
+    this.manager.registerSystem("world",this.world)
+    let renderer = this.renderer
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight)
     window.onresize = () => {

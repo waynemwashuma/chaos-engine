@@ -2,4 +2,4 @@ import { demos } from "./index.js"
 
 demos.init("#can")
 
-demos.setup("random")
+demos.setup("car")

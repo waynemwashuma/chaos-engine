@@ -7,8 +7,8 @@ import {
   SpringConstraint,
   rand,
   Entity,
-  BodyMesh
-} from "/dist/chaos.es.js"
+  BodySprite
+} from "/dist/chaos.module.js"
 
 export function bridge(manager) {
   let world = manager.getSystem("world")
@@ -16,11 +16,11 @@ export function bridge(manager) {
   world.gravity = 1000
   
   let pin1 = Entity.Default(100, 200)
-    .attach(new Box(20, 20))
-    .attach(new BodyMesh())
+    .attach("body",new Box(20, 20))
+    .attach("mesh",new BodySprite())
   let pin2 = Entity.Default(350, 200)
-    .attach(new Box(20, 20))
-    .attach(new BodyMesh())
+    .attach("body",new Box(20, 20))
+    .attach("mesh",new BodySprite())
   let chain = createChain(50, 200, 50, 10, 5, 50, pin1, pin2)
 
   pin1.get("body").mass = 0
@@ -37,7 +37,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     bodies = [
       Entity.Default(x * i, y)
       .attach("body", prev)
-      .attach("mesh", new BodyMesh())
+      .attach("mesh", new BodySprite())
       ],
     constraints = []
 
@@ -50,7 +50,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     bodies.push(
       Entity.Default(x * i, y)
       .attach("body", chain)
-      .attach("mesh", new BodyMesh())
+      .attach("mesh", new BodySprite())
     )
     constraints.push(constraint)
     chain.mask.group = 1
