@@ -4,9 +4,10 @@
 name: Node.js Package
 
 on:
-  release:
-    types: [created]
-
+  push:
+    branches:
+      - main
+      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,4 +31,4 @@ jobs:
       - run: npm ci
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
