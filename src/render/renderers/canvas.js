@@ -4,7 +4,11 @@ import { Vector } from '../../math/index.js'
 import { Renderer } from "./renderer.js"
 
 
-
+/**
+ * Renders images and paths to the 2D context of a canvas.
+ * 
+ * @extends Renderer
+*/
 export class Renderer2D extends Renderer {
   _transforms = []
   _rotation = 0
