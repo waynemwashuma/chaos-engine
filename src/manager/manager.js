@@ -119,7 +119,7 @@ class Manager {
   /**
    * Adds an entity to the manager and initializes it.
    * 
-   * @param {Entity} The entity to add
+   * @param {Entity} object The entity to add
    */
   add(object) {
     if (object.manager) {
@@ -138,7 +138,7 @@ class Manager {
    * as it is for internal use only and may change in the future 
    * 
    * @param {string} n name of the component
-   * @param {object} c An object implementing Component
+   * @param {Component} c An object implementing Component
    */
   addComponent(n, c) {
     if (n === "body") {
@@ -159,7 +159,7 @@ class Manager {
    * There is no need for you to use this method
    * as it is for internal use only and may change in the future 
    * @param { string } n name of the component *
-   * @param { object } c An object implementing Component interface
+   * @param { Component } c An object implementing Component interface
    */
   removeComponent(n, c) {
     if (n === "body") {
@@ -178,7 +178,7 @@ class Manager {
    * Note that this doesn't destroy the entity, only removes it and its components from the manager.
    * To destroy the entity,use `Entity.destroy()` method.
    * 
-   * @param {Entity} The entity to remove
+   * @param {Entity} object The entity to remove
    */
   remove(object) {
     let index = this.objects.indexOf(object)
@@ -406,7 +406,7 @@ class Manager {
    * @param {string[]} tags An array containing the tags to be searched
    * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
    * 
-   * @returns {Array<Entity>} 
+   * @returns {Entity[]} 
    */
   getEntitiesByTags(tags, entities = this.objects, target = []) {
     for (let i = 0; i < entities.length; i++) {

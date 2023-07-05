@@ -21,7 +21,7 @@ class Composite {
   /**
    * List of bodies contained.
    *
-   * @type Body[]
+   * @type Constraint[]
    */
   constraints = []
   /**

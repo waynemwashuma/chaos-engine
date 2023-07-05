@@ -78,7 +78,7 @@ class Circle extends Shape {
    * 
    * @param {Vector} position
    * @param {number} angle
-   * @param {numbe} scale 
+   * @param {number} scale 
    */
   update(position, angle, scale) {
     this.position.copy(position).add(this.offPosition)
