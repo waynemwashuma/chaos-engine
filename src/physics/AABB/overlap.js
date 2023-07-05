@@ -17,10 +17,10 @@ export const Overlaps = {
     )
   },
   /**
-   * Checks if two CircleBounds overlap
+   * Checks if two BoundingCircles overlap
    * 
-   * @param {CircleBound} a
-   * @param {CircleBound} b
+   * @param {BoundingCircle} a
+   * @param {BoundingCircle} b
    */
   boundSpheresColliding(a, b) {
     const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +

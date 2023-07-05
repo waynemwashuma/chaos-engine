@@ -1,6 +1,7 @@
 import { Broadphase } from "./broadphase.js"
-import { naturalizePair }from "../../math/index.js"
-import {Utils} from  "../../utils/index.js"
+import { naturalizePair } from "../../math/index.js"
+import { Utils } from "../../utils/index.js"
+import * as _ from "../../typedef/index.js"
 
 let floor = Math.floor
 class Client {
@@ -43,6 +44,11 @@ class Grid extends Broadphase {
     key[1] = floor(((y - minY) / height) * this.divY)
     return key
   }
+  /**
+   * @inheritdoc
+   * @private
+   * @param {Client} client
+   */
   _insert(client) {
     client.bounds.copy(client.body.bounds)
     let [x1, y1] = this._hash(client.bounds.min.x, client.bounds.min.y)
@@ -60,6 +66,10 @@ class Grid extends Broadphase {
       }
     }
   }
+  /**
+   * @inheritdoc
+   * @param {Body} body
+   */
   insert(body) {
     let client = body.client
     if (client == null) {
@@ -67,7 +77,12 @@ class Grid extends Broadphase {
     }
     this._insert(client)
   }
-  _remove(client){
+  /**
+   * @inheritdoc
+   * @private
+   * @param {Client} client
+   */
+  _remove(client) {
     let [x1, y1] = this._hash(client.bounds.max.x, client.bounds.max.y)
     let [x2, y2] = this._hash(client.bounds.max.x, client.bounds.max.y)
 
@@ -83,15 +98,27 @@ class Grid extends Broadphase {
       }
     }
   }
+  /**
+   * @inheritdoc
+   * @param {Body} body
+   */
   remove(body) {
-    if(body.client === null) return
+    if (body.client === null) return
     this._remove(body.client)
   }
-
+  /**
+   * @inheritdoc
+   * @private
+   * @param {Body} body
+   */
   _update(body) {
     this._remove(body.client)
     this._insert(body.client)
   }
+  /**
+   * @inheritdoc
+   * @param {Body[]} bodies
+   */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
       this._update(bodies[i])
@@ -116,6 +143,11 @@ class Grid extends Broadphase {
       }
     }
   }
+  /**
+   * @inheritdoc
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
+   */
   getCollisionPairs(target) {
     //When bodies are in more than one bin,there is a possibility that they might show up in more than one collision,this remedies that.
     let ids = new Set()
@@ -124,6 +156,7 @@ class Grid extends Broadphase {
         this._naiveCheck(this.bins[i][j], ids, target)
       }
     }
+    return target
   }
 }
 

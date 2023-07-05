@@ -19,21 +19,29 @@ class Behaviour {
   maxForce = 1000
   /**
    * Whether to exert a behaviour's calculated force onto its agent
-  */
+   */
   active = true
-  
+
   /**
    * Sets up a behavior to work on an agent.
+   * 
+   * @param {Agent} agent
    */
-  init() {}
+  init(agent) {}
   /**
    * Calculates the amount of force required to satisfy a behavior.
+   * 
+   * @param {Vector} target
+   * @param {number} inv_dt
+   * @returns Vector the first parameter
    */
-  calc() {}
+  calc(target, inv_dt) {}
   /**
    * Used to debug a behavior visually.
-  */
-  draw() {}
+   * 
+   * @param {Renderer} renderer
+   */
+  draw(ctx) {}
 }
 export {
   Behaviour

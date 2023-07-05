@@ -1,5 +1,5 @@
 import { Broadphase } from "./broadphase.js"
-import "../../typedef/manifold.js"
+import * as _ from "../../typedef/index.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
@@ -12,8 +12,8 @@ class NaiveBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @param {Bounds} bounds Region to check in.
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
   */
   query(bound, target) {
     closeObjects = target || []

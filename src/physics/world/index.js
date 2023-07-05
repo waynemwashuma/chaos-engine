@@ -9,7 +9,7 @@ import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { Settings } from "../settings.js"
 
-import "../../typedef/manifold.js"
+import * as _ from "../../typedef/index.js"
 
 /**
  * Class responsible for updating bodies,constraints and composites.
