@@ -108,8 +108,8 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
 
     }
   }
-  proto.getComponent = function(n) {
-    return this.parent.getComponent(n);
+  proto.get = function(n) {
+    return this.entity.getComponent(n);
   }
   proto.requires = function(...names) {
     for (var i = 0; i < names.length; i++)
@@ -118,7 +118,7 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
   }
 
   proto.query = function(bound, target = []) {
-    return this.parent.query(bound, target)
+    return this.entity.query(bound, target)
   }
   Object.defineProperty(proto, "CHOAS_CLASSNAME", {
     get: function() {
