@@ -81,7 +81,7 @@ export const demos = {
     this.manager.registerSystem("world",this.world)
     let renderer = this.renderer
     renderer.bindTo(selector)
-    renderer.setViewport(innerWidth, innerHeight)
+    renderer.setViewport(innerWidth, innerHeight/1.5)
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
