@@ -1,0 +1,10 @@
+{
+    "include": [
+        "dist/chaos.module.js"
+    ],
+    "compilerOptions": {
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "allowJs": true
+    }
+}
