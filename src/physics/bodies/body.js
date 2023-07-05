@@ -153,7 +153,7 @@ class Body {
     group: 0
   }
   /**
-   * World space bounds of a body
+   * Object containing the body
    * 
    * @type Entity | null
    */
