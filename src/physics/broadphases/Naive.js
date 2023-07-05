@@ -1,5 +1,5 @@
 import { Broadphase } from "./broadphase.js"
-
+import "../../typedef/manifold.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
@@ -27,7 +27,7 @@ class NaiveBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @returns {CollisionPair[]}
   */
   getCollisionPairs(target) {
     target = target || []

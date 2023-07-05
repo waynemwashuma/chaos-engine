@@ -9,6 +9,8 @@ import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { Settings } from "../settings.js"
 
+import "../../typedef/manifold.js"
+
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
@@ -77,7 +79,7 @@ class World {
    * The collision manifolds that have passed broadphase and could be colliding
    * 
    * 
-   * @type Array<BroadManifold>
+   * @type CollisionPair[]
    */
   contactList = []
   /**
