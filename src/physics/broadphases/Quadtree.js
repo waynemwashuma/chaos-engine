@@ -1,6 +1,8 @@
 import { Overlaps } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
 import { Utils }from "../../utils/index.js"
+import "../../typedef/index.js"
+
 class Client {
   constructor(body) {
     this.body = body
