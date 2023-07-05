@@ -187,6 +187,8 @@ class AudioHandler {
   }
   /**
    * Removes an sfx from the handler and disconnects it from its destination.
+   * 
+   * @param {Sfx} sfx
    */
   remove(sfx) {
     let id = this.playing.indexOf(sfx)

@@ -21,6 +21,11 @@ class Clock {
   getRoundedFrameRate(){
     return Math.round(this.getFrameRate())
   }*/
+  /**
+   * Updates the clock
+   * 
+   * @param {number} accumulate
+  */
   update(accumulate){
     this.dt = accumulate - this.lastcall || 0
     //this.framerate = this.getFrameRate()

@@ -1,5 +1,5 @@
 import { Sprite } from "./sprite.js"
-import { Vector }from "../../math/index.js"
+import { Vector } from "../../math/index.js"
 import { Shape } from "../../physics/index.js"
 import { ObjType } from "../../physics/settings.js"
 
@@ -10,6 +10,11 @@ import { ObjType } from "../../physics/settings.js"
  */
 let r = new Vector()
 class BodySprite extends Sprite {
+  /**
+   * @private
+   * @type Body
+   */
+  body = null
   /**
    * Determine whether to draw a representation of the velocity.
    * 
@@ -36,17 +41,22 @@ class BodySprite extends Sprite {
 
     if (this.body.physicsType == ObjType.COMPOSITE) {
       for (var i = 0; i < this.body.bodies.length; i++) {
-        this.drawShapes(this.body.bodies[i], renderer)
+        this._drawShapes(this.body.bodies[i], renderer)
 
       }
     } else {
-      this.drawShapes(this.body, renderer)
+      this._drawShapes(this.body, renderer)
     }
     if (this.drawVelocity == true)
       this._drawVelocity(this.body, renderer)
     if (this.drawBounds == true)
-      this.drawBound(this.body, renderer)
+      this._drawBound(this.body, renderer)
   }
+  /**
+   * @private
+   * @param {Body} body
+   * @param {Renderer} renderer
+   */
   _drawVelocity(body, ctx) {
     ctx.begin()
     ctx.line(
@@ -58,11 +68,16 @@ class BodySprite extends Sprite {
     ctx.stroke("cyan")
     ctx.close()
   }
-  drawBound(body, renderer) {
+  /**
+   * @private
+   * @param {Body} body
+   * @param {Renderer} renderer
+   */
+  _drawBound(body, renderer) {
     renderer.begin()
     if (body.bounds.r) {
       //renderer.circle(body.bounds.pos.x,body.bounds.pos.y, body.bounds.r)
-    
+
       renderer.circle(...body.position, body.bounds.r)
     } else {
       renderer.rect(
@@ -76,7 +91,12 @@ class BodySprite extends Sprite {
     renderer.close()
 
   }
-  drawShapes(body, renderer) {
+  /**
+   * @private
+   * @param {Body} body
+   * @param {Renderer} renderer
+   */
+  _drawShapes(body, renderer) {
     renderer.begin()
     for (var i = 0; i < body.shapes.length; i++) {
       let shape = body.shapes[i]
@@ -96,6 +116,10 @@ class BodySprite extends Sprite {
     renderer.stroke()
     renderer.close()
   }
+  /**
+   * @package
+   * @param {Entity} parent
+   */
   init(parent) {
     this.body = parent.get("body")
     super.init(parent)

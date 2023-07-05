@@ -5,6 +5,11 @@ import * as _ from "../../typedef/index.js"
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
 */
 class NaiveBroadphase extends Broadphase {
+  /**
+   * @private
+   * @type Body[]
+  */
+  bodies = null
   constructor(world) {
     super()
     this.bodies = world.objects

@@ -6,10 +6,23 @@
 
 class Behaviour {
   /**
+   * The position of the agent.
+   * 
+   * @type Vector
+   */
+  position = null
+  /**
+   * The velocity of the agent.
+   * 
+   * @type Vector
+   */
+  velocity = null
+  /**
    * The maximum speed a behaviour will reach when active.
    * 
    * @type number
    */
+
   maxSpeed = 1000
   /**
    * Maximum force a behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
@@ -41,7 +54,7 @@ class Behaviour {
    * 
    * @param {Renderer} renderer
    */
-  draw(ctx) {}
+  draw(renderer) {}
 }
 export {
   Behaviour

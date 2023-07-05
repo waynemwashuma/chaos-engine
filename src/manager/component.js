@@ -10,6 +10,8 @@ import { Utils } from "../utils/index.js"
 class Component {
   /**
    * The entity this component belongs to.
+   * 
+   * @type Entity
   */
   entity = null
 }
