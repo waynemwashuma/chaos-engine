@@ -4228,7 +4228,7 @@ class World {
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints;
     let temp = arr.pop();
-    this.objects[constraint.index] = temp1;
+    this.objects[constraint.index] = temp;
     temp.index = constraint.index;
     constraint.index = -1;
     return constraint
