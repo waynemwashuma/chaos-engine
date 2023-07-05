@@ -1,3 +1,5 @@
+import "../../typedef/manifold.js"
+
 /**
  * This is an abstract class that extended to classes that are used to filter out unnecessary collision checks to boost performance.
  * 
@@ -53,7 +55,7 @@ class Broadphase {
    * Gets all possibly colliding pairs.
    * 
    * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @returns {CollisionPair[]}
   */
   getCollisionPairs(target){}
   

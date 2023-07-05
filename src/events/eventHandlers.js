@@ -1,7 +1,10 @@
+import "../typedef/manifold.js"
+
+
 /**
  * This provides a way to fire off an entity's collision event handler registered to it.
  * 
- * @param {array<{}>} clmds an array of collision manifolds
+ * @param {CollisionPair[]} clmds an array of collision manifolds
 */
 function defaultCollisionHandler(clmds) {
   let a, b
