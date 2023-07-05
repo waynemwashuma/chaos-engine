@@ -15,7 +15,7 @@ import {
 } from "/dist/chaos.module.js"
 
 export function pathfollower(manager) {
-  manager.registerSystem("agent", new AgentManager())
+  
   manager.getSystem("world").gravity = 0
   let renderer = manager.getSystem("renderer")
 
