@@ -1,5 +1,6 @@
 import { Overlaps } from "./overlap.js"
 import { Component } from "../../manager/component.js"
+import "../../typedef/index.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.

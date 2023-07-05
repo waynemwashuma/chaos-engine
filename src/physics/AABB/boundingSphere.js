@@ -1,4 +1,5 @@
 import { Overlaps } from "./overlap.js"
+import "../../typedef/index.js"
 
 /**
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.

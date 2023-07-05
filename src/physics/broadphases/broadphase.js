@@ -1,4 +1,4 @@
-import "../../typedef/manifold.js"
+import "../../typedef/index.js"
 
 /**
  * This is an abstract class that extended to classes that are used to filter out unnecessary collision checks to boost performance.
