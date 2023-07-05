@@ -11,6 +11,7 @@ import {
   Manager,
   Renderer2D,
   World,
+  AgentManager,
   DebugMesh,
   Entity,
   Box,
@@ -79,6 +80,7 @@ export const demos = {
   world:new World(),
   examples:{},
   init: function(selector) {
+    this.manager.registerSystem("agent", new AgentManager())
     this.manager.registerSystem("renderer",this.renderer)
     this.manager.registerSystem("world",this.world)
     let renderer = this.renderer
