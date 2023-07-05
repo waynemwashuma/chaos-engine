@@ -4,6 +4,7 @@ import { stacking } from "./stacking.js"
 import { pyramid } from "./pyramid.js"
 import { random } from "./random.js"
 import { constraint } from "./constraints.js"
+import { pathfollower } from "./pathfollower.js"
 
 import {
   Manager,
@@ -105,6 +106,6 @@ demos.register("car",car)
 demos.register("pyramid",pyramid)
 demos.register("stack",stacking)
 demos.register("constraints",constraint)
-demos.register("random",random)
+demos.register("pathfollower",pathfollower)
 demos.register("random",random)
 demos.register("random",random)
