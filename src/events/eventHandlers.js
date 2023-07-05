@@ -1,4 +1,4 @@
-import "../typedef/manifold.js"
+import * as _ from "../typedef/index.js"
 
 
 /**
@@ -28,7 +28,7 @@ function defaultCollisionHandler(clmds) {
 /**
  * This provides a way to fire off an entity's precollision event handler registered to it
  * 
- * @param {array<{}>} clmds an array of collision manifolds
+ * @param {Manifold[]} clmds an array of collision manifolds
 */
 function defaultPrecollisionHandler(clmds) {
   let a, b

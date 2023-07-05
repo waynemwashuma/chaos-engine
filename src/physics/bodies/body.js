@@ -161,7 +161,7 @@ class Body {
   /**
    * Wotld space bounds of a body.
    * 
-   * @type BoundingBox | BoundingSphere | null
+   * @type BoundingBox | BoundingCircle | null
    */
   bounds = null
   /**

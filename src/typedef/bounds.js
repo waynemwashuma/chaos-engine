@@ -5,3 +5,4 @@ import "./vectorlike.js"
  * @property {Vector_like} max
  * @property {Vector_like} min
  */
+ export {}

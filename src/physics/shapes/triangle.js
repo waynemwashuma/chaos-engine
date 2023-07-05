@@ -14,7 +14,7 @@ class Triangle extends Shape {
    * @param {number} length1 Length of one side.
    * @param {number} length2 Length of a second side.
    * @param {number} angle The angle between the two sides.
-   * @param {vector} offset Positional offset from the body center.
+   * @param {Vector} offset Positional offset from the body center.
    * @param {number} offsetAngle Angular offset from the body center.
    * 
    */

@@ -57,7 +57,7 @@ class Agent {
   /**
    * Adds a behavior to the agent.
    * 
-   * @param {Behavior} behaviour
+   * @param {Behaviour} behaviour
    */
   add(behaviour) {
     this.behaviours.add(behaviour)
@@ -65,7 +65,7 @@ class Agent {
   /**
    * Removes a behavior to the agent.
    * 
-   * @param {Behavior} behaviour
+   * @param {Behaviour} behaviour
    */
   remove(behaviour) {
     this.behaviours.remove(behaviour)

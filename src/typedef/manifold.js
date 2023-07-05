@@ -37,3 +37,4 @@
  * @property {number} indexA
  * @property {number} indexB
  */
+ export {}

@@ -1,5 +1,6 @@
 import { Clock } from '../../utils/clock.js'
 import { Camera } from "../camera.js"
+
 /**
  * This is an abstract class from which different types of renderers are implemented.
  * 
@@ -19,11 +20,11 @@ export class Renderer {
   /**
    * A list of meshes.
    * 
-   * @type Mesh[]
+   * @type Sprite[]
    */
   objects = []
   /**
-   * Ised for monitoring perfomance of the renderer
+   * Used for monitoring perfomance of the renderer
    * 
    */
   perf = {
@@ -35,13 +36,14 @@ export class Renderer {
    * @type {HTMLCanvasElement}
    */
   domElement = null
-  /**@type {CanvasRenderingContext2D | WebGLRenderingContext}*/
+  /**@type {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext}*/
   ctx = null
   camera = null
   /**
-  @param {HTMLCanvasElement} [canvas] element to draw on
+   * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
+   * @param {HTMLCanvasElement} canvas element to draw on
   */
-  constructor(canvas, context) {
+  constructor(canvas,context) {
     this.domElement = canvas
     this.ctx = context
     this.camera = new Camera(this)
@@ -104,18 +106,18 @@ export class Renderer {
   /**
    * Adds a mesh to the renderer.
    * 
-   * @param {Mesh} mesh
+   * @param {Sprite} Sprite
   */
-  add(mesh) {
-    this.objects.push(mesh)
+  add(sprite) {
+    this.objects.push(sprite)
   }
   /**
-   * Removes the given mesh from the renderer.
+   * Removes the given sprite from the renderer.
    * 
-   * @param {Mesh} mesh
+   * @param {Sprite} sprite
   */
-  remove(mesh) {
-    this.objects.splice(this.objects.indexOf(mesh), 1)
+  remove(sprite) {
+    this.objects.splice(this.objects.indexOf(sprite), 1)
   }
   /**
    * Requests fullscreen for the renderer.

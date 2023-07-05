@@ -221,8 +221,8 @@ class Entity {
    * Search an entity's manager for entities in a given bound.
    * 
    * @param {Bounds} bound the region to search entitities in.
-   * @param {array<Entity>} [target=[]] An array to store results in.
-   * @returns {array<Entity>}
+   * @param {Entity[]} [target=[]] An array to store results in.
+   * @returns {Entity[]}
    */
   query(bound, target = []) {
     return this._global.query(bound, target)
