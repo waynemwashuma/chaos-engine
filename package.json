@@ -20,13 +20,15 @@
     "url": "https://github.com/waynemwashuma/chaos-engine.git"
   },
   "scripts": {
-    "vite": "vite --host",
-    "dev": "npm run vite",
-    "build": "rollup --config rollup.config.js",
-    "docs":"jsdoc -c jsdoc.json",
-    "types":"tsc -p tsconfig.json",
-    "test":"echo test done",
-    "full":"npm run test & npm run build & npm run docs"
+    "types": "tsc -p tsconfig.json",
+    "test": "echo test done",
+    "docs": "jsdoc -c jsdoc.json",
+    "dev": "npm run build:alfa",
+    "typedef":"node scripts/typedef.js",
+    "build":"npm build:full",
+    "build:alfa": "rollup --config rollup.config.js & npm run typedef & npm run types",
+    "build:full": "npm run test & npm run build:alfa",
+    "build:prod": "npm run build:full & npm run docs"
   },
   "keywords": [
     "game",
@@ -37,7 +39,7 @@
   "devDependencies": {
     "vite": "^4.3.9",
     "rollup": "^2.79.1",
-    "jsdoc":"4.0.2"
+    "jsdoc": "4.0.2"
   },
   "files": ["dist/*"]
 }
