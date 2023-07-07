@@ -24,30 +24,118 @@ import { Input } from "../inputs/index.js"
  * 
  */
 class Manager {
+  /**
+   * RAF number of current frame.Used for pausing the manager.
+   * 
+   * @private
+   * @type number
+   */
   _rafID = undefined
+  /**
+   * @private
+   * @type {Object<string, function>}
+   */
   _classes = {}
+  /**
+   * 
+   * @private
+   * @type Object<string,Component[]>
+   */
   _componentLists = {}
+  /**
+   * 
+   * @private
+   * @type System[]
+   */
   _systems = []
+  /**
+   * 
+   * @private
+   * @type {{
+     world:World,
+     renderer:Renderer,
+     input:Input,
+     audio:AudioHandler
+   }}
+   */
   _coreSystems = {
     world: null,
     renderer: null,
     input: null,
+    //TODO - cleanup this events prop
     events: null,
     audio: null
   }
+  /**
+   * 
+   * @private
+   * @type boolean
+   */
   _initialized = false
+  /**
+   * Whether or not the manager is playing.
+   * 
+   * @type boolean
+   */
   playing = false
+  /**
+   * 
+   * @private
+   * @type Object<string, number>
+   */
   _systemsMap = {}
+  /**
+   * 
+   * @private
+   * @type Object<string, string>
+   */
   _compMap = {}
+  /**
+   * Master clock for the game
+   * 
+   * @type Clock
+   */
   clock = new Clock()
+  /**
+   * 
+   * @private
+   * @type Entity[]
+   */
   objects = []
+  /**
+   * 
+   * @private
+   * @type number
+   */
   _accumulator = 0
+  /**
+   * Ideal framerate of the manager.Not implemented corrretly.
+   * TODO correct it
+   * 
+   * @type number
+   */
   frameRate = 0
+  /**
+   * 
+   * @ignore.
+   * This is an artifact of me debugging this.
+   * TODO - Should implement a better soluton
+  */
   perf = {
     lastTimestamp: 0,
     total: 0
   }
+  /**
+   * look at Loader for more info.
+   * 
+   * @readonly
+   * @type Loader
+  */
   loader = new Loader()
+  /**
+   * @readonly
+   * @type EventDispatcher
+  */
   events = new EventDispatcher()
   /**
    * @private
