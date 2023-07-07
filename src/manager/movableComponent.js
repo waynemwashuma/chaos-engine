@@ -1,6 +1,10 @@
 import { Component } from "./component.js"
 import { Vector, Angle } from "../math/index.js"
-
+/**
+ * Component to hold requirements for an entity to move.
+ * 
+ * @extends Component
+*/
 class Movable extends Component {
   constructor(x, y, a) {
     super()

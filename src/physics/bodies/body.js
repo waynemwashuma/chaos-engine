@@ -7,6 +7,8 @@ let defaults = new Vector()
 
 /**
  * Holds information needed for collision detection and response.
+ * 
+ * @implements Icomponent
  */
 class Body {
   /**
