@@ -22,11 +22,12 @@
   "scripts": {
     "types": "tsc -p configs/tsconfig.json",
     "test": "echo test done",
+    "rollup":"rollup --config configs/rollup.config.js",
     "docs": "jsdoc -c configs/jsdoc.json",
     "dev": "npm run build:alfa",
     "typedef":"node scripts/typedef.js",
-    "build":"npm build:full",
-    "build:alfa": "rollup --config configs/rollup.config.js & npm run typedef & npm run types",
+    "build":"npm run build:full",
+    "build:alfa": "npm run rollup & npm run typedef & npm run types",
     "build:full": "npm run test & npm run build:alfa",
     "build:prod": "npm run build:full & npm run docs"
   },
