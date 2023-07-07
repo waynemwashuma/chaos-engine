@@ -98,7 +98,7 @@ class Entity {
    * Adds a component into an entity
    * 
    * @param {String} n Name of the component.
-   * @param {Component} c The component to add.
+   * @param {Icomponent} c The component to add.
    * 
    * @returns {this}
    */
@@ -152,7 +152,7 @@ class Entity {
    * Returns the named component.
    * 
    * @param {string} n Name of the component.
-   * @returns {Component | undefined }
+   * @returns {Icomponent | undefined }
    */
   get(n) {
     return this._components[n]
