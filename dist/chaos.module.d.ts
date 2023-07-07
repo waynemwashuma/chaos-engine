@@ -1,3 +1,51 @@
+export type Bounds = {
+    max: Vector_like;
+    min: Vector_like;
+};
+export type CollisionPair = {
+    a: Body;
+    b: Body;
+};
+export type Manifold = {
+    bodyA: Body;
+    bodyB: Body;
+    contactData: ContactManifold;
+    stmp: number;
+    impulse: number;
+    persistent: boolean;
+    ca1: Vector;
+    ca2: Vector;
+    restitution: number;
+    staticFriction: number;
+    kineticFriction: number;
+    velA: Vector;
+    velB: Vector;
+    rotA: number;
+    rotB: number;
+};
+export type ContactManifold = {
+    lastOverlap: number;
+    /**
+     * =-Infinity
+     */
+    overlap: number;
+    /**
+     * =false
+     */
+    done: boolean;
+    axis: Vector;
+    verticesA: Vector[];
+    verticesB: Vector[];
+    vertShapeA: Shape;
+    vertShapeB: Shape;
+    contactNo: number;
+    indexA: number;
+    indexB: number;
+};
+export type Vector_like = {
+    x: number;
+    y: number;
+};
 /**
  * This is a component class used to add AI behavior to an entity.
  *
@@ -5,16 +53,32 @@
  */
 export class Agent implements Component {
     /**
+     * The position of the entity.
+     *
+     * @type Vector
+     */
+    position: Vector;
+    /**
      * The velocity of the entity.
      *
-     * @package
      * @type Vector
      */
     velocity: Vector;
     /**
+     * The acceleration of the entity.
+     *
+     * @type Vector
+     */
+    acceleration: Vector;
+    /**
+     * The orientation of the entity.
+     *
+     * @type Angle
+     */
+    orientation: Angle;
+    /**
      * The rotation of the entity.
      *
-     * @package
      * @type Angle
      */
     rotation: Angle;
@@ -27,23 +91,20 @@ export class Agent implements Component {
     /**
      * Maximum rotation of the agent in radians per second
      * Not yet implemented.
-    */
+     */
     maxTurnRate: number;
     /**
      *
      * @private
      * @type BehaviourManager
-    */
+     */
     private behaviours;
     /**
      * @inheritdoc
-     * @param {parent}
+     * @param {Entity} entity
      */
-    init(entity: any): void;
-    entity: any;
-    position: any;
-    orientation: any;
-    acceleration: any;
+    init(entity: Entity): void;
+    entity: Entity;
     /**
      * Adds a behavior to the agent.
      *
@@ -61,7 +122,11 @@ export class Agent implements Component {
      * @param {number} inv_dt Inverse of delta time i.e frameRate.
      */
     update(inv_dt: number): void;
-    draw(renderer: any): void;
+    Entity: any;
+    /**
+     * @param {Renderer} renderer
+     */
+    draw(renderer: Renderer): void;
 }
 /**
  * A system that manages agent components by updating them.
@@ -87,9 +152,24 @@ export class AgentManager {
     update(dt: number): void;
 }
 export class AgentSprite extends Sprite {
-    constructor();
-    agent: any;
-    render(renderer: any): void;
+    /**
+     *
+     * @private
+     * @type Agent
+     */
+    private agent;
+    /**
+     * @param {Entity} entity
+     */
+    init(entity: Entity): void;
+    /**
+     * @param {Renderer} renderer
+     */
+    draw(renderer: Renderer): void;
+    /**
+     * @param {Renderer} renderer
+     */
+    render(renderer: Renderer): void;
 }
 /**
  * Wrapper class since JavaScript doesn't support references to numbers explicitly.
@@ -146,11 +226,11 @@ export class ArriveBehaviour extends Behaviour {
     constructor(target: Vector);
     /**
      * Radius in which to expect the agent to start slowing down.
+     *
+     * @type number
      */
     radius: number;
     target: Vector;
-    position: any;
-    velocity: Vector;
 }
 /**
  * Manages playing of audio using Web Audio.
@@ -262,8 +342,10 @@ export class AudioHandler {
     unmute(): void;
     /**
      * Removes an sfx from the handler and disconnects it from its destination.
+     *
+     * @param {Sfx} sfx
      */
-    remove(sfx: any): void;
+    remove(sfx: Sfx): void;
 }
 /**
  * A body with a circle shape on it.
@@ -289,6 +371,18 @@ export class BasicMaterial {
  * @abstract
  */
 export class Behaviour {
+    /**
+     * The position of the agent.
+     *
+     * @type Vector
+     */
+    position: Vector;
+    /**
+     * The velocity of the agent.
+     *
+     * @type Vector
+     */
+    velocity: Vector;
     /**
      * The maximum speed a behaviour will reach when active.
      *
@@ -324,26 +418,31 @@ export class Behaviour {
      *
      * @param {Renderer} renderer
      */
-    draw(ctx: any): void;
+    draw(renderer: Renderer): void;
 }
 /**
  * Holds information needed for collision detection and response.
+ *
+ * @implements Component
  */
-export class Body {
+export class Body implements Component {
     /**
      *Body type that dictates a body cannot move nor respond to collisions.
      *
+     * @static
      * @type number*/
     static STATIC: number;
     /**
      * Body type that dictates a body can move but not respond to collisions.
      *
+     * @static
      * @type number
      */
     static KINEMATIC: number;
     /**
      * Body type that dictates a body can move and respond to collisions.
      *
+     * @static
      * @type number
     */
     static DYNAMIC: number;
@@ -501,7 +600,7 @@ export class Body {
      */
     entity: Entity | null;
     /**
-     * Wotld space bounds of a body.
+     * World space bounds of a body.
      *
      * @type BoundingBox | BoundingCircle | null
      */
@@ -631,7 +730,6 @@ export class Body {
      * @type Vector
      */
     get position(): Vector;
-    o: any;
     /**
      * Orientation of a body
      *
@@ -673,15 +771,15 @@ export class Body {
      * Applies a force to a body affecting its direction of travel and rotation.
      *
      *
-     * @param {number} index The force to be applied.
+     * @param {Vector} force The force to be applied.
      * @param {Vector} [arm=Vector] The collision arm.
      */
-    applyForce(force: any, arm?: Vector): void;
+    applyForce(force: Vector, arm?: Vector): void;
     /**
      * Initializes the body to its given.Called by the world or an entity manager.
      *
      * @param {Entity | null} entity
-     * @param {boolean} composited
+     * @param {boolean} [composited=false]
      */
     init(entity: Entity | null, composited?: boolean): void;
     /**
@@ -697,6 +795,11 @@ export class BodySprite extends Sprite {
      */
     constructor(options?: {});
     /**
+     * @private
+     * @type Body
+     */
+    private body;
+    /**
      * Determine whether to draw a representation of the velocity.
      *
      * @type {boolean}
@@ -708,11 +811,58 @@ export class BodySprite extends Sprite {
      * @type {boolean}
      */
     drawBounds: boolean;
-    _drawVelocity(body: any, ctx: any): void;
-    drawBound(body: any, renderer: any): void;
-    drawShapes(body: any, renderer: any): void;
-    body: any;
+    /**
+     * @private
+     * @param {Body} body
+     * @param {Renderer} renderer
+     */
+    private _drawVelocity;
+    /**
+     * @private
+     * @param {Body} body
+     * @param {Renderer} renderer
+     */
+    private _drawBound;
+    /**
+     * @private
+     * @param {Body} body
+     * @param {Renderer} renderer
+     */
+    private _drawShapes;
+    /**
+     * @package
+     * @param {Entity} parent
+     */
+    init(parent: Entity): void;
 }
+/**
+ * Destroys the component.
+ *
+ * @function
+ * @name Component#destroy
+*/
+/**
+ * Initializes a component.
+ *
+ * @function
+ * @name Component#init
+ * @param {Entity} entity
+ */
+/**
+ * Updates a component.Called by the system which manages its type.
+ *
+ * @function
+ * @name Component#update
+ * @param {number} dt
+ */
+/**
+ * Gets a component in the entity containing this entity.
+ *
+ * @function
+ * @name Component#requires
+ * @param {string} ...names
+ * @throws Qhen a named component isnt in the parent entity
+ */
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
@@ -868,14 +1018,6 @@ export class Circle extends Shape {
      * @returns Array<Vector>
      */
     getNormals(shape: Shape, target?: Vector[]): Vector[];
-    /**
-     * @inheritdoc
-     *
-     * @param {Vector} position
-     * @param {number} angle
-     * @param {numbe} scale
-     */
-    update(position: Vector, angle: number, scale: numbe): void;
 }
 export class CircleGeometry {
     constructor(radius: any);
@@ -899,20 +1041,29 @@ export class Clock {
      * @type number
     */
     dt: number;
-    update(accumulate: any): number;
+    /**
+     * Updates the clock
+     *
+     * @param {number} accumulate
+    */
+    update(accumulate: number): number;
     delta: number;
 }
 /**
  * A helper class.
- * Since there are no inerfaces in JavaScript,
+ * Since there are no interfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
  * Use instead Utils.inheritComponent if you have your own hierarchy of classes.
-*/
+ * In typescript,this would be an interface.
+ *
+ * @interface
+ *
+ */
 export class Component {
     /**
-     * The entity this component belongs to.
+     * @type Entity | null
     */
-    entity: any;
+    entity: Entity | null;
 }
 /**
  * Holds a group of related bodies and constraints.
@@ -933,9 +1084,9 @@ export class Composite {
     /**
      * List of bodies contained.
      *
-     * @type Body[]
+     * @type Constraint[]
      */
-    constraints: Body[];
+    constraints: Constraint[];
     /**
      * Used to determine what it is in a world.
      *
@@ -1372,8 +1523,6 @@ export class EvadeBehaviour extends Behaviour {
     */
     radius: number;
     pursuer: Vector;
-    position: any;
-    velocity: Vector;
 }
 /**
  * This class manages all events by a game manager.
@@ -1406,6 +1555,7 @@ export class EventDispatcher {
      */
     add(name: string, handler: Function): void;
 }
+export type Events = string;
 export namespace Events {
     let COLLISION: string;
     let PRECOLLISION: string;
@@ -1481,12 +1631,6 @@ export class Grid extends Broadphase {
      */
     private _update;
     _naiveCheck(arr: any, ids: any, target: any): void;
-    /**
-     * @inheritdoc
-     * @param {Body[]} target Empty array to store results.
-     * @returns {Body[]}
-     */
-    getCollisionPairs(target: Body[]): Body[];
 }
 export class HeightMap extends Body {
     constructor(step: any, heights: any);
@@ -1673,31 +1817,112 @@ export class Manager {
         renderer?: boolean;
         input?: boolean;
     });
-    _rafID: any;
-    _classes: {};
-    _componentLists: {};
-    _systems: any[];
-    _coreSystems: {
-        world: any;
-        renderer: any;
-        input: any;
-        events: any;
-        audio: any;
-    };
-    _initialized: boolean;
+    /**
+     * RAF number of current frame.Used for pausing the manager.
+     *
+     * @private
+     * @type number
+     */
+    private _rafID;
+    /**
+     * @private
+     * @type {Object<string, function>}
+     */
+    private _classes;
+    /**
+     *
+     * @private
+     * @type Object<string,Component[]>
+     */
+    private _componentLists;
+    /**
+     *
+     * @private
+     * @type System[]
+     */
+    private _systems;
+    /**
+     *
+     * @private
+     * @type {{
+       world:World,
+       renderer:Renderer,
+       input:Input,
+       audio:AudioHandler
+     }}
+     */
+    private _coreSystems;
+    /**
+     *
+     * @private
+     * @type boolean
+     */
+    private _initialized;
+    /**
+     * Whether or not the manager is playing.
+     *
+     * @type boolean
+     */
     playing: boolean;
-    _systemsMap: {};
-    _compMap: {};
+    /**
+     *
+     * @private
+     * @type Object<string, number>
+     */
+    private _systemsMap;
+    /**
+     *
+     * @private
+     * @type Object<string, string>
+     */
+    private _compMap;
+    /**
+     * Master clock for the game
+     *
+     * @type Clock
+     */
     clock: Clock;
-    objects: any[];
-    _accumulator: number;
+    /**
+     *
+     * @private
+     * @type Entity[]
+     */
+    private objects;
+    /**
+     *
+     * @private
+     * @type number
+     */
+    private _accumulator;
+    /**
+     * Ideal framerate of the manager.Not implemented corrretly.
+     * TODO correct it
+     *
+     * @type number
+     */
     frameRate: number;
+    /**
+     *
+     * @ignore.
+     * This is an artifact of me debugging this.
+     * TODO - Should implement a better soluton
+    */
     perf: {
         lastTimestamp: number;
         total: number;
     };
-    loader: Loader;
-    events: EventDispatcher;
+    /**
+     * look at Loader for more info.
+     *
+     * @readonly
+     * @type Loader
+    */
+    readonly loader: Loader;
+    /**
+     * @readonly
+     * @type EventDispatcher
+    */
+    readonly events: EventDispatcher;
     /**
      * @private
      */
@@ -1712,9 +1937,9 @@ export class Manager {
     /**
      * Adds an entity to the manager and initializes it.
      *
-     * @param {Entity} The entity to add
+     * @param {Entity} object The entity to add
      */
-    add(object: any): void;
+    add(object: Entity): void;
     /**
      * This adds a component to a componentList
      * if the componentList is there else exits
@@ -1723,9 +1948,9 @@ export class Manager {
      * as it is for internal use only and may change in the future
      *
      * @param {string} n name of the component
-     * @param {object} c An object implementing Component
+     * @param {Component} c An object implementing Component
      */
-    addComponent(n: string, c: object): void;
+    addComponent(n: string, c: Component): void;
     /**
      * This removes a component from a componentList
      * if the componentList is there else exits
@@ -1733,17 +1958,17 @@ export class Manager {
      * There is no need for you to use this method
      * as it is for internal use only and may change in the future
      * @param { string } n name of the component *
-     * @param { object } c An object implementing Component interface
+     * @param { Component } c An object implementing Component interface
      */
-    removeComponent(n: string, c: object): void;
+    removeComponent(n: string, c: Component): void;
     /**
      * Removes an entity from the manager.
      * Note that this doesn't destroy the entity, only removes it and its components from the manager.
      * To destroy the entity,use `Entity.destroy()` method.
      *
-     * @param {Entity} The entity to remove
+     * @param {Entity} object The entity to remove
      */
-    remove(object: any): void;
+    remove(object: Entity): void;
     /**
      * This removes all of the entities and components from the manager
      */
@@ -1787,11 +2012,11 @@ export class Manager {
      * Used to register a system
      *
      * @param {string} n The name for the system
-     * @param {Object} sys The system to be addad
+     * @param {System} sys The system to be addad
      *
      * @param {string} [cn=n] The componentList name that the system will primarily take care of
      */
-    registerSystem(n: string, sys: any, cn?: string): void;
+    registerSystem(n: string, sys: System, cn?: string): void;
     /**
      * Gets the named system
      *
@@ -1854,9 +2079,9 @@ export class Manager {
      * @param {string[]} tags An array containing the tags to be searched
      * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
      *
-     * @returns {Array<Entity>}
+     * @returns {Entity[]}
      */
-    getEntitiesByTags(tags: string[], entities?: Entity[], target?: any[]): Array<Entity>;
+    getEntitiesByTags(tags: string[], entities?: Entity[], target?: any[]): Entity[];
     /**
      * Ignore this,im going to remove it and the rest of cloning utilities.
      * @private
@@ -1952,7 +2177,6 @@ export class Matrix2 {
      * Transforms the given vector.
      *
      * @param {Vector} v
-     * @returns this
      */
     transform(v: Vector): Vector;
     /**
@@ -2067,8 +2291,38 @@ export class Mouse {
     */
     update(): void;
 }
-export class Movable extends Component {
+/**
+ *
+ * @function
+ * @name System#add
+ * @param {Component} component
+*/
+/**
+ *
+ * @function
+ * @name System#remove
+ * @param {Component} component
+*/
+/**
+ *
+ * @function
+ * @name System#init
+ * @param {Manager} manager
+ */
+/**
+ *
+ * @function
+ * @name System#update
+ * @param {number} dt
+ */
+/**
+ * Component to hold requirements for an entity to move.
+ *
+ * @implements Component
+*/
+export class Movable extends Component implements Component {
     constructor(x: any, y: any, a: any);
+    entity: any;
     velocity: Vector;
     rotation: Angle;
     acceleration: Vector;
@@ -2078,7 +2332,24 @@ export class Movable extends Component {
 */
 export class NaiveBroadphase extends Broadphase {
     constructor(world: any);
-    bodies: any;
+    /**
+     * @private
+     * @type Body[]
+    */
+    private bodies;
+    /**
+     * @inheritdoc
+     * @param {Bounds} bounds Region to check in.
+     * @param {Body[]} target Empty array to store results.
+     * @returns {Body[]}
+    */
+    query(bound: any, target: Body[]): Body[];
+    /**
+     * @inheritdoc
+     * @param {array} target Empty array to store results.
+     * @returns {CollisionPair[]}
+    */
+    getCollisionPairs(target: any[]): CollisionPair[];
 }
 export namespace Overlaps {
     /**
@@ -2143,30 +2414,61 @@ export class Particle {
  * This creates a particle system
  * @augments Sprite
  */
-declare class System extends Sprite {
-    /**
-     * @param {number} [initial=1] Number of particles to start with.
-     * @param {number} [max=100] Maximum number of particles.
-     */
-    constructor(initial?: number, max?: number, increment?: number);
-    initial: number;
-    frameIncrease: number;
-    max: number;
-    /**
-     * @protected
-     */
-    protected initParticles(n: any): void;
-    /**
-     * override this to return an object created from your own class extending the particle class
-     *
-     * @protected
-     */
-    protected create(): Particle;
-    /**
-     * @protected
-     */
-    protected behavior(p: any): void;
-}
+declare let System$1: {
+    new (initial?: number, max?: number, increment?: number): {
+        initial: number;
+        frameIncrease: number;
+        max: number;
+        /**
+         * @protected
+         */
+        initParticles(n: any): void;
+        /**
+         * override this to return an object created from your own class extending the particle class
+         *
+         * @protected
+         */
+        create(): Particle;
+        /**
+         * @inheritdoc
+         */
+        init(entity: any): void;
+        /**
+         * @protected
+         */
+        behavior(p: any): void;
+        /**
+         * @inheritdoc
+         */
+        render(ctx: any, dt: any): void;
+        /**
+         * @private
+         */
+        _position: Vector;
+        /**
+         * @private
+         */
+        _orientation: Angle;
+        scale: Vector;
+        /**
+         * @private
+         */
+        geometry: any;
+        material: any;
+        parent: any;
+        angle: number;
+        position: Vector;
+        orientation: Angle;
+        /**
+         * Override this function.
+         * The canvas is already transformed to the position and rotation of the sprite.
+         *
+         */
+        draw(render: any): void;
+        entity: any;
+        update(): void;
+    };
+};
 export class Path {
     _points: any[];
     _index: number;
@@ -2214,8 +2516,6 @@ export class PathFollowing extends Behaviour {
      * Removes all points on the path.
     */
     clear(): void;
-    position: any;
-    velocity: Vector;
     /**
      * Adds a point into the path.
      *
@@ -2293,12 +2593,6 @@ declare class Tree extends Broadphase {
      *
      */
     recalculateBounds(bounds: any): void;
-    /**
-     * @inheritdoc
-     * @param {Body[]} target Empty array to store results.
-     * @returns {Body[]}
-     */
-    getCollisionPairs(target: Body[]): Body[];
 }
 export class Rectangle extends Shape {
     /**
@@ -2337,7 +2631,7 @@ export class Renderer {
     /**
      * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
      * @param {HTMLCanvasElement} canvas element to draw on
-    */
+     */
     constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext);
     /**
      * Used to throttle the frame rate.
@@ -2403,31 +2697,45 @@ export class Renderer {
      *
      * @param {string} selector A css selector string that is passed to document.querySelector
      * @param {true} focus whether to shift focus of input to the element pr not
-    */
+     */
     bindTo(selector: string, focus?: true): void;
     /**
      * Adds a mesh to the renderer.
      *
      * @param {Sprite} Sprite
-    */
+     */
     add(sprite: any): void;
     /**
      * Removes the given sprite from the renderer.
      *
      * @param {Sprite} sprite
-    */
+     */
     remove(sprite: Sprite): void;
     /**
      * Requests fullscreen for the renderer.
-    */
+     */
     requestFullScreen(): void;
     /**
      * Sets the width and height of the canvas being rendered to.
      *
      * @param {number} w Width of the canvas.
      * @param {number} h Height of the canvas.
-    */
+     */
     setViewport(w: number, h: number): void;
+    set width(arg: number);
+    /**
+     * Width of the renderer
+     *
+     * @type number
+     */
+    get width(): number;
+    set height(arg: number);
+    /**
+     * Height of the renderer
+     *
+     * @type number
+     */
+    get height(): number;
 }
 /**
  * Renders images and paths to the 2D context of a canvas.
@@ -2479,8 +2787,6 @@ export class SeekBehaviour extends Behaviour {
     */
     radius: number;
     target: any;
-    position: any;
-    velocity: Vector;
 }
 export namespace Session {
     /**
@@ -2686,9 +2992,9 @@ export class SpringConstraint extends Constraint {
  * This is the base class used to render images and paths onto the renderer.
  * Extend it to create your custom behaviour.
  *
- * @class
+ * @implements Component
  */
-export class Sprite {
+export class Sprite implements Component {
     constructor(geometry: any, material: any);
     /**
      * @private
@@ -2764,6 +3070,13 @@ export namespace Storage {
     function clear(): void;
 }
 /**
+ * Updates components assigned to it.
+ *
+ * @interface
+*/
+export class System {
+}
+/**
  * Handles the touch input of an application from a smartphone,tablet or PCs with touchscreens.
  *
  * Realized i need to massively change this to make it work well.
@@ -2793,8 +3106,14 @@ export class Touch {
     onwheel(e: any): void;
     update(): void;
 }
-export class Transform {
+/**
+ * Holds transformation info of an entity
+ *
+ * @implements Component
+*/
+export class Transform implements Component {
     constructor(x: any, y: any, a: any);
+    entity: any;
     position: Vector;
     orientation: Angle;
     init(): void;
@@ -3192,8 +3511,6 @@ export class WanderBehaviour extends Behaviour {
      * How big should the circle in front of the agent be.
     */
     _radius: number;
-    position: any;
-    velocity: Vector;
 }
 /**
  * Renders images and paths to the webgl context of a canvas.
@@ -3605,4 +3922,4 @@ declare class Node {
     traverse(func: any, target: any): any;
     getCollisionPairs(target: any, stack: any): void;
 }
-export { Matrix2 as Matrix, System as ParticleSystemSprite, Tree as QuadTreeBroadphase };
+export { Matrix2 as Matrix, System$1 as ParticleSystemSprite, Tree as QuadTreeBroadphase };
