@@ -1,3 +1,4 @@
+/**@enum {string}*/
 export const Events = {
   COLLISION : "collision",
   PRECOLLISION : "precollision",

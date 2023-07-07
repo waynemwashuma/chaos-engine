@@ -386,8 +386,8 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
    */
   getCollisionPairs(target) {
     this._root.getCollisionPairs(target, [])

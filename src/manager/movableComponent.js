@@ -3,7 +3,7 @@ import { Vector, Angle } from "../math/index.js"
 /**
  * Component to hold requirements for an entity to move.
  * 
- * @extends Component
+ * @implements Component
 */
 class Movable extends Component {
   constructor(x, y, a) {
@@ -11,6 +11,7 @@ class Movable extends Component {
     this.velocity = new Vector(x,y)
     this.rotation = new Angle(a)
     this.acceleration = new Vector()
+    entity = null
   }
 }
 export {

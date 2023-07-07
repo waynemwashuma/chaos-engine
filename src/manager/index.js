@@ -1,5 +1,6 @@
 export * from "./manager.js"
 export * from "./component.js"
+export * from "./system.js"
 export * from "./entity.js"
 export * from "./transformComponent.js"
 export * from "./movableComponent.js"
