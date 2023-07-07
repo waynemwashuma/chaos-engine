@@ -1,7 +1,7 @@
 /**
  * @typedef CollisionPair
  * @property {Body} a
- * @peoperty {Body} b
+ * @property {Body} b
 */
 
 /**
