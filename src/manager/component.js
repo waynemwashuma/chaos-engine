@@ -14,7 +14,6 @@ import { Utils } from "../utils/index.js"
 class Component {
   /**
    * @type Entity | null
-   * @protected
   */
   entity = null
 }
