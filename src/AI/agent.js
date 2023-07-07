@@ -4,7 +4,7 @@ import { BehaviourManager } from "./behaviourManager.js"
 /**
  * This is a component class used to add AI behavior to an entity.
  * 
- * @implements Icomponent
+ * @implements Component
  */
 class Agent {
   /**

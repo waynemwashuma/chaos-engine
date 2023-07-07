@@ -7,7 +7,7 @@ let v = new Vector()
  * This is the base class used to render images and paths onto the renderer.
  * Extend it to create your custom behaviour.
  * 
- * @implements Icomponent
+ * @implements Component
  */
 class Sprite {
   /**

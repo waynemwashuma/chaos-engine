@@ -1,13 +1,15 @@
+/**@enum {number}*/
 export const ShapeType = Object.freeze({
   CIRCLE: 0,
   POLYGON: 1
 })
+/**@enum {number}*/
 export const ObjType = Object.freeze({
   CONSTRAINT: 0,
   BODY: 1,
   COMPOSITE: 2
 })
-
+/**@enum {number}*/
 export const BodyType = Object.freeze({
   DYNAMIC:2,
   KINEMATIC:1,

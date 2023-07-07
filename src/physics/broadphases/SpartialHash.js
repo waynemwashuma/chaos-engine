@@ -145,8 +145,8 @@ class Grid extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
    */
   getCollisionPairs(target) {
     //When bodies are in more than one bin,there is a possibility that they might show up in more than one collision,this remedies that.

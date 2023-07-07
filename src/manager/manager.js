@@ -138,7 +138,7 @@ class Manager {
    * as it is for internal use only and may change in the future 
    * 
    * @param {string} n name of the component
-   * @param {Icomponent} c An object implementing Component
+   * @param {Component} c An object implementing Component
    */
   addComponent(n, c) {
     if (n === "body") {
@@ -283,7 +283,7 @@ class Manager {
    * Used to register a system
    * 
    * @param {string} n The name for the system
-   * @param {Isystem} sys The system to be addad
+   * @param {System} sys The system to be addad
    * 
    * @param {string} [cn=n] The componentList name that the system will primarily take care of
    */
@@ -314,7 +314,7 @@ class Manager {
    * 
    * @param {string} n the name the system was registered with.
    * 
-   * @return {Isystem}
+   * @return {System}
    */
   getSystem(n) {
     if (n in this._coreSystems)
@@ -337,7 +337,7 @@ class Manager {
    * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @param {Icomponent[]} [arr=[]] A reference to the array to store components in.
+   * @param {Component[]} [arr=[]] A reference to the array to store components in.
    */
   setComponentList(n, arr = []) {
     this._componentLists[n] = arr
@@ -346,7 +346,7 @@ class Manager {
    * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @returns {Icomponent[]} An array of components
+   * @returns {Component[]} An array of components
    */
   getComponentList(n) {
     return this._componentList[n]
@@ -449,7 +449,7 @@ class Manager {
    * 
    * @param {string} name The name of componentList this system is taking care of.
    * 
-   * @returns {Isystem}
+   * @returns {System}
    */
   static DefaultSystem(name) {
     let n = name

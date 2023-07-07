@@ -3,17 +3,18 @@ import { Utils } from "../utils/index.js"
 
 /**
  * A helper class.
- * Since there are no inerfaces in JavaScript,
+ * Since there are no interfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
  * Use instead Utils.inheritComponent if you have your own hierarchy of classes.
+ * In typescript,this would be an interface.
  * 
- * @implements Icomponent
-*/
+ * @interface
+ * 
+ */
 class Component {
   /**
-   * The entity this component belongs to.
-   * 
-   * @type Entity
+   * @type Entity | null
+   * @protected
   */
   entity = null
 }
@@ -21,3 +22,31 @@ Utils.inheritComponent(Component)
 export {
   Component
 }
+/**
+ * Destroys the component.
+ * 
+ * @function
+ * @name Component#destroy
+*/
+/**
+ * Initializes a component.
+ * 
+ * @function
+ * @name Component#init
+ * @param {Entity} entity
+ */
+/**
+ * Updates a component.Called by the system which manages its type.
+ * 
+ * @function
+ * @name Component#update
+ * @param {number} dt
+ */
+/**
+ * Gets a component in the entity containing this entity.
+ * 
+ * @function
+ * @name Component#requires
+ * @param {string} ...names
+ * @throws Qhen a named component isnt in the parent entity
+ */
