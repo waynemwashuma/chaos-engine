@@ -42,8 +42,8 @@ export class Renderer {
   /**
    * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
    * @param {HTMLCanvasElement} canvas element to draw on
-  */
-  constructor(canvas,context) {
+   */
+  constructor(canvas, context) {
     this.domElement = canvas
     this.ctx = context
     this.camera = new Camera(this)
@@ -95,7 +95,7 @@ export class Renderer {
    * 
    * @param {string} selector A css selector string that is passed to document.querySelector
    * @param {true} focus whether to shift focus of input to the element pr not
-  */
+   */
   bindTo(selector, focus = true) {
     let element = document.querySelector(selector)
     this.domElement.remove()
@@ -107,7 +107,7 @@ export class Renderer {
    * Adds a mesh to the renderer.
    * 
    * @param {Sprite} Sprite
-  */
+   */
   add(sprite) {
     this.objects.push(sprite)
   }
@@ -115,13 +115,13 @@ export class Renderer {
    * Removes the given sprite from the renderer.
    * 
    * @param {Sprite} sprite
-  */
+   */
   remove(sprite) {
     this.objects.splice(this.objects.indexOf(sprite), 1)
   }
   /**
    * Requests fullscreen for the renderer.
-  */
+   */
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()
   }
@@ -130,11 +130,34 @@ export class Renderer {
    * 
    * @param {number} w Width of the canvas.
    * @param {number} h Height of the canvas.
-  */
+   */
   setViewport(w, h) {
+    let canvas = this.domElement
     canvas.style.width = w + "px"
     canvas.style.height = h + "px"
     canvas.width = w
     canvas.height = h
+  }
+  /**
+   * Width of the renderer
+   * 
+   * @type number
+   */
+  get width() {
+    return this.domElement.width
+  }
+  set width(x) {
+    this.domElement.width = x
+  }
+  /**
+   * Height of the renderer
+   * 
+   * @type number
+   */
+  get height() {
+    return this.domElement.height
+  }
+  set height(x) {
+    return this.domElement.height = x
   }
 }
