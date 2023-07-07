@@ -6,6 +6,8 @@ import { Utils } from "../utils/index.js"
  * Since there are no inerfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
  * Use instead Utils.inheritComponent if you have your own hierarchy of classes.
+ * 
+ * @implements Icomponent
 */
 class Component {
   /**

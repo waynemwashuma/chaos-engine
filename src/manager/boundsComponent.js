@@ -4,6 +4,8 @@ import { Component } from "./component.js"
 
 /**
  * Component to hold the bounds of an entity.
+ * 
+ * @extends Component
  */
 class Bound extends Component {
   /**
