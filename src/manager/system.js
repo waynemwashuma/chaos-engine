@@ -34,5 +34,3 @@ Utils.inheritSystem(System)
   * @name System#update
   * @param {number} dt
   */
-  
-  console.log(new System());
