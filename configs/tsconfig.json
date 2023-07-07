@@ -1,6 +1,6 @@
 {
     "include": [
-        "dist/chaos.module.js"
+        "../dist/chaos.module.js"
     ],
     "compilerOptions": {
         "declaration": true,
