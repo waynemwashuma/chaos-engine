@@ -1,6 +1,3 @@
-import * as _ from "../typedef/index.js"
-
-
 /**
  * This provides a way to fire off an entity's collision event handler registered to it.
  * 
