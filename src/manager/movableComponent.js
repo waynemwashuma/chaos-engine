@@ -6,12 +6,12 @@ import { Vector, Angle } from "../math/index.js"
  * @implements Component
 */
 class Movable extends Component {
+  entity = null
   constructor(x, y, a) {
     super()
     this.velocity = new Vector(x,y)
     this.rotation = new Angle(a)
     this.acceleration = new Vector()
-    entity = null
   }
 }
 export {
