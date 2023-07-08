@@ -15,7 +15,7 @@ class NaiveBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Bounds} bounds Region to check in.
+   * @param {Bounds} bound Region to check in.
    * @param {Body[]} target Empty array to store results.
    * @returns {Body[]}
   */
@@ -30,7 +30,7 @@ class NaiveBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {array} target Empty array to store results.
+   * @param {CollisionPair[]} target Empty array to store results.
    * @returns {CollisionPair[]}
   */
   getCollisionPairs(target) {

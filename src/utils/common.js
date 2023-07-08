@@ -1,5 +1,7 @@
 import { Err } from "./error.js"
-
+/**
+ * @template T
+*/
 /**
  * Contains a subset of useful functionality.
  * 
@@ -12,8 +14,8 @@ let tmpID = 0
  * Appends the second array to the first.
  * 
  * @memberof Utils
- * @param {any[]} arr1
- * @param {any[]} arr1
+ * @param {T[]} arr1
+ * @param {T[]} arr2
  */
 Utils.appendArr = function(arr1, arr2) {
   for (var i = 0; i < arr2.length; i++) {
@@ -24,7 +26,7 @@ Utils.appendArr = function(arr1, arr2) {
  * Clears an array
  * 
  * @memberof Utils
- * @param {any[]} arr
+ * @param {T[]} arr
  */
 Utils.clearArr = function(arr) {
   for (var i = arr.length; i > 0; i--) {
@@ -35,7 +37,7 @@ Utils.clearArr = function(arr) {
  * Removes a number of items at the end of an array
  * 
  * @memberof Utils
- * @param {any[]} arr
+ * @param {T[]} arr
  * @param {number} number
  */
 Utils.popArr = function(arr, number) {
@@ -48,7 +50,7 @@ Utils.popArr = function(arr, number) {
  * Removes an element by its index from an array
  * 
  * @memberof Utils
- * @param {any[]} arr
+ * @param {T[]} arr
  * @param {number} index
  */
 Utils.removeElement = function(arr, index) {

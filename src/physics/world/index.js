@@ -30,14 +30,14 @@ class World {
   /**
    * A list of bodies.
    * 
-   * @type Array<Body>
+   * @type Body[]
    * @private
    */
   objects = []
   /**
    * A list of constraints fixed to a static object.
    * 
-   * @type Array<Constraint>
+   * @type Constraint[]
    * @private
    */
   fixedConstraits = []
@@ -70,7 +70,7 @@ class World {
   /**
    * The collision manifolds that have passed narrowphase and verified to be colliding.
    * 
-   * @type Array<Manifold>
+   * @type Manifold[]
    */
   CLMDs = []
   /**
@@ -318,7 +318,7 @@ class World {
   /**
    * 
    * 
-   * @param {Number} dt the time passed between the last call and this call.
+   * @param {Number} delta the time passed between the last call and this call.
    */
   update(delta) {
     this.perf.lastTimestamp = performance.now()

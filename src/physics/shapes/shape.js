@@ -71,7 +71,7 @@ class Shape {
    * 
    * @param {} body
    * @param {} [target=[]] An array where results are stored.
-   * @returns {Array<Vector>}
+   * @returns {Vector[]}
    */
   getNormals(body, target) {
     return this.geometry.getNormals(this.angle, target)

@@ -12,6 +12,8 @@ class Touch {
   /**
    * Checks to see if the position is within the dragbox of the first two touches.
    * Not yet fully implemented
+   * 
+   * @param Vector_like
    */
   inDragBox(pos) {
     if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&

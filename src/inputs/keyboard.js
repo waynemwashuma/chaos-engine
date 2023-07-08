@@ -13,7 +13,6 @@ class Keyboard {
   */
   constructor(eh) {
     this.keys = {}
-    this.activeKeys = []
     this.init(eh)
   }
   /**
