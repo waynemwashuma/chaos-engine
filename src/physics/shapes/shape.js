@@ -31,7 +31,7 @@ class Shape {
   /**
    * The vertices describing the shape.
    * 
-   * @type Array<Vector>
+   * @type Vector[]
   */
   vertices = null
   /**
@@ -42,7 +42,7 @@ class Shape {
   geometry = null
 
   /**
-   * @param {array<vector>} vertices The vertices of the shape in local space coordinates.
+   * @param {Vector[]} vertices The vertices of the shape in local space coordinates.
    * @param {Vector} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
@@ -79,7 +79,7 @@ class Shape {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param {vector} position the world position of the body
+   * @param {Vector} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {number} scale the scale of the body
    */
@@ -91,15 +91,18 @@ class Shape {
   /**
    * Returns the world coordinates of the vertices.
    * 
-   * @returns {Array<Vector>}
+   * @param {Vector} axis
+   * @param {Vector[]}} target 
+   * @returns {Vector[]}
    */
-  getVertices() {
+  getVertices(axis,target) {
     return this.vertices
   }
 
   /**
    * Calculates the inertia of a given shape.
    * 
+   * @virtual
    * @returns {number}
    */
   static calcInertia() {

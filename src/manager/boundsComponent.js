@@ -4,6 +4,8 @@ import { Component } from "./component.js"
 
 /**
  * Component to hold the bounds of an entity.
+ * 
+ * @implements Component
  */
 class Bound extends Component {
   /**
@@ -12,6 +14,7 @@ class Bound extends Component {
    * @type BoundingBox | BoundingCircle
    */
   bounds = new BoundingBox()
+  entity = null
 }
 
 export {

@@ -1,8 +1,8 @@
 import {
-  BodyMesh,
+  BodySprite,
   Box,
   Entity
-} from "/dist/chaos.es.js"
+} from "/dist/chaos.module.js"
 
 
 export function stacking(manager) {
@@ -12,9 +12,9 @@ export function stacking(manager) {
 
 function stack(x, y, w, h, no, spacing, manager) {
   for (var i = 0; i < no; i++) {
-    let entity = new BoxEntity(x, y + (h + spacing) * i)
-      .attach(new Box(w, h))
-      .attach(new BodyMesh())
+    let entity = Entity.Default(x, y + (h + spacing) * i)
+      .attach("body",new Box(w, h))
+      .attach("mesh",new BodySprite())
     manager.add(entity)
   }
 }

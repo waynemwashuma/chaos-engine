@@ -3,15 +3,21 @@ import { bridge } from "./bridge.js"
 import { stacking } from "./stacking.js"
 import { pyramid } from "./pyramid.js"
 import { random } from "./random.js"
+import { constraint } from "./constraints.js"
+import { pathfollower } from "./pathfollower.js"
+import { box } from "./box.js"
 
 import {
   Manager,
+  Renderer2D,
+  World,
+  AgentManager,
   DebugMesh,
   Entity,
   Box,
-  BodyMesh,
+  BodySprite,
   Body
-} from "/dist/chaos.es.js"
+} from "/dist/chaos.module.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
   let l1 = {
@@ -60,7 +66,7 @@ class CanvasBounds extends Entity {
       let bound = Entity.Default(w.pos.x, w.pos.y)
       let body = new Box(w.w, w.h)
       bound.attach("body", body)
-        .attach("mesh", new BodyMesh())
+        .attach("mesh", new BodySprite())
       body.type = Body.STATIC
       this.manager.add(bound)
     })
@@ -69,11 +75,17 @@ class CanvasBounds extends Entity {
 }
 
 export const demos = {
-  manager: Manager.Default(),
+  manager:new Manager(),
+  renderer:new Renderer2D(),
+  world:new World(),
+  examples:{},
   init: function(selector) {
-    let renderer = this.manager.getSystem("renderer")
+    this.manager.registerSystem("agent", new AgentManager())
+    this.manager.registerSystem("renderer",this.renderer)
+    this.manager.registerSystem("world",this.world)
+    let renderer = this.renderer
     renderer.bindTo(selector)
-    renderer.setViewport(innerWidth, innerHeight)
+    renderer.setViewport(innerWidth, innerHeight/1.5)
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
@@ -82,22 +94,21 @@ export const demos = {
   setup: function(name) {
     this.manager.clear()
     this.manager.add(new CanvasBounds())
-    switch (name) {
-      case "random":
-        random(this.manager)
-        break
-      case "bridge":
-        bridge(this.manager)
-        break
-      case "car":
-        car(this.manager)
-        break
-      case "pyramid":
-        pyramid(this.manager)
-        break
-      case "stacking":
-        stacking(this.manager)
-        break
-    }
+    this.examples[name](this.manager)
+  },
+  play(n){
+    this.setup(n)
+  },
+  register(n,f){
+    this.examples[n] = f
   }
 }
+demos.register("random",random)
+demos.register("bridge",bridge)
+demos.register("car",car)
+demos.register("pyramid",pyramid)
+demos.register("stack",stacking)
+demos.register("constraints",constraint)
+demos.register("pathfollower",pathfollower)
+demos.register("box",box)
+demos.register("random",random)

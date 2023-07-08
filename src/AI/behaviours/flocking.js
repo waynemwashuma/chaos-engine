@@ -22,6 +22,7 @@ class Flock{
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @param {number} inv_dt
      * @returns Vector the first parameter
      */
   calc(target){

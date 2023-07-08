@@ -39,10 +39,14 @@ class Constraint {
     return "constraint"
   }
   /**
-   * @ignore
-   * Will refactor this out
+   * Will refactor this out later.
+   * 
+   * @protected
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {number} dt
    */
-  behavior(body1, body2) {
+  behavior(body1, body2,dt) {
     body2.position.copy(body1.position)
   }
   /**
@@ -51,7 +55,7 @@ class Constraint {
    * @param {number} dt
    */
   update(dt) {
-    this.behavior(this.body1, this.body2, dt)
+    this.behavior(this.body1, this.body2,dt)
   }
 }
 export {

@@ -41,44 +41,32 @@ class Broadphase {
 
   /**
    * Renders a representation of a broadphase
-  */
+   */
   draw(ctx) {}
   /**
    * Updates the internals of the broadphase if needed.
    * 
-   * @param {array<Body>} bodies
-  */
+   * @param {Body[]} bodies
+   */
   update(bodies) {}
   /**
    * Gets all possibly colliding pairs.
    * 
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
-  */
-  getCollisionPairs(target){}
-  
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
+   */
+  getCollisionPairs(target) {}
+
   /**
    * Returns bodies that are within the given bound.
    * 
    * @param {Bounds} bounds Region to check in.
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
-  */
-  query(bounds,target){}
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
+   */
+  query(bounds, target) {}
 }
 
 export {
   Broadphase
 }
-
-/**
- * @typedef Bounds
- * @property {Vector_like} max
- * @property {Vector_like} min
- */
-
-/**
- * @typedef Vector_like
- * @property {number} x
- * @property {number} y
- */

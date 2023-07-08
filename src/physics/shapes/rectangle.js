@@ -13,7 +13,7 @@ class Rectangle extends Shape {
   /**
    * @param {number} width
    * @param {number} height
-   * @param {vector} offset Positional offset from the body center.
+   * @param {Vector} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(width, height, offset, offsetAngle) {

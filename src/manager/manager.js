@@ -24,30 +24,118 @@ import { Input } from "../inputs/index.js"
  * 
  */
 class Manager {
+  /**
+   * RAF number of current frame.Used for pausing the manager.
+   * 
+   * @private
+   * @type number
+   */
   _rafID = undefined
+  /**
+   * @private
+   * @type {Object<string, function>}
+   */
   _classes = {}
+  /**
+   * 
+   * @private
+   * @type Object<string,Component[]>
+   */
   _componentLists = {}
+  /**
+   * 
+   * @private
+   * @type System[]
+   */
   _systems = []
+  /**
+   * 
+   * @private
+   * @type {{
+     world:World,
+     renderer:Renderer,
+     input:Input,
+     audio:AudioHandler
+   }}
+   */
   _coreSystems = {
     world: null,
     renderer: null,
     input: null,
+    //TODO - cleanup this events prop
     events: null,
     audio: null
   }
+  /**
+   * 
+   * @private
+   * @type boolean
+   */
   _initialized = false
+  /**
+   * Whether or not the manager is playing.
+   * 
+   * @type boolean
+   */
   playing = false
+  /**
+   * 
+   * @private
+   * @type Object<string, number>
+   */
   _systemsMap = {}
+  /**
+   * 
+   * @private
+   * @type Object<string, string>
+   */
   _compMap = {}
+  /**
+   * Master clock for the game
+   * 
+   * @type Clock
+   */
   clock = new Clock()
+  /**
+   * 
+   * @private
+   * @type Entity[]
+   */
   objects = []
+  /**
+   * 
+   * @private
+   * @type number
+   */
   _accumulator = 0
+  /**
+   * Ideal framerate of the manager.Not implemented corrretly.
+   * TODO correct it
+   * 
+   * @type number
+   */
   frameRate = 0
+  /**
+   * 
+   * @ignore.
+   * This is an artifact of me debugging this.
+   * TODO - Should implement a better soluton
+  */
   perf = {
     lastTimestamp: 0,
     total: 0
   }
+  /**
+   * look at Loader for more info.
+   * 
+   * @readonly
+   * @type Loader
+  */
   loader = new Loader()
+  /**
+   * @readonly
+   * @type EventDispatcher
+  */
   events = new EventDispatcher()
   /**
    * @private
@@ -119,7 +207,7 @@ class Manager {
   /**
    * Adds an entity to the manager and initializes it.
    * 
-   * @param {Entity} The entity to add
+   * @param {Entity} object The entity to add
    */
   add(object) {
     if (object.manager) {
@@ -138,7 +226,7 @@ class Manager {
    * as it is for internal use only and may change in the future 
    * 
    * @param {string} n name of the component
-   * @param {object} c An object implementing Component
+   * @param {Component} c An object implementing Component
    */
   addComponent(n, c) {
     if (n === "body") {
@@ -159,7 +247,7 @@ class Manager {
    * There is no need for you to use this method
    * as it is for internal use only and may change in the future 
    * @param { string } n name of the component *
-   * @param { object } c An object implementing Component interface
+   * @param { Component } c An object implementing Component interface
    */
   removeComponent(n, c) {
     if (n === "body") {
@@ -178,7 +266,7 @@ class Manager {
    * Note that this doesn't destroy the entity, only removes it and its components from the manager.
    * To destroy the entity,use `Entity.destroy()` method.
    * 
-   * @param {Entity} The entity to remove
+   * @param {Entity} object The entity to remove
    */
   remove(object) {
     let index = this.objects.indexOf(object)
@@ -283,7 +371,7 @@ class Manager {
    * Used to register a system
    * 
    * @param {string} n The name for the system
-   * @param {Object} sys The system to be addad
+   * @param {System} sys The system to be addad
    * 
    * @param {string} [cn=n] The componentList name that the system will primarily take care of
    */
@@ -337,16 +425,16 @@ class Manager {
    * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @param {[]} [arr=[]] A reference to the array to store components in.
+   * @param {Component[]} [arr=[]] A reference to the array to store components in.
    */
   setComponentList(n, arr = []) {
     this._componentLists[n] = arr
   }
   /**
-   * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
+   * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @returns {Array} An array of components
+   * @returns {Component[]} An array of components
    */
   getComponentList(n) {
     return this._componentList[n]
@@ -355,7 +443,7 @@ class Manager {
    * Finds the first entity with all the components and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
    * @returns {Entity} 
    */
@@ -371,9 +459,9 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
-   * @returns {Array<Entity>} 
+   * @returns {Entity[]} 
    */
   getEntitiesByComponents(comps, entities = this.objects, target = []) {
     for (let i = 0; i < entities.length; i++) {
@@ -388,7 +476,7 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
    * @returns {Entity} 
    */
@@ -403,10 +491,10 @@ class Manager {
   /**
    * Finds the entities with all the tag and returns them in an array.
    * 
-   * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
+   * @param {string[]} tags An array containing the tags to be searched
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
    * 
-   * @returns {Array<Entity>} 
+   * @returns {Entity[]} 
    */
   getEntitiesByTags(tags, entities = this.objects, target = []) {
     for (let i = 0; i < entities.length; i++) {

@@ -1,5 +1,5 @@
 import { Shape } from "./shape.js"
-import { Vector }from "../../math/index.js"
+import { Vector } from "../../math/index.js"
 
 let _vec1 = new Vector()
 let _vec2 = new Vector()
@@ -16,7 +16,7 @@ class Circle extends Shape {
   radius = 0
   /**
    * @param {number} radius 
-   * @param {vector} offset Positional offset from the body center.
+   * @param {Vector} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius, offset, offsetAngle) {
@@ -34,7 +34,7 @@ class Circle extends Shape {
    * @inheritdoc
    * @param {number} mass
    * @param {number} radius 
-  */
+   */
   static calcInertia(mass, radius) {
     return mass * (radius * radius) / 4
   }
@@ -42,8 +42,8 @@ class Circle extends Shape {
    * @inheritdoc
    * 
    * @param {Vector} axis
-   * @param {Array<Vector>}} target 
-   * @returns {Array<Vector>}
+   * @param {Vector[]}} target 
+   * @returns {Vector[]}
    */
   getVertices(axis, target) {
     target = target || []
@@ -78,7 +78,7 @@ class Circle extends Shape {
    * 
    * @param {Vector} position
    * @param {number} angle
-   * @param {Vector} scale 
+   * @param {number} scale 
    */
   update(position, angle, scale) {
     this.position.copy(position).add(this.offPosition)

@@ -1,6 +1,6 @@
 {
   "name": "chaos-studio",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "a 2D game engine",
   "homepage": "https://github.com/waynemwashuma/chaos-engine",
   "bugs": {
@@ -8,10 +8,11 @@
   },
   "license": "MIT",
   "main": "./dist/chaos.umd.js",
+  "types":"./dist/chaos.module.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/chaos.module.js",
-      "require": "./dist/chaos.umd.js"
+      "import": "/dist/chaos.module.js",
+      "require": "/dist/chaos.umd.js"
     }
   },
   "author": "Wayne Mwashuma",
@@ -20,10 +21,16 @@
     "url": "https://github.com/waynemwashuma/chaos-engine.git"
   },
   "scripts": {
-    "vite": "vite --host",
-    "dev": "npm run vite",
-    "build": "rollup --config rollup.config.js",
-    "docs":"jsdoc -c jsdoc.json"
+    "types": "tsc -p configs/tsconfig.json",
+    "test": "echo test done",
+    "rollup":"rollup --config configs/rollup.config.js",
+    "docs": "jsdoc -c configs/jsdoc.json",
+    "dev": "npm run build:alfa",
+    "typedef":"node scripts/typedef.js",
+    "build":"npm run build:full",
+    "build:alfa": "npm run rollup & npm run typedef & npm run types",
+    "build:full": "npm run test & npm run build:alfa",
+    "build:prod": "npm run build:full & npm run docs"
   },
   "keywords": [
     "game",
@@ -34,7 +41,8 @@
   "devDependencies": {
     "vite": "^4.3.9",
     "rollup": "^2.79.1",
-    "jsdoc":"4.0.2"
+    "jsdoc": "4.0.2",
+    "typescript":"latest"
   },
   "files": ["dist/*"]
 }

@@ -7,6 +7,8 @@ let defaults = new Vector()
 
 /**
  * Holds information needed for collision detection and response.
+ * 
+ * @implements Component
  */
 class Body {
   /**
@@ -153,15 +155,15 @@ class Body {
     group: 0
   }
   /**
-   * World space bounds of a body
+   * Object containing the body
    * 
    * @type Entity | null
    */
   entity = null
   /**
-   * Wotld space bounds of a body.
+   * World space bounds of a body.
    * 
-   * @type BoundingBox | BoundingSphere | null
+   * @type BoundingBox | BoundingCircle | null
    */
   bounds = null
   /**
@@ -352,7 +354,6 @@ class Body {
   set position(x) {
     this._position.copy(x)
   }
-  o
   /**
    * Orientation of a body
    * 
@@ -409,7 +410,7 @@ class Body {
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
    * 
-   * @param {number} index The force to be applied.
+   * @param {Vector} force The force to be applied.
    * @param {Vector} [arm=Vector] The collision arm.
    */
   applyForce(force, arm = Vector.ZERO) {
@@ -421,7 +422,7 @@ class Body {
    * Initializes the body to its given.Called by the world or an entity manager.
    * 
    * @param {Entity | null} entity
-   * @param {boolean} composited
+   * @param {boolean} [composited=false]
    */
   init(entity, composited = false) {
     this.entity = entity
@@ -463,17 +464,20 @@ class Body {
   /**
    *Body type that dictates a body cannot move nor respond to collisions.
    * 
+   * @static
    * @type number*/
   static STATIC = ObjType.STATIC
   /**
    * Body type that dictates a body can move but not respond to collisions.
    * 
+   * @static
    * @type number
    */
   static KINEMATIC = ObjType.KINEMATIC
   /**
    * Body type that dictates a body can move and respond to collisions.
    * 
+   * @static
    * @type number
   */
   static DYNAMIC = ObjType.DYNAMIC

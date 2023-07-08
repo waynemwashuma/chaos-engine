@@ -1,4 +1,4 @@
-const pkg = require("./package.json")
+const pkg = require("../package.json")
 pkg.name = "chaos"
 const fs = require("fs")
 const input = "src/index.js";

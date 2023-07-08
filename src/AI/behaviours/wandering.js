@@ -40,6 +40,7 @@ class WanderBehaviour extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @param {number} inv_dt
    * @returns Vector the first parameter
    */
   calc(target, inv_dt) {

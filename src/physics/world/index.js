@@ -77,7 +77,7 @@ class World {
    * The collision manifolds that have passed broadphase and could be colliding
    * 
    * 
-   * @type Array<BroadManifold>
+   * @type CollisionPair[]
    */
   contactList = []
   /**
@@ -422,7 +422,8 @@ class World {
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints
     let temp = arr.pop()
-    this.objects[constraint.index] = temp1
+    if(constraint.index == arr.length) return constraint
+    arr[constraint.index] = temp
     temp.index = constraint.index
     constraint.index = -1
     return constraint

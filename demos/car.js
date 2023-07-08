@@ -1,12 +1,12 @@
 import {
   Vector,
-  SpringConstraint,
+  DistanceConstraint,
   Entity,
   Box,
   Ball,
   Composite,
-  BodyMesh
-} from  "/dist/chaos.es.js"//"/src/index.js"
+  BodySprite
+} from  "/dist/chaos.module.js"//"/src/index.js"
 
 export function car(manager) {
   let world = manager.getSystem("world")
@@ -27,8 +27,10 @@ function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
   let tirebody1 = new Ball(tireSize)
   let tirebody2 = new Ball(tireSize)
   let carbody = new Box(100, 50)
-  let constraint1 = new SpringConstraint(carbody, tirebody1, { x: 30, y: 25 })
-  let constraint2 = new SpringConstraint(carbody, tirebody2, { x: -30, y: 25 })
+  let an1 = carbody.setAnchor(new Vector(30,25))
+  let an2 = carbody.setAnchor(new Vector(-30,25))
+  let constraint1 = new DistanceConstraint(carbody, tirebody1,carbody.getAnchor(an1))
+  let constraint2 = new DistanceConstraint(carbody, tirebody2,carbody.getAnchor(an2))
   let carCompositeBody = new Composite()
 
   carCompositeBody.add(tirebody1)
@@ -38,7 +40,7 @@ function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
   carCompositeBody.add(constraint2)
 
   car.attach("body", carCompositeBody)
-    .attach("mesh", new BodyMesh())
+    .attach("mesh", new BodySprite())
 
   carbody.position.set(x, y)
   tirebody1.position.set(x + 30, y + 25)

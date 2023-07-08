@@ -8,16 +8,32 @@ import { BehaviourManager } from "./behaviourManager.js"
  */
 class Agent {
   /**
+   * The position of the entity.
+   * 
+   * @type Vector
+   */
+  position = null
+  /**
    * The velocity of the entity.
    * 
-   * @package
    * @type Vector
    */
   velocity = null
   /**
+   * The acceleration of the entity.
+   * 
+   * @type Vector
+   */
+  acceleration = null
+  /**
+   * The orientation of the entity.
+   * 
+   * @type Angle
+   */
+  orientation = null
+  /**
    * The rotation of the entity.
    * 
-   * @package
    * @type Angle
    */
   rotation = null
@@ -30,17 +46,17 @@ class Agent {
   /**
    * Maximum rotation of the agent in radians per second
    * Not yet implemented.
-  */
+   */
   maxTurnRate = 5
   /**
    * 
    * @private
    * @type BehaviourManager
-  */
+   */
   behaviours = new BehaviourManager()
   /**
    * @inheritdoc
-   * @param {parent}
+   * @param {Entity} entity
    */
   init(entity) {
     this.entity = entity
@@ -57,7 +73,7 @@ class Agent {
   /**
    * Adds a behavior to the agent.
    * 
-   * @param {Behavior} behaviour
+   * @param {Behaviour} behaviour
    */
   add(behaviour) {
     this.behaviours.add(behaviour)
@@ -65,7 +81,7 @@ class Agent {
   /**
    * Removes a behavior to the agent.
    * 
-   * @param {Behavior} behaviour
+   * @param {Behaviour} behaviour
    */
   remove(behaviour) {
     this.behaviours.remove(behaviour)
@@ -77,7 +93,11 @@ class Agent {
   update(inv_dt) {
     this.behaviours.update(inv_dt)
   }
-  draw(renderer){
+  Entity
+  /**
+   * @param {Renderer} renderer
+   */
+  draw(renderer) {
     this.behaviours.draw(renderer)
   }
 }

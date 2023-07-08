@@ -1,6 +1,7 @@
 import { Overlaps } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
 import { Utils }from "../../utils/index.js"
+
 class Client {
   constructor(body) {
     this.body = body
@@ -322,7 +323,7 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {array<Body>} bodies
+   * @param {Body[]} bodies
    */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
@@ -334,8 +335,8 @@ class Tree extends Broadphase {
   /**
    * @inheritdoc
    * @param {Bounds} bounds Region to check in.
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
    */
   query(bounds, target) {
     this._root.query(bounds, target)
@@ -384,8 +385,8 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
    */
   getCollisionPairs(target) {
     this._root.getCollisionPairs(target, [])
@@ -395,16 +396,3 @@ class Tree extends Broadphase {
 export {
   Tree as QuadTreeBroadphase,
 }
-
-
-/**
- * @typedef Bounds
- * @property {Vector_like} max
- * @property {Vector_like} min
- */
-
-/**
- * @typedef Vector_like
- * @property {number} x
- * @property {number} y
- */

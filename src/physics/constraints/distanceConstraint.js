@@ -26,9 +26,13 @@ class DistanceConstraint extends Constraint {
     this.stiffness = 1
   }
   /**
-   * @ignore
+   * @inheritdoc
+   * 
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {number} dt
   */
-  behavior(body1, body2, dt) {
+  behavior(body1, body2,dt) {
     let arm1 = tmp1.copy(this.localA),
       arm2 = tmp2.copy(this.localB),
       pos1 = tmp3.copy(body1.position).add(arm1),

@@ -47,10 +47,10 @@ const Overlaps = {
     )
   },
   /**
-   * Checks if two CircleBounds overlap
+   * Checks if two BoundingCircles overlap
    * 
-   * @param {CircleBound} a
-   * @param {CircleBound} b
+   * @param {BoundingCircle} a
+   * @param {BoundingCircle} b
    */
   boundSpheresColliding(a, b) {
     const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
@@ -85,6 +85,7 @@ const Err = {};
 /**
  * Logs out a warning to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.warn = function(message) {
@@ -94,6 +95,7 @@ Err.warn = function(message) {
 /**
  * Throws a fatal error.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.throw = function(message) {
@@ -103,6 +105,7 @@ Err.throw = function(message) {
 /**
  * Logs out a non fatal error to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.error = function(message) {
@@ -112,6 +115,7 @@ Err.error = function(message) {
 /**
  * Logs out a message to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.log = function(message) {
@@ -120,6 +124,7 @@ Err.log = function(message) {
 /**
  * Logs out a warning once to the console.
  * 
+ * @memberof Err
  * @param {string} message
  */
 Err.warnOnce = function(message) {
@@ -130,6 +135,7 @@ Err.warnOnce = function(message) {
 /**
  * Logs out a message,warning or error to the console according to the supplied log function.
  * 
+ * @memberof Err
  * @param {boolean} test
  * @param {string} message
  * @param {Function} errfunc
@@ -150,8 +156,9 @@ let tmpID = 0;
 /**
  * Appends the second array to the first.
  * 
- * @param {[]} arr1
- * @param {[]} arr1
+ * @memberof Utils
+ * @param {any[]} arr1
+ * @param {any[]} arr1
  */
 Utils.appendArr = function(arr1, arr2) {
   for (var i = 0; i < arr2.length; i++) {
@@ -161,7 +168,8 @@ Utils.appendArr = function(arr1, arr2) {
 /**
  * Clears an array
  * 
- * @param {[]} arr
+ * @memberof Utils
+ * @param {any[]} arr
  */
 Utils.clearArr = function(arr) {
   for (var i = arr.length; i > 0; i--) {
@@ -171,7 +179,8 @@ Utils.clearArr = function(arr) {
 /**
  * Removes a number of items at the end of an array
  * 
- * @param {[]} arr
+ * @memberof Utils
+ * @param {any[]} arr
  * @param {number} number
  */
 Utils.popArr = function(arr, number) {
@@ -183,7 +192,8 @@ Utils.popArr = function(arr, number) {
 /**
  * Removes an element by its index from an array
  * 
- * @param {[]} arr
+ * @memberof Utils
+ * @param {any[]} arr
  * @param {number} index
  */
 Utils.removeElement = function(arr, index) {
@@ -196,6 +206,8 @@ Utils.removeElement = function(arr, index) {
 };
 /**
  * Generates a unique id when called
+ * 
+ * @memberof Utils
  */
 Utils.generateID = function() {
   return (tmpID += 1)
@@ -204,10 +216,11 @@ Utils.generateID = function() {
 /**
  * Mixes the functions required by a component into a class.
  * 
+ * @memberof Utils
  * @param {Object} component the class to add methods to.
- * @param {boolean} overrideInit
- * @param {boolean} overrideUpdate
-*/
+ * @param {boolean} [overrideInit=true]
+ * @param {boolean} [overrideUpdate=true]
+ */
 Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate = true) {
   if (component == void 0 || typeof component !== "function") return
   let proto = component.prototype;
@@ -240,8 +253,8 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
 
     };
   }
-  proto.getComponent = function(n) {
-    return this.parent.getComponent(n);
+  proto.get = function(n) {
+    return this.entity.getComponent(n);
   };
   proto.requires = function(...names) {
     for (var i = 0; i < names.length; i++)
@@ -250,7 +263,7 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
   };
 
   proto.query = function(bound, target = []) {
-    return this.parent.query(bound, target)
+    return this.entity.query(bound, target)
   };
   Object.defineProperty(proto, "CHOAS_CLASSNAME", {
     get: function() {
@@ -319,6 +332,11 @@ class Clock {
   getRoundedFrameRate(){
     return Math.round(this.getFrameRate())
   }*/
+  /**
+   * Updates the clock
+   * 
+   * @param {number} accumulate
+  */
   update(accumulate){
     this.dt = accumulate - this.lastcall || 0;
     //this.framerate = this.getFrameRate()
@@ -330,17 +348,49 @@ class Clock {
 
 /**
  * A helper class.
- * Since there are no inerfaces in JavaScript,
+ * Since there are no interfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
  * Use instead Utils.inheritComponent if you have your own hierarchy of classes.
-*/
+ * In typescript,this would be an interface.
+ * 
+ * @interface
+ * 
+ */
 class Component {
   /**
-   * The entity this component belongs to.
+   * @type Entity | null
   */
   entity = null
 }
 Utils.inheritComponent(Component);
+/**
+ * Destroys the component.
+ * 
+ * @function
+ * @name Component#destroy
+*/
+/**
+ * Initializes a component.
+ * 
+ * @function
+ * @name Component#init
+ * @param {Entity} entity
+ */
+/**
+ * Updates a component.Called by the system which manages its type.
+ * 
+ * @function
+ * @name Component#update
+ * @param {number} dt
+ */
+/**
+ * Gets a component in the entity containing this entity.
+ * 
+ * @function
+ * @name Component#requires
+ * @param {string} ...names
+ * @throws Qhen a named component isnt in the parent entity
+ */
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -1371,7 +1421,6 @@ class Matrix2 {
    * Transforms the given vector.
    * 
    * @param {Vector} v
-   * @returns this
    */
   transform(v) {
     let x = v.x;
@@ -1491,16 +1540,18 @@ class Geometry {
   }
 }
 
+/**@enum {number}*/
 const ShapeType = Object.freeze({
   CIRCLE: 0,
   POLYGON: 1
 });
+/**@enum {number}*/
 const ObjType = Object.freeze({
   CONSTRAINT: 0,
   BODY: 1,
   COMPOSITE: 2
 });
-
+/**@enum {number}*/
 const BodyType = Object.freeze({
   DYNAMIC:2,
   KINEMATIC:1,
@@ -1558,7 +1609,7 @@ class Shape {
   /**
    * The vertices describing the shape.
    * 
-   * @type Array<Vector>
+   * @type Vector[]
   */
   vertices = null
   /**
@@ -1569,7 +1620,7 @@ class Shape {
   geometry = null
 
   /**
-   * @param {array<vector>} vertices The vertices of the shape in local space coordinates.
+   * @param {Vector[]} vertices The vertices of the shape in local space coordinates.
    * @param {Vector} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
@@ -1606,7 +1657,7 @@ class Shape {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param {vector} position the world position of the body
+   * @param {Vector} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {number} scale the scale of the body
    */
@@ -1618,15 +1669,18 @@ class Shape {
   /**
    * Returns the world coordinates of the vertices.
    * 
-   * @returns {Array<Vector>}
+   * @param {Vector} axis
+   * @param {Vector[]}} target 
+   * @returns {Vector[]}
    */
-  getVertices() {
+  getVertices(axis,target) {
     return this.vertices
   }
 
   /**
    * Calculates the inertia of a given shape.
    * 
+   * @virtual
    * @returns {number}
    */
   static calcInertia() {
@@ -1659,7 +1713,7 @@ class Circle extends Shape {
   radius = 0
   /**
    * @param {number} radius 
-   * @param {vector} offset Positional offset from the body center.
+   * @param {Vector} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius, offset, offsetAngle) {
@@ -1677,7 +1731,7 @@ class Circle extends Shape {
    * @inheritdoc
    * @param {number} mass
    * @param {number} radius 
-  */
+   */
   static calcInertia(mass, radius) {
     return mass * (radius * radius) / 4
   }
@@ -1685,8 +1739,8 @@ class Circle extends Shape {
    * @inheritdoc
    * 
    * @param {Vector} axis
-   * @param {Array<Vector>}} target 
-   * @returns {Array<Vector>}
+   * @param {Vector[]}} target 
+   * @returns {Vector[]}
    */
   getVertices(axis, target) {
     target = target || [];
@@ -1721,7 +1775,7 @@ class Circle extends Shape {
    * 
    * @param {Vector} position
    * @param {number} angle
-   * @param {Vector} scale 
+   * @param {number} scale 
    */
   update(position, angle, scale) {
     this.position.copy(position).add(this.offPosition);
@@ -1744,7 +1798,7 @@ class Rectangle extends Shape {
   /**
    * @param {number} width
    * @param {number} height
-   * @param {vector} offset Positional offset from the body center.
+   * @param {Vector} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(width, height, offset, offsetAngle) {
@@ -1785,7 +1839,7 @@ class Triangle extends Shape {
    * @param {number} length1 Length of one side.
    * @param {number} length2 Length of a second side.
    * @param {number} angle The angle between the two sides.
-   * @param {vector} offset Positional offset from the body center.
+   * @param {Vector} offset Positional offset from the body center.
    * @param {number} offsetAngle Angular offset from the body center.
    * 
    */
@@ -1809,10 +1863,10 @@ class Triangle extends Shape {
   }
 }
 
-new Vector();
-
 /**
  * Holds information needed for collision detection and response.
+ * 
+ * @implements Component
  */
 class Body {
   /**
@@ -1959,15 +2013,15 @@ class Body {
     group: 0
   }
   /**
-   * World space bounds of a body
+   * Object containing the body
    * 
    * @type Entity | null
    */
   entity = null
   /**
-   * Wotld space bounds of a body.
+   * World space bounds of a body.
    * 
-   * @type BoundingBox | BoundingSphere | null
+   * @type BoundingBox | BoundingCircle | null
    */
   bounds = null
   /**
@@ -2158,7 +2212,6 @@ class Body {
   set position(x) {
     this._position.copy(x);
   }
-  o
   /**
    * Orientation of a body
    * 
@@ -2215,7 +2268,7 @@ class Body {
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
    * 
-   * @param {number} index The force to be applied.
+   * @param {Vector} force The force to be applied.
    * @param {Vector} [arm=Vector] The collision arm.
    */
   applyForce(force, arm = Vector.ZERO) {
@@ -2227,7 +2280,7 @@ class Body {
    * Initializes the body to its given.Called by the world or an entity manager.
    * 
    * @param {Entity | null} entity
-   * @param {boolean} composited
+   * @param {boolean} [composited=false]
    */
   init(entity, composited = false) {
     this.entity = entity;
@@ -2269,17 +2322,20 @@ class Body {
   /**
    *Body type that dictates a body cannot move nor respond to collisions.
    * 
+   * @static
    * @type number*/
   static STATIC = ObjType.STATIC
   /**
    * Body type that dictates a body can move but not respond to collisions.
    * 
+   * @static
    * @type number
    */
   static KINEMATIC = ObjType.KINEMATIC
   /**
    * Body type that dictates a body can move and respond to collisions.
    * 
+   * @static
    * @type number
   */
   static DYNAMIC = ObjType.DYNAMIC
@@ -2378,7 +2434,7 @@ class Composite {
   /**
    * List of bodies contained.
    *
-   * @type Body[]
+   * @type Constraint[]
    */
   constraints = []
   /**
@@ -2589,10 +2645,14 @@ class Constraint {
     return "constraint"
   }
   /**
-   * @ignore
-   * Will refactor this out
+   * Will refactor this out later.
+   * 
+   * @protected
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {number} dt
    */
-  behavior(body1, body2) {
+  behavior(body1, body2,dt) {
     body2.position.copy(body1.position);
   }
   /**
@@ -2601,7 +2661,7 @@ class Constraint {
    * @param {number} dt
    */
   update(dt) {
-    this.behavior(this.body1, this.body2, dt);
+    this.behavior(this.body1, this.body2,dt);
   }
 }
 
@@ -2610,7 +2670,6 @@ let tmp1$b = new Vector(),
   tmp3$5 = new Vector(),
   tmp4$4 = new Vector(),
   tmp5$3 = new Vector();
-  new Vector();
 
 /**
  * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
@@ -2630,9 +2689,13 @@ class DistanceConstraint extends Constraint {
     this.stiffness = 1;
   }
   /**
-   * @ignore
+   * @inheritdoc
+   * 
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {number} dt
   */
-  behavior(body1, body2, dt) {
+  behavior(body1, body2,dt) {
     let arm1 = tmp1$b.copy(this.localA),
       arm2 = tmp2$8.copy(this.localB),
       pos1 = tmp3$5.copy(body1.position).add(arm1),
@@ -2665,9 +2728,8 @@ let tmp1$a = new Vector(),
   tmp2$7 = new Vector(),
   tmp3$4 = new Vector(),
   tmp4$3 = new Vector(),
-  tmp5$2 = new Vector();
-  new Vector();
-  let zero = new Vector();
+  tmp5$2 = new Vector(),
+  zero = new Vector();
  /**
   * A constraint that acts like a spring between two bodies
  */
@@ -2687,6 +2749,13 @@ class SpringConstraint extends Constraint {
     this.maxDistance = 100;
     this.stiffness = 1;
   }
+    /**
+   * @inheritdoc
+   * 
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {number} dt
+  */
   behavior(body1, body2, dt) {
     let arm1 = tmp1$a.copy(this.localA),
       arm2 = tmp2$7.copy(this.localB),
@@ -2710,8 +2779,6 @@ class SpringConstraint extends Constraint {
       body2.rotation.radian += force.cross(arm2) * -body2.inv_inertia;
   }
 }
-
-new Vector();
 
 let position = new Vector();
 let acceleration = new Vector();
@@ -3195,48 +3262,41 @@ class Broadphase {
 
   /**
    * Renders a representation of a broadphase
-  */
+   */
   draw(ctx) {}
   /**
    * Updates the internals of the broadphase if needed.
    * 
-   * @param {array<Body>} bodies
-  */
+   * @param {Body[]} bodies
+   */
   update(bodies) {}
   /**
    * Gets all possibly colliding pairs.
    * 
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
-  */
-  getCollisionPairs(target){}
-  
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
+   */
+  getCollisionPairs(target) {}
+
   /**
    * Returns bodies that are within the given bound.
    * 
    * @param {Bounds} bounds Region to check in.
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
-  */
-  query(bounds,target){}
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
+   */
+  query(bounds, target) {}
 }
-
-/**
- * @typedef Bounds
- * @property {Vector_like} max
- * @property {Vector_like} min
- */
-
-/**
- * @typedef Vector_like
- * @property {number} x
- * @property {number} y
- */
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
 */
 class NaiveBroadphase extends Broadphase {
+  /**
+   * @private
+   * @type Body[]
+  */
+  bodies = null
   constructor(world) {
     super();
     this.bodies = world.objects;
@@ -3244,8 +3304,8 @@ class NaiveBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @param {Bounds} bounds Region to check in.
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
   */
   query(bound, target) {
     closeObjects = target || [];
@@ -3259,7 +3319,7 @@ class NaiveBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @returns {CollisionPair[]}
   */
   getCollisionPairs(target) {
     target = target || [];
@@ -3286,13 +3346,13 @@ class NaiveBroadphase extends Broadphase {
 
 }
 
-class Client$1 {
+let Client$1 = class Client {
   constructor(body) {
     this.body = body;
     this.bounds = body.bounds.clone();
     this.node = null;
   }
-}
+};
 
 class Node {
   constructor(bounds) {
@@ -3607,7 +3667,7 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {array<Body>} bodies
+   * @param {Body[]} bodies
    */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
@@ -3619,8 +3679,8 @@ class Tree extends Broadphase {
   /**
    * @inheritdoc
    * @param {Bounds} bounds Region to check in.
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @param {Body[]} target Empty array to store results.
+   * @returns {Body[]}
    */
   query(bounds, target) {
     this._root.query(bounds, target);
@@ -3669,26 +3729,13 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {array} target Empty array to store results.
-   * @returns {array<Body>}
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
    */
   getCollisionPairs(target) {
     this._root.getCollisionPairs(target, []);
   }
 }
-
-
-/**
- * @typedef Bounds
- * @property {Vector_like} max
- * @property {Vector_like} min
- */
-
-/**
- * @typedef Vector_like
- * @property {number} x
- * @property {number} y
- */
 
 let floor = Math.floor;
 class Client {
@@ -3731,6 +3778,11 @@ class Grid extends Broadphase {
     key[1] = floor(((y - minY) / height) * this.divY);
     return key
   }
+  /**
+   * @inheritdoc
+   * @private
+   * @param {Client} client
+   */
   _insert(client) {
     client.bounds.copy(client.body.bounds);
     let [x1, y1] = this._hash(client.bounds.min.x, client.bounds.min.y);
@@ -3748,6 +3800,10 @@ class Grid extends Broadphase {
       }
     }
   }
+  /**
+   * @inheritdoc
+   * @param {Body} body
+   */
   insert(body) {
     let client = body.client;
     if (client == null) {
@@ -3755,7 +3811,12 @@ class Grid extends Broadphase {
     }
     this._insert(client);
   }
-  _remove(client){
+  /**
+   * @inheritdoc
+   * @private
+   * @param {Client} client
+   */
+  _remove(client) {
     let [x1, y1] = this._hash(client.bounds.max.x, client.bounds.max.y);
     let [x2, y2] = this._hash(client.bounds.max.x, client.bounds.max.y);
 
@@ -3771,15 +3832,27 @@ class Grid extends Broadphase {
       }
     }
   }
+  /**
+   * @inheritdoc
+   * @param {Body} body
+   */
   remove(body) {
-    if(body.client === null) return
+    if (body.client === null) return
     this._remove(body.client);
   }
-
+  /**
+   * @inheritdoc
+   * @private
+   * @param {Body} body
+   */
   _update(body) {
     this._remove(body.client);
     this._insert(body.client);
   }
+  /**
+   * @inheritdoc
+   * @param {Body[]} bodies
+   */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
       this._update(bodies[i]);
@@ -3804,6 +3877,11 @@ class Grid extends Broadphase {
       }
     }
   }
+  /**
+   * @inheritdoc
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
+   */
   getCollisionPairs(target) {
     //When bodies are in more than one bin,there is a possibility that they might show up in more than one collision,this remedies that.
     let ids = new Set();
@@ -3812,6 +3890,7 @@ class Grid extends Broadphase {
         this._naiveCheck(this.bins[i][j], ids, target);
       }
     }
+    return target
   }
 }
 
@@ -3883,7 +3962,7 @@ class World {
    * The collision manifolds that have passed broadphase and could be colliding
    * 
    * 
-   * @type Array<BroadManifold>
+   * @type CollisionPair[]
    */
   contactList = []
   /**
@@ -4228,7 +4307,8 @@ class World {
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints;
     let temp = arr.pop();
-    this.objects[constraint.index] = temp1;
+    if (constraint.index == arr.length) return constraint
+    arr[constraint.index] = temp;
     temp.index = constraint.index;
     constraint.index = -1;
     return constraint
@@ -4318,47 +4398,101 @@ class Camera {
   }
 }
 
+/**
+ * This is an abstract class from which different types of renderers are implemented.
+ * 
+ * @abstract
+ * @see Renderer2D
+ * @see WebGLRenderer
+ * @see WebGPURenderer
+ */
 class Renderer {
+  /**
+   * Used to throttle the frame rate.
+   * 
+   * @private
+   * @rype number
+   */
   _accumulator = 0
+  /**
+   * A list of meshes.
+   * 
+   * @type Sprite[]
+   */
   objects = []
+  /**
+   * Used for monitoring perfomance of the renderer
+   * 
+   */
   perf = {
     lastTimestamp: 0,
     total: 0
   }
-  /** @type {HTMLCanvasElement}*/
+  /**
+   * @private
+   * @type {HTMLCanvasElement}
+   */
   domElement = null
-  /**@type {CanvasRenderingContext2D | WebGLRenderingContext}*/
+  /**@type {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext}*/
   ctx = null
   camera = null
   /**
-  @param {HTMLCanvasElement} [canvas] element to draw on
-  */
+   * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
+   * @param {HTMLCanvasElement} canvas element to draw on
+   */
   constructor(canvas, context) {
     this.domElement = canvas;
     this.ctx = context;
     this.camera = new Camera(this);
     this.clock = new Clock();
   }
+  /**
+   * Instantiates the renderer.
+   * 
+   * @param {Manager} manager
+   */
   init(manager) {
     manager.setComponentList("mesh", this.objects);
   }
-
+  /**
+   * Clears the canvas on which the renderer draws on.
+   */
   clear() {
 
     throw "Override Renderer.clear()"
   }
+  /**
+   * Updates the objects within the renderer
+   */
   update(dt) {
     throw "Override Renderer.update()"
   }
+  /**
+   * Requests an animation frame.
+   * 
+   * @protected
+   */
   RAF() {
     this._rafID = requestAnimationFrame(this._update);
   }
+  /**
+   * Starts the rendering cycle of a renderer.
+   */
   play() {
     this.RAF();
   }
+  /**
+   * Stops the rendering cycle of a renderer.
+   */
   pause() {
     cancelAnimationFrame(this._rafID);
   }
+  /**
+   * Attaches the renderer to a given html element by its selector.
+   * 
+   * @param {string} selector A css selector string that is passed to document.querySelector
+   * @param {true} focus whether to shift focus of input to the element pr not
+   */
   bindTo(selector, focus = true) {
     let element = document.querySelector(selector);
     this.domElement.remove();
@@ -4366,28 +4500,71 @@ class Renderer {
     this.domElement.style.touchAction = "none";
     element.append(this.domElement);
   }
-  add(mesh) {
-    this.objects.push(mesh);
+  /**
+   * Adds a mesh to the renderer.
+   * 
+   * @param {Sprite} Sprite
+   */
+  add(sprite) {
+    this.objects.push(sprite);
   }
-  remove(mesh) {
-    this.objects.splice(this.objects.indexOf(mesh), 1);
+  /**
+   * Removes the given sprite from the renderer.
+   * 
+   * @param {Sprite} sprite
+   */
+  remove(sprite) {
+    this.objects.splice(this.objects.indexOf(sprite), 1);
   }
+  /**
+   * Requests fullscreen for the renderer.
+   */
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen();
   }
+  /**
+   * Sets the width and height of the canvas being rendered to.
+   * 
+   * @param {number} w Width of the canvas.
+   * @param {number} h Height of the canvas.
+   */
   setViewport(w, h) {
+    let canvas = this.domElement;
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     canvas.width = w;
     canvas.height = h;
   }
+  /**
+   * Width of the renderer
+   * 
+   * @type number
+   */
+  get width() {
+    return this.domElement.width
+  }
+  set width(x) {
+    this.domElement.width = x;
+  }
+  /**
+   * Height of the renderer
+   * 
+   * @type number
+   */
+  get height() {
+    return this.domElement.height
+  }
+  set height(x) {
+    return this.domElement.height = x
+  }
 }
 
+/**
+ * Renders images and paths to the 2D context of a canvas.
+ * 
+ * @extends Renderer
+*/
 class Renderer2D extends Renderer {
-  _transforms = []
-  _rotation = 0
-  _translation = new Vector()
-  _scale = new Vector()
   _fill = "black"
   _stroke = "black"
   frameRate = 1 / 60
@@ -4400,14 +4577,11 @@ class Renderer2D extends Renderer {
     super(canvas,canvas.getContext("2d"));
     
   }
-  init(manager) {
-    manager.setComponentList("mesh", this.objects);
-  }
   push() {
-    this._transforms.push(this.ctx.getTransform());
+    this.ctx.save();
   }
   pop() {
-    this.ctx.setTransform(this._transforms.pop());
+    this.ctx.restore();
 
   }
   reset() {
@@ -4421,7 +4595,6 @@ class Renderer2D extends Renderer {
   }
   rotate(rad) {
     this.ctx.rotate(rad);
-    this._rotation += rad;
   }
   line(x1, y1, x2, y2) {
     this.ctx.moveTo(
@@ -4510,28 +4683,6 @@ class Renderer2D extends Renderer {
       y - this.camera.position.y,
       w, h);
   }
-  get width() {
-    return this.domElement.clientWidth
-  }
-  get height() {
-    return this.domElement.clientHeight
-  }
-  set width(x) {
-    this.domElement.width = x;
-  }
-  set height(x) {
-    this.domElement.height = x;
-  }
-  setViewport(w, h) {
-    this.width = w;
-    this.height = h;
-  }
-  set CSSbackground(x) {
-    this.domElement.style.background = x;
-  }
-  get CSSbackground() {
-    return this.domElement.style.background
-  }
   clear() {
     this.reset();
     let h = this.height,
@@ -4563,28 +4714,7 @@ class Renderer2D extends Renderer {
     this.RAF();
     this._accumulator = 0;
   }
-  RAF() {
-    this._rafID = requestAnimationFrame(this._update);
-  }
-  play() {
-    this.RAF();
-  }
-  pause() {
-    cancelAnimationFrame(this._rafID);
-  }
-  bindTo(selector, focus = true) {
-    let element = document.querySelector(selector);
-    this.domElement.remove();
-    this.domElement.style.backgroundColor = "grey";
-    this.domElement.style.touchAction = "none";
-    element.append(this.domElement);
-  }
-  add(mesh) {
-    this.objects.push(mesh);
-  }
-  remove(mesh) {
-    this.objects.splice(this.objects.indexOf(mesh), 1);
-  }
+  
   addUI(mesh) {
     this.renderLast.push(mesh);
   }
@@ -4595,25 +4725,34 @@ class Renderer2D extends Renderer {
 
 //Dont get too excited yet :)
 
+
+/**
+ * Renders images and paths to the webgpu context of a canvas.
+ * 
+ * @extends Renderer
+*/
 class WebGPURenderer extends Renderer{
   constructor(){
     throw new Error("Dont get too excited yet :)")
   }
 }
 
+/**
+ * Renders images and paths to the webgl context of a canvas.
+ * 
+ * @extends Renderer
+ */
 class WebGLRenderer extends Renderer{
   constructor(){
     throw new Error("Hold your horses there!I haven't implemented this yet!")
   }
 }
 
-new Vector();
-
 /**
  * This is the base class used to render images and paths onto the renderer.
  * Extend it to create your custom behaviour.
  * 
- * @class
+ * @implements Component
  */
 class Sprite {
   /**
@@ -4692,6 +4831,11 @@ Utils.inheritComponent(Sprite);
 let r = new Vector();
 class BodySprite extends Sprite {
   /**
+   * @private
+   * @type Body
+   */
+  body = null
+  /**
    * Determine whether to draw a representation of the velocity.
    * 
    * @type {boolean}
@@ -4717,17 +4861,22 @@ class BodySprite extends Sprite {
 
     if (this.body.physicsType == ObjType.COMPOSITE) {
       for (var i = 0; i < this.body.bodies.length; i++) {
-        this.drawShapes(this.body.bodies[i], renderer);
+        this._drawShapes(this.body.bodies[i], renderer);
 
       }
     } else {
-      this.drawShapes(this.body, renderer);
+      this._drawShapes(this.body, renderer);
     }
     if (this.drawVelocity == true)
       this._drawVelocity(this.body, renderer);
     if (this.drawBounds == true)
-      this.drawBound(this.body, renderer);
+      this._drawBound(this.body, renderer);
   }
+  /**
+   * @private
+   * @param {Body} body
+   * @param {Renderer} renderer
+   */
   _drawVelocity(body, ctx) {
     ctx.begin();
     ctx.line(
@@ -4739,11 +4888,16 @@ class BodySprite extends Sprite {
     ctx.stroke("cyan");
     ctx.close();
   }
-  drawBound(body, renderer) {
+  /**
+   * @private
+   * @param {Body} body
+   * @param {Renderer} renderer
+   */
+  _drawBound(body, renderer) {
     renderer.begin();
     if (body.bounds.r) {
       //renderer.circle(body.bounds.pos.x,body.bounds.pos.y, body.bounds.r)
-    
+
       renderer.circle(...body.position, body.bounds.r);
     } else {
       renderer.rect(
@@ -4757,7 +4911,12 @@ class BodySprite extends Sprite {
     renderer.close();
 
   }
-  drawShapes(body, renderer) {
+  /**
+   * @private
+   * @param {Body} body
+   * @param {Renderer} renderer
+   */
+  _drawShapes(body, renderer) {
     renderer.begin();
     for (var i = 0; i < body.shapes.length; i++) {
       let shape = body.shapes[i];
@@ -4777,6 +4936,10 @@ class BodySprite extends Sprite {
     renderer.stroke();
     renderer.close();
   }
+  /**
+   * @package
+   * @param {Entity} parent
+   */
   init(parent) {
     this.body = parent.get("body");
     super.init(parent);
@@ -4784,25 +4947,36 @@ class BodySprite extends Sprite {
 }
 
 let path = [
-  new Vector(-10,-10),
-  new Vector(-10,10),
-  new Vector(20,0)
+  new Vector(-10, -10),
+  new Vector(-10, 10),
+  new Vector(20, 0)
   ];
 class AgentSprite extends Sprite {
-  constructor() {
-    super();
-    this.agent = null;
-  }
+  /**
+   * 
+   * @private
+   * @type Agent
+   */
+  agent = null
+  /**
+   * @param {Entity} entity
+   */
   init(entity) {
     super.init(entity);
     this.requires("agent");
     this.agent = entity.get("agent");
   }
-  draw(renderer){
-    renderer.vertices(path,true);
+  /**
+   * @param {Renderer} renderer
+   */
+  draw(renderer) {
+    renderer.vertices(path, true);
     renderer.fill("purple");
     renderer.stroke("black");
   }
+  /**
+   * @param {Renderer} renderer
+   */
   render(renderer) {
     this.agent.draw(renderer);
     super.render(renderer);
@@ -5037,7 +5211,7 @@ class Particle {
  * This creates a particle system 
  * @augments Sprite
  */
-class System extends Sprite {
+let System$1 = class System extends Sprite {
   /**
    * @param {number} [initial=1] Number of particles to start with.
    * @param {number} [max=100] Maximum number of particles.
@@ -5103,7 +5277,7 @@ class System extends Sprite {
       this.initParticles(this.frameIncrease);
     }
   }
-}
+};
 
 class Layer{
   speed = 1
@@ -5602,7 +5776,7 @@ class DOMEventHandler {
 /**
  * This provides a way to fire off an entity's collision event handler registered to it.
  * 
- * @param {array<{}>} clmds an array of collision manifolds
+ * @param {CollisionPair[]} clmds an array of collision manifolds
 */
 function defaultCollisionHandler(clmds) {
   let a, b;
@@ -5626,7 +5800,7 @@ function defaultCollisionHandler(clmds) {
 /**
  * This provides a way to fire off an entity's precollision event handler registered to it
  * 
- * @param {array<{}>} clmds an array of collision manifolds
+ * @param {Manifold[]} clmds an array of collision manifolds
 */
 function defaultPrecollisionHandler(clmds) {
   let a, b;
@@ -5647,6 +5821,7 @@ function defaultPrecollisionHandler(clmds) {
   }
 }
 
+/**@enum {string}*/
 const Events = {
   COLLISION : "collision",
   PRECOLLISION : "precollision",
@@ -5985,30 +6160,118 @@ class Input {
  * 
  */
 class Manager {
+  /**
+   * RAF number of current frame.Used for pausing the manager.
+   * 
+   * @private
+   * @type number
+   */
   _rafID = undefined
+  /**
+   * @private
+   * @type {Object<string, function>}
+   */
   _classes = {}
+  /**
+   * 
+   * @private
+   * @type Object<string,Component[]>
+   */
   _componentLists = {}
+  /**
+   * 
+   * @private
+   * @type System[]
+   */
   _systems = []
+  /**
+   * 
+   * @private
+   * @type {{
+     world:World,
+     renderer:Renderer,
+     input:Input,
+     audio:AudioHandler
+   }}
+   */
   _coreSystems = {
     world: null,
     renderer: null,
     input: null,
+    //TODO - cleanup this events prop
     events: null,
     audio: null
   }
+  /**
+   * 
+   * @private
+   * @type boolean
+   */
   _initialized = false
+  /**
+   * Whether or not the manager is playing.
+   * 
+   * @type boolean
+   */
   playing = false
+  /**
+   * 
+   * @private
+   * @type Object<string, number>
+   */
   _systemsMap = {}
+  /**
+   * 
+   * @private
+   * @type Object<string, string>
+   */
   _compMap = {}
+  /**
+   * Master clock for the game
+   * 
+   * @type Clock
+   */
   clock = new Clock()
+  /**
+   * 
+   * @private
+   * @type Entity[]
+   */
   objects = []
+  /**
+   * 
+   * @private
+   * @type number
+   */
   _accumulator = 0
+  /**
+   * Ideal framerate of the manager.Not implemented corrretly.
+   * TODO correct it
+   * 
+   * @type number
+   */
   frameRate = 0
+  /**
+   * 
+   * @ignore.
+   * This is an artifact of me debugging this.
+   * TODO - Should implement a better soluton
+  */
   perf = {
     lastTimestamp: 0,
     total: 0
   }
+  /**
+   * look at Loader for more info.
+   * 
+   * @readonly
+   * @type Loader
+  */
   loader = new Loader()
+  /**
+   * @readonly
+   * @type EventDispatcher
+  */
   events = new EventDispatcher()
   /**
    * @private
@@ -6080,7 +6343,7 @@ class Manager {
   /**
    * Adds an entity to the manager and initializes it.
    * 
-   * @param {Entity} The entity to add
+   * @param {Entity} object The entity to add
    */
   add(object) {
     if (object.manager) {
@@ -6099,7 +6362,7 @@ class Manager {
    * as it is for internal use only and may change in the future 
    * 
    * @param {string} n name of the component
-   * @param {object} c An object implementing Component
+   * @param {Component} c An object implementing Component
    */
   addComponent(n, c) {
     if (n === "body") {
@@ -6120,7 +6383,7 @@ class Manager {
    * There is no need for you to use this method
    * as it is for internal use only and may change in the future 
    * @param { string } n name of the component *
-   * @param { object } c An object implementing Component interface
+   * @param { Component } c An object implementing Component interface
    */
   removeComponent(n, c) {
     if (n === "body") {
@@ -6139,7 +6402,7 @@ class Manager {
    * Note that this doesn't destroy the entity, only removes it and its components from the manager.
    * To destroy the entity,use `Entity.destroy()` method.
    * 
-   * @param {Entity} The entity to remove
+   * @param {Entity} object The entity to remove
    */
   remove(object) {
     let index = this.objects.indexOf(object);
@@ -6244,7 +6507,7 @@ class Manager {
    * Used to register a system
    * 
    * @param {string} n The name for the system
-   * @param {Object} sys The system to be addad
+   * @param {System} sys The system to be addad
    * 
    * @param {string} [cn=n] The componentList name that the system will primarily take care of
    */
@@ -6298,16 +6561,16 @@ class Manager {
    * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @param {[]} [arr=[]] A reference to the array to store components in.
+   * @param {Component[]} [arr=[]] A reference to the array to store components in.
    */
   setComponentList(n, arr = []) {
     this._componentLists[n] = arr;
   }
   /**
-   * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
+   * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
    * 
    * @param {string} n The name of the components to store into the created componentlist
-   * @returns {Array} An array of components
+   * @returns {Component[]} An array of components
    */
   getComponentList(n) {
     return this._componentList[n]
@@ -6316,7 +6579,7 @@ class Manager {
    * Finds the first entity with all the components and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
    * @returns {Entity} 
    */
@@ -6332,9 +6595,9 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
-   * @returns {Array<Entity>} 
+   * @returns {Entity[]} 
    */
   getEntitiesByComponents(comps, entities = this.objects, target = []) {
     for (let i = 0; i < entities.length; i++) {
@@ -6349,7 +6612,7 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * 
    * @returns {Entity} 
    */
@@ -6364,10 +6627,10 @@ class Manager {
   /**
    * Finds the entities with all the tag and returns them in an array.
    * 
-   * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
+   * @param {string[]} tags An array containing the tags to be searched
+   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
    * 
-   * @returns {Array<Entity>} 
+   * @returns {Entity[]} 
    */
   getEntitiesByTags(tags, entities = this.objects, target = []) {
     for (let i = 0; i < entities.length; i++) {
@@ -6436,7 +6699,47 @@ class Manager {
   }
 }
 
+/**
+ * Updates components assigned to it.
+ * 
+ * @interface
+*/
+class System{}
+
+Utils.inheritSystem(System);
+
+/**
+ * 
+ * @function
+ * @name System#add
+ * @param {Component} component
+*/
+/**
+ * 
+ * @function
+ * @name System#remove
+ * @param {Component} component
+*/
+/**
+ * 
+ * @function
+ * @name System#init
+ * @param {Manager} manager
+ */
+ /**
+  * 
+  * @function
+  * @name System#update
+  * @param {number} dt
+  */
+
+/**
+ * Component to hold requirements for an entity to move.
+ * 
+ * @implements Component
+*/
 class Movable extends Component {
+  entity = null
   constructor(x, y, a) {
     super();
     this.velocity = new Vector(x,y);
@@ -6445,7 +6748,13 @@ class Movable extends Component {
   }
 }
 
+/**
+ * Holds transformation info of an entity 
+ * 
+ * @implements Component
+*/
 class Transform {
+  entity = null
   constructor(x,y,a){
     this.position = new Vector(x,y);
     this.orientation = new Angle(a);
@@ -6455,6 +6764,8 @@ class Transform {
 
 /**
  * Component to hold the bounds of an entity.
+ * 
+ * @implements Component
  */
 class Bound extends Component {
   /**
@@ -6463,6 +6774,7 @@ class Bound extends Component {
    * @type BoundingBox | BoundingCircle
    */
   bounds = new BoundingBox()
+  entity = null
 }
 
 /**
@@ -6564,6 +6876,9 @@ class Entity {
    * @returns {this}
    */
   attach(n, c) {
+    if(c == void 0){
+      console.log(true);
+    }
     this._components[n] = c;
     if (this.manager) {
       c.init(this);
@@ -6682,8 +6997,8 @@ class Entity {
    * Search an entity's manager for entities in a given bound.
    * 
    * @param {Bounds} bound the region to search entitities in.
-   * @param {array<Entity>} [target=[]] An array to store results in.
-   * @returns {array<Entity>}
+   * @param {Entity[]} [target=[]] An array to store results in.
+   * @returns {Entity[]}
    */
   query(bound, target = []) {
     return this._global.query(bound, target)
@@ -6994,6 +7309,8 @@ class AudioHandler {
   }
   /**
    * Removes an sfx from the handler and disconnects it from its destination.
+   * 
+   * @param {Sfx} sfx
    */
   remove(sfx) {
     let id = this.playing.indexOf(sfx);
@@ -7114,16 +7431,32 @@ class BehaviourManager {
  */
 class Agent {
   /**
+   * The position of the entity.
+   * 
+   * @type Vector
+   */
+  position = null
+  /**
    * The velocity of the entity.
    * 
-   * @package
    * @type Vector
    */
   velocity = null
   /**
+   * The acceleration of the entity.
+   * 
+   * @type Vector
+   */
+  acceleration = null
+  /**
+   * The orientation of the entity.
+   * 
+   * @type Angle
+   */
+  orientation = null
+  /**
    * The rotation of the entity.
    * 
-   * @package
    * @type Angle
    */
   rotation = null
@@ -7136,17 +7469,17 @@ class Agent {
   /**
    * Maximum rotation of the agent in radians per second
    * Not yet implemented.
-  */
+   */
   maxTurnRate = 5
   /**
    * 
    * @private
    * @type BehaviourManager
-  */
+   */
   behaviours = new BehaviourManager()
   /**
    * @inheritdoc
-   * @param {parent}
+   * @param {Entity} entity
    */
   init(entity) {
     this.entity = entity;
@@ -7163,7 +7496,7 @@ class Agent {
   /**
    * Adds a behavior to the agent.
    * 
-   * @param {Behavior} behaviour
+   * @param {Behaviour} behaviour
    */
   add(behaviour) {
     this.behaviours.add(behaviour);
@@ -7171,7 +7504,7 @@ class Agent {
   /**
    * Removes a behavior to the agent.
    * 
-   * @param {Behavior} behaviour
+   * @param {Behaviour} behaviour
    */
   remove(behaviour) {
     this.behaviours.remove(behaviour);
@@ -7183,7 +7516,11 @@ class Agent {
   update(inv_dt) {
     this.behaviours.update(inv_dt);
   }
-  draw(renderer){
+  Entity
+  /**
+   * @param {Renderer} renderer
+   */
+  draw(renderer) {
     this.behaviours.draw(renderer);
   }
 }
@@ -7197,10 +7534,23 @@ Utils.inheritComponent(Agent);
 
 class Behaviour {
   /**
+   * The position of the agent.
+   * 
+   * @type Vector
+   */
+  position = null
+  /**
+   * The velocity of the agent.
+   * 
+   * @type Vector
+   */
+  velocity = null
+  /**
    * The maximum speed a behaviour will reach when active.
    * 
    * @type number
    */
+
   maxSpeed = 1000
   /**
    * Maximum force a behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
@@ -7210,25 +7560,32 @@ class Behaviour {
   maxForce = 1000
   /**
    * Whether to exert a behaviour's calculated force onto its agent
-  */
+   */
   active = true
-  
+
   /**
    * Sets up a behavior to work on an agent.
+   * 
+   * @param {Agent} agent
    */
-  init() {}
+  init(agent) {}
   /**
    * Calculates the amount of force required to satisfy a behavior.
+   * 
+   * @param {Vector} target
+   * @param {number} inv_dt
+   * @returns Vector the first parameter
    */
-  calc() {}
+  calc(target, inv_dt) {}
   /**
    * Used to debug a behavior visually.
-  */
-  draw() {}
+   * 
+   * @param {Renderer} renderer
+   */
+  draw(renderer) {}
 }
 
 let tmp1$4 = new Vector();
-  new Vector();
 /**
  * Creates a behaviour to evade a certain position.
  * 
@@ -7260,6 +7617,7 @@ class EvadeBehaviour extends Behaviour {
     /**
    * @inheritdoc
    * @param {Vector} target
+   * @param {number} inv_dt
    * @returns Vector the first parameter
    */
   calc(target,inv_dt) {
@@ -7313,6 +7671,7 @@ class WanderBehaviour extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @param {number} inv_dt
    * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
@@ -7354,6 +7713,7 @@ class Pursuit {
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @param {number} inv_dt
      * @returns Vector the first parameter
      */
   calc(target){
@@ -7381,6 +7741,7 @@ class Flock{
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @param {number} inv_dt
      * @returns Vector the first parameter
      */
   calc(target){
@@ -7389,7 +7750,6 @@ class Flock{
 }
 
 let tmp1$2 = new Vector();
-  new Vector();
   
 /**
  * Creates a behaviour to seek out a target and move towards it.
@@ -7419,6 +7779,7 @@ class SeekBehaviour extends Behaviour {
     /**
      * @inheritdoc
      * @param {Vector} target
+     * @param {number} inv_dt
      * @returns Vector the first parameter
      */
   calc(target,inv_dt) {
@@ -7442,6 +7803,8 @@ let tmp1$1 = new Vector(),
 class ArriveBehaviour extends Behaviour {
   /**
    * Radius in which to expect the agent to start slowing down.
+   * 
+   * @type number
    */
   radius = 1000
   /**
@@ -7463,6 +7826,7 @@ class ArriveBehaviour extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @param {number} inv_dt
    * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
@@ -7510,6 +7874,7 @@ class PathFollowing extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @param {number} inv_dt
    * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
@@ -7784,4 +8149,4 @@ const Storage = {
   }
 };
 
-export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, BoundingBox, BoundingCircle, Box, BufferGeometry, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DebugMesh, DistanceConstraint, Entity, Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Grid, HeightMap, ImageSprite, Input, Keyboard, Layer, Line, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, Overlaps, ParallaxBackground, Particle, System as ParticleSystemSprite, Path, PathFollowing, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SeekBehaviour, Session, Sfx, Shape, SpringConstraint, Sprite, StaticImageSprite, Storage, Touch, Transform, Triangle, Utils, Vector, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, clamp, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, exp, lerp, map, naturalizePair, radToDeg, rand, round, sq, sqrt };
+export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, BoundingBox, BoundingCircle, Box, BufferGeometry, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DebugMesh, DistanceConstraint, Entity, Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Grid, HeightMap, ImageSprite, Input, Keyboard, Layer, Line, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, Overlaps, ParallaxBackground, Particle, System$1 as ParticleSystemSprite, Path, PathFollowing, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SeekBehaviour, Session, Sfx, Shape, SpringConstraint, Sprite, StaticImageSprite, Storage, System, Touch, Transform, Triangle, Utils, Vector, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, clamp, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, exp, lerp, map, naturalizePair, radToDeg, rand, round, sq, sqrt };

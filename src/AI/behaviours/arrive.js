@@ -12,6 +12,8 @@ let tmp1 = new Vector(),
 class ArriveBehaviour extends Behaviour {
   /**
    * Radius in which to expect the agent to start slowing down.
+   * 
+   * @type number
    */
   radius = 1000
   /**
@@ -33,6 +35,7 @@ class ArriveBehaviour extends Behaviour {
   /**
    * @inheritdoc
    * @param {Vector} target
+   * @param {number} inv_dt
    * @returns Vector the first parameter
    */
   calc(target, inv_dt) {
