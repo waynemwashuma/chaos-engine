@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "main": "./dist/chaos.umd.js",
-  "types":"./dist/index.d.ts",
+  "types":"./dist/chaos.module.d.ts",
   "exports": {
     ".": {
       "import": "/dist/chaos.module.js",
