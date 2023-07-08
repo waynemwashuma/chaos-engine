@@ -443,11 +443,9 @@ class Manager {
    * Finds the first entity with all the components and returns it.
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
-   * 
    * @returns {Entity} 
    */
-  getEntityByComponents(comps, entities = this.objects) {
+  getEntityByComponents(comps) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < comps.length; j++) {
         if (!entities[i].has(comps[j])) continue
@@ -476,11 +474,9 @@ class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {Array<String>} tags An array containing the tags to be searched
-   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
-   * 
    * @returns {Entity} 
    */
-  getEntityByTags(tags, entities = this.objects) {
+  getEntityByTags(tags) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < tags.length; j++) {
         if (!entities[i].hasTag(tags[j])) continue

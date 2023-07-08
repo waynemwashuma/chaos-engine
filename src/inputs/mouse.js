@@ -33,6 +33,14 @@ class Mouse {
    * @type Vector_like
    */
   position = { x: 0, y: 0 }
+    /**
+
+   * Position of the mouse in last frame.
+
+   * 
+   * @type Vector_like
+   */
+   lastPosition = { x: 0, y: 0 }
   /**
    * If the left mouse button is pressed or not.
    * 
@@ -49,12 +57,6 @@ class Mouse {
    * @param {DOMEventHandler} eh
    */
   constructor(eh) {
-    this.dragging = false
-    this.dragLastPosition = {}
-    this.delta = { x: 0, y: 0 }
-    this.position = { x: 0, y: 0 }
-    this.lastPosition = { x: 0, y: 0 }
-
     this.init(eh)
   }
   /**

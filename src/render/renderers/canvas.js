@@ -10,8 +10,6 @@ import { Renderer } from "./renderer.js"
  * @extends Renderer
 */
 export class Renderer2D extends Renderer {
-  _fill = "black"
-  _stroke = "black"
   frameRate = 1 / 60
   renderLast = []
   /**

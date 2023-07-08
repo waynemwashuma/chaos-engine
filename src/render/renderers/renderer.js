@@ -11,6 +11,10 @@ import { Camera } from "../camera.js"
  */
 export class Renderer {
   /**
+   * @type number
+  */
+  _rafID = 0
+  /**
    * Used to throttle the frame rate.
    * 
    * @private
@@ -38,6 +42,9 @@ export class Renderer {
   domElement = null
   /**@type {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext}*/
   ctx = null
+  /**
+   * @type {Camera}
+   */
   camera = null
   /**
    * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
@@ -65,7 +72,9 @@ export class Renderer {
     throw "Override Renderer.clear()"
   }
   /**
-   * Updates the objects within the renderer
+   * Updates the objects within the renderer.
+   * 
+   * @param {number} dt
    */
   update(dt) {
     throw "Override Renderer.update()"
