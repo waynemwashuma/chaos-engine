@@ -5,6 +5,8 @@
     "compilerOptions": {
         "declaration": true,
         "emitDeclarationOnly": true,
-        "allowJs": true
+        "allowJs": true,
+        "outFile":"../dist/index.d.ts",
+        "removeComments":true
     }
 }
