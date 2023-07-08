@@ -1,4 +1,4 @@
-declare module "chaos.module" {
+
     export type Bounds = {
         max: Vector_like;
         min: Vector_like;
@@ -1063,4 +1063,3 @@ declare module "chaos.module" {
         follow(position: any): void;
     }
     export { Matrix2 as Matrix, System$1 as ParticleSystemSprite, Tree as QuadTreeBroadphase };
-}
