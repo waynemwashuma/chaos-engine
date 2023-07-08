@@ -269,10 +269,9 @@ class Node {
     return false
   }
   /**
-   * @template T
    * @param {(node:Node)=>boolean} func
-   * @param {T[]} target
-   *  @returns T[]
+   * @param {[]} target
+   *  @returns []
    */
   traverse(func, target) {
     if (!this.isLeafNode()) {
@@ -288,8 +287,8 @@ class Node {
     }
   }
   /**
-   * @param {CollisionPairs[]} target
-   * @param {CollisionPairs[]} stack
+   * @param {CollisionPair[]} target
+   * @param {CollisionPair[]} stack
    */
   getCollisionPairs(target, stack) {
     if (!this.hasObjects) return
@@ -420,7 +419,7 @@ class Tree extends Broadphase {
   /**
    * A depth first search of the quadtree that applies the given function to its nodes.
    * 
-   * @param {(node:Node)=>any} func The function that checks every node unless it returns true.
+   * @param {Function} func The function that checks every node unless it returns true.
    * 
    */
   traverse(func) {
