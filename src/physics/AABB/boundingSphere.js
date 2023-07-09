@@ -24,8 +24,6 @@ export class BoundingCircle {
   /**
    * 
    * Checks to see if this intersects with another bounding box
-   * @param { BoundingBox} bound the bound to check  intersection with
-   * 
    * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {

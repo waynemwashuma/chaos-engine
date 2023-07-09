@@ -96,27 +96,28 @@ class Composite {
       this.bodies[i].velocity.copy(x)
     }
   }
-    /**
-     * Orientation of a body in degrees.
-     * 
-     * @type number
-     */
-  set angle(angle) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].angle = x
-    }
-  }
+  /**
+   * Orientation of a body in degrees.
+   * 
+   * @type number
+   */
   get angle() {
     let angle = 0
     for (var i = 0; i < this.bodies.length; i++) {
       angle += this.bodies[i].angle
     }
   }
-    /**
-     * Mass of a body.
-     * 
-     * @type number
-     */
+  set angle(angle) {
+    for (var i = 0; i < this.bodies.length; i++) {
+      this.bodies[i].angle = x
+    }
+  }
+
+  /**
+   * Mass of a body.
+   * 
+   * @type number
+   */
   set mass(x) {
     for (var i = 0; i < this.bodies.length; i++) {
       this.bodies[i].mass = x
@@ -129,11 +130,11 @@ class Composite {
     }
     return mass
   }
-    /**
-     * Density of a body.
-     * 
-     * @type number
-     */
+  /**
+   * Density of a body.
+   * 
+   * @type number
+   */
   set density(x) {
     let area = 0
     for (var i = 0; i < this.bodies.length; i++) {
@@ -175,17 +176,24 @@ class Composite {
       this.bodies[i].orientation.copy(r)
     }
   }
-    /**
-     * Angular velocity of a body.
-     * 
-     * @type number
-     */
+  get orientation() {
+    let ang = 0
+    for (var i = 0; i < this.bodies.length; i++) {
+      ang += this.bodies[i].orientation
+    }
+    return ang / this.bodies.length
+  }
+  /**
+   * Angular velocity of a body.
+   * 
+   * @type number
+   */
   get angularVelocity() {
     let ang = 0
     for (var i = 0; i < this.bodies.length; i++) {
       ang += this.bodies[i].angularVelocity
     }
-    return ang
+    return ang / this.bodies.length
   }
   set angularVelocity(x) {
     for (var i = 0; i < this.bodies.length; i++) {
