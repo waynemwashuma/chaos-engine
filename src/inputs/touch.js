@@ -34,22 +34,13 @@ class Touch {
   }
   _onMove = (e) => {
     e.preventDefault()
-    this.onmove(e)
   }
   _onDown = (e) => {
     this.touches = e.touches
-    this.ondown(e)
   }
   _onUp = (e) => {
     this.touches = e.touches
-    this.onup(e)
   }
-  onmove(e) {}
-  onclick(e) {}
-  ondown(e) {}
-  onup(e) {}
-  onwheel(e) {}
-  update() {}
 }
 
 export {

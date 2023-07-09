@@ -33,14 +33,14 @@ class Mouse {
    * @type Vector_like
    */
   position = { x: 0, y: 0 }
-    /**
+  /**
 
    * Position of the mouse in last frame.
 
    * 
    * @type Vector_like
    */
-   lastPosition = { x: 0, y: 0 }
+  lastPosition = { x: 0, y: 0 }
   /**
    * If the left mouse button is pressed or not.
    * 
@@ -88,10 +88,15 @@ class Mouse {
     eh.add('mousemove', this._onMove)
     eh.add("contextmenu", this._onContextMenu)
   }
+  /**
+   * @private
+   */
   _onClick = (e) => {
     ++this.clickCount
-    this.onclick(e)
   }
+  /**
+   * @private
+   */
   _onMove = (e) => {
     this.position.x = e.clientX;
 
@@ -107,8 +112,10 @@ class Mouse {
       this.dragLastPosition.x = e.clientX;
       this.dragLastPosition.y = e.clientY
     }
-    this.onmove(e)
   }
+  /**
+   * @private
+   */
   _onDown = (e) => {
     switch (e.button) {
 
@@ -120,8 +127,10 @@ class Mouse {
         this.rightbutton = true
         break;
     }
-    this.ondown(e)
   }
+  /**
+   * @private
+   */
   _onUp = (e) => {
     switch (e.button) {
       case 0:
@@ -131,26 +140,21 @@ class Mouse {
         this.rightbutton = false
         break;
     }
-    this.onup(e)
   }
+  /**
+   * @private
+   */
   _onWheel = (e) => {
-    this.onwheel(e)
   }
+  /**
+   * @private
+   */
   _onContextMenu = (e) => {
     e.preventDefault()
-    this.oncontextmenu(e)
   }
-
-  onmove(e) {}
-  onclick(e) {}
-  ondown(e) {}
-  onup(e) {}
-  onwheel(e) {}
-  oncontextmenu(e) {}
-  
   /**
    * Updates the mouse internals.
-  */
+   */
   update() {
     this.lastPosition = { ...this.position }
   }

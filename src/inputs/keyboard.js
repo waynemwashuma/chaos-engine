@@ -38,18 +38,20 @@ class Keyboard {
     eh.add('keydown',this._onDown)
     eh.add('keyup',this._onUp)
   }
+  /**
+   * @private
+  */
   _onDown = e => {
     let key = this.normalize(e.code)
     this.keys[key] = true
     this.activeKeys.push(key)
-    this.ondown(e)
   }
+    /**
+     * @private
+     */
   _onUp = e =>{
     this.keys[this.normalize(e.code)] = false
-    this.onup(e)
   }
-  ondown(e) {}
-  onup(e) {}
 }
 
 export {
