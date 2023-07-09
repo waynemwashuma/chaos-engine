@@ -63,7 +63,7 @@ class Mouse {
    * Checks to see if the vector provided is
    * within a dragbox if mouse is being dragged with a right or left button down
    * 
-   * @param {Vector} pos an object containing x and y coordinates to be checked
+   * @param {Vector_like} pos an object containing x and y coordinates to be checked
    * @returns {Boolean}
    * 
    */
