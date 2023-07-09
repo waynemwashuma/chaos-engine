@@ -21,7 +21,7 @@ class DistanceConstraint extends Constraint {
   constructor(body1, body2, localA, localB) {
     super(body1, body2,localA,localB)
     this.fixed = !body1.mass || !body2.mass
-    this.dampen = 1
+    this.dampening = 1
     this.maxDistance = 1
     this.stiffness = 1
   }
@@ -44,7 +44,7 @@ class DistanceConstraint extends Constraint {
       return
     }
     let difference = (magnitude - this.maxDistance) / magnitude,
-      force = dist.multiply(difference * this.stiffness * this.dampen),
+      force = dist.multiply(difference * this.stiffness * this.dampening),
       massTotal = body1.inv_mass + body2.inv_mass,
       inertiaTotal = body1.inv_inertia + body2.inv_inertia
     tmp4.copy(force)

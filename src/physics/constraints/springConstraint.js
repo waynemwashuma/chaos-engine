@@ -23,7 +23,7 @@ class SpringConstraint extends Constraint {
     this.localA = new Vector().copy(localA || zero)
     this.localB = new Vector().copy(localB || zero)
     this.fixed = !body1.mass || !body2.mass
-    this.dampen = 1
+    this.dampening = 1
     this.maxDistance = 100
     this.stiffness = 1
   }
@@ -46,7 +46,7 @@ class SpringConstraint extends Constraint {
       return
     }
     let difference = (magnitude - this.maxDistance) / magnitude,
-      force = dist.multiply(difference * this.stiffness * this.dampen),
+      force = dist.multiply(difference * this.stiffness * this.dampeninging),
       massTotal = body1.inv_mass + body2.inv_mass,
       inertiaTotal = body1.inv_inertia + body2.inv_inertia
       force.divide(massTotal + inertiaTotal)
