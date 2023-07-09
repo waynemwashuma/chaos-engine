@@ -7,6 +7,11 @@ let path = [
   new Vector(-10, 10),
   new Vector(20, 0)
   ]
+  /**
+   * Used for debugging agents.
+   * 
+   * @augments Sprite
+  */
 export class AgentSprite extends Sprite {
   /**
    * 

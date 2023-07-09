@@ -46,9 +46,8 @@ export class BoundingBox extends Component {
   /**
    * 
    * Checks to see if this intersects with another bounding box
-   * @param { BoundingBox} bound the bound to check  intersection with
-   * 
-   * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
+   * @param {BoundingCircle | BoundingBox} bound the bound to check  intersection with
+   * @returns boolean
    **/
   intersects(bound) {
     if (bound.r)
@@ -59,7 +58,7 @@ export class BoundingBox extends Component {
    * Calculates the bounds of the body
    * 
    * @param {Body} body Body to calculate max and min from
-   * @@param {Number} padding increases the size of the bounds
+   * @param {Number} padding increases the size of the bounds
    */
   calculateBounds(body, padding = 0) {
     let minX = Number.MAX_SAFE_INTEGER,
