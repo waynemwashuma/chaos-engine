@@ -11,8 +11,9 @@ let tmpID = 0
  * Appends the second array to the first.
  * 
  * @memberof Utils
- * @param {[]} arr1
- * @param {[]} arr2
+ * @template T
+ * @param {T[]} arr1
+ * @param {T[]} arr2
  */
 Utils.appendArr = function(arr1, arr2) {
   for (var i = 0; i < arr2.length; i++) {
@@ -23,7 +24,8 @@ Utils.appendArr = function(arr1, arr2) {
  * Clears an array
  * 
  * @memberof Utils
- * @param {[]} arr
+ * @template T
+ * @param {T[]} arr
  */
 Utils.clearArr = function(arr) {
   for (var i = arr.length; i > 0; i--) {
@@ -34,7 +36,8 @@ Utils.clearArr = function(arr) {
  * Removes a number of items at the end of an array
  * 
  * @memberof Utils
- * @param {[]} arr
+ * @template T
+ * @param {T[]} arr
  * @param {number} number
  */
 Utils.popArr = function(arr, number) {
@@ -47,7 +50,8 @@ Utils.popArr = function(arr, number) {
  * Removes an element by its index from an array
  * 
  * @memberof Utils
- * @param {[]} arr
+ * @template T
+ * @param {T[]} arr
  * @param {number} index
  */
 Utils.removeElement = function(arr, index) {
@@ -71,7 +75,7 @@ Utils.generateID = function() {
  * Mixes the functions required by a component into a class.
  * 
  * @memberof Utils
- * @param {Object} component the class to add methods to.
+ * @param {Function} component the class/constructor function to add methods to.
  * @param {boolean} [overrideInit=true]
  * @param {boolean} [overrideUpdate=true]
  */
