@@ -403,7 +403,7 @@ class Vector {
   /**
    * Generates a new unit Vector in a random direction
    * 
-   * @param {Vector} target
+   * @param {Vector} [target]
    * @returns {Vector}
    */
   static random(target) {
@@ -451,6 +451,7 @@ class Vector {
    * A vector whose x and y values will remain 0.
    * 
    * @static
+   * @readonly
    * @type {Vector}
    */
   static ZERO = Object.freeze(new Vector())

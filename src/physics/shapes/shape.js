@@ -69,8 +69,8 @@ class Shape {
   /**
    * Returns the normals of the faces when rotated.
    * 
-   * @param {} body
-   * @param {} [target=[]] An array where results are stored.
+   * @param {Body} body
+   * @param {Vector[]} [target=[]] An array where results are stored.
    * @returns {Vector[]}
    */
   getNormals(body, target) {
@@ -92,7 +92,7 @@ class Shape {
    * Returns the world coordinates of the vertices.
    * 
    * @param {Vector} axis
-   * @param {Vector[]}} target 
+   * @param {Vector[]} target 
    * @returns {Vector[]}
    */
   getVertices(axis,target) {
