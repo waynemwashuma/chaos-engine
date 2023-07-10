@@ -1,10 +1,27 @@
 import { Sprite } from "./sprite.js"
 
+/**
+ * Used for grouping similar.
+ * 
+ * @augments Sprite
+ */
 export class Group extends Sprite {
+  /**
+   * @private
+   * @type Sprite[]
+   */
+  _children = null
+  /**
+   * @private
+   * @type Group
+   */
+  parent = null
+  /**
+   * @param {Sprite[]} sprites
+   */
   constructor(sprites = []) {
     super()
     this._children = sprites
-    this.parent = null
   }
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
@@ -15,6 +32,8 @@ export class Group extends Sprite {
 
   /**
    * Adds another sprite to this one
+   * 
+   * @param {Sprite | Group} sprite
    */
   add(sprite) {
     this._children.push(sprite)
@@ -22,6 +41,10 @@ export class Group extends Sprite {
   }
   /**
    * Removes another sprite to this one
+   * 
+   * @param {Sprite | Group} sprite
+   * @param {boolean} [recursive=false]
+   * @param {number} [index]
    */
   remove(sprite, recursive = false, index) {
     let inx = index ?? this._children.indexOf(sprite)
@@ -39,9 +62,12 @@ export class Group extends Sprite {
     }
     return false
   }
-  render(render, dt) {
+  /**
+   * @inheritdoc
+   */
+  render(ctx, dt) {
     for (var i = 0; i < this._children.length; i++) {
-      this._children[i].render(render, dt)
+      this._children[i].render(ctx, dt)
     }
   }
 }
