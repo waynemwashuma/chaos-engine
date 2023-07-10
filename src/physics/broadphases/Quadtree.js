@@ -1,6 +1,6 @@
 import { Overlaps } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
-import { Utils }from "../../utils/index.js"
+import { Utils } from "../../utils/index.js"
 
 class Client {
   constructor(body) {
@@ -11,21 +11,45 @@ class Client {
 }
 
 class Node {
+  /**@type Node[]*/
+  children = []
+  /**@type Body[]*/
+  objects = []
+  /**@type Node*/
+  root = null
+  /**@type Node*/
+  parent = null
+  /**@type boolean*/
+  hasObjects = false
+  /**@type number*/
+  index = -1
+  /**@type Tree*/
+  global = null
+  /**@type Vector_like*/
+  dims = null
+  /**@type number*/
+  depth = -1
+  /**@type {{
+    max:Vector_like,
+    min:Vector_like
+  }}*/
+  bounds = null
+  /**
+   * @param {{
+    max:Vector_like,
+    min:Vector_like
+  }} bounds
+  */
   constructor(bounds) {
-    this.children = []
-    this.objects = []
-    this.parent = null
-    this.global = null
-    this.index = -1
-    this.root = null
     this.bounds = bounds
-    this.hasObjects = false
-    this.depth = -1
     this.dims = {
       x: this.bounds.max.x - this.bounds.min.x,
       y: this.bounds.max.y - this.bounds.min.y
     }
   }
+  /**
+   * @param {Node} node
+   */
   add(node) {
     node.index = this.children.length
     this.children.push(node)
@@ -42,6 +66,9 @@ class Node {
       node.global = null
     }
   }
+  /**
+   * @param {number} depth
+   */
   split(depth = 1) {
     let w = this.dims.x / 2
     let h = this.dims.y / 2
@@ -92,6 +119,9 @@ class Node {
     if (depth <= 1) return
     this.children.forEach(e => e.split(depth - 1))
   }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   */
   draw(ctx) {
     ctx.beginPath()
     ctx.strokeStyle = "blue"
@@ -99,9 +129,15 @@ class Node {
     ctx.stroke()
     ctx.closePath()
   }
+  /**
+   * @return boolean
+   */
   isLeafNode() {
     return this.children.length == 0
   }
+  /**
+   * @return boolean
+   */
   childrenHaveObj() {
     return this.children.length > 0 || (
       this.children[0].hasObjects ||
@@ -110,11 +146,19 @@ class Node {
       this.children[3].hasObjects
     )
   }
+  /**
+   * @param {Bounds} bounds
+   * @return boolean
+   */
   intersects(bounds) {
     if (bounds.r)
       return Overlaps.AABBvsSphere(this.bounds, bounds)
     return Overlaps.AABBColliding(this.bounds, bounds)
   }
+  /**
+   * @param {Bounds} bounds
+   * @return boolean
+   */
   contains(bounds) {
     return (
       bounds.max.x < this.bounds.max.x &&
@@ -123,7 +167,13 @@ class Node {
       bounds.min.y > this.bounds.min.y
     )
   }
-  query(bounds, target) {
+  /**
+   * @inheritdoc
+   * @param {Bounds} bounds
+   * @param {Body[]} [target]
+   * @returns boolean
+   */
+  query(bounds, target = []) {
     if (!this.intersects(bounds))
       return target
     if (!this.isLeafNode()) {
@@ -138,6 +188,10 @@ class Node {
     }
     return target
   }
+  /**
+   * @param {Body} obj
+   * @returns boolean
+   */
   insertObject(obj) {
     if (!this.contains(obj.bounds))
       return false
@@ -158,6 +212,10 @@ class Node {
     }
     return false
   }
+  /**
+   * @param {Vector_like} position
+   * @returns boolean
+   */
   isInNode(position) {
     if (
       position.x > this.bounds.min.x &&
@@ -171,11 +229,18 @@ class Node {
   isRootNode() {
     return !this.parent
   }
+  /**
+   * @param {Body} obj
+   */
   updateObject(obj) {
     this.removeObject(obj)
     this.global.insert(obj)
     return true
   }
+  /**
+   * @param {Body} obj
+   * @returns boolean
+   */
   removeObject(obj) {
     if (!this.isInNode(obj.lastPosition))
       return false
@@ -203,6 +268,11 @@ class Node {
     }
     return false
   }
+  /**
+   * @param {(node:Node)=>boolean} func
+   * @param {[]} target
+   *  @returns []
+   */
   traverse(func, target) {
     if (!this.isLeafNode()) {
       for (var i = 0; i < 4; i++) {
@@ -216,6 +286,10 @@ class Node {
       return target
     }
   }
+  /**
+   * @param {CollisionPair[]} target
+   * @param {CollisionPair[]} stack
+   */
   getCollisionPairs(target, stack) {
     if (!this.hasObjects) return
     if (!this.isLeafNode()) {
@@ -345,7 +419,7 @@ class Tree extends Broadphase {
   /**
    * A depth first search of the quadtree that applies the given function to its nodes.
    * 
-   * @param {function} func The function that checks every node unless it returns true.
+   * @param {Function} func The function that checks every node unless it returns true.
    * 
    */
   traverse(func) {
@@ -353,6 +427,7 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
+   * @param {CanvasRenderingContext2D} ctx
    */
   draw(ctx) {
     this._root.traverse(e => {

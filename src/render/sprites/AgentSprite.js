@@ -1,12 +1,17 @@
 import { Sprite } from "./sprite.js"
 import { Vector } from "../../math/index.js"
-
+import { circle,rect,vertices,stroke,fill } from "../utils/index.js"
 
 let path = [
   new Vector(-10, -10),
   new Vector(-10, 10),
   new Vector(20, 0)
   ]
+  /**
+   * Used for debugging agents.
+   * 
+   * @augments Sprite
+  */
 export class AgentSprite extends Sprite {
   /**
    * 
@@ -23,18 +28,18 @@ export class AgentSprite extends Sprite {
     this.agent = entity.get("agent")
   }
   /**
-   * @param {Renderer} renderer
+   * @param {CanvasRenderingContext2D} ctx
    */
-  draw(renderer) {
-    renderer.vertices(path, true)
-    renderer.fill("purple")
-    renderer.stroke("black")
+  draw(ctx) {
+    vertices(ctx,path, true)
+    fill(ctx,"purple")
+    stroke(ctx,"black")
   }
   /**
-   * @param {Renderer} renderer
+   * @param {CanvasRenderingContext2D} ctx
    */
-  render(renderer) {
-    this.agent.draw(renderer)
-    super.render(renderer)
+  render(ctx) {
+    this.agent.draw(ctx)
+    super.render(ctx)
   }
 }

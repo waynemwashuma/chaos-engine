@@ -42,7 +42,7 @@ class ImageSprite extends Sprite {
    * Sets max number of frames for a given action
    * 
    * @param {number} action 
-   * @paran {number} max
+   * @param {number} max
    */
   setMaxFrames(action, max) {
     this._maxFrames = max
@@ -50,8 +50,7 @@ class ImageSprite extends Sprite {
   /**
    * Sets a given action to be rendered
    * 
-   * @param {number} action 
-   * @paran {number} max
+   * @param {number} index
    */
   setAction(index) {
     this._maxFrame = this._maxFrames[index]

@@ -124,7 +124,7 @@ class Vector {
   /**
    * Calculates the cross product of two vectors.
    * 
-   * @param {Vector} vproduct
+   * @param {Vector} v
    * @returns {number}
    */
   cross(v) {
@@ -206,7 +206,7 @@ class Vector {
   /**
    * Rotates this vector by a given angle in radians.
    * 
-   * @param {Vector} Angle in radians
+   * @param {number} rad Angle in radians
    * @returns {this}
    */
   rotate(rad) {
@@ -302,10 +302,10 @@ class Vector {
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
    * @param {number} normal the unit vector perpendicular to reflection surface
+   * @param {Vector} [target]
    * @return {Vector}
    */
-  reflect(normal, target) {
-    target = target || new Vector()
+  reflect(normal, target = new Vector()) {
     return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
   }
   /**
@@ -383,7 +383,7 @@ class Vector {
    * given angle starting from the positive x axis.
    * 
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
-   * @param {Vector} target Vector to store results in.
+   * @param {Vector} [target] Vector to store results in.
    * @returns {Vector}
    */
   static fromRad(radian, target = new Vector()) {
@@ -394,7 +394,7 @@ class Vector {
    * given angle from the positive x axis
    * 
    * @param {number} degree angle in radians from `0°` to `360°`
-   * @param {Vector} target Vector to store results in.
+   * @param {Vector} [target] Vector to store results in.
    * @returns {Vector}
    */
   static fromDeg(degree, target) {
@@ -403,6 +403,7 @@ class Vector {
   /**
    * Generates a new unit Vector in a random direction
    * 
+   * @param {Vector} [target]
    * @returns {Vector}
    */
   static random(target) {
@@ -413,11 +414,11 @@ class Vector {
    * @param {Vector} v1 the vector to lerp from
    * @param {Vector} v2 the vector to lerp from
    * @param {number} t a value from 0 to 1 to scale the new Vector between v1 and v2
-   * @param {Vector} target the vector to store results into
+   * @param {Vector} [target] the vector to store results into
    * 
    * @returns {Vector}
    */
-  static lerp(v1, v2, t, target) {
+  static lerp(v1, v2, t, target = new Vector()) {
     target = target || new Vector()
     return target.copy(v1).set(
       (v2.x - v1.x) * t + v1.x,
@@ -449,6 +450,8 @@ class Vector {
   /**
    * A vector whose x and y values will remain 0.
    * 
+   * @static
+   * @readonly
    * @type {Vector}
    */
   static ZERO = Object.freeze(new Vector())

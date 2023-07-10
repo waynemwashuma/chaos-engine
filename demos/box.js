@@ -6,7 +6,7 @@ import {
   Ball,
   Composite,
   BodySprite
-} from  "/dist/chaos.module.js"
+} from  "/src/index.js"
 export function box(manager) {
   let world = manager.getSystem("world")
   

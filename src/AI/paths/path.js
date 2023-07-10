@@ -1,11 +1,12 @@
-import { Vector,clamp } from "../../math/index.js"
+import { Vector, clamp } from "../../math/index.js"
+import { vertices, fill, stroke } from "../../render/index.js"
 
 let tmp = new Vector()
 export class Path {
   _points = []
   _index = 0
   speed = 20
-  tolerance= 20
+  tolerance = 20
   _lerp_t = 0
   _lerpdist = 0
   _way = [0, 1]
@@ -68,16 +69,16 @@ export class Path {
       this._points[this._way[1]]
       ]
   }
-  point(){
+  point() {
     return this._lerpedPoint
   }
-  get path(){
+  get path() {
     return this._points
   }
-  draw(renderer){
-    renderer.begin()
-    renderer.vertices(this._points,this.loop)
-    renderer.stroke("lightgreen")
-    renderer.close()
+  draw(ctx) {
+    ctx.beginPath()
+    vertices(ctx, this._points, this.loop)
+    stroke(ctx, "lightgreen")
+    ctx.closePath()
   }
 }

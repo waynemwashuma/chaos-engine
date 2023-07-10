@@ -12,6 +12,8 @@ class Touch {
   /**
    * Checks to see if the position is within the dragbox of the first two touches.
    * Not yet fully implemented
+   * 
+   * @param Vector_like
    */
   inDragBox(pos) {
     if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
@@ -32,22 +34,14 @@ class Touch {
   }
   _onMove = (e) => {
     e.preventDefault()
-    this.onmove(e)
   }
   _onDown = (e) => {
     this.touches = e.touches
-    this.ondown(e)
   }
   _onUp = (e) => {
     this.touches = e.touches
-    this.onup(e)
   }
-  onmove(e) {}
-  onclick(e) {}
-  ondown(e) {}
-  onup(e) {}
-  onwheel(e) {}
-  update() {}
+  update(){}
 }
 
 export {

@@ -36,19 +36,16 @@ class AudioHandler {
   /**
    * List of playing sounds
    * 
-   * @deprecated
+   * @private
+   * @type Sfx[]
    */
   playing = []
   /**
    * What to play after loading the audiobuffers.
    * 
-   * @ignore
+   * @private
    */
   toplay = {}
-  /**
-   * @ignore
-   */
-  baseUrl = ""
   /**
    * Volume to resume playing when unmuted.
    * 
@@ -61,13 +58,17 @@ class AudioHandler {
    * 
    * @private
    * @type AudioNode
-  */
+   */
   masterGainNode = null
   /**
-   * If the manager can play a sound.
-   * 
+   * @type string
+   */
+  baseUrl = ""
+    /**
+     * If the manager can play a sound.
    * @type boolean
-  */
+   */
+  canPlay = false
   constructor() {
     this.masterGainNode = this.ctx.createGain()
     this.masterGainNode.connect(this.ctx.destination)
@@ -152,13 +153,13 @@ class AudioHandler {
     this.playing.push(s)
     s.play()
   }
-  
+
   /**
    * Creates and returns an SFX.
    * 
    * @param {string} name
    * @rerurns Sfx
-  */
+   */
   createSfx(name) {
     ///throw error if name is not in this.
     return new Sfx(this, this.sfx[name])
