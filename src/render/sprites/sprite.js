@@ -1,6 +1,5 @@
 import { Vector, Angle } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
-
 let v = new Vector()
 
 /**
@@ -51,19 +50,22 @@ class Sprite {
    * Override this function.
    * The canvas is already transformed to the position and rotation of the sprite.
    * 
+   * @protected
+   * 
    */
-  draw(render) {
-    this.geometry.render(render)
-    this.material.render(render)
+  draw(ctx) {
+    this.geometry.render(ctx)
+    this.material.render(ctx)
   }
-  render(render, dt) {
-    render.begin()
-    render.translate(...this._position)
-    render.rotate(this._orientation.radian)
-    render.scale(...this.scale)
-    this.draw(render, dt)
-    render.close()
-    render.reset()
+  render(ctx, dt) {
+    ctx.save()
+    ctx.beginPath()
+    ctx.translate(...this._position)
+    ctx.rotate(this._orientation.radian)
+    ctx.scale(...this.scale)
+    this.draw(ctx, dt)
+    ctx.closePath()
+    ctx.restore()
   }
   init(entity) {
     this.entity = entity

@@ -1,6 +1,6 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector, clamp, map } from "../../math/index.js"
-
+import { circle, fill, stroke } from "../../render/index.js"
 const tmp1 = new Vector()
 const tmp2 = new Vector()
 const tmp3 = new Vector()
@@ -8,17 +8,17 @@ const tmp3 = new Vector()
  * Creates a behaviour that follows a certain path.
  * 
  * @augments Behaviour
-*/
+ */
 export class PathFollowing extends Behaviour {
   /**
    * The path taken by a pathfollowing behaviour.
    * 
    * @type Path
-  */
+   */
   path = null
   /**
    * @param {Path} path
-  */
+   */
   constructor(path) {
     super()
     this.path = path
@@ -53,7 +53,7 @@ export class PathFollowing extends Behaviour {
   }
   /**
    * Removes all points on the path.
-  */
+   */
   clear() {
     this.path.clear()
   }
@@ -69,7 +69,7 @@ export class PathFollowing extends Behaviour {
    * Adds a point into the path.
    * 
    * @param {Vector} point
-  */
+   */
   add(point) {
     this.path.add(point)
   }
@@ -77,7 +77,7 @@ export class PathFollowing extends Behaviour {
    * If the agent should start at the beginning after reaching the ent of the path.
    * 
    * @type boolean
-  */
+   */
   set loop(x) {
     this.path.loop = x
   }
@@ -88,19 +88,19 @@ export class PathFollowing extends Behaviour {
    * Sets a new path to follow.
    *
    * @param {Path} path
-  */
+   */
   setPath(path) {
     this.path = path
   }
-  draw(renderer) {
-    renderer.begin()
-    renderer.circle(...this.path.point(), 4)
-    renderer.fill("blue")
-    renderer.close()
-    renderer.begin()
-    renderer.circle(...this.path.point(), this.path.tolerance)
-    renderer.stroke("blue")
-    renderer.close()
-    this.path.draw(renderer)
+  draw(ctx) {
+    ctx.beginPath()
+    circle(ctx, ...this.path.point(), 4)
+    fill(ctx, "blue")
+    ctx.closePath()
+    ctx.beginPath()
+    circle(ctx, ...this.path.point(), this.path.tolerance)
+    stroke(ctx, "blue")
+    ctx.closePath()
+    this.path.draw(ctx)
   }
 }
