@@ -41,6 +41,7 @@ class Touch {
   _onUp = (e) => {
     this.touches = e.touches
   }
+  update(){}
 }
 
 export {
