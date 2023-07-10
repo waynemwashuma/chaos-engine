@@ -3,6 +3,7 @@ import { Vector } from "../../math/index.js"
 import { Shape } from "../../physics/index.js"
 import { ObjType } from "../../physics/settings.js"
 import { circle,rect,vertices,stroke,fill,line } from "../utils/index.js"
+
 /**
  * This draws a body from the physics System.
  * 
@@ -55,7 +56,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body} body
-   * @param {Renderer} renderer
+   * @param {CanvasRenderingContext2D} renderer
    */
   _drawVelocity(body, ctx) {
     ctx.beginPath()
@@ -72,7 +73,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body} body
-   * @param {Renderer} renderer
+   * @param {CanvasRenderingContext2D} renderer
    */
   _drawBound(body, ctx) {
     ctx.beginPath()
@@ -93,7 +94,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body} body
-   * @param {Renderer} renderer
+   * @param {CanvasRenderingContext2D} renderer
    */
   _drawShapes(body, ctx) {
     ctx.beginPath()

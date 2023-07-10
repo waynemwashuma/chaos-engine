@@ -1,17 +1,49 @@
 import { Sprite } from "./sprite.js"
-import { Vector, rand }from "../../math/index.js"
-
+import { Vector, rand } from "../../math/index.js"
+import { circle } from "../utils/index.js"
 let tmp1 = new Vector()
 
 /**
  * Its a fricking particle!
-*/
+ */
 class Particle {
+  /**
+   * @readonly
+   * @type Vector
+   */
+  position = null
+  /**
+   * @readonly
+   * @type Vector
+   */
+  velocity = null
+  /**
+   * @type boolean
+   */
+  active = true
+  /**
+   * @type number
+   */
+  radius = 0
+  /**
+   * @type {{r:number,b:number,g:number,a:number}}
+   */
+   color = null
+  /**
+   * @private
+   * @type number
+   */
+  _life = 0
+  /**
+   * @readonly
+   * @type number
+   */
+  lifespan = 0
   /**
    * @param {Vector} pos
    * @param {number} radius
    * @param {number} [lifespan=5] In seconds
-  */
+   */
   constructor(pos, radius, lifespan = 5) {
     this.position = pos
     this.active = true
@@ -28,16 +60,16 @@ class Particle {
   }
   /**
    * Renders a particle.
-  */
+   */
   draw(ctx) {
-    ctx.begin()
-    ctx.circle(...this.position, this.radius)
-    ctx.fill(`rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`)
-    ctx.close()
+    ctx.beginPath()
+    circle(ctx, ...this.position, this.radius)
+    fill(ctx, `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`)
+    ctx.closePath()
   }
   /**
    * Updates a particle's lifetime
-  */
+   */
   update(ctx, dt) {
     this._life += dt
     this.position.add(tmp1.copy(this.velocity).multiply(dt))
