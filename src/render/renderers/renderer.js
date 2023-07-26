@@ -62,7 +62,7 @@ export class Renderer {
    * @param {Manager} manager
    */
   init(manager) {
-    manager.setComponentList("mesh", this.objects)
+    manager.setComponentList("sprite", this.objects)
   }
   /**
    * Clears the canvas on which the renderer draws on.

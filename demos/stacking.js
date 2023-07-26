@@ -14,7 +14,7 @@ function stack(x, y, w, h, no, spacing, manager) {
   for (var i = 0; i < no; i++) {
     let entity = Entity.Default(x, y + (h + spacing) * i)
       .attach("body",new Box(w, h))
-      .attach("mesh",new BodySprite())
+      .attach("sprite",new BodySprite())
     manager.add(entity)
   }
 }

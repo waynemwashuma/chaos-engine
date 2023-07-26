@@ -233,7 +233,7 @@ class Manager {
       this._coreSystems.world.add(c)
       return
     }
-    if (n === "mesh") {
+    if (n === "sprite") {
       this._coreSystems.renderer.add(c)
       return
     }
@@ -254,7 +254,7 @@ class Manager {
       this._coreSystems.world.remove(c)
       return
     }
-    if (n === "mesh") {
+    if (n === "sprite") {
       this._coreSystems.renderer.remove(c)
       return
     }

@@ -14,7 +14,7 @@ export function box(manager) {
   let body = new Box(50,50)
   
   box.attach("body",body)
-  .attach("mesh",new BodySprite())
+  .attach("sprite",new BodySprite())
   manager.add(box)
   world.gravity = 980
 }

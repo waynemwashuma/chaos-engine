@@ -11,7 +11,7 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
       let entity = Entity.Default(dx + w * i, y + (h + spacing) * j)
-        .attach("mesh",new BodySprite())
+        .attach("sprite",new BodySprite())
         .attach("body",new Box(w, h))
       manager.add(entity)
     }
