@@ -95,8 +95,8 @@ class Sprite {
     ctx.rotate(this._orientation.radian)
     ctx.scale(...this._scale)
     this.draw(ctx, dt)
-    this.geometry.render(ctx)
-    this.material.render(ctx)
+    this.geometry?.render(ctx)
+    this.material?.render(ctx)
     ctx.closePath()
     ctx.restore()
   }
@@ -115,6 +115,8 @@ class Sprite {
     let transform = entity.get("transform")
     this._position = transform.position
     this._orientation = transform.orientation
+    //TODO - Correct this later
+    this._scale = new Vector()
     return this
   }
 
