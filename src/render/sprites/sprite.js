@@ -107,7 +107,7 @@ class Sprite {
     if(!entity){
       this._position = new Vector()
       this._orientation = new Angle()
-      this._scale = new Vector()
+      this._scale = new Vector(1,1)
       return
     }
     this.entity = entity
@@ -116,7 +116,7 @@ class Sprite {
     this._position = transform.position
     this._orientation = transform.orientation
     //TODO - Correct this later
-    this._scale = new Vector()
+    this._scale = new Vector(1,1)
     return this
   }
 
