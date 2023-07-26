@@ -67,6 +67,7 @@ class BehaviourManager {
     Utils.clearArr(this._behaviours)
   }
   /**
+   * @ignore
    * Used for visually debugging items.
    */
   draw(renderer) {

@@ -93,7 +93,6 @@ class Agent {
   update(inv_dt) {
     this.behaviours.update(inv_dt)
   }
-  Entity
   /**
    * @param {Renderer} renderer
    */
