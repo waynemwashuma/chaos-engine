@@ -123,7 +123,7 @@ let boxMesh = new CHAOS.BodySprite()
 box.attach("body", boxBody)
 
 //Adds the sprite to the entity.
-box.attach("mesh", boxMesh)
+box.attach("sprite", boxMesh)
 
 //Adds the box to the game to be updated every frame.
 game.add(box)
@@ -149,7 +149,7 @@ groundBody.type = CHAOS.Body.STATIC
 ground.attach("body", groundBody)
 
 //Adds the sprite to the entity.
-ground.attach("mesh", groundMesh)
+ground.attach("sprite", groundMesh)
 
 //Adds the ground to the game to be updated every frame.
 game.add(ground)

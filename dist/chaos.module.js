@@ -4452,7 +4452,7 @@ class Renderer {
    * @param {Manager} manager
    */
   init(manager) {
-    manager.setComponentList("mesh", this.objects);
+    manager.setComponentList("sprite", this.objects);
   }
   /**
    * Clears the canvas on which the renderer draws on.
@@ -6369,7 +6369,7 @@ class Manager {
       this._coreSystems.world.add(c);
       return
     }
-    if (n === "mesh") {
+    if (n === "sprite") {
       this._coreSystems.renderer.add(c);
       return
     }
@@ -6390,7 +6390,7 @@ class Manager {
       this._coreSystems.world.remove(c);
       return
     }
-    if (n === "mesh") {
+    if (n === "sprite") {
       this._coreSystems.renderer.remove(c);
       return
     }

@@ -66,7 +66,7 @@ class CanvasBounds extends Entity {
       let bound = Entity.Default(w.pos.x, w.pos.y)
       let body = new Box(w.w, w.h)
       bound.attach("body", body)
-        .attach("mesh", new BodySprite())
+        .attach("sprite", new BodySprite())
       body.type = Body.STATIC
       this.manager.add(bound)
     })
