@@ -24,9 +24,9 @@ export class BasicMaterial {
   render(ctx, path) {
     if (!this.wireframe) {
       ctx.fillStyle = this.fill
-      ctx.fill(path)
+      ctx.fill()
     }
     ctx.strokeStyle = this.stroke
-    ctx.stroke(path)
+    ctx.stroke()
   }
 }
