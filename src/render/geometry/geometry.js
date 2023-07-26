@@ -1,11 +1,22 @@
-import { Vector }from "../../math/index.js"
+import { Vector } from "../../math/index.js"
 import { vertices } from "../utils/index.js"
 
-export class BufferGeometry{
-  constructor(vertices){
+export class BufferGeometry {
+  /**
+   * @private
+   * @type Vector[]
+   */
+  vertices = null
+  /**
+   * @param {Vector[]} vertices
+   */
+  constructor(vertices) {
     this.vertices = vertices || []
   }
-  render(ctx){
-    vertices(ctx,this.vertices,true)
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  render(ctx) {
+    vertices(ctx, this.vertices, true)
   }
 }
