@@ -1,8 +1,17 @@
-export class CircleGeometry{
-  constructor(radius){
+import { circle } from "../utils/canvasfunc.js"
+
+
+export class CircleGeometry {
+  /**
+   * @param {number} radius
+   */
+  constructor(radius) {
     this.radius = radius
   }
-  render(renderer){
-    renderer.circle(0,0,this.radius)
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  render(ctx) {
+    circle(ctx, 0, 0, this.radius)
   }
 }
