@@ -12,15 +12,15 @@ class Sprite {
   /**
    * @private
    */
-  _position = new Vector()
+  _position = null
   /**
    * @private
    */
-  _orientation = new Angle()
+  _orientation = null
   /**
    * @private
    */
-  _scale = new Vector(1, 1)
+  _scale = null
   /**
    * @private
    */
@@ -101,14 +101,21 @@ class Sprite {
     ctx.restore()
   }
   /**
-   * @param {Entity} entity
+   * @param {Entity} [entity]
    */
   init(entity) {
+    if(!entity){
+      this._position = new Vector()
+      this._orientation = new Angle()
+      this._scale = new Vector()
+      return
+    }
     this.entity = entity
     this.requires("transform")
     let transform = entity.get("transform")
     this._position = transform.position
     this._orientation = transform.orientation
+    return this
   }
 
 
