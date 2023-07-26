@@ -17,29 +17,57 @@ class Sprite {
    * @private
    */
   _orientation = new Angle()
-  scale = new Vector(1, 1)
+  /**
+   * @private
+   */
+  _scale = new Vector(1, 1)
   /**
    * @private
    */
   geometry = null
+  /**
+   * @private
+   */
   material = null
+  /**
+   * @type Group | null
+   */
   parent = null
+  /**
+   * @param {BufferGeometry} geometry
+   * @param {Material} material
+   */
   constructor(geometry, material) {
     this.geometry = geometry
     this.material = material
   }
+  /**
+   * Angle in degrees
+   * 
+   * @type number
+   */
   get angle() {
     return this._orientation.radian * 180 / Math.PI
   }
   set angle(x) {
     this._orientation.degree = x
   }
+  /**
+   * World space position.
+   * 
+   * @type Vector
+   */
   get position() {
     return this._position
   }
   set position(x) {
     this._position.copy(x)
   }
+  /**
+   * Orientation of the sprite
+   * 
+   * @type Angle
+   */
   get orientation() {
     return this._orientation
   }
@@ -54,19 +82,27 @@ class Sprite {
    * 
    */
   draw(ctx) {
-    this.geometry.render(ctx)
-    this.material.render(ctx)
+
   }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+   */
   render(ctx, dt) {
     ctx.save()
     ctx.beginPath()
     ctx.translate(...this._position)
     ctx.rotate(this._orientation.radian)
-    ctx.scale(...this.scale)
+    ctx.scale(...this._scale)
     this.draw(ctx, dt)
+    this.geometry.render(ctx)
+    this.material.render(ctx)
     ctx.closePath()
     ctx.restore()
   }
+  /**
+   * @param {Entity} entity
+   */
   init(entity) {
     this.entity = entity
     this.requires("transform")
