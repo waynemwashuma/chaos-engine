@@ -10,7 +10,7 @@ export class BufferGeometry {
   /**
    * @package
    * @type Path2D | WebGLVertexArrayObject
-  */
+   */
   drawable = null
   /**
    * @param {Vector[]} vertices
@@ -18,11 +18,12 @@ export class BufferGeometry {
   constructor(vertices) {
     this.vertices = vertices || []
   }
-    /**
+  /**
+   * @package
    * @param {CanvasRenderingContext2D} ctx
    */
-  init(ctx){
+  init(ctx) {
     this.drawable = new Path2D()
-    vertices(this.drawable,this.vertices,true)
+    vertices(this.drawable, this.vertices, true)
   }
 }
