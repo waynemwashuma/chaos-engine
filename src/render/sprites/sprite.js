@@ -94,7 +94,7 @@ class Sprite {
     ctx.rotate(this._orientation.radian)
     ctx.scale(...this._scale)
     this.draw(ctx, dt)
-    this.material?.render(ctx,dt,this.geometry.drawable)
+    this.material?.render(ctx,dt,this.geometry?.drawable)
     ctx.restore()
   }
   /**
