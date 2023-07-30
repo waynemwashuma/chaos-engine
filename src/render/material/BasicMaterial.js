@@ -21,12 +21,12 @@ export class BasicMaterial {
    * @param {CanvasRenderingContext2D} ctx
    * @param {Path2D} [path]
    */
-  render(ctx, path) {
+  render(ctx,dt, path) {
     if (!this.wireframe) {
       ctx.fillStyle = this.fill
-      ctx.fill()
+      ctx.fill(path)
     }
     ctx.strokeStyle = this.stroke
-    ctx.stroke()
+    ctx.stroke(path)
   }
 }
