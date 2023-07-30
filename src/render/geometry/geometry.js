@@ -25,10 +25,4 @@ export class BufferGeometry {
     this.drawable = new Path2D()
     vertices(this.drawable,this.vertices,true)
   }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    //vertices(ctx, this.vertices, true)
-  }
 }
