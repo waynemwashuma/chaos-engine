@@ -96,7 +96,7 @@ class Sprite {
     ctx.scale(...this._scale)
     this.draw(ctx, dt)
     this.geometry?.render(ctx)
-    this.material?.render(ctx)
+    this.material?.render(ctx,dt)
     ctx.closePath()
     ctx.restore()
   }
