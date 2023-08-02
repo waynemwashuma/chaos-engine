@@ -90,11 +90,13 @@ class Sprite {
    */
   render(ctx, dt) {
     ctx.save()
+    ctx.beginPath()
     ctx.translate(...this._position)
     ctx.rotate(this._orientation.radian)
     ctx.scale(...this._scale)
     this.draw(ctx, dt)
     this.material?.render(ctx,dt,this.geometry?.drawable)
+    ctx.closePath()
     ctx.restore()
   }
   /**
