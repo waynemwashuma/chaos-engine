@@ -1,7 +1,6 @@
 import { Sprite } from "./sprite.js"
 import { Vector, rand } from "../../math/index.js"
 import { circle, fill } from "../utils/index.js"
-let tmp1 = new Vector()
 
 /**
  * Its a fricking particle!
@@ -71,7 +70,7 @@ class Particle {
    */
   update(ctx, dt) {
     this._life += dt
-    this.position.add(tmp1.copy(this.velocity).multiply(dt))
+    this.position.add(this.velocity)
     this.active = this._life < this.lifespan
   }
 }
@@ -145,10 +144,10 @@ class System extends Sprite {
    * @protected
    * @param {Particle} p
    */
-  behavior(p) {
+  behavior(p,dt) {
     p.velocity.set(
-      p.velocity.x + rand(-1, 1),
-      p.velocity.y + rand(0, 0.3)
+      p.velocity.x + rand(-1, 1)*dt,
+      p.velocity.y + rand(0, 0.3)*dt
     )
   }
   /**
@@ -158,7 +157,7 @@ class System extends Sprite {
     for (let i = this._particles.length - 1; i > 0; i--) {
       let p = this._particles[i]
       p.update(ctx, dt)
-      this.behavior(p)
+      this.behavior(p,dt)
       p.draw(ctx, dt)
       if (!p.active) {
         this._particles.splice(i, 1)
