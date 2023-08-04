@@ -1,5 +1,8 @@
 import { drawImage } from "../utils/canvasfunc.js"
-
+/**
+ * 
+ * @implements Material
+*/
 export class SpriteMaterial {
   /**
    * @type HTMLImageElement

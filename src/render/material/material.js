@@ -1,7 +1,8 @@
+/**
+ * @interface
+*/
 export class Material{
-  constructor(){
-  }
   render(){
-    
+    throw "Override this method in derived class"
   }
 }
