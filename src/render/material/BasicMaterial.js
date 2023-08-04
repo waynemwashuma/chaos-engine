@@ -1,3 +1,7 @@
+/**
+ * 
+ * @implements Material
+*/
 export class BasicMaterial {
   /**
    * 
