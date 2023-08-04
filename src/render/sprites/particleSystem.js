@@ -1,6 +1,6 @@
 import { Sprite } from "./sprite.js"
 import { Vector, rand } from "../../math/index.js"
-import { circle,fill } from "../utils/index.js"
+import { circle, fill } from "../utils/index.js"
 let tmp1 = new Vector()
 
 /**
@@ -28,7 +28,7 @@ class Particle {
   /**
    * @type {{r:number,b:number,g:number,a:number}}
    */
-   color = null
+  color = null
   /**
    * @private
    * @type number
@@ -46,7 +46,6 @@ class Particle {
    */
   constructor(pos, radius, lifespan = 5) {
     this.position = pos
-    this.active = true
     this.velocity = new Vector()
     this.radius = radius
     this.color = {
@@ -82,7 +81,25 @@ class Particle {
  * @augments Sprite
  */
 class System extends Sprite {
+  /**
+   * @private
+   */
   _particles = []
+  /**
+   * @type number
+   * @default 1
+   */
+  initial = 0
+  /**
+   * @type number
+   * @default 1
+   */
+  frameIncrease = 0
+  /**
+   * @type number
+   * @default 1
+   */
+  max = 0
   /**
    * @param {number} [initial=1] Number of particles to start with.
    * @param {number} [max=100] Maximum number of particles.
@@ -97,6 +114,7 @@ class System extends Sprite {
 
   /**
    * @protected
+   * @param {number} n
    */
   initParticles(n) {
     for (var i = 0; i < n; i++) {
@@ -125,6 +143,7 @@ class System extends Sprite {
   }
   /**
    * @protected
+   * @param {Particle} p
    */
   behavior(p) {
     p.velocity.set(
@@ -142,7 +161,7 @@ class System extends Sprite {
       this.behavior(p)
       p.draw(ctx, dt)
       if (!p.active) {
-        this._particles.splice(i,1)
+        this._particles.splice(i, 1)
       }
     }
     if (this._particles.length < this.max) {
