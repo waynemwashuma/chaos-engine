@@ -1,6 +1,6 @@
 import { Sprite } from "./sprite.js"
 import { Vector, rand } from "../../math/index.js"
-import { circle } from "../utils/index.js"
+import { circle,fill } from "../utils/index.js"
 let tmp1 = new Vector()
 
 /**
@@ -82,6 +82,7 @@ class Particle {
  * @augments Sprite
  */
 class System extends Sprite {
+  _particles = []
   /**
    * @param {number} [initial=1] Number of particles to start with.
    * @param {number} [max=100] Maximum number of particles.
@@ -99,7 +100,7 @@ class System extends Sprite {
    */
   initParticles(n) {
     for (var i = 0; i < n; i++) {
-      this.add(this.create())
+      this._particles.push(this.create())
     }
   }
 
@@ -135,16 +136,16 @@ class System extends Sprite {
    * @inheritdoc
    */
   render(ctx, dt) {
-    for (let i = this._children.length - 1; i > 0; i--) {
-      let p = this._children[i]
+    for (let i = this._particles.length - 1; i > 0; i--) {
+      let p = this._particles[i]
       p.update(ctx, dt)
       this.behavior(p)
       p.draw(ctx, dt)
       if (!p.active) {
-        this.remove(i)
+        this._particles.splice(i,1)
       }
     }
-    if (this._children.length < this.max) {
+    if (this._particles.length < this.max) {
       this.initParticles(this.frameIncrease)
     }
   }
