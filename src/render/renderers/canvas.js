@@ -24,6 +24,7 @@ export class Renderer2D extends Renderer {
   add(sprite){
     super.add(sprite)
     sprite.geometry?.init(this.ctx)
+    sprite.material?.init(this.ctx)
   }
   clear() {
     this.ctx.setTransform()
