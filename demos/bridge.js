@@ -1,14 +1,13 @@
 import {
   Vector,
   Manager,
-  DebugMesh,
   Box,
   Ball,
-  SpringConstraint,
+  DistanceConstraint,
   rand,
   Entity,
   BodySprite
-} from "/dist/chaos.module.js"
+} from "/src/index.js"
 
 export function bridge(manager) {
   let world = manager.getSystem("world")
@@ -45,7 +44,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
 
   for (var i = 1; i < number; i++) {
     let chain = new Box(w, h)
-    let constraint = new SpringConstraint(prev, chain, { x: w / 2, y: 0 }, { x: -w / 2, y: 0 })
+    let constraint = new DistanceConstraint(prev, chain, { x: w / 2, y: 0 }, { x: -w / 2, y: 0 })
 
     bodies.push(
       Entity.Default(x * i, y)
@@ -57,12 +56,12 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     prev = chain
   }
   if (pin1) {
-    let constraint = new SpringConstraint(pin1.get("body"), bodies[0].get("body"), { x: 0, y: 0 }, { x: -w / 2, y: 0 })
+    let constraint = new DistanceConstraint(pin1.get("body"), bodies[0].get("body"), { x: 0, y: 0 }, { x: -w / 2, y: 0 })
     constraints.push(constraint)
     pin1.get("body").mask.group = 1
   }
   if (pin2) {
-    let constraint = new SpringConstraint(
+    let constraint = new DistanceConstraint(
       pin2.get("body"),
       bodies[bodies.length - 1].get("body"), { x: 0, y: 0 }, { x: w / 2, y: 0 }
     )

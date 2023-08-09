@@ -2,7 +2,7 @@ import {
   BodySprite,
   Box,
   Entity
-} from "/dist/chaos.module.js"
+} from "/src/index.js"
 
 
 export function stacking(manager) {
