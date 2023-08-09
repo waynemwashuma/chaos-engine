@@ -1,8 +1,20 @@
 import { Angle, Vector, Matrix } from "../math/index.js"
 class Camera {
+  /**
+   * @private
+   * @type Vector
+   */
   _position = new Vector()
+  /**
+   * @private
+   * @type Vector
+   */
+  transformMatrix = new Matrix()
+  /**
+   * @type Renderer
+  */
+  renderer = null
   constructor(renderer, position) {
-    this.transformMatrix = new Matrix()
     this.target = null
     this.lerpFactor = 0.5
     this.renderer = renderer
@@ -12,6 +24,9 @@ class Camera {
     this.position.set(position?.x || 0, position?.y || 0)
     this.orientation = new Angle()
   }
+  /**
+   * @type Vector
+   */
   get position() {
     return this._actualPosition
   }
