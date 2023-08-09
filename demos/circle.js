@@ -1,13 +1,14 @@
 import {
   Entity,
-  Box,
+  Ball,
   BodySprite
 } from  "/src/index.js"
-export function box(manager) {
+
+export function circle(manager) {
   let world = manager.getSystem("world")
   
   let box = Entity.Default(200,100)
-  let body = new Box(50,50)
+  let body = new Ball(20)
   
   box.attach("body",body)
   .attach("sprite",new BodySprite())
