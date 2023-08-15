@@ -111,7 +111,8 @@ export class SpriteMaterial {
     this._frame = 0
   }
   /**
-   * @inheritdoc
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
    */
   render(ctx,dt) {
     drawImage(

@@ -23,7 +23,8 @@ export class BasicMaterial {
   wireframe = false
   /**
    * @param {CanvasRenderingContext2D} ctx
-   * @param {Path2D} [path]
+   * @param {number} dt
+   * @param {Path2D} path
    */
   render(ctx,dt, path) {
     if (!this.wireframe) {
