@@ -128,6 +128,7 @@ class BodySprite extends Sprite {
   }
   /**
    * @inheritdoc
+   * @param {Entity} entity
    */
   init(parent) {
     this.body = parent.get("body")

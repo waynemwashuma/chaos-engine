@@ -100,7 +100,7 @@ class Sprite {
     ctx.restore()
   }
   /**
-   * @param {Entity} [entity]
+   * @param {Entity} entity
    */
   init(entity) {
     if(!entity){
