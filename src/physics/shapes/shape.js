@@ -69,11 +69,11 @@ class Shape {
   /**
    * Returns the normals of the faces when rotated.
    * 
-   * @param {Body} body
+   * @param {Shape} shape
    * @param {Vector[]} [target=[]] An array where results are stored.
    * @returns {Vector[]}
    */
-  getNormals(body, target) {
+  getNormals(shape, target) {
     return this.geometry.getNormals(this.angle, target)
   }
   /**
