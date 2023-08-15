@@ -27,7 +27,7 @@ export class AgentSprite extends Sprite {
     super(geometry,material)
   }
   /**
-   * @param {Entity} entity
+   * @inheritdoc
    */
   init(entity) {
     super.init(entity)

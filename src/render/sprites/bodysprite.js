@@ -44,6 +44,9 @@ class BodySprite extends Sprite {
     this.drawVelocity = options.drawVelocity || false
     this.drawBounds = options.drawBounds || false
   }
+  /**
+   * @inheritdoc
+  */
   render(ctx, dt) {
 
     if (this.body.physicsType == ObjType.COMPOSITE) {
@@ -124,8 +127,7 @@ class BodySprite extends Sprite {
     ctx.closePath()
   }
   /**
-   * @package
-   * @param {Entity} parent
+   * @inheritdoc
    */
   init(parent) {
     this.body = parent.get("body")
