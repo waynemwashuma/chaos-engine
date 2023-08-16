@@ -42,11 +42,11 @@ class Circle extends Shape {
    * @inheritdoc
    * 
    * @param {Vector} axis
-   * @param {Vector[]}} target 
+   * @param {Vector[]} out 
    * @returns {Vector[]}
    */
-  getVertices(axis, target) {
-    target = target || []
+  getVertices(axis, out) {
+    let target = out || []
     let v1 = _vec1.copy(axis).multiply(-this.radius).add(this.position)
     let v2 = _vec2.copy(axis).multiply(this.radius).add(this.position)
     target[0] = v1.clone()

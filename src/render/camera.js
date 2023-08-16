@@ -14,6 +14,9 @@ class Camera {
    * @type Renderer
    */
   renderer = null
+  /**
+   * @param {Renderer} renderer
+   */
   constructor(renderer) {
     this.renderer = renderer
   }

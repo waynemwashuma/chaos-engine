@@ -64,6 +64,8 @@ export class BoundingCircle {
   }
   /**
    * Translates this bound to the given position.
+   * 
+   * @param {Vector_like} pos
    */
   update(pos) {
     //let dx = pos.x - this.pos.x

@@ -2,7 +2,7 @@ import { drawImage } from "../utils/canvasfunc.js"
 /**
  * 
  * @implements Material
-*/
+ */
 export class SpriteMaterial {
   /**
    * @type HTMLImageElement
@@ -80,18 +80,23 @@ export class SpriteMaterial {
    * @param {number} [frames] Number of cutouts in the sprite in the X axis of the image.
    * @param {number} [actions] Number of cutouts in the sprite in the Y axis of the image.
    */
-  constructor(img, frames=1, actions=1) {
+  constructor(img, frames = 1, actions = 1) {
     this.img = img
-    this.setup(frames,actions)
+    this.setup(frames, actions)
   }
-  setup(frames,actions) {
+  /**
+   * 
+   * @param {number} frames
+   * @param {number} actions
+   */
+  setup(frames, actions) {
     this._maxFrame = frames - 1
     this.width = this.img.width
     this.height = this.img.height
     this.frameWidth = this.img.width / (frames || 1)
     this.frameHeight = this.img.height / actions
   }
-    /**
+  /**
    * Sets max number of frames for a given action
    * 
    * @param {number} action 
@@ -114,7 +119,7 @@ export class SpriteMaterial {
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} dt
    */
-  render(ctx,dt) {
+  render(ctx, dt) {
     drawImage(
       ctx,
       this.img,

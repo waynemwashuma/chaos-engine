@@ -8,7 +8,7 @@ import { Renderer } from "./renderer.js"
  * Renders images and paths to the 2D context of a canvas.
  * 
  * @extends Renderer
-*/
+ */
 export class Renderer2D extends Renderer {
   frameRate = 1 / 60
   renderLast = []
@@ -17,11 +17,15 @@ export class Renderer2D extends Renderer {
   */
   constructor(canvas) {
     canvas = canvas || document.createElement("canvas")
-    super(canvas,canvas.getContext("2d"))
-    
-  }
+    super(canvas, canvas.getContext("2d"))
 
-  add(sprite){
+  }
+  /**
+   * @inheritdoc
+   * 
+   * @param {Sprite | Group} sprite
+   */
+  add(sprite) {
     super.add(sprite)
     sprite.geometry?.init(this.ctx)
   }
@@ -31,6 +35,9 @@ export class Renderer2D extends Renderer {
       w = this.width
     this.ctx.clearRect(0, 0, w, h)
   }
+  /**
+   * @param {number} dt
+   */
   update(dt) {
     this.camera.update(dt)
     this.perf.lastTimestamp = performance.now()
@@ -45,7 +52,10 @@ export class Renderer2D extends Renderer {
     }
     this.perf.total = performance.now() - this.perf.lastTimestamp
   }
-  _update = (accumulate)=> {
+  /**
+   * @private
+   */
+  _update = (accumulate) => {
     let dt = this.clock.update(accumulate)
     if (this._accumulator < this.frameRate) {
       this._accumulator += dt
@@ -56,9 +66,11 @@ export class Renderer2D extends Renderer {
     this.RAF()
     this._accumulator = 0
   }
-  
-  addUI(mesh) {
-    this.renderLast.push(mesh)
+  /**
+   * @param {Sprite} sprite
+  */
+  addUI(sprite) {
+    this.renderLast.push(sprite)
   }
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()
