@@ -32,9 +32,15 @@ class Constraint {
   get physicsType() {
     return ObjType.CONSTRAINT
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "constraint"
   }
@@ -46,7 +52,7 @@ class Constraint {
    * @param {Body} body2
    * @param {number} dt
    */
-  behavior(body1, body2,dt) {
+  behavior(body1, body2, dt) {
     body2.position.copy(body1.position)
   }
   /**
@@ -55,7 +61,7 @@ class Constraint {
    * @param {number} dt
    */
   update(dt) {
-    this.behavior(this.body1, this.body2,dt)
+    this.behavior(this.body1, this.body2, dt)
   }
 }
 export {

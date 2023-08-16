@@ -1,22 +1,50 @@
 class Geometry {
+  /**
+   * @type Vector[]
+   */
+  vertices = null
+  /**
+   * @type Vector[]
+   */
+  normals = null
+  /**
+   * @type Vector[]
+   */
+  _dynNormals = null
+  /**
+   * @param {Vector[]} vertices
+   */
   constructor(vertices) {
     this.vertices = vertices
     this.normals = this.calcFaceNormals()
-    this._dynNormals = this.normals.map(e=>e.clone())
+    this._dynNormals = this.normals.map(e => e.clone())
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "geometry"
   }
-  getNormals(rad,target) {
+  /**
+   * @param {number} rad
+   * @param {Vector[]} target
+   */
+  getNormals(rad, target) {
     target = target || []
     for (var i = 0; i < this.normals.length; i++) {
       target.push(this._dynNormals[i].copy(this.normals[i]).rotate(rad))
     }
     return target
   }
+  /**
+   * @private
+   */
   calcFaceNormals() {
     const axes = [],
       { vertices } = this
@@ -35,7 +63,13 @@ class Geometry {
     }
     return axes
   }
-  transform(vertices,pos, rad, n) {
+  /**
+   * @param {number} n
+   * @param {Vector[]} vertices
+   * @param {Vector} pos
+   * @patam {number} rad
+   */
+  transform(vertices, pos, rad, n) {
     for (let i = 0; i < this.vertices.length; i++) {
       let vertex = vertices[i]
       vertex.copy(this.vertices[i])

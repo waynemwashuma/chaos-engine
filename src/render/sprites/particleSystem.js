@@ -58,6 +58,8 @@ class Particle {
   }
   /**
    * Renders a particle.
+   * 
+   * @param {CanvasRenderingContext2D} ctx
    */
   draw(ctx) {
     ctx.beginPath()
@@ -67,6 +69,9 @@ class Particle {
   }
   /**
    * Updates a particle's lifetime
+   * @inheritdoc
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
    */
   update(ctx, dt) {
     this._life += dt
@@ -79,7 +84,7 @@ class Particle {
  * This creates a particle system 
  * @augments Sprite
  */
-class System extends Sprite {
+class ParticleSystemSprite extends Sprite {
   /**
    * @private
    */
@@ -135,6 +140,7 @@ class System extends Sprite {
   }
   /**
    * @inheritdoc
+   * @param {Entity} entity
    */
   init(entity) {
     super.init(entity)
@@ -143,6 +149,7 @@ class System extends Sprite {
   /**
    * @protected
    * @param {Particle} p
+   * @param {number} dt
    */
   behavior(p,dt) {
     p.velocity.set(
@@ -152,7 +159,9 @@ class System extends Sprite {
   }
   /**
    * @inheritdoc
-   */
+   *  @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+  */
   render(ctx, dt) {
     for (let i = this._particles.length - 1; i > 0; i--) {
       let p = this._particles[i]
@@ -170,5 +179,5 @@ class System extends Sprite {
 }
 export {
   Particle,
-  System as ParticleSystemSprite
+  ParticleSystemSprite
 }

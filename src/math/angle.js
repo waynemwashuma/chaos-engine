@@ -24,9 +24,15 @@ class Angle {
     this._deg = deg || 0
     this._rad = deg * Math.PI / 2 || 0
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "angle"
   }
@@ -58,7 +64,9 @@ class Angle {
   copy(angle) {
     this.degree = angle.degree
   }
-
+  /**
+   * @param {{}} obj
+   */
   static fromJSON(obj) {
     return new Angle(obj._deg)
   }

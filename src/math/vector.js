@@ -18,9 +18,15 @@ class Vector {
     this.x = x || 0;
     this.y = y || 0;
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "vector"
   }
