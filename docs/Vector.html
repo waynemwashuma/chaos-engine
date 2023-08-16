@@ -225,7 +225,7 @@
 
         
             
-<h4 class="name" id="ZERO"><span class="type-signature"></span>ZERO<span class="type-signature"> :<a href="Vector.html">Vector</a></span></h4>
+<h4 class="name" id="ZERO"><span class="type-signature">(readonly) </span>ZERO<span class="type-signature"> :<a href="Vector.html">Vector</a></span></h4>
 
 
 
@@ -279,7 +279,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line454">line 454</a>
+        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line457">line 457</a>
     </li></ul></dd>
     
 
@@ -1032,7 +1032,7 @@ to this vector.
     
 
     
-    <h4 class="name" id="cross"><span class="type-signature"></span>cross<span class="signature">(vproduct)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="cross"><span class="type-signature"></span>cross<span class="signature">(v)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
     
@@ -1076,7 +1076,7 @@ to this vector.
 
         <tr>
             
-                <td class="name"><code>vproduct</code></td>
+                <td class="name"><code>v</code></td>
             
 
             <td class="type">
@@ -3175,7 +3175,7 @@ dividing its components with its length.
     
 
     
-    <h4 class="name" id="reflect"><span class="type-signature"></span>reflect<span class="signature">(normal)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
+    <h4 class="name" id="reflect"><span class="type-signature"></span>reflect<span class="signature">(normal, target<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
     
 
     
@@ -3207,6 +3207,8 @@ dividing its components with its length.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -3232,10 +3234,51 @@ dividing its components with its length.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">the unit vector perpendicular to reflection surface</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Vector.html">Vector</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -3276,7 +3319,7 @@ dividing its components with its length.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line307">line 307</a>
+        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line308">line 308</a>
     </li></ul></dd>
     
 
@@ -3436,7 +3479,7 @@ dividing its components with its length.
     
 
     
-    <h4 class="name" id="rotate"><span class="type-signature"></span>rotate<span class="signature">(Angle)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="rotate"><span class="type-signature"></span>rotate<span class="signature">(rad)</span><span class="type-signature"> &rarr; {this}</span></h4>
     
 
     
@@ -3480,13 +3523,13 @@ dividing its components with its length.
 
         <tr>
             
-                <td class="name"><code>Angle</code></td>
+                <td class="name"><code>rad</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Vector.html">Vector</a></span>
+<span class="param-type">number</span>
 
 
             
@@ -3496,7 +3539,7 @@ dividing its components with its length.
 
             
 
-            <td class="description last">in radians</td>
+            <td class="description last">Angle in radians</td>
         </tr>
 
     
@@ -4387,7 +4430,7 @@ array if not provided one</td>
     
 
     
-    <h4 class="name" id=".fromDeg"><span class="type-signature">(static) </span>fromDeg<span class="signature">(degree, target)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
+    <h4 class="name" id=".fromDeg"><span class="type-signature">(static) </span>fromDeg<span class="signature">(degree, target<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
     
 
     
@@ -4420,6 +4463,8 @@ given angle from the positive x axis
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -4445,6 +4490,14 @@ given angle from the positive x axis
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -4467,6 +4520,16 @@ given angle from the positive x axis
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -4566,7 +4629,7 @@ given angle from the positive x axis
     
 
     
-    <h4 class="name" id=".fromRad"><span class="type-signature">(static) </span>fromRad<span class="signature">(radian, target)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
+    <h4 class="name" id=".fromRad"><span class="type-signature">(static) </span>fromRad<span class="signature">(radian, target<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
     
 
     
@@ -4599,6 +4662,8 @@ given angle starting from the positive x axis.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -4624,6 +4689,14 @@ given angle starting from the positive x axis.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -4646,6 +4719,16 @@ given angle starting from the positive x axis.
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -5460,7 +5543,7 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
     
 
     
-    <h4 class="name" id=".lerp"><span class="type-signature">(static) </span>lerp<span class="signature">(v1, v2, t, target)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
+    <h4 class="name" id=".lerp"><span class="type-signature">(static) </span>lerp<span class="signature">(v1, v2, t, target<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
     
 
     
@@ -5492,6 +5575,8 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -5517,6 +5602,14 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -5539,6 +5632,14 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -5563,6 +5664,14 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -5585,6 +5694,16 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -5630,7 +5749,7 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line420">line 420</a>
+        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line421">line 421</a>
     </li></ul></dd>
     
 
@@ -5684,7 +5803,7 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
     
 
     
-    <h4 class="name" id=".random"><span class="type-signature">(static) </span>random<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
+    <h4 class="name" id=".random"><span class="type-signature">(static) </span>random<span class="signature">(target<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Vector.html">Vector</a>}</span></h4>
     
 
     
@@ -5701,6 +5820,67 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Vector.html">Vector</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -5736,7 +5916,7 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line408">line 408</a>
+        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line409">line 409</a>
     </li></ul></dd>
     
 
@@ -5891,7 +6071,7 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line434">line 434</a>
+        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line435">line 435</a>
     </li></ul></dd>
     
 
@@ -6046,7 +6226,7 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line444">line 444</a>
+        <a href="math_vector.js.html">math/vector.js</a>, <a href="math_vector.js.html#line445">line 445</a>
     </li></ul></dd>
     
 
@@ -6110,13 +6290,13 @@ vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="Circle.html">Circle</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Grid.html">Grid</a></li><li><a href="ImageSprite.html">ImageSprite</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Particle.html">Particle</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="StaticImageSprite.html">StaticImageSprite</a></li><li><a href="System.html">System</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#r">r</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="System.html">System</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#vertices">vertices</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Jul 07 2023 15:03:24 GMT+0300 (East Africa Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Aug 16 2023 21:34:19 GMT+0300 (East Africa Time)
 </footer>
 
 <script> prettyPrint(); </script>
