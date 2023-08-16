@@ -209,6 +209,9 @@ class Entity {
   /**
    * A helper function to create a new Entity with transform,movable and bounds components.
    * 
+   * @param {number} x
+   * @param {number} y
+   * @param {number} a
    * @returns {Entity}
    */
   static Default(x, y, a) {

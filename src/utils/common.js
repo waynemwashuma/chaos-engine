@@ -15,7 +15,7 @@ let tmpID = 0
  * @param {T[]} arr1
  * @param {T[]} arr2
  */
-Utils.appendArr = function(arr1, arr2) {
+Utils.appendArr = function appendArr(arr1, arr2) {
   for (var i = 0; i < arr2.length; i++) {
     arr1.push(arr2[i])
   }
@@ -138,7 +138,12 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
     configurable: false
   })
 }
-
+/**
+ * Mixes the functions required by a system into a class.
+ * 
+ * @memberof Utils
+ * @param {Function} system the class constructor function to add methods to.
+ */
 Utils.inheritSystem = function(system) {
   if (system == void 0 || typeof system !== "function") return
   let proto = system.prototype

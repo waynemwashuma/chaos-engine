@@ -74,20 +74,6 @@ class Sprite {
   set orientation(x) {
     this._orientation.copy(x)
   }
-  /**
-   * Override this function.
-   * The canvas is already transformed to the position and rotation of the sprite.
-   * 
-   * @protected
-   * 
-   */
-  draw(ctx) {
-
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   */
   render(ctx, dt) {
     ctx.save()
     ctx.beginPath()
@@ -118,9 +104,6 @@ class Sprite {
     this._scale = new Vector(1,1)
     return this
   }
-
-
-  update() {}
 }
 Utils.inheritComponent(Sprite)
 export {

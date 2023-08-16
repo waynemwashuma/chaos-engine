@@ -412,7 +412,8 @@ class Manager {
   /**
    * Removes a system from the manager.
    * 
-   * @param {string} n The name of the system.
+   * @param {string} n The name of the system
+   * @returns {void}
    * 
    */
   unregisterSystem(n) {
@@ -458,6 +459,7 @@ class Manager {
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
    * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+   * @param {Entity[]} [target]
    * 
    * @returns {Entity[]} 
    */
@@ -489,7 +491,7 @@ class Manager {
    * 
    * @param {string[]} tags An array containing the tags to be searched
    * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
-   * 
+   * @param {Entity[]} target
    * @returns {Entity[]} 
    */
   getEntitiesByTags(tags, entities = this.objects, target = []) {
@@ -518,6 +520,7 @@ class Manager {
    * Deep copies an entity
    * 
    * @deprecated
+   * @private
    * @returns {Entity}
    */
   clone(obj) {

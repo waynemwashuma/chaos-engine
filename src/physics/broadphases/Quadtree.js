@@ -476,5 +476,5 @@ export {
 /**
  * @callback Traverser
  * @param {Node} node
- * @returns boolean
+ * @returns {boolean}
 */

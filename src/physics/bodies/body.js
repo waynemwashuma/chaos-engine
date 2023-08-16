@@ -249,9 +249,15 @@ class Body {
   get physicsType() {
     return ObjType.BODY
   }
+  /**
+   * @type string
+  */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+    /**
+   * @type string
+  */
   get CHAOS_OBJ_TYPE() {
     return "body"
   }

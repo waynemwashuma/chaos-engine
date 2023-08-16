@@ -1,4 +1,4 @@
-import { Vector,Angle }from "../../math/index.js"
+import { Vector, Angle } from "../../math/index.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
 
@@ -32,13 +32,13 @@ class Shape {
    * The vertices describing the shape.
    * 
    * @type Vector[]
-  */
+   */
   vertices = null
   /**
    * Keeps the original normals and vertices of this shape
    * 
    * @type Geometry
-  */
+   */
   geometry = null
 
   /**
@@ -52,18 +52,23 @@ class Shape {
     this.vertices = vertices.map(v => v.clone())
     this.geometry = new Geometry(vertices)
   }
-
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "shape"
   }
   /**
    * The area occupied by a shape.
    * @type number
-  */
-  get area(){
+   */
+  get area() {
     return 0
   }
   /**
@@ -95,7 +100,7 @@ class Shape {
    * @param {Vector[]} target 
    * @returns {Vector[]}
    */
-  getVertices(axis,target) {
+  getVertices(axis, target) {
     return this.vertices
   }
 
