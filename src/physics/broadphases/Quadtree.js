@@ -269,8 +269,9 @@ class Node {
     return false
   }
   /**
+   * @template T
    * @param {Traverser} func
-   * @param {[]} target
+   * @param {T[]} target
    *  @returns []
    */
   traverse(func, target) {
