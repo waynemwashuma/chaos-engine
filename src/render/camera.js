@@ -1,46 +1,34 @@
 import { Angle, Vector, Matrix } from "../math/index.js"
 class Camera {
+  /**
+   * @private
+   * @type Vector
+   */
   _position = new Vector()
-  constructor(renderer, position) {
-    this.transformMatrix = new Matrix()
-    this.target = null
-    this.lerpFactor = 0.5
+  /**
+   * @private
+   * @type Vector
+   */
+  transformMatrix = new Matrix()
+  /**
+   * @type Renderer
+   */
+  renderer = null
+  constructor(renderer) {
     this.renderer = renderer
-    this.offset = new Vector()
-    this._position = new Vector()
-    this._actualPosition = new Vector()
-    this.position.set(position?.x || 0, position?.y || 0)
-    this.orientation = new Angle()
   }
+  /**
+   * @type Vector
+   */
   get position() {
-    return this._actualPosition
+    return this._position
   }
   set position(x) {
-    this._actualPosition.copy(x)
+    this._position.copy(x)
   }
-  get transform() {
-    return this.position
-  }
-  update() {
-    if (this.target)
-      Vector.lerp(
-        this._position,
-        this.target,
-        this.lerpFactor,
-        this._position
-      )
-    this._actualPosition
-      .copy(this._position)
-      .add(this.offset)
-  }
-  clear(ctx) {
-    ctx.setTransform()
-  }
+  update() {}
   dispose() {
     this.renderer = null
-  }
-  follow(position) {
-    this.target = position
   }
 }
 export {

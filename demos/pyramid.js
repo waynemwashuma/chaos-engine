@@ -1,4 +1,4 @@
-import { Box, BodySprite, Entity, Vector } from "/dist/chaos.module.js"
+import { Box, BodySprite, Entity, Vector } from "/src/index.js"
 
 export function pyramid(manager) {
   stackpyramid(200, 100, 50, 50, 3, 5, manager)
@@ -11,7 +11,7 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
       let entity = Entity.Default(dx + w * i, y + (h + spacing) * j)
-        .attach("mesh",new BodySprite())
+        .attach("sprite",new BodySprite())
         .attach("body",new Box(w, h))
       manager.add(entity)
     }

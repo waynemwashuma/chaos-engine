@@ -1,14 +1,13 @@
 import {
   Vector,
   Manager,
-  DebugMesh,
   Box,
   Ball,
-  SpringConstraint,
+  DistanceConstraint,
   rand,
   Entity,
   BodySprite
-} from "/dist/chaos.module.js"
+} from "/src/index.js"
 
 export function bridge(manager) {
   let world = manager.getSystem("world")
@@ -17,10 +16,10 @@ export function bridge(manager) {
   
   let pin1 = Entity.Default(100, 200)
     .attach("body",new Box(20, 20))
-    .attach("mesh",new BodySprite())
+    .attach("sprite",new BodySprite())
   let pin2 = Entity.Default(350, 200)
     .attach("body",new Box(20, 20))
-    .attach("mesh",new BodySprite())
+    .attach("sprite",new BodySprite())
   let chain = createChain(50, 200, 50, 10, 5, 50, pin1, pin2)
 
   pin1.get("body").mass = 0
@@ -37,7 +36,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     bodies = [
       Entity.Default(x * i, y)
       .attach("body", prev)
-      .attach("mesh", new BodySprite())
+      .attach("sprite", new BodySprite())
       ],
     constraints = []
 
@@ -45,24 +44,24 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
 
   for (var i = 1; i < number; i++) {
     let chain = new Box(w, h)
-    let constraint = new SpringConstraint(prev, chain, { x: w / 2, y: 0 }, { x: -w / 2, y: 0 })
+    let constraint = new DistanceConstraint(prev, chain, { x: w / 2, y: 0 }, { x: -w / 2, y: 0 })
 
     bodies.push(
       Entity.Default(x * i, y)
       .attach("body", chain)
-      .attach("mesh", new BodySprite())
+      .attach("sprite", new BodySprite())
     )
     constraints.push(constraint)
     chain.mask.group = 1
     prev = chain
   }
   if (pin1) {
-    let constraint = new SpringConstraint(pin1.get("body"), bodies[0].get("body"), { x: 0, y: 0 }, { x: -w / 2, y: 0 })
+    let constraint = new DistanceConstraint(pin1.get("body"), bodies[0].get("body"), { x: 0, y: 0 }, { x: -w / 2, y: 0 })
     constraints.push(constraint)
     pin1.get("body").mask.group = 1
   }
   if (pin2) {
-    let constraint = new SpringConstraint(
+    let constraint = new DistanceConstraint(
       pin2.get("body"),
       bodies[bodies.length - 1].get("body"), { x: 0, y: 0 }, { x: w / 2, y: 0 }
     )

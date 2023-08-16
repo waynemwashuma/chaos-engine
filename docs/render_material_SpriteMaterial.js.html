@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: render/material/SpriteMaterial.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: render/material/SpriteMaterial.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { drawImage } from "../utils/canvasfunc.js"
+/**
+ * 
+ * @implements Material
+*/
+export class SpriteMaterial {
+  /**
+   * @type HTMLImageElement
+   */
+  img = null
+  /**
+   * The index of the current action.
+   * 
+   * @private
+   * @type number
+   */
+  _index = 0
+  /**
+   * The current action's max frame index.
+   * 
+   * @private
+   * @type number
+   */
+  _maxFrame = 0
+  /**
+   * The current frame of an action.
+   * 
+   * @private
+   * @type number
+   */
+  _frame = 0
+  /**
+   * Used with ImageSprite#frameRate to throttle the fps of the sprite.
+   * 
+   * @private
+   * @type number
+   */
+  _accumulator = 0
+  /**
+   * The maximum frames for each given action.
+   * 
+   * @type number
+   */
+  frameRate = 1 / 60
+  /**
+   * The current action.
+   * 
+   * @private
+   * @type number[]
+   */
+  _maxFrames = null
+  /**
+   * The width of the sprite.
+   * 
+   * @type number
+   */
+  width = 0
+  /**
+   * The height of the sprite..
+   * 
+   * @type number
+   */
+  height = 0
+  /**
+   * The width of a frame.
+   * 
+   * @private
+   * @type number
+   */
+  frameWidth = 0
+  /**
+   * The height of a frame..
+   * 
+   * @private
+   * @type number
+   */
+  frameHeight = 0
+  /**
+   * @param {HTMLImageElement} img Image to draw
+   * @param {number} [frames] Number of cutouts in the sprite in the X axis of the image.
+   * @param {number} [actions] Number of cutouts in the sprite in the Y axis of the image.
+   */
+  constructor(img, frames=1, actions=1) {
+    this.img = img
+    this.setup(frames,actions)
+  }
+  setup(frames,actions) {
+    this._maxFrame = frames - 1
+    this.width = this.img.width
+    this.height = this.img.height
+    this.frameWidth = this.img.width / (frames || 1)
+    this.frameHeight = this.img.height / actions
+  }
+    /**
+   * Sets max number of frames for a given action
+   * 
+   * @param {number} action 
+   * @param {number} max
+   */
+  setMaxFrames(action, max) {
+    this._maxFrames = max
+  }
+  /**
+   * Sets a given action to be rendered
+   * 
+   * @param {number} index
+   */
+  setAction(index) {
+    this._maxFrame = (this._maxFrames[index] || 0)
+    this._index = index
+    this._frame = 0
+  }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+   */
+  render(ctx,dt) {
+    drawImage(
+      ctx,
+      this.img,
+      -this.frameWidth / 2,
+      -this.frameHeight / 2,
+      this.frameWidth,
+      this.frameHeight,
+      this._frame,
+      this._index
+    )
+    this._accumulator += dt
+    if (this._accumulator &lt; this.frameRate) return
+    this._accumulator = 0
+    this._frame += 1
+    if (this._frame >= this._maxFrame)
+      this._frame = 0
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="System.html">System</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#vertices">vertices</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Aug 16 2023 21:34:19 GMT+0300 (East Africa Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

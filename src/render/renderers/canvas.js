@@ -20,6 +20,11 @@ export class Renderer2D extends Renderer {
     super(canvas,canvas.getContext("2d"))
     
   }
+
+  add(sprite){
+    super.add(sprite)
+    sprite.geometry?.init(this.ctx)
+  }
   clear() {
     this.ctx.setTransform()
     let h = this.height,

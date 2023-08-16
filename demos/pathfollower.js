@@ -12,7 +12,7 @@ import {
   WanderBehaviour,
   Path,
   Vector
-} from "/dist/chaos.module.js"
+} from "/src/index.js"
 
 export function pathfollower(manager) {
   
@@ -31,8 +31,8 @@ export function pathfollower(manager) {
   a.attach("body", new Ball(10))
   b.attach("body", new Ball(20))
 
-  a.attach("mesh", new AgentSprite())
-  b.attach("mesh", new BodySprite())
+  a.attach("sprite", new AgentSprite())
+  b.attach("sprite", new BodySprite())
 
   a.attach("agent", aa)
   b.attach("agent", ab)

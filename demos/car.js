@@ -6,7 +6,7 @@ import {
   Ball,
   Composite,
   BodySprite
-} from  "/dist/chaos.module.js"//"/src/index.js"
+} from  "/src/index.js"//"/src/index.js"
 
 export function car(manager) {
   let world = manager.getSystem("world")
@@ -40,7 +40,7 @@ function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
   carCompositeBody.add(constraint2)
 
   car.attach("body", carCompositeBody)
-    .attach("mesh", new BodySprite())
+    .attach("sprite", new BodySprite())
 
   carbody.position.set(x, y)
   tirebody1.position.set(x + 30, y + 25)

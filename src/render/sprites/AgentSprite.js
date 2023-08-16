@@ -1,17 +1,21 @@
 import { Sprite } from "./sprite.js"
+import { BufferGeometry } from "../geometry/index.js"
+import { BasicMaterial } from "../material/index.js"
 import { Vector } from "../../math/index.js"
-import { circle,rect,vertices,stroke,fill } from "../utils/index.js"
+import { circle, rect, vertices, stroke, fill } from "../utils/index.js"
 
-let path = [
+let geometry = new BufferGeometry([
   new Vector(-10, -10),
   new Vector(-10, 10),
   new Vector(20, 0)
-  ]
-  /**
-   * Used for debugging agents.
-   * 
-   * @augments Sprite
-  */
+  ])
+let material = new BasicMaterial()
+material.fill = "purple"
+/**
+ * Used for debugging agents.
+ * 
+ * @augments Sprite
+ */
 export class AgentSprite extends Sprite {
   /**
    * 
@@ -19,21 +23,17 @@ export class AgentSprite extends Sprite {
    * @type Agent
    */
   agent = null
+  constructor() {
+    super(geometry,material)
+  }
   /**
-   * @param {Entity} entity
+   * @inheritdoc
+   * @param {Entity} entity 
    */
   init(entity) {
     super.init(entity)
     this.requires("agent")
     this.agent = entity.get("agent")
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
-    vertices(ctx,path, true)
-    fill(ctx,"purple")
-    stroke(ctx,"black")
   }
   /**
    * @param {CanvasRenderingContext2D} ctx
