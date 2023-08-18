@@ -94,10 +94,10 @@ class Agent {
     this.behaviours.update(inv_dt)
   }
   /**
-   * @param {Renderer} renderer
+   * @param {CanvasRenderingContext2D} ctx
    */
-  draw(renderer) {
-    this.behaviours.draw(renderer)
+  draw(ctx) {
+    this.behaviours.draw(ctx)
   }
 }
 Utils.inheritComponent(Agent)
