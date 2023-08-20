@@ -9,12 +9,12 @@ function defaultCollisionHandler(clmds) {
     a = clmds[i].bodyA.entity.getHandler("collision")
     b = clmds[i].bodyB.entity.getHandler("collision")
 
-    if (a) a.call(
+    if (a) a(
       clmds[i].bodyA.entity,
       clmds[i].bodyB.entity,
       clmds[i]
     )
-    if (b) b.call(
+    if (b) b(
       clmds[i].bodyB.entity,
       clmds[i].bodyA.entity,
       clmds[i]
@@ -33,12 +33,12 @@ function defaultPrecollisionHandler(clmds) {
     a = clmds[i].a.entity.getHandler("precollision")
     b = clmds[i].b.entity.getHandler("precollision")
 
-    if (a) a.call(
+    if (a) a(
       clmds[i].a.entity,
       clmds[i].b.entity,
       clmds[i]
     )
-    if (b) b.call(
+    if (b) b(
       clmds[i].b.entity,
       clmds[i].a.entity,
       clmds[i]
