@@ -1,38 +1,23 @@
 import { Angle, Vector, Matrix } from "../math/index.js"
+import {Transform} from '../manager/index.js'
 class Camera {
   /**
-   * @private
-   * @type Vector
+   * @readonly
+   * @type Transform
    */
-  _position = new Vector()
-  /**
-   * @private
-   * @type Vector
-   */
-  transformMatrix = new Matrix()
-  /**
-   * @type Renderer
-   */
-  renderer = null
-  /**
-   * @param {Renderer} renderer
-   */
-  constructor(renderer) {
-    this.renderer = renderer
-  }
+  transform = new Transform()
+
+  constructor() { }
   /**
    * @type Vector
    */
   get position() {
-    return this._position
+    return this.transform.position
   }
   set position(x) {
-    this._position.copy(x)
+    this.transform.position.copy(x)
   }
   update() {}
-  dispose() {
-    this.renderer = null
-  }
 }
 export {
   Camera

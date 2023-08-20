@@ -39,14 +39,18 @@ export class Renderer2D extends Renderer {
    * @param {number} dt
    */
   update(dt) {
-    this.camera.update(dt)
+    this.camera.update()
     this.perf.lastTimestamp = performance.now()
     this.clear()
     if (this.background != void 0)
       this.background.update(this, dt)
+    this.ctx.save()
+    this.ctx.translate(this.camera.transform.position.x,-this.camera.transform.position.y)
+    this.ctx.rotate(this.camera.transform.orientation.radian)
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].render(this.ctx, dt)
     }
+    this.ctx.restore()
     for (var i = 0; i < this.renderLast.length; i++) {
       this.renderLast[i].update(this, dt, this.camera.transform)
     }
