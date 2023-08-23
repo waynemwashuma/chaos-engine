@@ -120,7 +120,7 @@ class Manager {
    * @ignore.
    * This is an artifact of me debugging this.
    * TODO - Should implement a better soluton
-  */
+   */
   perf = {
     lastTimestamp: 0,
     total: 0
@@ -130,12 +130,12 @@ class Manager {
    * 
    * @readonly
    * @type Loader
-  */
+   */
   loader = new Loader()
   /**
    * @readonly
    * @type EventDispatcher
-  */
+   */
   events = new EventDispatcher()
   /**
    * @private
@@ -559,6 +559,14 @@ class Manager {
         Utils.removeElement(list, index)
       }
     }
+  }
+  /**
+   * @param {BoundingCircle | BoundingBpx  } bound
+   * @returns Entity[]
+   */
+  query(bound) {
+    ///TODO - What will happen if there is no world?   ...Yes,it will crash.
+    return this._coreSystems.world.query(bound)
   }
 }
 export {
