@@ -230,6 +230,43 @@ class Entity {
   query(bound, target = []) {
     return this._global.query(bound, target)
   }
+  /**
+   * Todo - type serialization docs correctly
+   * @param {{}} obj
+   * @param {Map<string,function>} compList 
+   */
+  static fromJSON(obj, compList) {
+    let entity = new Entity()
+    
+    obj.tags.forEach((a)=>{
+      entity.addTag(a)
+    })
+    for (var key in obj.comps) {
+      let c = compList[key].fromJSON(obj.comps[key])
+      entity.attach(key,c)
+    }
+    return entity
+  }
+  /**
+   * @returns {{
+     deg: number,
+     type:string
+   }}
+   */
+  static toJson() {
+    let obj = {
+      comps:{},
+      tags:[]
+    }
+    for (var key in this._components) {
+      obj.comps[key] = this._components[key].toJson()
+    }
+    this._tags.forEach((a)=>{
+      obj.tags.push(a)
+    })
+    obj.type = this.CHAOS_OBJ_TYPE
+    return obj
+  }
 }
 export {
   Entity
