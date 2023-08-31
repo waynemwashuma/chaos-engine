@@ -113,6 +113,17 @@ class Shape {
   static calcInertia() {
     throw new Error("Implement in the children classes")
   }
+  toJson(){
+    let obj = {
+      geometry:this.geometry.toJson(),
+      shapwType:this.type,
+      offset:this.offPosition.toJson(),
+      offAngle:this.offAngle
+    }
+  }
+  fromJson(obj){
+    
+  }
   static CIRCLE = 0
   static POLYGON = 1
 }

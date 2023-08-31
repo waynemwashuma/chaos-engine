@@ -78,6 +78,12 @@ class Geometry {
       vertex.add(pos)
     }
   }
+  toJson(){
+    let obj = {
+      vertices:this.vertices.map((v)=>v.toJson())
+    }
+    return pbj
+  }
 }
 
 export {
