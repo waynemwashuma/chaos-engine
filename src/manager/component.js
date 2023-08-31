@@ -5,7 +5,7 @@ import { Utils } from "../utils/index.js"
  * A helper class.
  * Since there are no interfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
- * Use instead Utils.inheritComponent if you have your own hierarchy of classes.
+ * Use instead Utils.inheritComponent() if you have your own hierarchy of classes.
  * In typescript,this would be an interface.
  * 
  * @interface
@@ -19,6 +19,18 @@ class Component {
 
   destroy() {
     this.entity = null
+  }
+  /**
+   * @type string
+   */
+  get CHOAS_CLASSNAME() {
+    return this.constructor.name.toLowerCase()
+  }
+  /**
+   * @type string
+   */
+  get CHAOS_OBJ_TYPE() {
+    return "component"
   }
   /**
 
@@ -55,6 +67,12 @@ class Component {
    */
   query(bound, target = []) {
     return this.entity.query(bound, target)
+  }
+  static fromJson() {
+    throw "Implement static method fromJson() in your component " + this.CHOAS_CLASSNAME
+  }
+  static toJson() {
+    throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
   }
 }
 Utils.inheritComponent(Component)
