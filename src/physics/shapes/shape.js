@@ -115,6 +115,7 @@ class Shape {
   }
   toJson(){
     let obj = {
+      type:this.CHAOS_OBJ_TYPE,
       geometry:this.geometry.toJson(),
       shapwType:this.type,
       offset:this.offPosition.toJson(),
@@ -122,7 +123,10 @@ class Shape {
     }
   }
   fromJson(obj){
-    
+    this.offAngle = obj.offAngle
+    this.offPosition = obj.offset
+    this.geometry.fromJson(obj.geometry)
+    this.vertices = this.geometry.vertices.map(v=>v.clone())
   }
   static CIRCLE = 0
   static POLYGON = 1
