@@ -44,6 +44,7 @@ class Geometry {
   }
   /**
    * @private
+   * @returns Vector[]
    */
   calcFaceNormals() {
     const axes = [],
@@ -83,6 +84,11 @@ class Geometry {
       vertices:this.vertices.map((v)=>v.toJson())
     }
     return pbj
+  }
+  fromJson(obj){
+    this.vertices = obj.vertices.map(v=>new Vector().fromJson(v))
+    this.normals = this.calcFaceNormals()
+    this._dynNormals = this.normals.map(e => e.clone())
   }
 }
 
