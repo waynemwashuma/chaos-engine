@@ -235,15 +235,15 @@ class Entity {
    * @param {{}} obj
    * @param {Map<string,function>} compList 
    */
-  static fromJSON(obj, compList) {
-    let entity = new Entity()
-    
-    obj.tags.forEach((a)=>{
+  fromJSON(obj, compList) {
+    let entity = this
+
+    obj.tags.forEach((a) => {
       entity.addTag(a)
     })
     for (var key in obj.comps) {
-      let c = compList[key].fromJSON(obj.comps[key])
-      entity.attach(key,c)
+      let c =new compList[key]().fromJSON(obj.comps[key])
+      entity.attach(key, c)
     }
     return entity
   }
@@ -253,15 +253,15 @@ class Entity {
      type:string
    }}
    */
-  static toJson() {
+  toJson() {
     let obj = {
-      comps:{},
-      tags:[]
+      comps: {},
+      tags: []
     }
     for (var key in this._components) {
       obj.comps[key] = this._components[key].toJson()
     }
-    this._tags.forEach((a)=>{
+    this._tags.forEach((a) => {
       obj.tags.push(a)
     })
     obj.type = this.CHAOS_OBJ_TYPE
