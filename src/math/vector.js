@@ -333,6 +333,14 @@ class Vector {
     return this
   }
 
+toJson(){
+  return this
+}
+fromJspn(obj){
+  this.x = obj.x
+  this.y = obj.y
+}
+
   [Symbol.iterator] = function*() {
     yield this.x
     yield this.y
