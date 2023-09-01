@@ -123,6 +123,12 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
   proto.query = function(bound, target = []) {
     return this.entity.query(bound, target)
   }
+  if (!proto.toJson) {
+    console.log(proto);
+    proto.toJson = function() {
+      throw "Error, implement .toJson() in the class " + this.CHOAS_CLASSNAME
+    }
+  }
   Object.defineProperty(proto, "CHOAS_CLASSNAME", {
     get: function() {
       return this.constructor.name.toLowerCase()

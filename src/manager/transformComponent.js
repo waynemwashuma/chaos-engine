@@ -19,6 +19,16 @@ class Transform {
     this.orientation = new Angle(a)
   }
   init(){}
+  toJson(){
+    return {
+      position: this.position.toJson(),
+      orientation:this.orientation.toJson()
+    }
+  }
+  fromJson(obj){
+    this.position.fromJson(obj.position)
+    this.orientation.fromJson(obj.orientation)
+  }
 }
 export {
   Transform
