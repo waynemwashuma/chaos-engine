@@ -65,12 +65,9 @@ class Angle {
   copy(angle) {
     this.degree = angle.degree
   }
-  /**
-   * @param {{}} obj
-   */
-  static fromJSON(obj) {
-    //TODO - When converted to rad on the first todo,change the naming
-    return new Angle(obj.deg)
+  
+  fromJSON(obj) {
+    this.degree = obj.deg
   }
   /**
    * @returns {{
@@ -78,10 +75,10 @@ class Angle {
      type:string | number
    }}
    */
-  static toJson() {
+  toJson() {
     return {
-      deg:this._deg,
-      type:this.CHAOS_OBJ_TYPE
+      deg: this._deg,
+      type: this.CHAOS_OBJ_TYPE
     }
   }
 }
