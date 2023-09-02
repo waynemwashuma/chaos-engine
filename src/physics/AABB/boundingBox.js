@@ -123,7 +123,7 @@ export class BoundingBox extends Component {
    * Deep copies a bounding box to a new one.
    * 
    * @returns BoundingBox
-  */
+   */
   clone() {
     return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
   }
@@ -131,7 +131,7 @@ export class BoundingBox extends Component {
    * Deep copies another bounding box.
    * 
    * @param {BoundingBox} bounds
-  */
+   */
   copy(bounds) {
     this.pos.x = bounds.pos.x
     this.pos.y = bounds.pos.y
@@ -139,6 +139,24 @@ export class BoundingBox extends Component {
     this.min.y = bounds.min.y
     this.max.x = bounds.max.x
     this.max.y = bounds.max.y
+  }
+  toJson() {
+    return {
+      posX: this.pos.x,
+      posY: this.pos.y,
+      minX: this.min.x,
+      minY: this.min.y,
+      maxX: this.max.x,
+      maxY: this.max.y,
+    }
+  }
+  fromJson(obj) {
+    this.pos.x = obj.posX
+    this.pos.y = obj.posY
+    this.min.x = obj.minX
+    this.min.y = obj.minY
+    this.max.x = obj.maxX
+    this.max.y = obj.maxY
   }
   /**
    * Combines two bounds to create a new one that covers the previous two.
