@@ -162,18 +162,7 @@ game.add(ground)
 
 # **** WARNING ****
 
-Upgrade from v0.0.0 to v0.1.0 as it is not yet stable
-
-Some of these include breaking changes like 
-the transfer from inheritance model to the 
-entity component systems model
- 
-The legacy folder contains the last working
-form of the inheritance model,check the differences between the last commit and it(many changes were realised between the two)
-
-Major changes were made during the last two months.Check the differences between legacy and src
-
-This is not yet a stable version hence dont rely on it to make production apps
+This is not yet a stable version hence dont rely on it to make production apps yet.
 
  
  
@@ -183,10 +172,8 @@ This is not yet a stable version hence dont rely on it to make production apps
  - Stabilize the collision response to work well with large forces such as (gravity =  10000)
  - Stabilize rotational stacking in the physics engine
  - Add game state class for managing the game
- 
- - Migrate some other parts of the code to the new model( Meshes for example )✅
  - Add an animation system.
  - Add tutorials to this game engine
- - Add documentation to every file in this project.✅
  - Add appropriate demos to the project and get a website running for them 🟠
  - Add some error handling mechanisms 🟠
+ - Add Serialization/Deserialization of objects(on the way) 🟠
