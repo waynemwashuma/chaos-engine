@@ -83,7 +83,7 @@ class Geometry {
     let obj = {
       vertices:this.vertices.map((v)=>v.toJson())
     }
-    return pbj
+    return obj
   }
   fromJson(obj){
     this.vertices = obj.vertices.map(v=>new Vector().fromJson(v))
