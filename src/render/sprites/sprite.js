@@ -7,6 +7,7 @@ let v = new Vector()
  * Extend it to create your custom behaviour.
  * 
  * @implements Component
+ * TODO - ADD id property to this class and Group class.
  */
 class Sprite {
   /**
@@ -102,6 +103,23 @@ class Sprite {
     //TODO - Correct this later
     this._scale = new Vector(1,1)
     return this
+  }
+  toJson(){
+    let obj = {
+      pos:this._position.toJson(),
+      angle:this._orientation.toJson(),
+      geometry:this.geometry?.toJson(),
+      material:this.material?.toJson(),
+      parent:this.parent?.id
+    }
+    return obj
+  }
+  fromJson(obj,renderer){
+    this.geometry?.fromJson(obj.geometry)
+    this.material?.fromJson(obj.material)
+    this.position.fromJson(obj.pos)
+    this._orientation.fromJson(obj.angle)
+    this.parent = renderer.getById(obj.parent)
   }
 }
 Utils.inheritComponent(Sprite)
