@@ -124,7 +124,7 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
     return this.entity.query(bound, target)
   }
   if (!proto.toJson) {
-    console.log(proto);
+    //console.log(proto);
     proto.toJson = function() {
       throw "Error, implement .toJson() in the class " + this.CHOAS_CLASSNAME
     }
