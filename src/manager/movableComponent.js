@@ -22,13 +22,13 @@ class Movable extends Component {
   toJson() {
     return {
       velocity: this.velocity.toJson(),
-      rotation: this.rptatjon.toJson(),
+      rotation: this.rotation.toJson(),
       acceleration: this.acceleration.toJson()
     }
   }
   fromJson(obj) {
     this.velocity.fromJson(obj.velocity)
-    rotation: this.rptatjon.toJson()
+    this.rotation.fromJson(obj.rptatjon)
     this.acceleration.fromJson(obj.acceleration)
   }
 }
