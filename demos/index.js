@@ -15,7 +15,6 @@ import {
   Renderer2D,
   World,
   AgentManager,
-  DebugMesh,
   Entity,
   Box,
   BodySprite,
@@ -92,7 +91,7 @@ export const demos = {
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
-    renderer.addUI(new DebugMesh(this.manager))
+    //renderer.addUI(new DebugMesh(this.manager))
   },
   setup: function(name) {
     this.manager.clear()

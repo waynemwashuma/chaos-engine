@@ -2,7 +2,7 @@ import { Vector, Angle, sq } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
-
+import {Shape} from "../shapes/index.js"
 let defaults = new Vector()
 
 /**
@@ -249,9 +249,15 @@ class Body {
   get physicsType() {
     return ObjType.BODY
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "body"
   }
@@ -454,12 +460,67 @@ class Body {
       this.shapes[i].update(this.position, this._orientation.radian)
     }
     for (var i = 0; i < this.anchors.length; i++) {
-      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian)//.add(this.position)
+      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian) //.add(this.position)
     }
     if (this.autoUpdateBound)
       this.bounds.calculateBounds(this, this.boundPadding)
     this.bounds.update(this.position)
     //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
+  }
+  toJson() {
+    let obj = {
+      id:this.id,
+      position: this.position.toJson(),
+      velocity: this.velocity.toJson(),
+      acceleration: this.acceleration.toJson(),
+      orientation: this.orientation.toJson(),
+      rotation: this.rotation.toJson(),
+      shapes: [],
+      anchors:[],
+      collisionResponse: this.collisionResponse,
+      allowSleep: this.allowSleep,
+      type: this.CHAOS_OBJ_TYPE,
+      phyType: this.type,
+      mass: this.mass,
+      inertia:this.inertia,
+      autoUpdateBound:this.autoUpdateBound,
+      boundPadding:this.boundPadding,
+      aabbDetectionOnly:this.aabbDetectionOnly,
+      mask:this.mask
+    }
+    this.anchors.forEach((a)=>{
+      obj.anchors.push(a)
+    })
+    this.shapes.forEach((a) => {
+      obj.shapes.push(a.toJson())
+    })
+    return obj
+  }
+  //TODO  - Add way to add shapes to body
+  fromJson(obj){
+    let shapes = []
+    obj.shapes.forEach((shape)=>{
+      shapes.push(Shape.fromJson(shape))
+    })
+    let body = this
+    body.shapes = shapes
+    body.acceleration = obj.acceleration
+    body.velocity = obj.velocity
+    body.position = pbj.position
+    body.rotation = obj.rotation
+    body.orientation = obj.orientation
+    body.mass = obj.mass
+    body.inertia = obj.inertia
+    body.type = obj.phyType
+    body.allowSleep = obj.allowSleep
+    body.aabbDetectionOnly = obj.aabbDetectionOnly
+    body.collisionResponse = obj.collisionResponse
+    body.autoUpdateBound = obj.autoUpdateBound
+    body.id = obj.id
+    body.mask = obj.mask
+    obj.anchors.forEach((v)=>{
+      body.setAnchor(new Vector().fromJson(v))
+    })
   }
   /**
    *Body type that dictates a body cannot move nor respond to collisions.
@@ -479,7 +540,7 @@ class Body {
    * 
    * @static
    * @type number
-  */
+   */
   static DYNAMIC = ObjType.DYNAMIC
 }
 Utils.inheritComponent(Body, false, false)

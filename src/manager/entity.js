@@ -209,6 +209,9 @@ class Entity {
   /**
    * A helper function to create a new Entity with transform,movable and bounds components.
    * 
+   * @param {number} x
+   * @param {number} y
+   * @param {number} a
    * @returns {Entity}
    */
   static Default(x, y, a) {
@@ -226,6 +229,43 @@ class Entity {
    */
   query(bound, target = []) {
     return this._global.query(bound, target)
+  }
+  /**
+   * Todo - type serialization docs correctly
+   * @param {{}} obj
+   * @param {Map<string,function>} compList 
+   */
+  fromJSON(obj, compList) {
+    let entity = this
+
+    obj.tags.forEach((a) => {
+      entity.addTag(a)
+    })
+    for (var key in obj.comps) {
+      let c =new compList[key]().fromJSON(obj.comps[key])
+      entity.attach(key, c)
+    }
+    return entity
+  }
+  /**
+   * @returns {{
+     deg: number,
+     type:string
+   }}
+   */
+  toJson() {
+    let obj = {
+      comps: {},
+      tags: []
+    }
+    for (var key in this._components) {
+      obj.comps[key] = this._components[key].toJson()
+    }
+    this._tags.forEach((a) => {
+      obj.tags.push(a)
+    })
+    obj.type = this.CHAOS_OBJ_TYPE
+    return obj
   }
 }
 export {

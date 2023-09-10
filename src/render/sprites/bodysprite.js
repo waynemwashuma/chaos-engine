@@ -46,6 +46,8 @@ class BodySprite extends Sprite {
   }
   /**
    * @inheritdoc
+   *  @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
   */
   render(ctx, dt) {
 
@@ -128,7 +130,7 @@ class BodySprite extends Sprite {
   }
   /**
    * @inheritdoc
-   * @param {Entity} entity
+   * @param {Entity} parent
    */
   init(parent) {
     this.body = parent.get("body")

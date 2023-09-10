@@ -7,6 +7,7 @@ let v = new Vector()
  * Extend it to create your custom behaviour.
  * 
  * @implements Component
+ * TODO - ADD id property to this class and Group class.
  */
 class Sprite {
   /**
@@ -74,27 +75,12 @@ class Sprite {
   set orientation(x) {
     this._orientation.copy(x)
   }
-  /**
-   * Override this function.
-   * The canvas is already transformed to the position and rotation of the sprite.
-   * 
-   * @protected
-   * 
-   */
-  draw(ctx) {
-
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   */
   render(ctx, dt) {
     ctx.save()
     ctx.beginPath()
     ctx.translate(...this._position)
     ctx.rotate(this._orientation.radian)
     ctx.scale(...this._scale)
-    this.draw(ctx, dt)
     this.material?.render(ctx,dt,this.geometry?.drawable)
     ctx.closePath()
     ctx.restore()
@@ -118,9 +104,23 @@ class Sprite {
     this._scale = new Vector(1,1)
     return this
   }
-
-
-  update() {}
+  toJson(){
+    let obj = {
+      pos:this._position.toJson(),
+      angle:this._orientation.toJson(),
+      geometry:this.geometry?.toJson(),
+      material:this.material?.toJson(),
+      parent:this.parent?.id
+    }
+    return obj
+  }
+  fromJson(obj,renderer){
+    this.geometry?.fromJson(obj.geometry)
+    this.material?.fromJson(obj.material)
+    this.position.fromJson(obj.pos)
+    this._orientation.fromJson(obj.angle)
+    this.parent = renderer.getById(obj.parent)
+  }
 }
 Utils.inheritComponent(Sprite)
 export {
