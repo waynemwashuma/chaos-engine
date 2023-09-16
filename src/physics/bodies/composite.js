@@ -135,7 +135,7 @@ class Composite {
       this.bodies[i].type = x
     }
   }
-  get type(x){
+  get type(){
     return this.bodies[0]?.type 
   }
   /**
