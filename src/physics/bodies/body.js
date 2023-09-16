@@ -203,7 +203,7 @@ class Body {
    * Whether the body should respond to collisions.If false,no collision response will occur but collision events will still be fired.
    * 
    * @type boolean
-   * @default Settings.collisionResponsefired
+   * @default Settings.collisionResponse
    */
   collisionResponse = Settings.collisionResponse
   /**
