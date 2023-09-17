@@ -501,6 +501,7 @@ class Manager {
         target.push(entities[i])
       }
     }
+    return target
   }
   /**
    * Ignore this,im going to remove it and the rest of cloning utilities.
