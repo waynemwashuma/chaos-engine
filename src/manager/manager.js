@@ -271,9 +271,9 @@ class Manager {
   remove(object) {
     let index = this.objects.indexOf(object)
     object.removeComponents()
+    object.reset()
     Utils.removeElement(this.objects, index)
     this.events.trigger("remove", object)
-
   }
   /**
    * This removes all of the entities and components from the manager
