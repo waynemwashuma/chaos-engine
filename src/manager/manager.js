@@ -62,8 +62,6 @@ class Manager {
     world: null,
     renderer: null,
     input: null,
-    //TODO - cleanup this events prop
-    events: null,
     audio: null
   }
   /**
