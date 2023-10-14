@@ -1,10 +1,6 @@
 import { Vector, naturalizePair } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
 import { SAT } from "../SAT/index.js";
-import { ObjType } from "../settings.js"
-
 import { NarrowPhase } from "./Narrowphase.js"
-import { Settings } from "../settings.js"
 
 
 /**
