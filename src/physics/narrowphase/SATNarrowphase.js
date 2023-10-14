@@ -14,9 +14,9 @@ import { Settings } from "../settings.js"
 export class SATNarrowPhase extends NarrowPhase {
   /**
    * @param {CollisionPair[]} contactList 
-   * @param {Manifold[]} clmds
+   * @param {Manifold[]} [clmds=[]]
    */
-  getCollisionPairs(contactList, clmds) {
+  getCollisionPairs(contactList, clmds = []) {
     for (var i = 0; i < contactList.length; i++) {
       let { a, b } = contactList[i]
       a.sleeping = false
@@ -82,5 +82,6 @@ export class SATNarrowPhase extends NarrowPhase {
       if (a.collisionResponse && b.collisionResponse)
         clmds.push(manifold)
     }
+    return clmds
   }
 }
