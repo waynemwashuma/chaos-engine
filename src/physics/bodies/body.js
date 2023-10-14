@@ -2,7 +2,7 @@ import { Vector, Angle, sq } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
-import {Shape} from "../shapes/index.js"
+import { Shape } from "../shapes/index.js"
 let defaults = new Vector()
 
 /**
@@ -52,6 +52,13 @@ class Body {
    * @type Angle
    */
   _rotation = new Angle()
+  /**
+   * Torque of the body
+   * 
+   * @private
+   * @type Angle
+   */
+  _torque = new Angle()
   /**
    * Mass of the body.
    * 
@@ -383,6 +390,28 @@ class Body {
     this.rotation.degree = x
   }
   /**
+   * Torque of a body in degrees
+   * 
+   * @type number 
+   */
+  get torque() {
+    return this._torque
+  }
+  set torque(x) {
+    this._torque.degree = x.degree
+  }
+  /**
+   * Angular acceleration of a body in degrees
+   * 
+   * @type number 
+   */
+  get angularAcceleration() {
+    return this._torque.degree
+  }
+  set angularAcceleration(x) {
+    this._torque.degree = x
+  }
+  /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
    * @param {Vector} v The anchor arm
@@ -469,26 +498,26 @@ class Body {
   }
   toJson() {
     let obj = {
-      id:this.id,
+      id: this.id,
       position: this.position.toJson(),
       velocity: this.velocity.toJson(),
       acceleration: this.acceleration.toJson(),
       orientation: this.orientation.toJson(),
       rotation: this.rotation.toJson(),
       shapes: [],
-      anchors:[],
+      anchors: [],
       collisionResponse: this.collisionResponse,
       allowSleep: this.allowSleep,
       type: this.CHAOS_OBJ_TYPE,
       phyType: this.type,
       mass: this.mass,
-      inertia:this.inertia,
-      autoUpdateBound:this.autoUpdateBound,
-      boundPadding:this.boundPadding,
-      aabbDetectionOnly:this.aabbDetectionOnly,
-      mask:this.mask
+      inertia: this.inertia,
+      autoUpdateBound: this.autoUpdateBound,
+      boundPadding: this.boundPadding,
+      aabbDetectionOnly: this.aabbDetectionOnly,
+      mask: this.mask
     }
-    this.anchors.forEach((a)=>{
+    this.anchors.forEach((a) => {
       obj.anchors.push(a)
     })
     this.shapes.forEach((a) => {
@@ -497,9 +526,9 @@ class Body {
     return obj
   }
   //TODO  - Add way to add shapes to body
-  fromJson(obj){
+  fromJson(obj) {
     let shapes = []
-    obj.shapes.forEach((shape)=>{
+    obj.shapes.forEach((shape) => {
       shapes.push(Shape.fromJson(shape))
     })
     let body = this
@@ -518,7 +547,7 @@ class Body {
     body.autoUpdateBound = obj.autoUpdateBound
     body.id = obj.id
     body.mask = obj.mask
-    obj.anchors.forEach((v)=>{
+    obj.anchors.forEach((v) => {
       body.setAnchor(new Vector().fromJson(v))
     })
   }
