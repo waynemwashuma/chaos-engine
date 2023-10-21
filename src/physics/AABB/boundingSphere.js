@@ -64,6 +64,8 @@ export class BoundingCircle {
   }
   /**
    * Translates this bound to the given position.
+   * 
+   * @param {Vector_like} pos
    */
   update(pos) {
     //let dx = pos.x - this.pos.x
@@ -71,5 +73,17 @@ export class BoundingCircle {
 
     this.pos.x = pos.x
     this.pos.y = pos.y
+  }
+  toJson(){
+    return{
+      posX:this.pos.x,
+      posY:this.pos.y,
+      r:this.r
+    }
+  }
+  fromJson(obj){
+    this.pos.x = obj.posX
+    this.pos.y = obj.posY
+    this.r = obj.r
   }
 }

@@ -3,7 +3,7 @@ import { demos } from "./index.js"
 
 demos.init("#can")
 
-demos.setup("box")
+demos.setup("bridge")
 
 let optionTab = document.querySelector("#options-checkbox")
 let demoOption = document.querySelector("#demos")

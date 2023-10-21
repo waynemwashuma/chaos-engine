@@ -5,20 +5,22 @@ import { pyramid } from "./pyramid.js"
 import { random } from "./random.js"
 import { constraint } from "./constraints.js"
 import { pathfollower } from "./pathfollower.js"
+import { materials } from "./marterial.js"
 import { box } from "./box.js"
 import { triangle } from "./triangle.js"
-
+import { particle } from "./particle.js"
+import { circle } from "./circle.js"
+import { circlestacking } from "./circlestack.js"
 import {
   Manager,
   Renderer2D,
   World,
   AgentManager,
-  DebugMesh,
   Entity,
   Box,
   BodySprite,
   Body
-} from "/dist/chaos.module.js"
+} from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
   let l1 = {
@@ -90,7 +92,7 @@ export const demos = {
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
-    renderer.addUI(new DebugMesh(this.manager))
+    //renderer.addUI(new DebugMesh(this.manager))
   },
   setup: function(name) {
     this.manager.clear()

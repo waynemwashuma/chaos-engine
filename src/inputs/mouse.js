@@ -79,6 +79,7 @@ class Mouse {
   /**
    * Initializes the mouse by appending to the DOM
    *
+   * @param {DOMEventHandler} eh
    */
   init(eh) {
     eh.add('click', this._onClick)
