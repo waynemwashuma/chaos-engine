@@ -28,6 +28,9 @@ class Triangle extends Shape {
       l2.sub(center)
     ], offset, offsetAngle)
   }
+  static calcInertia(mass,base,height,angle){
+    return 0.5 * mass * base * height * (1 - 2/3 * (1 - (Math.cos(2 * angle))/2))
+  }
 }
 
 export {
