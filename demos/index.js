@@ -6,7 +6,10 @@ import { random } from "./random.js"
 import { constraint } from "./constraints.js"
 import { pathfollower } from "./pathfollower.js"
 import { box } from "./box.js"
-
+import { particle } from "./particle.js"
+import { circle } from "./circle.js"
+import { circlestacking } from "./circlestack.js"
+import { triangle } from "./triangle.js"
 import {
   Manager,
   Renderer2D,
@@ -103,12 +106,20 @@ export const demos = {
     this.examples[n] = f
   }
 }
+demos.register("box",box)
+demos.register("stack",stacking)
+demos.register("circle",circle)
+demos.register("circlestacking",circlestacking)
+demos.register("triangle",triangle)
+demos.register("pyramid",pyramid)
 demos.register("random",random)
+demos.register("constraints",constraint)
 demos.register("bridge",bridge)
 demos.register("car",car)
-demos.register("pyramid",pyramid)
-demos.register("stack",stacking)
-demos.register("constraints",constraint)
 demos.register("pathfollower",pathfollower)
 demos.register("box",box)
 demos.register("random",random)
+demos.register("materials",materials)
+demos.register("particle",particle)
+demos.register("circlestacking",circlestacking)
+demos.register("circle",circle)
