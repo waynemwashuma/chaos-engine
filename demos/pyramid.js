@@ -1,4 +1,4 @@
-import { Box, BodySprite, Entity, Vector } from "/dist/chaos.module.js"
+import { Box, BodySprite, Entity, Vector } from "/src/index.js"
 
 export function pyramid(manager) {
   stackpyramid(200, 100, 50, 50, 3, 5, manager)

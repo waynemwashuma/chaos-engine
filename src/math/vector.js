@@ -18,9 +18,15 @@ class Vector {
     this.x = x || 0;
     this.y = y || 0;
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "vector"
   }
@@ -326,6 +332,14 @@ class Vector {
       return this.multiply(min / length)
     return this
   }
+  
+  toJson() {
+    return this
+  }
+  fromJson(obj) {
+    this.x = obj.x
+    this.y = obj.y
+  }
 
   [Symbol.iterator] = function*() {
     yield this.x
@@ -420,7 +434,7 @@ class Vector {
    */
   static lerp(v1, v2, t, target = new Vector()) {
     target = target || new Vector()
-    return target.copy(v1).set(
+    return target.set(
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
     )

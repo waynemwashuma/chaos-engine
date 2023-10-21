@@ -20,13 +20,20 @@ class Angle {
   /**
    * @param {number} [deg=0] Orientation in degrees.
    */
+  //TODO - Change this to radians instead
   constructor(deg = 0) {
     this._deg = deg || 0
-    this._rad = deg * Math.PI / 2 || 0
+    this._rad = deg * Math.PI / 180 || 0
   }
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "angle"
   }
@@ -58,9 +65,21 @@ class Angle {
   copy(angle) {
     this.degree = angle.degree
   }
-
-  static fromJSON(obj) {
-    return new Angle(obj._deg)
+  
+  fromJSON(obj) {
+    this.degree = obj.deg
+  }
+  /**
+   * @returns {{
+     deg: number,
+     type:string | number
+   }}
+   */
+  toJson() {
+    return {
+      deg: this._deg,
+      type: this.CHAOS_OBJ_TYPE
+    }
   }
 }
 

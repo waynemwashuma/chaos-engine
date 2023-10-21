@@ -130,6 +130,14 @@ class Composite {
     }
     return mass
   }
+  set type(x){
+    for (var i = 0; i < this.bodies.length; i++) {
+      this.bodies[i].type = x
+    }
+  }
+  get type(){
+    return this.bodies[0]?.type 
+  }
   /**
    * Density of a body.
    * 
