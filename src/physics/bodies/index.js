@@ -1,5 +1,5 @@
 export * from "./body.js"
-//export * from "./heightMap.js"
+export * from "./heightMap.js"
 export * from "./ball.js"
 export * from "./box.js"
 export * from "./composite.js"

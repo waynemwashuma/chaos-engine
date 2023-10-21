@@ -15,7 +15,6 @@ class EulerSolver{
     body.velocity.add(body.acceleration.multiply(dt))
     a.copy(body.velocity)
     body.position.add(a.multiply(dt))
-    body.angularVelocity += body.angularAcceleration * dt
     body.angle += body.angularVelocity * dt
     body.acceleration.set(0,0)
   }

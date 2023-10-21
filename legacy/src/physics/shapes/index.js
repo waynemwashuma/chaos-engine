@@ -1,0 +1,6 @@
+export {Shape} from"./shape.js"
+export {Geometry} from "./geometry.js"
+export {Line} from"./line.js"
+export {Circle} from "./circle.js"
+export {Rectangle} from"./rectangle.js"
+export {Triangle} from "./triangle.js"

@@ -6,7 +6,7 @@ import {
   Entity,
   Box,
   Ball
-} from "/src/index.js"
+} from "/dist/chaos.module.js"
 
 export function random(manager) {
   let world = manager.getSystem("world")

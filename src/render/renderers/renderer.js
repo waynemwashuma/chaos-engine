@@ -115,7 +115,7 @@ export class Renderer {
   /**
    * Adds a mesh to the renderer.
    * 
-   * @param {Sprite | Group} sprite
+   * @param {Sprite} Sprite
    */
   add(sprite) {
     this.objects.push(sprite)

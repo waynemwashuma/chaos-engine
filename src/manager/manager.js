@@ -62,6 +62,8 @@ class Manager {
     world: null,
     renderer: null,
     input: null,
+    //TODO - cleanup this events prop
+    events: null,
     audio: null
   }
   /**
@@ -118,7 +120,7 @@ class Manager {
    * @ignore.
    * This is an artifact of me debugging this.
    * TODO - Should implement a better soluton
-   */
+  */
   perf = {
     lastTimestamp: 0,
     total: 0
@@ -128,12 +130,12 @@ class Manager {
    * 
    * @readonly
    * @type Loader
-   */
+  */
   loader = new Loader()
   /**
    * @readonly
    * @type EventDispatcher
-   */
+  */
   events = new EventDispatcher()
   /**
    * @private
@@ -269,9 +271,9 @@ class Manager {
   remove(object) {
     let index = this.objects.indexOf(object)
     object.removeComponents()
-    object.reset()
     Utils.removeElement(this.objects, index)
     this.events.trigger("remove", object)
+
   }
   /**
    * This removes all of the entities and components from the manager
@@ -410,8 +412,7 @@ class Manager {
   /**
    * Removes a system from the manager.
    * 
-   * @param {string} n The name of the system
-   * @returns {void}
+   * @param {string} n The name of the system.
    * 
    */
   unregisterSystem(n) {
@@ -457,7 +458,6 @@ class Manager {
    * 
    * @param {Array<String>} comps An array containing the component names to be searched
    * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
-   * @param {Entity[]} [target]
    * 
    * @returns {Entity[]} 
    */
@@ -489,7 +489,7 @@ class Manager {
    * 
    * @param {string[]} tags An array containing the tags to be searched
    * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
-   * @param {Entity[]} target
+   * 
    * @returns {Entity[]} 
    */
   getEntitiesByTags(tags, entities = this.objects, target = []) {
@@ -499,7 +499,6 @@ class Manager {
         target.push(entities[i])
       }
     }
-    return target
   }
   /**
    * Ignore this,im going to remove it and the rest of cloning utilities.
@@ -519,7 +518,6 @@ class Manager {
    * Deep copies an entity
    * 
    * @deprecated
-   * @private
    * @returns {Entity}
    */
   clone(obj) {
@@ -558,14 +556,6 @@ class Manager {
         Utils.removeElement(list, index)
       }
     }
-  }
-  /**
-   * @param {BoundingCircle | BoundingBpx  } bound
-   * @returns Entity[]
-   */
-  query(bound) {
-    ///TODO - What will happen if there is no world?   ...Yes,it will crash.
-    return this._coreSystems.world.query(bound)
   }
 }
 export {
