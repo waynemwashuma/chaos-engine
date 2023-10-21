@@ -1,13 +1,9 @@
-res/*
-/main.js
+
 node_modules
-/index.html
 debug.js
 *.jpg
 *.jpeg
 *.png
 res.json
 *.mp3
-tests
-*.res.js
 *.txt
