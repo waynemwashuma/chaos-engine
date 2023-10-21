@@ -4,25 +4,16 @@
  * Realized i need to massively change this to make it work well.
  */
 class Touch {
-  /**
-   * @type TouchEvent[]
-   */
-  touches = []
-  /**
-   * @type number
-  */
-  clickCount = 0
-  /**
-   * @param {DOMEventHandler} eh
-  */
   constructor(eh) {
+    this.clickCount = 0;
+    this.touches = []
     this.init(eh)
   }
   /**
    * Checks to see if the position is within the dragbox of the first two touches.
    * Not yet fully implemented
    * 
-   * @param {Vector_like} pos
+   * @param Vector_like
    */
   inDragBox(pos) {
     if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
@@ -41,25 +32,16 @@ class Touch {
     eh.add('touchend', this._onUp)
     eh.add('touchmove', this._onMove)
   }
-  /**
-   * @private
-   */
   _onMove = (e) => {
     e.preventDefault()
   }
-  /**
-   * @private
-   */
   _onDown = (e) => {
     this.touches = e.touches
   }
-  /**
-   * @private
-   */
   _onUp = (e) => {
     this.touches = e.touches
   }
-  update() {}
+  update(){}
 }
 
 export {

@@ -8,7 +8,7 @@ import { Renderer } from "./renderer.js"
  * Renders images and paths to the 2D context of a canvas.
  * 
  * @extends Renderer
- */
+*/
 export class Renderer2D extends Renderer {
   frameRate = 1 / 60
   renderLast = []
@@ -17,17 +17,8 @@ export class Renderer2D extends Renderer {
   */
   constructor(canvas) {
     canvas = canvas || document.createElement("canvas")
-    super(canvas, canvas.getContext("2d"))
-
-  }
-  /**
-   * @inheritdoc
-   * 
-   * @param {Sprite | Group} sprite
-   */
-  add(sprite) {
-    super.add(sprite)
-    sprite.geometry?.init(this.ctx)
+    super(canvas,canvas.getContext("2d"))
+    
   }
   clear() {
     this.ctx.setTransform()
@@ -35,31 +26,21 @@ export class Renderer2D extends Renderer {
       w = this.width
     this.ctx.clearRect(0, 0, w, h)
   }
-  /**
-   * @param {number} dt
-   */
   update(dt) {
-    this.camera.update()
+    this.camera.update(dt)
     this.perf.lastTimestamp = performance.now()
     this.clear()
     if (this.background != void 0)
       this.background.update(this, dt)
-    this.ctx.save()
-    this.ctx.translate(this.camera.transform.position.x,-this.camera.transform.position.y)
-    this.ctx.rotate(this.camera.transform.orientation.radian)
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].render(this.ctx, dt)
     }
-    this.ctx.restore()
     for (var i = 0; i < this.renderLast.length; i++) {
       this.renderLast[i].update(this, dt, this.camera.transform)
     }
     this.perf.total = performance.now() - this.perf.lastTimestamp
   }
-  /**
-   * @private
-   */
-  _update = (accumulate) => {
+  _update = (accumulate)=> {
     let dt = this.clock.update(accumulate)
     if (this._accumulator < this.frameRate) {
       this._accumulator += dt
@@ -70,11 +51,9 @@ export class Renderer2D extends Renderer {
     this.RAF()
     this._accumulator = 0
   }
-  /**
-   * @param {Sprite} sprite
-  */
-  addUI(sprite) {
-    this.renderLast.push(sprite)
+  
+  addUI(mesh) {
+    this.renderLast.push(mesh)
   }
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()

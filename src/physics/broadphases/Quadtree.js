@@ -269,9 +269,8 @@ class Node {
     return false
   }
   /**
-   * @template T
-   * @param {Traverser} func
-   * @param {T[]} target
+   * @param {(node:Node)=>boolean} func
+   * @param {[]} target
    *  @returns []
    */
   traverse(func, target) {
@@ -472,9 +471,3 @@ class Tree extends Broadphase {
 export {
   Tree as QuadTreeBroadphase,
 }
-
-/**
- * @callback Traverser
- * @param {Node} node
- * @returns {boolean}
-*/

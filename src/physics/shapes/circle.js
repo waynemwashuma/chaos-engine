@@ -42,11 +42,11 @@ class Circle extends Shape {
    * @inheritdoc
    * 
    * @param {Vector} axis
-   * @param {Vector[]} out 
+   * @param {Vector[]}} target 
    * @returns {Vector[]}
    */
-  getVertices(axis, out) {
-    let target = out || []
+  getVertices(axis, target) {
+    target = target || []
     let v1 = _vec1.copy(axis).multiply(-this.radius).add(this.position)
     let v2 = _vec2.copy(axis).multiply(this.radius).add(this.position)
     target[0] = v1.clone()
@@ -86,23 +86,6 @@ class Circle extends Shape {
   }
   get area() {
     return Math.PI * this.radius * this.radius
-  }
-  toJson() {
-    let obj = {
-      radius: this.radius,
-      offset: this.offPosition,
-      offAngle: this.offAngle,
-      shapeType: this.type,
-      type: this.CHAOS_OBJ_TYPE
-    }
-    return obj
-  }
-  fromJson(obj) {
-    return new Circle(
-      obj.radius,
-      new Vector().fromJson(obj.offset),
-      obj.offAngle
-    )
   }
 }
 

@@ -64,10 +64,7 @@ import * as CHAOS from "chaos-studio"
 ```
 ### OR:
 
-Get the [umd file](https://github.com/waynemwashuma/chaos-engine/dist)
-from the dist folder of the [repository](https://github.com/waynemwashuma/chaos-engine),
-put it in your root directory and add it to
-your html page like so:
+Get the umd file from the dist folder of the [repository](https://github.com/waynemwashuma/chaos-engine),put it in your root directory and add it to your html page like so:
 
 ```html
 <html>
@@ -101,7 +98,6 @@ game.registerSystem("renderer", renderer)
 game.registerSystem("world", world)
 
 //this binds the renderer to html.
-//the canvas will be a child to the queried  html element(renderer will attach it to the html element with id of "can")
 renderer.bindTo("#can")
 
 //This sets the width and height of the renderer to cover the entire screen.
@@ -121,18 +117,18 @@ let box = CHAOS.Entity.Default(innerWidth / 2, 100)
 let boxBody = new CHAOS.Box(40, 40)
 
 //Creates a component that can be rendered onto the screen.
-let boxSprite = new CHAOS.BodySprite()
+let boxMesh = new CHAOS.BodySprite()
 
 //Adds the physics body to the entity.
 box.attach("body", boxBody)
 
 //Adds the sprite to the entity.
-box.attach("sprite", boxSprite)
+box.attach("sprite", boxMesh)
 
 //Adds the box to the game to be updated every frame.
 game.add(box)
 ```
-### Adding ground
+### Adding groundhttp
 
 Now you should see a box falling into nothingness.
 Lets add ground it can land on.
@@ -140,11 +136,11 @@ Lets add ground it can land on.
 //Creates an entity that we call ground on which we can add(attach) component to.
 let ground = CHAOS.Entity.Default(innerWidth / 2, innerHeight - 100)
 
-//Creates a physics component to iteract physically with other entities
+//Creates a component that can be rendered onto the screen.
 let groundBody = new CHAOS.Box(400, 20)
 
 //Adds the sprite to the entity.
-let groundSprite = new CHAOS.BodySprite()
+let groundMesh = new CHAOS.BodySprite()
 
 //sets the body to not move or respond to collisions.
 groundBody.type = CHAOS.Body.STATIC
@@ -153,7 +149,7 @@ groundBody.type = CHAOS.Body.STATIC
 ground.attach("body", groundBody)
 
 //Adds the sprite to the entity.
-ground.attach("sprite", groundSprite)
+ground.attach("sprite", groundMesh)
 
 //Adds the ground to the game to be updated every frame.
 game.add(ground)
@@ -162,7 +158,18 @@ game.add(ground)
 
 # **** WARNING ****
 
-This is not yet a stable version hence dont rely on it to make production apps yet.
+Upgrade from v0.0.0 to v0.1.0 as it is not yet stable
+
+Some of these include breaking changes like 
+the transfer from inheritance model to the 
+entity component systems model
+ 
+The legacy folder contains the last working
+form of the inheritance model,check the differences between the last commit and it(many changes were realised between the two)
+
+Major changes were made during the last two months.Check the differences between legacy and src
+
+This is not yet a stable version hence dont rely on it to make production apps
 
  
  
@@ -172,8 +179,10 @@ This is not yet a stable version hence dont rely on it to make production apps y
  - Stabilize the collision response to work well with large forces such as (gravity =  10000)
  - Stabilize rotational stacking in the physics engine
  - Add game state class for managing the game
+ 
+ - Migrate some other parts of the code to the new model( Meshes for example )✅
  - Add an animation system.
  - Add tutorials to this game engine
+ - Add documentation to every file in this project.✅
  - Add appropriate demos to the project and get a website running for them 🟠
  - Add some error handling mechanisms 🟠
- - Add Serialization/Deserialization of objects(on the way) 🟠

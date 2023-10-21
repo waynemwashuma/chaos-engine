@@ -15,14 +15,6 @@ class Bound extends Component {
    */
   bounds = new BoundingBox()
   entity = null
-  toJson(){
-    return {
-      bounds:this.bounds.toJson()
-    }
-  }
-  fromJson(obj){
-    this.bpunds.fromJson(obj.bounds)
-  }
 }
 
 export {

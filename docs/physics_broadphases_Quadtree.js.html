@@ -28,7 +28,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>import { Overlaps } from "../AABB/index.js"
 import { Broadphase } from "./broadphase.js"
-import { Utils } from "../../utils/index.js"
+import { Utils }from "../../utils/index.js"
 
 class Client {
   constructor(body) {
@@ -39,45 +39,21 @@ class Client {
 }
 
 class Node {
-  /**@type Node[]*/
-  children = []
-  /**@type Body[]*/
-  objects = []
-  /**@type Node*/
-  root = null
-  /**@type Node*/
-  parent = null
-  /**@type boolean*/
-  hasObjects = false
-  /**@type number*/
-  index = -1
-  /**@type Tree*/
-  global = null
-  /**@type Vector_like*/
-  dims = null
-  /**@type number*/
-  depth = -1
-  /**@type {{
-    max:Vector_like,
-    min:Vector_like
-  }}*/
-  bounds = null
-  /**
-   * @param {{
-    max:Vector_like,
-    min:Vector_like
-  }} bounds
-  */
   constructor(bounds) {
+    this.children = []
+    this.objects = []
+    this.parent = null
+    this.global = null
+    this.index = -1
+    this.root = null
     this.bounds = bounds
+    this.hasObjects = false
+    this.depth = -1
     this.dims = {
       x: this.bounds.max.x - this.bounds.min.x,
       y: this.bounds.max.y - this.bounds.min.y
     }
   }
-  /**
-   * @param {Node} node
-   */
   add(node) {
     node.index = this.children.length
     this.children.push(node)
@@ -94,9 +70,6 @@ class Node {
       node.global = null
     }
   }
-  /**
-   * @param {number} depth
-   */
   split(depth = 1) {
     let w = this.dims.x / 2
     let h = this.dims.y / 2
@@ -147,9 +120,6 @@ class Node {
     if (depth &lt;= 1) return
     this.children.forEach(e => e.split(depth - 1))
   }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
   draw(ctx) {
     ctx.beginPath()
     ctx.strokeStyle = "blue"
@@ -157,15 +127,9 @@ class Node {
     ctx.stroke()
     ctx.closePath()
   }
-  /**
-   * @return boolean
-   */
   isLeafNode() {
     return this.children.length == 0
   }
-  /**
-   * @return boolean
-   */
   childrenHaveObj() {
     return this.children.length > 0 || (
       this.children[0].hasObjects ||
@@ -174,19 +138,11 @@ class Node {
       this.children[3].hasObjects
     )
   }
-  /**
-   * @param {Bounds} bounds
-   * @return boolean
-   */
   intersects(bounds) {
     if (bounds.r)
       return Overlaps.AABBvsSphere(this.bounds, bounds)
     return Overlaps.AABBColliding(this.bounds, bounds)
   }
-  /**
-   * @param {Bounds} bounds
-   * @return boolean
-   */
   contains(bounds) {
     return (
       bounds.max.x &lt; this.bounds.max.x &amp;&amp;
@@ -195,13 +151,7 @@ class Node {
       bounds.min.y > this.bounds.min.y
     )
   }
-  /**
-   * @inheritdoc
-   * @param {Bounds} bounds
-   * @param {Body[]} [target]
-   * @returns boolean
-   */
-  query(bounds, target = []) {
+  query(bounds, target) {
     if (!this.intersects(bounds))
       return target
     if (!this.isLeafNode()) {
@@ -216,10 +166,6 @@ class Node {
     }
     return target
   }
-  /**
-   * @param {Body} obj
-   * @returns boolean
-   */
   insertObject(obj) {
     if (!this.contains(obj.bounds))
       return false
@@ -240,10 +186,6 @@ class Node {
     }
     return false
   }
-  /**
-   * @param {Vector_like} position
-   * @returns boolean
-   */
   isInNode(position) {
     if (
       position.x > this.bounds.min.x &amp;&amp;
@@ -257,18 +199,11 @@ class Node {
   isRootNode() {
     return !this.parent
   }
-  /**
-   * @param {Body} obj
-   */
   updateObject(obj) {
     this.removeObject(obj)
     this.global.insert(obj)
     return true
   }
-  /**
-   * @param {Body} obj
-   * @returns boolean
-   */
   removeObject(obj) {
     if (!this.isInNode(obj.lastPosition))
       return false
@@ -296,12 +231,6 @@ class Node {
     }
     return false
   }
-  /**
-   * @template T
-   * @param {Traverser} func
-   * @param {T[]} target
-   *  @returns []
-   */
   traverse(func, target) {
     if (!this.isLeafNode()) {
       for (var i = 0; i &lt; 4; i++) {
@@ -315,10 +244,6 @@ class Node {
       return target
     }
   }
-  /**
-   * @param {CollisionPair[]} target
-   * @param {CollisionPair[]} stack
-   */
   getCollisionPairs(target, stack) {
     if (!this.hasObjects) return
     if (!this.isLeafNode()) {
@@ -448,7 +373,7 @@ class Tree extends Broadphase {
   /**
    * A depth first search of the quadtree that applies the given function to its nodes.
    * 
-   * @param {Function} func The function that checks every node unless it returns true.
+   * @param {function} func The function that checks every node unless it returns true.
    * 
    */
   traverse(func) {
@@ -456,7 +381,6 @@ class Tree extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {CanvasRenderingContext2D} ctx
    */
   draw(ctx) {
     this._root.traverse(e => {
@@ -499,13 +423,7 @@ class Tree extends Broadphase {
 
 export {
   Tree as QuadTreeBroadphase,
-}
-
-/**
- * @callback Traverser
- * @param {Node} node
- * @returns {boolean}
-*/</code></pre>
+}</code></pre>
         </article>
     </section>
 
@@ -515,13 +433,13 @@ export {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="CamController_CamController.html">CamController</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Geometry.html">Geometry</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Line.html">Line</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="ParticleSystemSprite.html">ParticleSystemSprite</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li><li><a href="System.html">System</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#vertices">vertices</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="Circle.html">Circle</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Grid.html">Grid</a></li><li><a href="ImageSprite.html">ImageSprite</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Particle.html">Particle</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="StaticImageSprite.html">StaticImageSprite</a></li><li><a href="System.html">System</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#r">r</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 10 2023 16:39:39 GMT+0300 (East Africa Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Jul 07 2023 15:03:23 GMT+0300 (East Africa Time)
 </footer>
 
 <script> prettyPrint(); </script>

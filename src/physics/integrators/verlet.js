@@ -6,7 +6,7 @@ let velocity = new Vector()
 /**
  * Verlet intergration.
  * Used so that constraints can be stable at little performance cost.
- */
+*/
 class VerletSolver {
   /**
    * @param {Body} body
@@ -19,11 +19,8 @@ class VerletSolver {
     body.acceleration.set(0, 0)
     body.velocity.add(acceleration)
     position.add(velocity.multiply(dt)).add(acceleration.multiply(dt))
-    body.velocity.add(acceleration)
     body.position = position
-    body.angularVelocity += body.angularAcceleration * dt * 0.5
     body.angle += body.angularVelocity * dt
-    body.angularVelocity += body.angularAcceleration * dt * 0.5
   }
 }
 export {
