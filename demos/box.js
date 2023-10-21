@@ -1,10 +1,6 @@
 import {
-  Vector,
-  DistanceConstraint,
   Entity,
   Box,
-  Ball,
-  Composite,
   BodySprite
 } from  "/src/index.js"
 export function box(manager) {

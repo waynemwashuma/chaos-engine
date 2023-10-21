@@ -1,15 +1,21 @@
 import { Sprite } from "./sprite.js"
 import { Vector } from "../../math/index.js"
 import { Shape } from "../../physics/index.js"
+import { BufferGeometry } from "../geometry/index.js"
+import { BasicMaterial } from "../material/index.js"
 import { ObjType } from "../../physics/settings.js"
 import { circle,rect,vertices,stroke,fill,line } from "../utils/index.js"
 
+
+
+let r = new Vector()
+let material = new BasicMaterial()
+material.wireframe = true
 /**
  * This draws a body from the physics System.
  * 
  * @augments Sprite
  */
-let r = new Vector()
 class BodySprite extends Sprite {
   /**
    * @private
@@ -38,6 +44,11 @@ class BodySprite extends Sprite {
     this.drawVelocity = options.drawVelocity || false
     this.drawBounds = options.drawBounds || false
   }
+  /**
+   * @inheritdoc
+   *  @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+  */
   render(ctx, dt) {
 
     if (this.body.physicsType == ObjType.COMPOSITE) {
@@ -100,7 +111,7 @@ class BodySprite extends Sprite {
     ctx.beginPath()
     for (var i = 0; i < body.shapes.length; i++) {
       let shape = body.shapes[i]
-      if (shape.type == Shape.CIRCLE) {
+      if (shape.type === Shape.CIRCLE) {
         circle(
           ctx,
           shape.position.x,
@@ -118,7 +129,7 @@ class BodySprite extends Sprite {
     ctx.closePath()
   }
   /**
-   * @package
+   * @inheritdoc
    * @param {Entity} parent
    */
   init(parent) {

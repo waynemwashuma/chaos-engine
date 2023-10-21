@@ -1,4 +1,4 @@
-import { Vector,Angle }from "../../math/index.js"
+import { Vector, Angle } from "../../math/index.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
 
@@ -32,13 +32,13 @@ class Shape {
    * The vertices describing the shape.
    * 
    * @type Vector[]
-  */
+   */
   vertices = null
   /**
    * Keeps the original normals and vertices of this shape
    * 
    * @type Geometry
-  */
+   */
   geometry = null
 
   /**
@@ -52,28 +52,33 @@ class Shape {
     this.vertices = vertices.map(v => v.clone())
     this.geometry = new Geometry(vertices)
   }
-
+  /**
+   * @type string
+   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
+  /**
+   * @type string
+   */
   get CHAOS_OBJ_TYPE() {
     return "shape"
   }
   /**
    * The area occupied by a shape.
    * @type number
-  */
-  get area(){
+   */
+  get area() {
     return 0
   }
   /**
    * Returns the normals of the faces when rotated.
    * 
-   * @param {Body} body
+   * @param {Shape} shape
    * @param {Vector[]} [target=[]] An array where results are stored.
    * @returns {Vector[]}
    */
-  getNormals(body, target) {
+  getNormals(shape, target) {
     return this.geometry.getNormals(this.angle, target)
   }
   /**
@@ -95,7 +100,7 @@ class Shape {
    * @param {Vector[]} target 
    * @returns {Vector[]}
    */
-  getVertices(axis,target) {
+  getVertices(axis, target) {
     return this.vertices
   }
 
@@ -107,6 +112,21 @@ class Shape {
    */
   static calcInertia() {
     throw new Error("Implement in the children classes")
+  }
+  toJson(){
+    let obj = {
+      type:this.CHAOS_OBJ_TYPE,
+      geometry:this.geometry.toJson(),
+      shapwType:this.type,
+      offset:this.offPosition.toJson(),
+      offAngle:this.offAngle
+    }
+  }
+  fromJson(obj){
+    this.offAngle = obj.offAngle
+    this.offPosition = obj.offset
+    this.geometry.fromJson(obj.geometry)
+    this.vertices = this.geometry.vertices.map(v=>v.clone())
   }
   static CIRCLE = 0
   static POLYGON = 1

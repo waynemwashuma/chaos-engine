@@ -6,7 +6,6 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "allowJs": true,
-        "outFile":"../dist/index.d.ts",
         "removeComments":true
     }
 }

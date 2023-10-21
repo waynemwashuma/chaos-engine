@@ -1,14 +1,37 @@
-export class BasicMaterial{
-  constructor(){
-    this.fill = "red"
-    this.lineWidth = 1
-    this.stroke = "green"
-    this.wireframe = true
-  }
-  render(ctx){
-    if(!this.wireframe){
-      ctx.fill(this.fill)
+/**
+ * 
+ * @implements Material
+*/
+export class BasicMaterial {
+  /**
+   * 
+   * @type string
+   * @default "white"
+   */
+  fill = "white"
+  /**
+   * 
+   * @type string
+   * @default "black"
+   */
+  stroke = "black"
+  /**
+   * 
+   * @type boolean
+   * @default false
+   */
+  wireframe = false
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+   * @param {Path2D} path
+   */
+  render(ctx,dt, path) {
+    if (!this.wireframe) {
+      ctx.fillStyle = this.fill
+      ctx.fill(path)
     }
-    ctx.stroke(this.stroke,this.lineWidth)
+    ctx.strokeStyle = this.stroke
+    ctx.stroke(path)
   }
 }

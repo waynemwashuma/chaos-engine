@@ -30,8 +30,8 @@ class Clock {
     this.dt = accumulate - this.lastcall || 0
     //this.framerate = this.getFrameRate()
     this.lastcall = accumulate 
-    this.delta = this.dt/1000
-    return this.delta
+    
+    return this.dt/1000
   }
 }
 export{

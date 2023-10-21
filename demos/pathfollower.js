@@ -12,7 +12,7 @@ import {
   WanderBehaviour,
   Path,
   Vector
-} from "/dist/chaos.module.js"
+} from "/src/index.js"
 
 export function pathfollower(manager) {
   
