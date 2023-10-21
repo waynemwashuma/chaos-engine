@@ -44,7 +44,7 @@ class Keyboard {
   _onDown = e => {
     let key = this.normalize(e.code)
     this.keys[key] = true
-    this.activeKeys.push(key)
+    //this.activeKeys.push(key)
   }
     /**
      * @private
