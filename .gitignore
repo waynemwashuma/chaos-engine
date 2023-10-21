@@ -11,5 +11,3 @@ res.json
 tests
 *.res.js
 *.txt
-
-trigon.js
