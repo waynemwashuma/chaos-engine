@@ -1,6 +1,7 @@
 import { Sprite } from "./sprite.js"
 import { Vector, rand } from "../../math/index.js"
-import { circle, fill } from "../utils/index.js"
+import { circle } from "../utils/index.js"
+let tmp1 = new Vector()
 
 /**
  * Its a fricking particle!
@@ -27,7 +28,7 @@ class Particle {
   /**
    * @type {{r:number,b:number,g:number,a:number}}
    */
-  color = null
+   color = null
   /**
    * @private
    * @type number
@@ -45,6 +46,7 @@ class Particle {
    */
   constructor(pos, radius, lifespan = 5) {
     this.position = pos
+    this.active = true
     this.velocity = new Vector()
     this.radius = radius
     this.color = {
@@ -58,8 +60,6 @@ class Particle {
   }
   /**
    * Renders a particle.
-   * 
-   * @param {CanvasRenderingContext2D} ctx
    */
   draw(ctx) {
     ctx.beginPath()
@@ -69,13 +69,10 @@ class Particle {
   }
   /**
    * Updates a particle's lifetime
-   * @inheritdoc
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
    */
   update(ctx, dt) {
     this._life += dt
-    this.position.add(this.velocity)
+    this.position.add(tmp1.copy(this.velocity).multiply(dt))
     this.active = this._life < this.lifespan
   }
 }
@@ -84,30 +81,10 @@ class Particle {
  * This creates a particle system 
  * @augments Sprite
  */
-class ParticleSystemSprite extends Sprite {
-  /**
-   * @private
-   */
-  _particles = []
-  /**
-   * @type number
-   * @default 1
-   */
-  initial = 0
-  /**
-   * @type number
-   * @default 1
-   */
-  frameIncrease = 0
-  /**
-   * @type number
-   * @default 1
-   */
-  max = 0
+class System extends Sprite {
   /**
    * @param {number} [initial=1] Number of particles to start with.
    * @param {number} [max=100] Maximum number of particles.
-   * param {number} [increment=5] Maximum number of particles.
    */
   constructor(initial = 1, max = 100, increment = 5) {
     super()
@@ -118,11 +95,10 @@ class ParticleSystemSprite extends Sprite {
 
   /**
    * @protected
-   * @param {number} n
    */
   initParticles(n) {
     for (var i = 0; i < n; i++) {
-      this._particles.push(this.create())
+      this.add(this.create())
     }
   }
 
@@ -140,7 +116,6 @@ class ParticleSystemSprite extends Sprite {
   }
   /**
    * @inheritdoc
-   * @param {Entity} entity
    */
   init(entity) {
     super.init(entity)
@@ -148,36 +123,32 @@ class ParticleSystemSprite extends Sprite {
   }
   /**
    * @protected
-   * @param {Particle} p
-   * @param {number} dt
    */
-  behavior(p,dt) {
+  behavior(p) {
     p.velocity.set(
-      p.velocity.x + rand(-1, 1)*dt,
-      p.velocity.y + rand(0, 0.3)*dt
+      p.velocity.x + rand(-1, 1),
+      p.velocity.y + rand(0, 0.3)
     )
   }
   /**
    * @inheritdoc
-   *  @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-  */
+   */
   render(ctx, dt) {
-    for (let i = this._particles.length - 1; i > 0; i--) {
-      let p = this._particles[i]
+    for (let i = this._children.length - 1; i > 0; i--) {
+      let p = this._children[i]
       p.update(ctx, dt)
-      this.behavior(p,dt)
+      this.behavior(p)
       p.draw(ctx, dt)
       if (!p.active) {
-        this._particles.splice(i, 1)
+        this.remove(i)
       }
     }
-    if (this._particles.length < this.max) {
+    if (this._children.length < this.max) {
       this.initParticles(this.frameIncrease)
     }
   }
 }
 export {
   Particle,
-  ParticleSystemSprite
+  System as ParticleSystemSprite
 }

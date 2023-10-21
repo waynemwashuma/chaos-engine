@@ -1,13 +1,14 @@
 import {
   Vector,
   Manager,
+  DebugMesh,
   Box,
   Ball,
-  DistanceConstraint,
+  SpringConstraint,
   rand,
   Entity,
   BodySprite
-} from "/src/index.js"
+} from "/dist/chaos.module.js"
 
 export function bridge(manager) {
   let world = manager.getSystem("world")
@@ -44,9 +45,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
 
   for (var i = 1; i < number; i++) {
     let chain = new Box(w, h)
-    let an1 = prev.setAnchor(new Vector(w/2,0))
-    let an2 = prev.setAnchor(new Vector(w/2,0))
-    let constraint = new DistanceConstraint(prev, chain,  prev.getAnchor(an1),chain.getAnchor(an2))
+    let constraint = new SpringConstraint(prev, chain, { x: w / 2, y: 0 }, { x: -w / 2, y: 0 })
 
     bodies.push(
       Entity.Default(x * i, y)
@@ -58,16 +57,15 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     prev = chain
   }
   if (pin1) {
-    let an1 = pin1.get("body").setAnchor(new Vector(0,0))
-    let an2 = bodies[0].get("body").setAnchor(new Vector(-w/2,0))
-    let constraint = new DistanceConstraint(pin1.get("body"), bodies[0].get("body"), pin1.get("body").getAnchor(an1),  bodies[0].get("body").getAnchor(an2))
+    let constraint = new SpringConstraint(pin1.get("body"), bodies[0].get("body"), { x: 0, y: 0 }, { x: -w / 2, y: 0 })
     constraints.push(constraint)
     pin1.get("body").mask.group = 1
   }
   if (pin2) {
-    let an1 = pin2.get("body").setAnchor(new Vector(0,0))
-    let an2 = bodies[bodies.length - 1].get("body").setAnchor(new Vector(w/2,0))
-    let constraint = new DistanceConstraint(pin2.get("body"), bodies[bodies.length - 1].get("body"), pin2.get("body").getAnchor(an1),  bodies[bodies.length - 1].get("body").getAnchor(an2))
+    let constraint = new SpringConstraint(
+      pin2.get("body"),
+      bodies[bodies.length - 1].get("body"), { x: 0, y: 0 }, { x: w / 2, y: 0 }
+    )
     constraints.push(constraint)
     pin2.get("body").mask.group = 1
   }

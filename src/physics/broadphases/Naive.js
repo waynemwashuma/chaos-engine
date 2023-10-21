@@ -9,9 +9,6 @@ class NaiveBroadphase extends Broadphase {
    * @type Body[]
   */
   bodies = null
-  /**
-   * @param {World} world
-  */
   constructor(world) {
     super()
     this.bodies = world.objects

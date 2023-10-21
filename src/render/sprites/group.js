@@ -23,15 +23,9 @@ export class Group extends Sprite {
     super()
     this._children = sprites
   }
-  /**
-   * @type string
-   */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
-  /**
-   * @type string
-   */
   get CHAOS_OBJ_TYPE() {
     return "group"
   }
@@ -70,8 +64,6 @@ export class Group extends Sprite {
   }
   /**
    * @inheritdoc
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
    */
   render(ctx, dt) {
     for (var i = 0; i < this._children.length; i++) {

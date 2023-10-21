@@ -1248,6 +1248,114 @@ as it is for internal use only and may change in the future
     
 
     
+    <h4 class="name" id="clone"><span class="type-signature"></span>clone<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Entity.html">Entity</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Deep copies an entity
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line527">line 527</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Entity.html">Entity</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="getComponentList"><span class="type-signature"></span>getComponentList<span class="signature">(n)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Component.html">Component</a>>}</span></h4>
     
 
@@ -1349,7 +1457,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line440">line 440</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line439">line 439</a>
     </li></ul></dd>
     
 
@@ -1407,7 +1515,7 @@ as it is for internal use only and may change in the future
     
 
     
-    <h4 class="name" id="getEntitiesByComponents"><span class="type-signature"></span>getEntitiesByComponents<span class="signature">(comps, entities<span class="signature-attributes">opt</span>, target<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Entity.html">Entity</a>>}</span></h4>
+    <h4 class="name" id="getEntitiesByComponents"><span class="type-signature"></span>getEntitiesByComponents<span class="signature">(comps, entities<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Entity.html">Entity</a>>}</span></h4>
     
 
     
@@ -1526,43 +1634,6 @@ as it is for internal use only and may change in the future
         </tr>
 
     
-
-        <tr>
-            
-                <td class="name"><code>target</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;<a href="Entity.html">Entity</a>></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
     </tbody>
 </table>
 
@@ -1654,7 +1725,7 @@ as it is for internal use only and may change in the future
     
 
     
-    <h4 class="name" id="getEntitiesByTags"><span class="type-signature"></span>getEntitiesByTags<span class="signature">(tags, entities<span class="signature-attributes">opt</span>, target)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Entity.html">Entity</a>>}</span></h4>
+    <h4 class="name" id="getEntitiesByTags"><span class="type-signature"></span>getEntitiesByTags<span class="signature">(tags, entities<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Entity.html">Entity</a>>}</span></h4>
     
 
     
@@ -1773,41 +1844,6 @@ as it is for internal use only and may change in the future
         </tr>
 
     
-
-        <tr>
-            
-                <td class="name"><code>target</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;<a href="Entity.html">Entity</a>></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
     </tbody>
 </table>
 
@@ -1845,7 +1881,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line497">line 497</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line499">line 499</a>
     </li></ul></dd>
     
 
@@ -1899,7 +1935,7 @@ as it is for internal use only and may change in the future
     
 
     
-    <h4 class="name" id="getEntityByComponents"><span class="type-signature"></span>getEntityByComponents<span class="signature">(comps)</span><span class="type-signature"> &rarr; {<a href="Entity.html">Entity</a>}</span></h4>
+    <h4 class="name" id="getEntityByComponents"><span class="type-signature"></span>getEntityByComponents<span class="signature">(comps, entities<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Entity.html">Entity</a>}</span></h4>
     
 
     
@@ -1931,7 +1967,11 @@ as it is for internal use only and may change in the future
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -1956,10 +1996,61 @@ as it is for internal use only and may change in the future
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">An array containing the component names to be searched</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>entities</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="Entity.html">Entity</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    Manager#objects
+                
+                </td>
+            
+
+            <td class="description last">The array of entities to search in.Defaults to the manager's entity list</td>
         </tr>
 
     
@@ -2000,7 +2091,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line449">line 449</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line450">line 450</a>
     </li></ul></dd>
     
 
@@ -2054,7 +2145,7 @@ as it is for internal use only and may change in the future
     
 
     
-    <h4 class="name" id="getEntityByTags"><span class="type-signature"></span>getEntityByTags<span class="signature">(tags)</span><span class="type-signature"> &rarr; {<a href="Entity.html">Entity</a>}</span></h4>
+    <h4 class="name" id="getEntityByTags"><span class="type-signature"></span>getEntityByTags<span class="signature">(tags, entities<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="Entity.html">Entity</a>}</span></h4>
     
 
     
@@ -2086,7 +2177,11 @@ as it is for internal use only and may change in the future
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2111,10 +2206,61 @@ as it is for internal use only and may change in the future
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">An array containing the tags to be searched</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>entities</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="Entity.html">Entity</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    Manager#objects
+                
+                </td>
+            
+
+            <td class="description last">The array of entities to search in.Defaults to the manager's entity list</td>
         </tr>
 
     
@@ -2155,7 +2301,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line481">line 481</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line483">line 483</a>
     </li></ul></dd>
     
 
@@ -2619,152 +2765,6 @@ This is called after the preloader finishes loading all its files.
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="query"><span class="type-signature"></span>query<span class="signature">(bound)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>bound</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="BoundingCircle.html">BoundingCircle</a></span>
-|
-
-<span class="param-type">BoundingBpx</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line567">line 567</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Entity[]
-</div>
-
-
-
-    
 
 
 
@@ -3634,7 +3634,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line431">line 431</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line430">line 430</a>
     </li></ul></dd>
     
 
@@ -3670,7 +3670,7 @@ as it is for internal use only and may change in the future
     
 
     
-    <h4 class="name" id="unregisterSystem"><span class="type-signature"></span>unregisterSystem<span class="signature">(n)</span><span class="type-signature"> &rarr; {void}</span></h4>
+    <h4 class="name" id="unregisterSystem"><span class="type-signature"></span>unregisterSystem<span class="signature">(n)</span><span class="type-signature"></span></h4>
     
 
     
@@ -3730,7 +3730,7 @@ as it is for internal use only and may change in the future
 
             
 
-            <td class="description last">The name of the system</td>
+            <td class="description last">The name of the system.</td>
         </tr>
 
     
@@ -3771,7 +3771,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line419">line 419</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line418">line 418</a>
     </li></ul></dd>
     
 
@@ -3796,24 +3796,6 @@ as it is for internal use only and may change in the future
 
 
 
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">void</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -3926,7 +3908,7 @@ as it is for internal use only and may change in the future
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line541">line 541</a>
+        <a href="manager_manager.js.html">manager/manager.js</a>, <a href="manager_manager.js.html#line542">line 542</a>
     </li></ul></dd>
     
 
@@ -3990,13 +3972,13 @@ as it is for internal use only and may change in the future
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="CamController_CamController.html">CamController</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Geometry.html">Geometry</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Line.html">Line</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="ParticleSystemSprite.html">ParticleSystemSprite</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li><li><a href="System.html">System</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#vertices">vertices</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="Circle.html">Circle</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Grid.html">Grid</a></li><li><a href="ImageSprite.html">ImageSprite</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Particle.html">Particle</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="StaticImageSprite.html">StaticImageSprite</a></li><li><a href="System.html">System</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Vector.html">Vector</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#r">r</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 10 2023 16:39:39 GMT+0300 (East Africa Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Jul 07 2023 15:03:24 GMT+0300 (East Africa Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -17,13 +17,6 @@ class SeekBehaviour extends Behaviour {
    * @type number
   */
   radius = 100
-  /**
-   * @type Vector
-  */
-  target = null
-  /**
-   * @param {Vector} target
-  */
   constructor(target) {
     super()
     this.target = target
