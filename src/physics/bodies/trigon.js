@@ -5,11 +5,11 @@ export class Trigon extends Body {
     /**
      * @param {number} base
      * @param {number} height
-     * @param {number} angle
+     * @param {number} angle Angle in radians
      * 
     */
-    constructor(base, height, angle = 60) {
-        super(new Triangle(base, height / Math.cos(angle), angle))
+    constructor(base, height, angle = Math.PI/3) {
+        super(new Triangle(base, height, angle))
         this.inertia = Triangle.calcInertia(this.mass, base, height, angle)
         this.base = base
         this.height = height
