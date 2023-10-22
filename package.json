@@ -1,6 +1,6 @@
 {
   "name": "chaos-studio",
-  "version": "0.4.1",
+  "version": "0.4.11",
   "description": "a 2D game engine",
   "homepage": "https://github.com/waynemwashuma/chaos-engine",
   "bugs": {
@@ -11,8 +11,8 @@
   "types": "./dist/chaos.module.d.ts",
   "exports": {
     ".": {
-      "import": "/dist/chaos.module.js",
-      "require": "/dist/chaos.umd.js"
+      "import": "./dist/chaos.module.js",
+      "require": "./dist/chaos.umd.js"
     }
   },
   "author": "Wayne Mwashuma",
