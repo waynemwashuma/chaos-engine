@@ -121,9 +121,11 @@ class World {
     this.narrowphase = new SATNarrowPhase()
   }
   set gravity(x) {
-    if (typeof x === "object")
-      return this.gravitationalAcceleration.copy(x)
-    this.gravitationalAcceleration.set(0, x)
+    if (typeof x === "object") {
+      this.gravitationalAcceleration.copy(x)
+    } else {
+      this.gravitationalAcceleration.set(0, x)
+    }
   }
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
@@ -137,7 +139,7 @@ class World {
    * @private
    */
   narrowPhase() {
-    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList,[])
+    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, [])
   }
   /*
    * @private

@@ -4,7 +4,7 @@ import {Vector} from "../math/index.js"
 /**
  * A vector pool.
 */
-class VectorPool extends Pool{
+export class VectorPool extends Pool{
   /**
    * @inheritdoc
    * 

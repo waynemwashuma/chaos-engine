@@ -1,4 +1,3 @@
-import { drawImage } from "../utils/canvasfunc.js"
 /**
  * 
  * @implements Material

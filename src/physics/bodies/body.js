@@ -1,9 +1,8 @@
-import { Vector, Angle, sq } from "../../math/index.js"
+import { Vector, Angle } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
-let defaults = new Vector()
 
 /**
  * Holds information needed for collision detection and response.

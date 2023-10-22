@@ -7,7 +7,6 @@ import {
   Err
 } from "../utils/index.js"
 import {
-  DOMEventHandler,
   EventDispatcher,
   defaultCollisionHandler,
   defaultPrecollisionHandler

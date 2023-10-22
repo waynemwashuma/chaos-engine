@@ -26,7 +26,7 @@ class DebugMesh extends Sprite {
       this.now = 0
     }
     ctx.begin()
-    ctx.translate( renderer.width - 80, 80)
+    ctx.translate( renderer?.width - 80, 80)
     ctx.fill("cyan")
     ctx.fillText(this.lastPerf.actual + "afps", 0, -20)
     ctx.fillText("render: " + this.lastPerf.ren + "ms", 0, 0)

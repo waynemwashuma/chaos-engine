@@ -12,7 +12,9 @@ class Flock extends Behaviour{
    * @type Agent[]
    */
   neighbours = []
-  constructor() {}
+  constructor() {
+    super()
+  }
   /**
    * @inheritdoc
    * @param {Agent} agent

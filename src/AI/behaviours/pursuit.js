@@ -9,7 +9,7 @@ import { Vector } from "../../math/index.js"
 */
 class Pursuit extends Behaviour {
   constructor() {
-
+    super()
   }
     /**
      * @inheritdoc

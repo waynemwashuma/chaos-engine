@@ -14,7 +14,6 @@ const assets = {
 
 export function materials(manager) {
   manager.clear()
-  let renderer = manager.getSystem("renderer")
   let geometry = new BufferGeometry([
   new Vector(-50, -50),
   new Vector(-50, 50),
