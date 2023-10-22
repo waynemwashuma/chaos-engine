@@ -1,6 +1,5 @@
 import { Body } from "./body.js"
 import { Circle } from "../shapes/index.js"
-import { Vector } from "../../math/index.js"
 
 
 /**

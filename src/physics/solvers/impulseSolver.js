@@ -1,5 +1,4 @@
 import { Vector, sq }from "../../math/index.js"
-let dampen = 1
 let tmp1 = new Vector(),
   tmp2 = new Vector(),
   tmp3 = new Vector(),

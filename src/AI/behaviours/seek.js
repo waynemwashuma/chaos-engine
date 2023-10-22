@@ -1,8 +1,7 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, map, clamp } from "../../math/index.js"
+import { Vector } from "../../math/index.js"
 
-let tmp1 = new Vector(),
-  tmp2 = new Vector()
+let tmp1 = new Vector()
   
 /**
  * Creates a behaviour to seek out a target and move towards it.

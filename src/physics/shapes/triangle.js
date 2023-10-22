@@ -1,8 +1,7 @@
 import { Shape } from "./shape.js"
 import { Vector } from "../../math/index.js"
 
-let tmp1 = new Vector(),
-  tmp2 = new Vector()
+let tmp1 = new Vector()
 
 /**
  * A triangular shape.

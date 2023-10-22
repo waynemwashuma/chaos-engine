@@ -13,7 +13,7 @@ class Layer{
 
 class ParallaxBackground {
   constructor(...layers) {
-    this.layers =layers || []
+    this.layers =layers
   }
   update(ctx,dt){
     this.layers.forEach(layer=>{

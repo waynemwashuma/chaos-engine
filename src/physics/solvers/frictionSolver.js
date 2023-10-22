@@ -12,7 +12,7 @@ let tmp1 = new Vector(),
 export const FrictionSolver = {
   /***/
   solve(manifold) {
-    let { bodyA: a, bodyB: b, ca1, ca2, restitution, impulse } = manifold
+    let { bodyA: a, bodyB: b, ca1, ca2, impulse } = manifold
     let { axis } = manifold.contactData
     if (impulse <= 0) return
     let a$va = tmp1.set(ca1.y * -a.rotation._rad, ca1.x * a.rotation._rad)

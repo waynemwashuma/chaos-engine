@@ -1,6 +1,3 @@
-import { Clock } from '../../utils/clock.js'
-import { Camera } from "../camera.js"
-import { Vector } from '../../math/index.js'
 import { Renderer } from "./renderer.js"
 
 

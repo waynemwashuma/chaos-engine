@@ -167,6 +167,6 @@ export class Renderer {
     return this.domElement.height
   }
   set height(x) {
-    return this.domElement.height = x
+    this.domElement.height = x
   }
 }

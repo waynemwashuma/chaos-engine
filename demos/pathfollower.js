@@ -4,20 +4,14 @@ import {
   Ball,
   BodySprite,
   AgentSprite,
-  AgentManager,
-  SeekBehaviour,
-  EvadeBehaviour,
   PathFollowing,
-  ArriveBehaviour,
   WanderBehaviour,
   Path,
   Vector
 } from "/src/index.js"
 
 export function pathfollower(manager) {
-  
   manager.getSystem("world").gravity = 0
-  let renderer = manager.getSystem("renderer")
 
   let a = Entity.Default(100, 100)
   let b = Entity.Default(100, 250)

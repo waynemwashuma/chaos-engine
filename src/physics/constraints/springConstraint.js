@@ -6,7 +6,6 @@ let tmp1 = new Vector(),
   tmp3 = new Vector(),
   tmp4 = new Vector(),
   tmp5 = new Vector(),
-  tmp6 = new Vector(),
   zero = new Vector()
  /**
   * A constraint that acts like a spring between two bodies

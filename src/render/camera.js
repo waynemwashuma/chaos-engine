@@ -1,4 +1,3 @@
-import { Angle, Vector, Matrix } from "../math/index.js"
 import {Transform} from '../manager/transformComponent.js'
 class Camera {
   /**
