@@ -1,10 +1,9 @@
 import { Sprite } from "./sprite.js"
 import { Vector } from "../../math/index.js"
 import { Shape } from "../../physics/index.js"
-import { BufferGeometry } from "../geometry/index.js"
 import { BasicMaterial } from "../material/index.js"
 import { ObjType } from "../../physics/settings.js"
-import { circle,rect,vertices,stroke,fill,line } from "../utils/index.js"
+import { circle, rect, vertices, stroke, fill, line } from "../utils/index.js"
 
 
 
@@ -34,6 +33,12 @@ class BodySprite extends Sprite {
    * @type {boolean}
    */
   drawBounds = false
+    /**
+   * Determine whether to draw the position of the body.
+   * 
+   * @type {boolean}
+   */
+  drawPosition = true
   /**
    * @param {{}} [options={}] 
    * @param {boolean} [options.drawVelocity=false] Determine whether to draw a representation of the velocity.
@@ -63,6 +68,19 @@ class BodySprite extends Sprite {
       this._drawVelocity(this.body, ctx)
     if (this.drawBounds == true)
       this._drawBound(this.body, ctx)
+    if (this.drawPosition)
+      this._drawCenter(this.body, ctx)
+  }
+  _drawCenter(body, ctx) {
+    ctx.beginPath()
+    circle(
+      ctx,
+      body.position.x,
+      body.position.y,
+      2
+    )
+    fill(ctx, "black")
+    ctx.closePath()
   }
   /**
    * @private
@@ -99,7 +117,7 @@ class BodySprite extends Sprite {
         body.bounds.max.y - this.body.bounds.min.y
       )
     }
-    stroke(ctx,"red")
+    stroke(ctx, "red")
     ctx.closePath()
   }
   /**
@@ -118,11 +136,11 @@ class BodySprite extends Sprite {
           shape.position.y,
           shape.radius)
         Vector.fromRad(shape.angle, r).multiply(shape.radius)
-        line(ctx,...shape.position,
+        line(ctx, ...shape.position,
           shape.position.x + r.x,
           shape.position.y + r.y)
       } else {
-        vertices(ctx,shape.vertices, true)
+        vertices(ctx, shape.vertices, true)
       }
     }
     stroke(ctx)

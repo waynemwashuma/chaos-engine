@@ -1,10 +1,7 @@
 import {
   Vector,
-  Manager,
   Box,
-  Ball,
   DistanceConstraint,
-  rand,
   Entity,
   BodySprite
 } from "/src/index.js"
@@ -34,7 +31,7 @@ export function bridge(manager) {
 function createChain(x, y, w, h, number, spacing, pin1, pin2) {
   let prev = new Box(w, h),
     bodies = [
-      Entity.Default(x * i, y)
+      Entity.Default(x, y)
       .attach("body", prev)
       .attach("sprite", new BodySprite())
       ],

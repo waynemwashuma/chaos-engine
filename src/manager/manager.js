@@ -7,7 +7,6 @@ import {
   Err
 } from "../utils/index.js"
 import {
-  DOMEventHandler,
   EventDispatcher,
   defaultCollisionHandler,
   defaultPrecollisionHandler
@@ -62,8 +61,6 @@ class Manager {
     world: null,
     renderer: null,
     input: null,
-    //TODO - cleanup this events prop
-    events: null,
     audio: null
   }
   /**
@@ -271,9 +268,9 @@ class Manager {
   remove(object) {
     let index = this.objects.indexOf(object)
     object.removeComponents()
+    object.reset()
     Utils.removeElement(this.objects, index)
     this.events.trigger("remove", object)
-
   }
   /**
    * This removes all of the entities and components from the manager
@@ -501,6 +498,7 @@ class Manager {
         target.push(entities[i])
       }
     }
+    return target
   }
   /**
    * Ignore this,im going to remove it and the rest of cloning utilities.

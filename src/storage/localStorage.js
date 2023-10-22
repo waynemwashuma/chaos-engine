@@ -11,7 +11,7 @@ export const Storage = {
   */
   set(k,v) {
     let json = JSON.stringify(v)
-    localStorage.setItem(k,v)
+    localStorage.setItem(k,json)
   },
   /**
    * Gets a value from local storage by its key.

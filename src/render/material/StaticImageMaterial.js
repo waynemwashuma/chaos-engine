@@ -1,4 +1,3 @@
-import { drawImage } from "../utils/canvasfunc.js"
 /**
  * 
  * @implements Material
@@ -20,8 +19,16 @@ export class StaticImageMaterial {
    */
   height = 100
   /**
+   * @type Vector_like
+   */
+  offset = {
+    x: 0,
+    y: 0
+  }
+  /**
    * @param {Image} img
    */
+
   constructor(img) {
     //TODO - Find a way to load images synchronously.
     this.image = img
@@ -30,6 +37,6 @@ export class StaticImageMaterial {
    * @param {CanvasRenderingContext2D} ctx
    */
   render(ctx) {
-    ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height)
+    ctx.drawImage(this.image, this.offset.x, this.offset.y, this.width, this.height)
   }
 }

@@ -1,12 +1,10 @@
-import { EulerSolver, VerletSolver } from "../integrators/index.js";
+import { VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
-import { Vector, naturalizePair }from "../../math/index.js"
-import {Utils} from  "../../utils/index.js"
-import { SAT } from "../SAT/index.js";
+import { Vector } from "../../math/index.js"
+import { Utils } from "../../utils/index.js"
 import { ObjType } from "../settings.js"
-//import {ctx} from "../../debug.js"
-
 import { NaiveBroadphase } from "../broadphases/index.js"
+import { SATNarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
 
 /**
@@ -108,16 +106,26 @@ class World {
    */
   broadphase = null
   /**
+   * This accurately tests body pairs to check 
+   * for collision and outputs a manifold for each body pair.
+   * 
+   * @type NarrowPhase
+   */
+  narrowphase = null
+  /**
    * @constructor World
    * 
    */
   constructor() {
     this.broadphase = new NaiveBroadphase(this)
+    this.narrowphase = new SATNarrowPhase()
   }
   set gravity(x) {
-    if (typeof x === "object")
-      return this.gravitationalAcceleration.copy(x)
-    this.gravitationalAcceleration.set(0, x)
+    if (typeof x === "object") {
+      this.gravitationalAcceleration.copy(x)
+    } else {
+      this.gravitationalAcceleration.set(0, x)
+    }
   }
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
@@ -131,76 +139,7 @@ class World {
    * @private
    */
   narrowPhase() {
-    let
-      collisionData,
-      manifold
-
-    for (var i = 0; i < this.contactList.length; i++) {
-      let { a, b } = this.contactList[i]
-      a.sleeping = false
-      b.sleeping = false
-      let id = naturalizePair(a.id, b.id)
-      if (!this.records.has(id))
-        this.records.set(id, {
-          bodyA: a,
-          bodyB: b,
-          contactData: {
-            lastOverlap: 0,
-            overlap: -Infinity,
-            done: false,
-            axis: new Vector(),
-            verticesA: [],
-            verticesB: [],
-            vertShapeA: null,
-            vertShapeB: null,
-            contactNo: 0,
-            shapes: [],
-            indexA: 0,
-            indexB: 0
-          },
-          stmp: -1,
-          impulse: 0,
-          persistent: false,
-          ca1: new Vector(),
-          ca2: new Vector(),
-          restitution: 0,
-          staticFriction: 0,
-          kineticFriction: 0,
-          velA: new Vector(),
-          velB: new Vector(),
-          rotA: 0,
-          rotB: 0
-        })
-      manifold = this.records.get(id)
-      collisionData = manifold.contactData
-      collisionData.overlap = -Infinity
-      collisionData.done = false
-      SAT.shapesInBodyCollided(a, b, collisionData)
-      if (collisionData.overlap < 0 || !collisionData.done) continue
-      if (collisionData.contactNo == 2) {
-        Vector.lerp(
-          collisionData.verticesA[0],
-          collisionData.verticesA[1],
-          0.5,
-          manifold.ca1
-        ).sub(a.position)
-        Vector.lerp(
-          collisionData.verticesB[0],
-          collisionData.verticesB[1],
-          0.5,
-          manifold.ca2
-        ).sub(b.position)
-      } else {
-        manifold.ca1.copy(collisionData.verticesA[0]).sub(a.position)
-        manifold.ca2.copy(collisionData.verticesB[0]).sub(b.position)
-      }
-      manifold.restitution = a.restitution < b.restitution ? a.restitution : b.restitution
-      manifold.staticFriction = a.staticFriction < b.staticFriction ? a.staticFriction : b.staticFriction
-      manifold.kineticFriction = a.kineticFriction < b.kineticFriction ? a.kineticFriction : b.kineticFriction
-      if (a.collisionResponse && b.collisionResponse)
-        this.CLMDs.push(manifold)
-
-    }
+    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, [])
   }
   /*
    * @private
@@ -223,10 +162,7 @@ class World {
   collisionResponse(dt) {
     let length = this.CLMDs.length,
       manifold,
-      inv_dt = 1 / dt,
-      laststmp = this.count - 1
-
-
+      inv_dt = 1 / dt
 
     for (var j = 0; j < this.velocitySolverIterations; j++) {
       for (let i = 0; i < length; i++) {
@@ -281,7 +217,6 @@ class World {
    * @param {number} dt 
    */
   applyGravity(length, dt) {
-    let frame = this.gravitationalAcceleration.clone().multiply(dt)
     for (var i = 0; i < length; i++) {
       let a = this.objects[i]
       if (a.mass)
@@ -422,7 +357,7 @@ class World {
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints
     let temp = arr.pop()
-    if(constraint.index == arr.length) return constraint
+    if (constraint.index == arr.length) return constraint
     arr[constraint.index] = temp
     temp.index = constraint.index
     constraint.index = -1

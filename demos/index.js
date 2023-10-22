@@ -7,10 +7,10 @@ import { constraint } from "./constraints.js"
 import { pathfollower } from "./pathfollower.js"
 import { materials } from "./marterial.js"
 import { box } from "./box.js"
+import { triangle } from "./triangle.js"
 import { particle } from "./particle.js"
 import { circle } from "./circle.js"
 import { circlestacking } from "./circlestack.js"
-import { triangle } from "./triangle.js"
 import {
   Manager,
   Renderer2D,

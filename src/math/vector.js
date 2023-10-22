@@ -332,14 +332,14 @@ class Vector {
       return this.multiply(min / length)
     return this
   }
-
-toJson(){
-  return this
-}
-fromJspn(obj){
-  this.x = obj.x
-  this.y = obj.y
-}
+  
+  toJson() {
+    return this
+  }
+  fromJson(obj) {
+    this.x = obj.x
+    this.y = obj.y
+  }
 
   [Symbol.iterator] = function*() {
     yield this.x
@@ -434,7 +434,7 @@ fromJspn(obj){
    */
   static lerp(v1, v2, t, target = new Vector()) {
     target = target || new Vector()
-    return target.copy(v1).set(
+    return target.set(
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
     )

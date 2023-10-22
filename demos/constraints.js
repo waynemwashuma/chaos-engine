@@ -4,7 +4,6 @@ import {
   Box,
   BodySprite,
   DistanceConstraint,
-  SpringConstraint
 } from "/src/index.js"//"/dist/chaos.module.js"
 
 export function constraint(manager) {

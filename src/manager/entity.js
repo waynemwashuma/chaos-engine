@@ -1,5 +1,3 @@
-import { Vector, Angle } from "../math/index.js"
-import { Body, BoundingBox } from "../physics/index.js"
 import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
 import { Bound } from "./boundsComponent.js"
@@ -10,7 +8,7 @@ import { Bound } from "./boundsComponent.js"
  * @class
  * @public
  */
-class Entity {
+export class Entity {
   /**
    * Dictionary of component to manage.
    * 
@@ -73,6 +71,13 @@ class Entity {
    */
   removeSelf() {
     if (this._global) this._global.remove(this)
+  }
+  /**
+   * This is an internal function,no need to use it.
+   * 
+   * @package
+   */
+  reset() {
     this.active = false
     this._global = null
   }
@@ -242,7 +247,7 @@ class Entity {
       entity.addTag(a)
     })
     for (var key in obj.comps) {
-      let c =new compList[key]().fromJSON(obj.comps[key])
+      let c = new compList[key]().fromJSON(obj.comps[key])
       entity.attach(key, c)
     }
     return entity
@@ -268,8 +273,3 @@ class Entity {
     return obj
   }
 }
-export {
-  Entity
-}
-
-let e = new Entity()

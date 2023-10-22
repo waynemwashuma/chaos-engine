@@ -2,7 +2,6 @@ import { Sprite } from "./sprite.js"
 import { BufferGeometry } from "../geometry/index.js"
 import { BasicMaterial } from "../material/index.js"
 import { Vector } from "../../math/index.js"
-import { circle, rect, vertices, stroke, fill } from "../utils/index.js"
 
 let geometry = new BufferGeometry([
   new Vector(-10, -10),
