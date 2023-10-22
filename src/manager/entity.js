@@ -1,5 +1,3 @@
-import { Vector, Angle } from "../math/index.js"
-import { Body, BoundingBox } from "../physics/index.js"
 import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
 import { Bound } from "./boundsComponent.js"
@@ -10,7 +8,7 @@ import { Bound } from "./boundsComponent.js"
  * @class
  * @public
  */
-class Entity {
+export class Entity {
   /**
    * Dictionary of component to manage.
    * 
@@ -275,8 +273,3 @@ class Entity {
     return obj
   }
 }
-export {
-  Entity
-}
-
-let e = new Entity()

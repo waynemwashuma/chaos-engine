@@ -1,7 +1,5 @@
 import {
-  Sprite,
   ParticleSystemSprite,
-  Vector,
   Entity
 } from "/src/index.js"
 

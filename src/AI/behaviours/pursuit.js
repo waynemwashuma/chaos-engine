@@ -7,7 +7,7 @@ import { Vector } from "../../math/index.js"
  * 
  * @augments Behaviour
 */
-class Pursuit {
+class Pursuit extends Behaviour {
   constructor() {
 
   }

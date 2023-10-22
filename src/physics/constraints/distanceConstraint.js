@@ -5,8 +5,7 @@ let tmp1 = new Vector(),
   tmp2 = new Vector(),
   tmp3 = new Vector(),
   tmp4 = new Vector(),
-  tmp5 = new Vector(),
-  zero = new Vector()
+  tmp5 = new Vector()
 
 /**
  * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
@@ -45,8 +44,8 @@ class DistanceConstraint extends Constraint {
     }
     let difference = (magnitude - this.maxDistance) / magnitude,
       force = dist.multiply(difference * this.stiffness * this.dampening),
-      massTotal = body1.inv_mass + body2.inv_mass,
-      inertiaTotal = body1.inv_inertia + body2.inv_inertia
+      massTotal = body1.inv_mass + body2.inv_mass
+      //inertiaTotal = body1.inv_inertia + body2.inv_inertia
     tmp4.copy(force)
     force.divide(massTotal * 2)
 

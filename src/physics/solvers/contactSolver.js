@@ -1,4 +1,3 @@
-import { Vector }from "../../math/index.js"
 let v = { x: 0, y: 0 }
 
 let velocityLimit = 1

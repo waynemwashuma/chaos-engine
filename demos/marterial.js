@@ -4,7 +4,6 @@ import {
   BasicMaterial,
   StaticImageMaterial,
   SpriteMaterial,
-  Material,
   Vector,
   Entity
 } from "/src/index.js"

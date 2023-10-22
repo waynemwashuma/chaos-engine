@@ -1,5 +1,5 @@
 import { Vector, clamp } from "../../math/index.js"
-import { vertices, fill, stroke } from "../../render/index.js"
+import { vertices, stroke } from "../../render/index.js"
 
 let tmp = new Vector()
 export class Path {
@@ -95,7 +95,6 @@ export class Path {
   update(lerpdist = this._lerpdist) {
     if (this._finished) return this._lerpedPoint
     let dist = tmp.copy(this._points[this._way[0]]).sub(this._points[this._way[1]]).magnitude()
-    let current = lerpdist / dist
     this._lerp_t = (this.speed + lerpdist) / dist
     if (this._lerp_t > 1 && (dist - lerpdist) < this.tolerance) {
       if (!this.advance()) this._finished = true

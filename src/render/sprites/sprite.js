@@ -1,6 +1,5 @@
 import { Vector, Angle } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
-let v = new Vector()
 
 /**
  * This is the base class used to render images and paths onto the renderer.

@@ -12,7 +12,7 @@ export const Session = {
   */
   set(k,v) {
     let json = JSON.stringify(v)
-    sessionStorage.setItem(k,v)
+    sessionStorage.setItem(k,json)
   },
   /**
    * Gets a value from sessions using a key

@@ -68,7 +68,7 @@ class Constraint {
       body1: this.body1.id,
       body2: this.body2.id,
       localA: this.localA.toJson(),
-      localA: this.localB.toJson(),
+      localB: this.localB.toJson(),
       stiffness: this.stiffness,
       dampening: this.dampening,
       type:this.CHAOS_OBJ_TYPE

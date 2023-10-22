@@ -7,7 +7,7 @@ import { Vector } from "../../math/index.js"
  * 
  * @augments Behaviour
  */
-class Flock {
+class Flock extends Behaviour{
   /**
    * @type Agent[]
    */

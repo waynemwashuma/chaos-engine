@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, clamp, map } from "../../math/index.js"
+import { Vector, map } from "../../math/index.js"
 import { circle, fill, stroke } from "../../render/index.js"
 const tmp1 = new Vector()
 const tmp2 = new Vector()
@@ -37,7 +37,6 @@ export class PathFollowing extends Behaviour {
     tmp2.normalize()
 
     let proj = tmp2.dot(tmp1.sub(p1))
-    let dir = tmp3.copy(tmp2).multiply(proj)
     let projPoint = this.path.update(proj)
     tmp1.copy(projPoint).sub(this.position)
     let length = tmp1.magnitude()
