@@ -1,4 +1,4 @@
-import { DEVICE } from "../device/index.js"
+//import { DEVICE } from "../device/index.js"
 import { Err } from "../utils/index.js"
 class Loader {
   constructor(manager) {
@@ -58,7 +58,6 @@ class Loader {
     }
   }
   _getName(url) {
-    let ext
     if (url.includes("/")) {
       let tmp = url.split("/")
       url = tmp[tmp.length - 1]
@@ -113,7 +112,6 @@ class Loader {
     }
     if (files.json) {
       for (var i = 0; i < files.json.length; i++) {
-        let name = files.json[i]
         let xhr = new XMLHttpRequest();
         xhr.responseType = "text"
         xhr.open('GET', files.json[i], true);

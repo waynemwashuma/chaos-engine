@@ -1,4 +1,4 @@
-import { EulerSolver, VerletSolver } from "../integrators/index.js";
+import { VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
 import { Vector } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
@@ -121,9 +121,11 @@ class World {
     this.narrowphase = new SATNarrowPhase()
   }
   set gravity(x) {
-    if (typeof x === "object")
-      return this.gravitationalAcceleration.copy(x)
-    this.gravitationalAcceleration.set(0, x)
+    if (typeof x === "object") {
+      this.gravitationalAcceleration.copy(x)
+    } else {
+      this.gravitationalAcceleration.set(0, x)
+    }
   }
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
@@ -137,7 +139,7 @@ class World {
    * @private
    */
   narrowPhase() {
-    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList,[])
+    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, [])
   }
   /*
    * @private
@@ -160,10 +162,7 @@ class World {
   collisionResponse(dt) {
     let length = this.CLMDs.length,
       manifold,
-      inv_dt = 1 / dt,
-      laststmp = this.count - 1
-
-
+      inv_dt = 1 / dt
 
     for (var j = 0; j < this.velocitySolverIterations; j++) {
       for (let i = 0; i < length; i++) {
@@ -218,7 +217,6 @@ class World {
    * @param {number} dt 
    */
   applyGravity(length, dt) {
-    let frame = this.gravitationalAcceleration.clone().multiply(dt)
     for (var i = 0; i < length; i++) {
       let a = this.objects[i]
       if (a.mass)

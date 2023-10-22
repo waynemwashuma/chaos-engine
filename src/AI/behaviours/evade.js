@@ -1,8 +1,7 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector,clamp,map } from "../../math/index.js"
+import { Vector,map } from "../../math/index.js"
 
-let tmp1 = new Vector(),
-  tmp2 = new Vector()
+let tmp1 = new Vector()
 /**
  * Creates a behaviour to evade a certain position.
  * 

@@ -22,8 +22,7 @@ const _arr = [],
   },
   tmp4 = new Vector(),
   tmp5 = new Vector(),
-  tmp6 = new Vector(),
-  tmpArr1 = []
+  tmp6 = new Vector()
 
 /**
  * Used for narrowphase collision detection and contact info generation.

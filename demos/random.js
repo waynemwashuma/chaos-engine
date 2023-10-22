@@ -1,6 +1,4 @@
 import {
-  Manager,
-  Vector,
   rand,
   BodySprite,
   Entity,

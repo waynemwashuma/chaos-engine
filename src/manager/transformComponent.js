@@ -1,4 +1,4 @@
-import { Component } from "./component.js"
+//import { Component } from "./component.js"
 import { Vector, Angle } from "../math/index.js"
 
 /**
