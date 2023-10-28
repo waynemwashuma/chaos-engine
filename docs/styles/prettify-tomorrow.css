@@ -1,132 +1,120 @@
-/* Tomorrow Theme */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-/* Pretty printing styles. Used with prettify.js. */
-/* SPAN elements with the classes below are added by prettyprint. */
+/* Chaos game engine prettify.js theme */
+:root{
+  --comment-color:#458a00;
+  --string-color:#d5ba2a;
+  --variable-color:#5cb9e5;
+  --keyword-color:#b66ae7;
+  --operator-color:#bbb;
+  --tag-color:#157bff;
+  --type-color:#157bff;
+}
 /* plain text */
 .pln {
-  color: #4d4d4c; }
+  color: var(--variable-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-@media screen {
-  /* string content */
-  .str {
-    color: #718c00; }
+/* string content */
+.str {
+  color: var(--string-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* a keyword */
-  .kwd {
-    color: #8959a8; }
+/* a keyword */
+.kwd {
+  color: var(--keyword-color);
+  font-weight: bold;
+  font-style: normal;
+}
 
-  /* a comment */
-  .com {
-    color: #8e908c; }
+/* a comment */
+.com {
+  color: var(--comment-color);
+  font-weight: normal;
+  font-style: italic;
+}
 
-  /* a type name */
-  .typ {
-    color: #4271ae; }
+/* a type name */
+.typ {
+  color: var(--tag-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* a literal value */
-  .lit {
-    color: #f5871f; }
+/* a literal value */
+.lit {
+  color: var(--string-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* punctuation */
-  .pun {
-    color: #4d4d4c; }
+/* punctuation */
+.pun {
+  color: var(--operator-color);
+  font-weight: bold;
+  font-style: normal;
+}
 
-  /* lisp open bracket */
-  .opn {
-    color: #4d4d4c; }
+/* lisp open bracket */
+.opn {
+  color: var(--operator-color);
+  font-weight: bold;
+  font-style: normal;
+}
 
-  /* lisp close bracket */
-  .clo {
-    color: #4d4d4c; }
+/* lisp close bracket */
+.clo {
+  color: var(--operator-color);
+  font-weight: bold;
+  font-style: normal;
+}
 
-  /* a markup tag name */
-  .tag {
-    color: #c82829; }
+/* a markup tag name */
+.tag {
+  color: var(--tag-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* a markup attribute name */
-  .atn {
-    color: #f5871f; }
+/* a markup attribute name */
+.atn {
+  color: var(--variable-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* a markup attribute value */
-  .atv {
-    color: #3e999f; }
+/* a markup attribute value */
+.atv {
+  color: var(--string-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* a declaration */
-  .dec {
-    color: #f5871f; }
+/* a declaration */
+.dec {
+  color: var(--variable-color);
+  font-weight: bold;
+  font-style: normal;
+}
 
-  /* a variable name */
-  .var {
-    color: #c82829; }
+/* a variable name */
+.var {
+  color: var(--variable-color);
+  font-weight: normal;
+  font-style: normal;
+}
 
-  /* a function name */
-  .fun {
-    color: #4271ae; } }
-/* Use higher contrast and text-weight for printable form. */
-@media print, projection {
-  .str {
-    color: #060; }
-
-  .kwd {
-    color: #006;
-    font-weight: bold; }
-
-  .com {
-    color: #600;
-    font-style: italic; }
-
-  .typ {
-    color: #404;
-    font-weight: bold; }
-
-  .lit {
-    color: #044; }
-
-  .pun, .opn, .clo {
-    color: #440; }
-
-  .tag {
-    color: #006;
-    font-weight: bold; }
-
-  .atn {
-    color: #404; }
-
-  .atv {
-    color: #060; } }
-/* Style */
-/*
-pre.prettyprint {
-  background: white;
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
-  font-size: 12px;
-  line-height: 1.5;
-  border: 1px solid #ccc;
-  padding: 10px; }
-*/
+/* a function name */
+.fun {
+  color: var(--variable-color);
+  font-weight: bold;
+  font-style: normal;
+}
 
 /* Specify class=linenums on a pre to get line numbering */
 ol.linenums {
   margin-top: 0;
-  margin-bottom: 0; }
-
-/* IE indents via margin-left */
-li.L0,
-li.L1,
-li.L2,
-li.L3,
-li.L4,
-li.L5,
-li.L6,
-li.L7,
-li.L8,
-li.L9 {
-  /* */ }
-
-/* Alternate shading for lines */
-li.L1,
-li.L3,
-li.L5,
-li.L7,
-li.L9 {
-  /* */ }
+  margin-bottom: 0;
+}
