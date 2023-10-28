@@ -1,68 +1,60 @@
 # Chaos-engine
- 2d game engine with physics,a basic canvas renderer,AI,audio management through web audio,an event system and many more features.
+[![DeepScan grade](https://deepscan.io/api/teams/22133/projects/25462/branches/809490/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=22133&pid=25462&bid=809490)
+![Deploy](https://github.com/waynemwashuma/chaos-engine/blob/main/.github/workflows/pages.yml/badge.svg)
 
-## Changes made since v 0.0.0
+ This is a 2d game engine with physics,a basic canvas renderer,AI,audio management through web audio,an event system and many more features.
 
- - Made the manager use entity-component-systems instead of the Inheritance model
+## Features of this game engine.
+
+ - An entity-component-system architecture where entities are made up of components and components are updated by their respective systems.Both object-oriented and data-driven systems are allowed.
  
- - Added AI system that follows the Craig - Renolds implementation 
+ - An AI system that follows the Craig - Renolds implementation.It provides means to follow a target,evade another entity,follow a path and wandering about in the game world.
  
- - Refactored the code to fit the new entity component system model
+ - A semi-realistic physics engine that features the following:
  
- - Added some features to physics including:
+    -> Collision Masking:Used to allow or disallow physical bodies from colliding with each other.
 
-    -> Collision Masking.
-
-    -> Narrowphase.
+    -> Narrowphase:Provides collision manifold from a given pair of bodies if the bodies are colliding.
     
-    -> Broadphase.
+    -> Broadphase:Used to improve performance of the physics world by calculating pairs of bodies that could possibly be colliding.
     
-    -> distance constraints.
+    -> Distance constraints:Used to constrain two bodies at a certain distance.
     
-    -> Static and Dynamic bodies(may add kinematic later on).
+    -> Static and Dynamic bodies types:Static bodies do not respond to collision with other bodies(due to infinite mass) while dynamic bodies respond to collision forces.
     
-    -> Composite bodies(not complete).
+    -> Composite bodies:It is a composition of several bodies and constraints.
     
-    -> Friction(was removed temporarily due to instability it causes).
+    -> Friction:Bodies colliding experience friction between their two surfaces.
     
-    -> Sleeping introduced to improve performance.
+    -> Sleeping:Bodies at rest do not need to be tested every frame hence are put to "sleep" to improve performance of the physics engine.
     
-    -> Querying regions through the broadphase(not done for AABBBroadphase).
+    -> Querying:The world can be queried to know if bodies are within a certain range(either a bounding-box or bounding-circle).
     
     -> Iterative solving for velocity to improve non-rotational stacking.
     
- - Improved the collision detection.
- - Removed the Line body as it didn't work well with the physics system.
- - The event system with the physics system interact to provide you with collision events.
- - Refactored to remove event system from the physics part and made it standalone.
+    -> Shapes:Various shapes are supported in the physics engine.
+    
+ - An event system to provide defined events such as the collision event and user defined events.
+ - A loader to preload game assets.
+ - A storage API to store data in cookies,sessions or localstorage.
  
- - Added Camera system to the renderer.
- - Added new methods to the renderer to prevent direct need for canvas context.
+ - An input abstraction that normalizes input from the keyboard,mouse and touch on mobile devices.
  
- - Included a loader to preload assets(not completed yet).
- - Included a storage API to store data in cookies,sessions or localstorage(may include indexedDB later on).
- - Added a way to support playing audio using Web Audio(may need to add an Audio tag fallback).
- 
- - Added methods to search for entities with specific tags and/or components.
- 
- - Improved input handling of touch devices.
- 
- - Added documentation to the Vector class.
- 
- - Renamed Mesh classes to Sprite.
+ - A math library with support for 2D vectors.
 
-# Usage
-## Downloading and installing.
+## Usage
+### Downloading and installing.
 In order to get a copy of the engine ,enter the following command on your node project.
 
 ```bash
 npm i chaos-studio
 ```
 Import it into your project like this:
+
 ```javascript
 import * as CHAOS from "chaos-studio"
 ```
-### OR:
+#### OR:
 
 Get the [umd file](https://github.com/waynemwashuma/chaos-engine/dist)
 from the dist folder of the [repository](https://github.com/waynemwashuma/chaos-engine),
@@ -77,8 +69,8 @@ your html page like so:
 ```
 This way,the "CHAOS" module name will be available on the window object.
 
-## Creating an example
-### Setup game
+### Creating an example
+#### Setup game
 Now we can create a small demo.
 Add this to your html file in the body tag for this example to work
 ```html
@@ -110,7 +102,7 @@ renderer.setViewport(innerWidth, innerHeight)
 //applies gravity to the world.
 world.gravity = 900
 ```
-# Add a box to the game
+#### Add a box to the game
 
 So far there is nothing on the screen... Lets fix that.
 ```javascript
@@ -132,7 +124,7 @@ box.attach("sprite", boxSprite)
 //Adds the box to the game to be updated every frame.
 game.add(box)
 ```
-### Adding ground
+#### Adding ground
 
 Now you should see a box falling into nothingness.
 Lets add ground it can land on.
@@ -160,13 +152,12 @@ game.add(ground)
 ```
 
 
-# **** WARNING ****
+## **** WARNING ****
 
-This is not yet a stable version hence dont rely on it to make production apps yet.
-
+~~This is not yet a stable version hence dont rely on it to make production apps yet.~~
  
  
-# **** FUTURE WORK ****
+## **** FUTURE WORK ****
  
  - Add a webgl renderer(dont have a direct plan for this yet)🟠
  - Stabilize the collision response to work well with large forces such as (gravity =  10000)
@@ -177,3 +168,8 @@ This is not yet a stable version hence dont rely on it to make production apps y
  - Add appropriate demos to the project and get a website running for them 🟠
  - Add some error handling mechanisms 🟠
  - Add Serialization/Deserialization of objects(on the way) 🟠
+ - Kinematic bodies.
+ - Collision masking using bits(bit masking)
+ - More AI behaviors.
+ - Add indexedDB to Storage API.
+ - An audio tag fallback to Web audio (if necessary )
