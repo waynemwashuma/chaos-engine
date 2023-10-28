@@ -41,80 +41,55 @@
 
     <section>
         <article><h1>Chaos-engine</h1>
-<p>2d game engine with physics,a basic canvas renderer,AI,audio management through web audio,an event system and many more features.</p>
-<h2>Changes made since v 0.0.0</h2>
+<p><a href="https://deepscan.io/dashboard#view=project&amp;tid=22133&amp;pid=25462&amp;bid=809490"><img src="https://deepscan.io/api/teams/22133/projects/25462/branches/809490/badge/grade.svg" alt="DeepScan grade"></a></p>
+<p>This is a 2d game engine with physics,a basic canvas renderer,AI,audio management through web audio,an event system and many more features.</p>
+<h2>Features of this game engine.</h2>
 <ul>
 <li>
-<p>Made the manager use entity-component-systems instead of the Inheritance model</p>
+<p>An entity-component-system architecture where entities are made up of components and components are updated by their respective systems.Both object-oriented and data-driven systems are allowed.</p>
 </li>
 <li>
-<p>Added AI system that follows the Craig - Renolds implementation</p>
+<p>An AI system that follows the Craig - Renolds implementation.It provides means to follow a target,evade another entity,follow a path and wandering about in the game world.</p>
 </li>
 <li>
-<p>Refactored the code to fit the new entity component system model</p>
-</li>
-<li>
-<p>Added some features to physics including:</p>
-<p>-&gt; Collision Masking.</p>
-<p>-&gt; Narrowphase.</p>
-<p>-&gt; Broadphase.</p>
-<p>-&gt; distance constraints.</p>
-<p>-&gt; Static and Dynamic bodies(may add kinematic later on).</p>
-<p>-&gt; Composite bodies(not complete).</p>
-<p>-&gt; Friction(was removed temporarily due to instability it causes).</p>
-<p>-&gt; Sleeping introduced to improve performance.</p>
-<p>-&gt; Querying regions through the broadphase(not done for AABBBroadphase).</p>
+<p>A semi-realistic physics engine that features the following:</p>
+<p>-&gt; Collision Masking:Used to allow or disallow physical bodies from colliding with each other.</p>
+<p>-&gt; Narrowphase:Provides collision manifold from a given pair of bodies if the bodies are colliding.</p>
+<p>-&gt; Broadphase:Used to improve performance of the physics world by calculating pairs of bodies that could possibly be colliding.</p>
+<p>-&gt; Distance constraints:Used to constrain two bodies at a certain distance.</p>
+<p>-&gt; Static and Dynamic bodies types:Static bodies do not respond to collision with other bodies(due to infinite mass) while dynamic bodies respond to collision forces.</p>
+<p>-&gt; Composite bodies:It is a composition of several bodies and constraints.</p>
+<p>-&gt; Friction:Bodies colliding experience friction between their two surfaces.</p>
+<p>-&gt; Sleeping:Bodies at rest do not need to be tested every frame hence are put to &quot;sleep&quot; to improve performance of the physics engine.</p>
+<p>-&gt; Querying:The world can be queried to know if bodies are within a certain range(either a bounding-box or bounding-circle).</p>
 <p>-&gt; Iterative solving for velocity to improve non-rotational stacking.</p>
+<p>-&gt; Shapes:Various shapes are supported in the physics engine.</p>
 </li>
 <li>
-<p>Improved the collision detection.</p>
+<p>An event system to provide defined events such as the collision event and user defined events.</p>
 </li>
 <li>
-<p>Removed the Line body as it didn't work well with the physics system.</p>
+<p>A loader to preload game assets.</p>
 </li>
 <li>
-<p>The event system with the physics system interact to provide you with collision events.</p>
+<p>A storage API to store data in cookies,sessions or localstorage.</p>
 </li>
 <li>
-<p>Refactored to remove event system from the physics part and made it standalone.</p>
+<p>An input abstraction that normalizes input from the keyboard,mouse and touch on mobile devices.</p>
 </li>
 <li>
-<p>Added Camera system to the renderer.</p>
-</li>
-<li>
-<p>Added new methods to the renderer to prevent direct need for canvas context.</p>
-</li>
-<li>
-<p>Included a loader to preload assets(not completed yet).</p>
-</li>
-<li>
-<p>Included a storage API to store data in cookies,sessions or localstorage(may include indexedDB later on).</p>
-</li>
-<li>
-<p>Added a way to support playing audio using Web Audio(may need to add an Audio tag fallback).</p>
-</li>
-<li>
-<p>Added methods to search for entities with specific tags and/or components.</p>
-</li>
-<li>
-<p>Improved input handling of touch devices.</p>
-</li>
-<li>
-<p>Added documentation to the Vector class.</p>
-</li>
-<li>
-<p>Renamed Mesh classes to Sprite.</p>
+<p>A math library with support for 2D vectors.</p>
 </li>
 </ul>
-<h1>Usage</h1>
-<h2>Downloading and installing.</h2>
+<h2>Usage</h2>
+<h3>Downloading and installing.</h3>
 <p>In order to get a copy of the engine ,enter the following command on your node project.</p>
 <pre class="prettyprint source lang-bash"><code>npm i chaos-studio
 </code></pre>
 <p>Import it into your project like this:</p>
 <pre class="prettyprint source lang-javascript"><code>import * as CHAOS from &quot;chaos-studio&quot;
 </code></pre>
-<h3>OR:</h3>
+<h4>OR:</h4>
 <p>Get the <a href="https://github.com/waynemwashuma/chaos-engine/dist">umd file</a>
 from the dist folder of the <a href="https://github.com/waynemwashuma/chaos-engine">repository</a>,
 put it in your root directory and add it to
@@ -125,8 +100,8 @@ your html page like so:</p>
 &lt;/html>
 </code></pre>
 <p>This way,the &quot;CHAOS&quot; module name will be available on the window object.</p>
-<h2>Creating an example</h2>
-<h3>Setup game</h3>
+<h3>Creating an example</h3>
+<h4>Setup game</h4>
 <p>Now we can create a small demo.
 Add this to your html file in the body tag for this example to work</p>
 <pre class="prettyprint source lang-html"><code>&lt;div id=&quot;can&quot;>&lt;/div>
@@ -156,7 +131,7 @@ renderer.setViewport(innerWidth, innerHeight)
 //applies gravity to the world.
 world.gravity = 900
 </code></pre>
-<h1>Add a box to the game</h1>
+<h4>Add a box to the game</h4>
 <p>So far there is nothing on the screen... Lets fix that.</p>
 <pre class="prettyprint source lang-javascript"><code>//Creates an entity on which we can add(attach) component to.
 let box = CHAOS.Entity.Default(innerWidth / 2, 100)
@@ -176,7 +151,7 @@ box.attach(&quot;sprite&quot;, boxSprite)
 //Adds the box to the game to be updated every frame.
 game.add(box)
 </code></pre>
-<h3>Adding ground</h3>
+<h4>Adding ground</h4>
 <p>Now you should see a box falling into nothingness.
 Lets add ground it can land on.</p>
 <pre class="prettyprint source lang-javascript"><code>//Creates an entity that we call ground on which we can add(attach) component to.
@@ -200,9 +175,9 @@ ground.attach(&quot;sprite&quot;, groundSprite)
 //Adds the ground to the game to be updated every frame.
 game.add(ground)
 </code></pre>
-<h1>**** WARNING ****</h1>
-<p>This is not yet a stable version hence dont rely on it to make production apps yet.</p>
-<h1>**** FUTURE WORK ****</h1>
+<h2>**** WARNING ****</h2>
+<p><s>This is not yet a stable version hence dont rely on it to make production apps yet.</s></p>
+<h2>**** FUTURE WORK ****</h2>
 <ul>
 <li>Add a webgl renderer(dont have a direct plan for this yet)🟠</li>
 <li>Stabilize the collision response to work well with large forces such as (gravity =  10000)</li>
@@ -213,6 +188,11 @@ game.add(ground)
 <li>Add appropriate demos to the project and get a website running for them 🟠</li>
 <li>Add some error handling mechanisms 🟠</li>
 <li>Add Serialization/Deserialization of objects(on the way) 🟠</li>
+<li>Kinematic bodies.</li>
+<li>Collision masking using bits(bit masking)</li>
+<li>More AI behaviors.</li>
+<li>Add indexedDB to Storage API.</li>
+<li>An audio tag fallback to Web audio (if necessary )</li>
 </ul></article>
     </section>
 
@@ -230,7 +210,7 @@ game.add(ground)
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Oct 28 2023 08:41:52 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Oct 28 2023 11:28:11 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
