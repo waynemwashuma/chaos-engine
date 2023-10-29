@@ -14,6 +14,7 @@ import { wanderer } from "./wanderer.js"
 import { triangle } from "./triangle.js"
 
 import { seeker } from "./seeker.js"
+import { restitution } from "./restitution.js"
 
 
 
@@ -115,6 +116,7 @@ export const demos = {
 
 //hysics
 demos.register("box",box)
+demos.register("restitution",restitution)
 demos.register("stack",stacking)
 demos.register("circle",circle)
 demos.register("circlestacking",circlestacking)
