@@ -32,7 +32,7 @@ export class PathFollowing extends Behaviour {
   calc(target, inv_dt) {
     tmp1.copy(this.position)
     let [p1, p2] = this.path.current()
-    tmp2.normalize()
+    tmp2.copy(p2).sub(p1).normalize()
 
     let proj = tmp2.dot(tmp1.sub(p1))
     let projPoint = this.path.update(proj)
