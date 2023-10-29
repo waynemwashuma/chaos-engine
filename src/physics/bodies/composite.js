@@ -163,7 +163,7 @@ class Composite {
    */
   get position() {
     let position = new Vector()
-    for (var i = 0; i < this.shapes.length; i++) {
+    for (var i = 0; i < this.bodies.length; i++) {
       position.add(this.bodies[i].position)
     }
     return position
