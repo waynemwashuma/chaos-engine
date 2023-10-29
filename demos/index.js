@@ -11,6 +11,7 @@ import { triangle } from "./triangle.js"
 import { particle } from "./particle.js"
 import { circle } from "./circle.js"
 import { circlestacking } from "./circlestack.js"
+import { wanderer } from "./wanderer.js"
 import {
   Manager,
   Renderer2D,
@@ -106,6 +107,8 @@ export const demos = {
     this.examples[n] = f
   }
 }
+
+//Physics
 demos.register("box",box)
 demos.register("stack",stacking)
 demos.register("circle",circle)
@@ -116,6 +119,11 @@ demos.register("random",random)
 demos.register("constraints",constraint)
 demos.register("bridge",bridge)
 demos.register("car",car)
-demos.register("pathfollower",pathfollower)
+
+//Renderer
 demos.register("materials",materials)
 demos.register("particle",particle)
+
+//AI
+demos.register("pathfollower",pathfollower)
+demos.register("wanderer",wanderer)
