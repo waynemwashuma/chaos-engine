@@ -12,6 +12,10 @@ import { particle } from "./particle.js"
 import { circle } from "./circle.js"
 import { circlestacking } from "./circlestack.js"
 import { wanderer } from "./wanderer.js"
+import { seeker } from "./seeker.js"
+
+
+
 import {
   Manager,
   Renderer2D,
@@ -108,7 +112,7 @@ export const demos = {
   }
 }
 
-//Physics
+//hysics
 demos.register("box",box)
 demos.register("stack",stacking)
 demos.register("circle",circle)
@@ -127,3 +131,4 @@ demos.register("particle",particle)
 //AI
 demos.register("pathfollower",pathfollower)
 demos.register("wanderer",wanderer)
+demos.register("seeker",seeker)
