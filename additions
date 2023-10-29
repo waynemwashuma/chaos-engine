@@ -1,1 +1,2 @@
 add an intergrator system to work on the transform and movable component.
+separate Entity and Manager helpers to their own files
