@@ -51,7 +51,7 @@ Err.log = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err.warnOnce = function(message) {
+Err.warnOnce = function warnOnce(message) {
   if (mess.includes(message)) return
   mess.push(message)
   Err.warn(message)
@@ -67,4 +67,14 @@ Err.warnOnce = function(message) {
 Err.assert = function(test, errfunc, message) {
   if (!test) errfunc(message)
   return test
+}
+
+/**
+ * Logs out a warning to the console.
+ * 
+ * @memberof Err
+ * @param {string} message
+ */
+Err.deprecate = function deprecate(message) {
+  Err.warnOnce(message)
 }
