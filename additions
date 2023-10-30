@@ -1,2 +1,5 @@
 add an intergrator system to work on the transform and movable component.
 separate Entity and Manager helpers to their own files
+
+bug : Restitution does not work.
+bug : Restitution affects friction too much.
