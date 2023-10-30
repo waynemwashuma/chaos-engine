@@ -356,8 +356,8 @@ class Clock {
     this.dt = accumulate - this.lastcall || 0;
     //this.framerate = this.getFrameRate()
     this.lastcall = accumulate; 
-    this.delta = this.dt/1000;
-    return this.delta
+    
+    return this.dt/1000
   }
 }
 
@@ -867,7 +867,7 @@ let TWO_PI = Math.PI * 2;
  * @author Wayne Mwashuma <mwashumawayne@gmail.com>
  * @license MIT
  */
-let Vector$1 = class Vector {
+class Vector$1 {
   /**
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
@@ -918,7 +918,7 @@ let Vector$1 = class Vector {
   distanceTo(v) {
     obj$1.x = this.x - v.x;
     obj$1.y = this.y - v.y;
-    return Math.sqrt(Vector.prototype.magnitudeSquared.call(obj$1))
+    return Math.sqrt(Vector$1.prototype.magnitudeSquared.call(obj$1))
   }
   /**
    *Calculates length squared of this vector to another vector
@@ -929,7 +929,7 @@ let Vector$1 = class Vector {
   distanceToSquared(v) {
     obj$1.x = this.x - v.x;
     obj$1.y = this.y - v.y;
-    return Vector.prototype.magnitudeSquared.call(obj$1)
+    return Vector$1.prototype.magnitudeSquared.call(obj$1)
   }
   /**
    * Adds a given vector into this 
@@ -1054,7 +1054,7 @@ let Vector$1 = class Vector {
    * @returns {Vector}
    */
   normal(l = 1, target) {
-    target = target || new Vector();
+    target = target || new Vector$1();
     target.copy(this).normalize();
     return target.set(-target.y * l, target.x * l);
   };
@@ -1064,7 +1064,7 @@ let Vector$1 = class Vector {
    * @param {Vector} [target = Vector] Vector in which results are stored.
    *  @returns {Vector}
    */
-  normalFast(target = new Vector()) {
+  normalFast(target = new Vector$1()) {
     return target.set(-this.y, this.x)
   }
   /**
@@ -1104,7 +1104,7 @@ let Vector$1 = class Vector {
    * @return Vector
    */
   clone() {
-    return new Vector(this.x, this.y)
+    return new Vector$1(this.x, this.y)
   }
   /**
    * Copies x and y values of another vector
@@ -1169,7 +1169,7 @@ let Vector$1 = class Vector {
    * @param {Vector} [target]
    * @return {Vector}
    */
-  reflect(normal, target = new Vector()) {
+  reflect(normal, target = new Vector$1()) {
     return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
   }
   /**
@@ -1190,14 +1190,14 @@ let Vector$1 = class Vector {
       return this.multiply(min / length)
     return this
   }
-
-toJson(){
-  return this
-}
-fromJspn(obj){
-  this.x = obj.x;
-  this.y = obj.y;
-}
+  
+  toJson() {
+    return this
+  }
+  fromJson(obj) {
+    this.x = obj.x;
+    this.y = obj.y;
+  }
 
   [Symbol.iterator] = function*() {
     yield this.x;
@@ -1213,7 +1213,7 @@ fromJspn(obj){
    */
   static getAbsDegBtwn(v1, v2) {
     let a = v1.cross(v2);
-    let deg = Vector.getDegBtwn(v1, v2);
+    let deg = Vector$1.getDegBtwn(v1, v2);
     return a < 0 ? deg : 360 - deg
   }
   /**
@@ -1225,7 +1225,7 @@ fromJspn(obj){
    **/
   static getAbsRadBtwn(v1, v2) {
     let a = v1.cross(v2);
-    let deg = Vector.getDegBtwn(v1, v2);
+    let deg = Vector$1.getDegBtwn(v1, v2);
     return a < 0 ? deg : 360 - deg
   }
   /**
@@ -1248,7 +1248,7 @@ fromJspn(obj){
    * @returns {number}
    */
   static getDegBtwn(v1, v2) {
-    return Vector.getRadBtwn(v1, v2) * 180 / Math.PI
+    return Vector$1.getRadBtwn(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
@@ -1258,7 +1258,7 @@ fromJspn(obj){
    * @param {Vector} [target] Vector to store results in.
    * @returns {Vector}
    */
-  static fromRad(radian, target = new Vector()) {
+  static fromRad(radian, target = new Vector$1()) {
     return target.set(Math.cos(radian), Math.sin(radian))
   }
   /**
@@ -1270,7 +1270,7 @@ fromJspn(obj){
    * @returns {Vector}
    */
   static fromDeg(degree, target) {
-    return Vector.fromRad(degree * Math.PI / 180, target)
+    return Vector$1.fromRad(degree * Math.PI / 180, target)
   }
   /**
    * Generates a new unit Vector in a random direction
@@ -1279,7 +1279,7 @@ fromJspn(obj){
    * @returns {Vector}
    */
   static random(target) {
-    return Vector.fromRad(Math.random() * TWO_PI, target)
+    return Vector$1.fromRad(Math.random() * TWO_PI, target)
   }
   /**
    * Returns a Vector that has been lerped between v1 and v2
@@ -1290,9 +1290,9 @@ fromJspn(obj){
    * 
    * @returns {Vector}
    */
-  static lerp(v1, v2, t, target = new Vector()) {
-    target = target || new Vector();
-    return target.copy(v1).set(
+  static lerp(v1, v2, t, target = new Vector$1()) {
+    target = target || new Vector$1();
+    return target.set(
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
     )
@@ -1305,7 +1305,7 @@ fromJspn(obj){
    * @returns {number}
    */
   static toDeg(v) {
-    return Vector.toRad(v) / Math.PI * 180
+    return Vector$1.toRad(v) / Math.PI * 180
   }
 
   /**
@@ -1326,9 +1326,9 @@ fromJspn(obj){
    * @readonly
    * @type {Vector}
    */
-  static ZERO = Object.freeze(new Vector())
+  static ZERO = Object.freeze(new Vector$1())
 
-};
+}
 
 /**
  * Wrapper class since JavaScript doesn't support references to numbers explicitly.
@@ -2133,20 +2133,21 @@ class Shape {
   static calcInertia() {
     throw new Error("Implement in the children classes")
   }
-  toJson(){
-    ({
-      type:this.CHAOS_OBJ_TYPE,
-      geometry:this.geometry.toJson(),
-      shapwType:this.type,
-      offset:this.offPosition.toJson(),
-      offAngle:this.offAngle
-    });
+  toJson() {
+    let obj = {
+      type: this.CHAOS_OBJ_TYPE,
+      geometry: this.geometry.toJson(),
+      shapwType: this.type,
+      offset: this.offPosition.toJson(),
+      offAngle: this.offAngle
+    };
+    return obj
   }
-  fromJson(obj){
+  fromJson(obj) {
     this.offAngle = obj.offAngle;
     this.offPosition = obj.offset;
     this.geometry.fromJson(obj.geometry);
-    this.vertices = this.geometry.vertices.map(v=>v.clone());
+    this.vertices = this.geometry.vertices.map(v => v.clone());
   }
   static CIRCLE = 0
   static POLYGON = 1
@@ -2314,8 +2315,7 @@ class Rectangle extends Shape {
 
 }
 
-let tmp1$b = new Vector$1(),
-  tmp2$9 = new Vector$1();
+let tmp1$b = new Vector$1();
 
 /**
  * A triangular shape.
@@ -2324,30 +2324,25 @@ let tmp1$b = new Vector$1(),
  */
 class Triangle extends Shape {
   /**
-   * @param {number} length1 Length of one side.
-   * @param {number} length2 Length of a second side.
+   * @param {number} base Length of one side.
+   * @param {number} height Length of a second side.
    * @param {number} angle The angle between the two sides.
    * @param {Vector} offset Positional offset from the body center.
    * @param {number} offsetAngle Angular offset from the body center.
    * 
    */
-  constructor(length1, length2, angle, offset, offsetAngle) {
-    let l1 = tmp1$b.set(1, 0).multiply(length1);
-    let l2 = Vector$1.fromDeg(angle, tmp2$9).multiply(length2);
+  constructor(base, height, angle, offset, offsetAngle) {
+    let l1 = new Vector$1().set(1, 0).multiply(base);
+    let l2 = Vector$1.fromRad(angle).multiply(height/Math.sin(angle));
+    let center = tmp1$b.set((l1.x + l2.x) / 3, l2.y / 3);
     super([
-       new Vector$1(
-        -l1.x / 2,
-        -l2.y / 2
-      ),
-        new Vector$1(
-        l1.x / 2,
-        -l2.y / 2
-      ),
-        new Vector$1(
-        l2.x / 2,
-        l2.y / 2
-      )
-      ], offset, offsetAngle);
+      new Vector$1().sub(center),
+      l1.sub(center),
+      l2.sub(center)
+    ], offset, offsetAngle);
+  }
+  static calcInertia(mass,base,height,angle){
+    return 0.5 * mass * base * height * (1 - 2/3 * (1 - (Math.cos(2 * angle * 180/Math.PI))/2))
   }
 }
 
@@ -2398,6 +2393,13 @@ class Body {
    * @type Angle
    */
   _rotation = new Angle()
+  /**
+   * Torque of the body
+   * 
+   * @private
+   * @type Angle
+   */
+  _torque = new Angle()
   /**
    * Mass of the body.
    * 
@@ -2549,7 +2551,7 @@ class Body {
    * Whether the body should respond to collisions.If false,no collision response will occur but collision events will still be fired.
    * 
    * @type boolean
-   * @default Settings.collisionResponsefired
+   * @default Settings.collisionResponse
    */
   collisionResponse = Settings.collisionResponse
   /**
@@ -2729,6 +2731,28 @@ class Body {
     this.rotation.degree = x;
   }
   /**
+   * Torque of a body in degrees
+   * 
+   * @type number 
+   */
+  get torque() {
+    return this._torque
+  }
+  set torque(x) {
+    this._torque.degree = x.degree;
+  }
+  /**
+   * Angular acceleration of a body in degrees
+   * 
+   * @type number 
+   */
+  get angularAcceleration() {
+    return this._torque.degree
+  }
+  set angularAcceleration(x) {
+    this._torque.degree = x;
+  }
+  /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
    * @param {Vector} v The anchor arm
@@ -2815,26 +2839,26 @@ class Body {
   }
   toJson() {
     let obj = {
-      id:this.id,
+      id: this.id,
       position: this.position.toJson(),
       velocity: this.velocity.toJson(),
       acceleration: this.acceleration.toJson(),
       orientation: this.orientation.toJson(),
       rotation: this.rotation.toJson(),
       shapes: [],
-      anchors:[],
+      anchors: [],
       collisionResponse: this.collisionResponse,
       allowSleep: this.allowSleep,
       type: this.CHAOS_OBJ_TYPE,
       phyType: this.type,
       mass: this.mass,
-      inertia:this.inertia,
-      autoUpdateBound:this.autoUpdateBound,
-      boundPadding:this.boundPadding,
-      aabbDetectionOnly:this.aabbDetectionOnly,
-      mask:this.mask
+      inertia: this.inertia,
+      autoUpdateBound: this.autoUpdateBound,
+      boundPadding: this.boundPadding,
+      aabbDetectionOnly: this.aabbDetectionOnly,
+      mask: this.mask
     };
-    this.anchors.forEach((a)=>{
+    this.anchors.forEach((a) => {
       obj.anchors.push(a);
     });
     this.shapes.forEach((a) => {
@@ -2843,9 +2867,9 @@ class Body {
     return obj
   }
   //TODO  - Add way to add shapes to body
-  fromJson(obj){
+  fromJson(obj) {
     let shapes = [];
-    obj.shapes.forEach((shape)=>{
+    obj.shapes.forEach((shape) => {
       shapes.push(Shape.fromJson(shape));
     });
     let body = this;
@@ -2864,7 +2888,7 @@ class Body {
     body.autoUpdateBound = obj.autoUpdateBound;
     body.id = obj.id;
     body.mask = obj.mask;
-    obj.anchors.forEach((v)=>{
+    obj.anchors.forEach((v) => {
       body.setAnchor(new Vector$1().fromJson(v));
     });
   }
@@ -3075,6 +3099,14 @@ class Composite {
     }
     return mass
   }
+  set type(x){
+    for (var i = 0; i < this.bodies.length; i++) {
+      this.bodies[i].type = x;
+    }
+  }
+  get type(){
+    return this.bodies[0]?.type 
+  }
   /**
    * Density of a body.
    * 
@@ -3147,6 +3179,34 @@ class Composite {
 }
 Utils$1.inheritComponent(Composite);
 
+class Trigon extends Body {
+    /**
+     * @param {number} base
+     * @param {number} height
+     * @param {number} angle Angle in radians
+     * 
+    */
+    constructor(base, height, angle = Math.PI/3) {
+        super(new Triangle(base, height, angle));
+        this.inertia = Triangle.calcInertia(this.mass, base, height, angle);
+        this.base = base;
+        this.height = height;
+        this.bangle = angle;
+    }
+    /**
+     * @inheritdoc
+     * @type number 
+     */
+    get mass() {
+        return this._mass
+    }
+    set mass(x) {
+        this._mass = x;
+        this.inv_mass = x === 0 ? 0 : 1 / x;
+        this.inertia = Triangle.calcInertia(this.mass, this.base, this.height,this.bangle);
+    }
+}
+
 /**
  * Base class for constructing different types of constraints.
  * 
@@ -3214,7 +3274,7 @@ class Constraint {
       body1: this.body1.id,
       body2: this.body2.id,
       localA: this.localA.toJson(),
-      localA: this.localB.toJson(),
+      localB: this.localB.toJson(),
       stiffness: this.stiffness,
       dampening: this.dampening,
       type:this.CHAOS_OBJ_TYPE
@@ -3238,7 +3298,7 @@ class Constraint {
 
 let tmp1$a = new Vector$1(),
   tmp2$8 = new Vector$1(),
-  tmp3$5 = new Vector$1(),
+  tmp3$4 = new Vector$1(),
   tmp4$4 = new Vector$1(),
   tmp5$3 = new Vector$1();
 
@@ -3269,7 +3329,7 @@ class DistanceConstraint extends Constraint {
   behavior(body1, body2,dt) {
     let arm1 = tmp1$a.copy(this.localA),
       arm2 = tmp2$8.copy(this.localB),
-      pos1 = tmp3$5.copy(body1.position).add(arm1),
+      pos1 = tmp3$4.copy(body1.position).add(arm1),
       pos2 = tmp4$4.copy(body2.position).add(arm2),
       dist = pos1.sub(pos2),
       magnitude = dist.magnitude();
@@ -3280,7 +3340,7 @@ class DistanceConstraint extends Constraint {
     let difference = (magnitude - this.maxDistance) / magnitude,
       force = dist.multiply(difference * this.stiffness * this.dampening),
       massTotal = body1.inv_mass + body2.inv_mass;
-      body1.inv_inertia + body2.inv_inertia;
+      //inertiaTotal = body1.inv_inertia + body2.inv_inertia
     tmp4$4.copy(force);
     force.divide(massTotal * 2);
 
@@ -3297,7 +3357,7 @@ class DistanceConstraint extends Constraint {
 
 let tmp1$9 = new Vector$1(),
   tmp2$7 = new Vector$1(),
-  tmp3$4 = new Vector$1(),
+  tmp3$3 = new Vector$1(),
   tmp4$3 = new Vector$1(),
   tmp5$2 = new Vector$1(),
   zero = new Vector$1();
@@ -3330,7 +3390,7 @@ class SpringConstraint extends Constraint {
   behavior(body1, body2, dt) {
     let arm1 = tmp1$9.copy(this.localA),
       arm2 = tmp2$7.copy(this.localB),
-      pos1 = tmp3$4.copy(body1.position).add(arm1),
+      pos1 = tmp3$3.copy(body1.position).add(arm1),
       pos2 = tmp4$3.copy(body2.position).add(arm2),
       dist = pos1.sub(pos2),
       magnitude = dist.magnitude();
@@ -3351,6 +3411,8 @@ class SpringConstraint extends Constraint {
   }
 }
 
+new Vector$1();
+
 let position = new Vector$1();
 let acceleration = new Vector$1();
 let velocity = new Vector$1();
@@ -3358,7 +3420,7 @@ let velocity = new Vector$1();
 /**
  * Verlet intergration.
  * Used so that constraints can be stable at little performance cost.
-*/
+ */
 class VerletSolver {
   /**
    * @param {Body} body
@@ -3371,14 +3433,17 @@ class VerletSolver {
     body.acceleration.set(0, 0);
     body.velocity.add(acceleration);
     position.add(velocity.multiply(dt)).add(acceleration.multiply(dt));
+    body.velocity.add(acceleration);
     body.position = position;
+    body.angularVelocity += body.angularAcceleration * dt * 0.5;
     body.angle += body.angularVelocity * dt;
+    body.angularVelocity += body.angularAcceleration * dt * 0.5;
   }
 }
 
 let tmp1$8 = new Vector$1(),
   tmp2$6 = new Vector$1(),
-  tmp3$3 = new Vector$1(),
+  tmp3$2 = new Vector$1(),
   tmp4$2 = new Vector$1(),
   tmp5$1 = new Vector$1();
 
@@ -3388,12 +3453,12 @@ let tmp1$8 = new Vector$1(),
 const FrictionSolver = {
   /***/
   solve(manifold) {
-    let { bodyA: a, bodyB: b, ca1, ca2, restitution, impulse } = manifold;
+    let { bodyA: a, bodyB: b, ca1, ca2, impulse } = manifold;
     let { axis } = manifold.contactData;
     if (impulse <= 0) return
     let a$va = tmp1$8.set(ca1.y * -a.rotation._rad, ca1.x * a.rotation._rad);
     let a$vb = tmp2$6.set(ca2.y * -b.rotation._rad, ca2.x * b.rotation._rad);
-    let va = tmp3$3.copy(a.velocity).add(a$va);
+    let va = tmp3$2.copy(a.velocity).add(a$va);
     let vb = tmp4$2.copy(b.velocity).add(a$vb);
     let relVel = va.sub(vb);
     if (relVel.magnitudeSquared() === 0)
@@ -3481,7 +3546,7 @@ const PenetrationSolver = {
 
 let tmp1$6 = new Vector$1(),
   tmp2$4 = new Vector$1(),
-  tmp3$2 = new Vector$1(),
+  tmp3$1 = new Vector$1(),
   tmp4$1 = new Vector$1();
 
 /**
@@ -3493,7 +3558,7 @@ const ImpulseSolver = {
     let { axis } = manifold.contactData;
     let a$va = tmp1$6.set(ca1.y * -bodyA.rotation.radian, ca1.x * bodyA.rotation.radian);
     let a$vb = tmp2$4.set(ca2.y * -bodyB.rotation.radian, ca2.x * bodyB.rotation.radian);
-    let va = tmp3$2.copy(bodyA.velocity).add(a$va);
+    let va = tmp3$1.copy(bodyA.velocity).add(a$va);
     let vb = tmp4$1.copy(bodyB.velocity).add(a$vb);
     let vp = va.sub(vb);
     let vp_p = axis.dot(vp);
@@ -3520,273 +3585,6 @@ const ImpulseSolver = {
     manifold.rotA = ang1;
     manifold.rotB = ang2;
     manifold.impulse = j;
-  }
-};
-
-const _arr = [],
-  tmp1$5 = {
-    overlap: 0,
-    verticesA: null,
-    verticesB: null,
-    axis: new Vector$1(),
-    vertex: null,
-    shape: null
-  },
-  tmp2$3 = {
-    min: 0,
-    max: 0,
-    indexN: 0
-  },
-  tmp3$1 = {
-    min: 0,
-    max: 0,
-    indexN: 0
-  },
-  tmp4 = new Vector$1(),
-  tmp5 = new Vector$1(),
-  tmp6 = new Vector$1();
-
-/**
- * Used for narrowphase collision detection and contact info generation.
- */
-const SAT = {
-  /**
-   * @param {Body} body1
-   * @param {Body} body2
-   * @param {Manifold} manifold
-   */
-  shapesInBodyCollided(body1, body2, manifold) {
-    let shapesA = body1.shapes,
-      shapesB = body2.shapes;
-    for (var i = 0; i < shapesA.length; i++) {
-      for (var j = 0; j < shapesB.length; j++) {
-        SAT.shapesCollided(shapesA[i], shapesB[j], manifold);
-      }
-    }
-    if (manifold.overlap < 0) return manifold
-    let body = manifold.dorminantShape,
-      axis = tmp5.copy(manifold.axis),
-      shape1 = manifold.shapes[0],
-      shape2 = manifold.shapes[1];
-    let overload = [];
-    const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, []);
-    const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), []);
-    for (var i = 0; i < vertices1.length; i++) {
-      if (SAT.shapeContains(shape2, vertices1[i])) {
-        overload.push(vertices1[i]);
-      }
-    }
-    if (overload.length < 2) {
-      for (var i = 0; i < vertices2.length; i++) {
-        if (SAT.shapeContains(shape1, vertices2[i])) {
-          overload.push(vertices2[i]);
-          if (!overload.length)
-            shape = shape2;
-        }
-      }
-    }
-    //some random error happened when this is not there.
-    //Dont know if it isnt there now but i dont want to risk it ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯
-    if (overload.length == 0) {
-      overload.push(vertices1[0]);
-    }
-
-    overload = SAT.findNearSupports(overload, axis, []);
-    if (body == shape2) axis.reverse();
-    if (body == shape1) {
-      manifold.verticesA[0] = overload[0];
-      manifold.verticesB[0] = overload[0].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
-      if (overload.length == 2) {
-        manifold.verticesA[1] = overload[1];
-        manifold.verticesB[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
-      }
-    }
-    if (body == shape2) {
-      manifold.verticesA[0] = overload[0].clone()
-        .add(tmp6.copy(axis).multiply(manifold.overlap));
-      manifold.verticesB[0] = overload[0];
-      if (overload.length == 2) {
-        manifold.verticesA[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
-        manifold.verticesB[1] = overload[1];
-      }
-    }
-    manifold.contactNo = overload.length;
-    return manifold
-  },
-  /**
-   * @param {Shape} shape1
-   * @param {Shape} shape2
-   * @param {Object} target
-   */
-  shapesCollided(shape1, shape2, target) {
-    let arr = _arr,
-      boundary;
-    Utils$1.clearArr(arr);
-    shape1.getNormals(shape2, arr);
-    boundary = arr.length;
-    shape2.getNormals(shape1, arr);
-
-    SAT.projectShapesToAxes(shape1, shape2, arr, target, boundary);
-  },
-  /**
-   * @param {Shape} shapeA
-   * @param {Shape} shapeB
-   * @param {Vector[]} axes
-   * @param {Manifold} shapeA
-   * @param {number} iu
-   */
-  projectShapesToAxes(shapeA, shapeB, axes, manifold, iu) {
-    let temp = tmp1$5;
-    temp.vertex = null;
-    temp.body = null;
-    temp.overlap = Infinity;
-    for (let i = 0; i < axes.length; i++) {
-      let axis = tmp4.copy(axes[i]);
-
-      let verticesA = shapeA.getVertices(axis);
-      let verticesB = shapeB.getVertices(axis);
-      let p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2$3);
-      let p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3$1);
-      let min = p1.max < p2.max ? p1.max : p2.max;
-      let max = p1.min > p2.min ? p1.min : p2.min;
-      let overlap = min - max;
-      if (overlap < 0) return manifold
-
-      if (p1.max < p2.max) axis.reverse();
-      if (
-        (p1.max > p2.max && p1.min < p2.min) ||
-        (p2.max > p1.max && p2.min < p1.min)
-      ) {
-        let max = Math.abs(p1.max - p2.max),
-          min = Math.abs(p1.min - p2.min);
-        if (min < max) {
-          overlap += min;
-        } else {
-          overlap += max;
-          axis.reverse();
-        }
-      }
-      if (overlap < temp.overlap) {
-        temp.overlap = overlap;
-        temp.axis.copy(axis);
-        temp.shape = i <= iu - 1 ? shapeB : shapeA;
-        temp.indexA = p1.indexN;
-        temp.indexB = p2.indexN;
-        temp.verticesA = verticesA;
-        temp.verticesB = verticesB;
-      }
-    }
-    if (temp.overlap > manifold.overlap) {
-      manifold.overlap = temp.overlap;
-      manifold.axis.copy(temp.axis);
-      manifold.dorminantShape = temp.shape;
-      manifold.shapes[0] = shapeA;
-      manifold.shapes[1] = shapeB;
-      manifold.vertShapeA = temp.verticesA;
-      manifold.vertShapeB = temp.verticesB;
-      manifold.indexA = temp.indexA;
-      manifold.indexB = temp.indexB;
-      manifold.done = true;
-    }
-    return manifold
-  },
-  /**
-   * @param {Vector[]} vertices
-   * @param {Vector} axis
-   * @param {Object} target
-   */
-  projectVerticesToAxis(vertices, axis, target) {
-    let min = Infinity,
-      max = -Infinity,
-      nearVertex = null,
-      length = vertices.length;
-
-    for (let i = 0; i < length; i++) {
-      let point = axis.dot(vertices[i]);
-      if (point < min) {
-        min = point;
-        nearVertex = i;
-      }
-      if (point > max) {
-        max = point;
-      }
-    }
-    target.min = min;
-    target.max = max;
-    target.indexN = nearVertex;
-    return target
-  },
-  /**
-   * @param {Vector[]} vertices
-   * @param {Vector} axis
-   * @param {Vector[]} target
-   * @param {number} nearVertexIndex
-   */
-  findNearSupports(vertices, axis, target = [], nearVertexIndex) {
-    let min = Infinity,
-      nearVertices = target,
-      length = vertices.length;
-
-    for (let i = 0; i < length; i++) {
-      let point = axis.dot(vertices[i]);
-      if (
-        Math.abs(point - min) <= 0.1 &&
-        !nearVertices.includes(vertices[i])
-      ) {
-        nearVertices.push(vertices[i]);
-        continue
-      }
-      if (point < min) {
-        min = point;
-        Utils$1.clearArr(nearVertices);
-        nearVertices.push(vertices[i]);
-        i = -1;
-      }
-    }
-    return nearVertices
-  },
-  /**
-   * @param {Shape} shape
-   * @param {Vector} point
-   */
-  shapeContains(shape, point) {
-    if (shape.type == "circle")
-      return SAT.circleContains(shape.position, shape.radius, point)
-    return SAT.verticesContain(shape.vertices, point)
-  },
-  /**
-   * @param {Vector} position
-   * @param {number} radius
-   * @param {Vector} point
-   */
-  circleContains(position, radius, point) {
-    let dx = point.x - position.x,
-      dy = point.y - position.y;
-    if (dx * dx + dy * dy > radius * radius)
-      return false
-    return true
-  },
-  /**
-   * @param {Vector[]} vertices
-   * @param {number} point 
-   */
-  verticesContain(vertices, point) {
-    var pointX = point.x,
-      pointY = point.y,
-      length = vertices.length,
-      vertex = vertices[length - 1],
-      nextVertex;
-    if (length < 2) return false
-    for (var i = 0; i < length; i++) {
-      nextVertex = vertices[i];
-      if ((pointX - vertex.x) * (nextVertex.y - vertex.y) +
-        (pointY - vertex.y) * (vertex.x - nextVertex.x) < 0) {
-        return false;
-      }
-      vertex = nextVertex;
-    }
-
-    return true;
   }
 };
 
@@ -4393,6 +4191,358 @@ class Tree extends Broadphase {
  * @returns {boolean}
 */
 
+const _arr = [],
+  tmp1$5 = {
+    overlap: 0,
+    verticesA: null,
+    verticesB: null,
+    axis: new Vector$1(),
+    vertex: null,
+    shape: null
+  },
+  tmp2$3 = {
+    min: 0,
+    max: 0,
+    indexN: 0
+  },
+  tmp3 = {
+    min: 0,
+    max: 0,
+    indexN: 0
+  },
+  tmp4 = new Vector$1(),
+  tmp5 = new Vector$1(),
+  tmp6 = new Vector$1();
+
+/**
+ * Used for narrowphase collision detection and contact info generation.
+ */
+const SAT = {
+  /**
+   * @param {Body} body1
+   * @param {Body} body2
+   * @param {Manifold} manifold
+   */
+  shapesInBodyCollided(body1, body2, manifold) {
+    let shapesA = body1.shapes,
+      shapesB = body2.shapes;
+    for (var i = 0; i < shapesA.length; i++) {
+      for (var j = 0; j < shapesB.length; j++) {
+        SAT.shapesCollided(shapesA[i], shapesB[j], manifold);
+      }
+    }
+    if (manifold.overlap < 0) return manifold
+    let body = manifold.dorminantShape,
+      axis = tmp5.copy(manifold.axis),
+      shape1 = manifold.shapes[0],
+      shape2 = manifold.shapes[1];
+    let overload = [];
+    const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, []);
+    const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), []);
+    for (var i = 0; i < vertices1.length; i++) {
+      if (SAT.shapeContains(shape2, vertices1[i])) {
+        overload.push(vertices1[i]);
+      }
+    }
+    if (overload.length < 2) {
+      for (var i = 0; i < vertices2.length; i++) {
+        if (SAT.shapeContains(shape1, vertices2[i])) {
+          overload.push(vertices2[i]);
+          if (!overload.length)
+            shape = shape2;
+        }
+      }
+    }
+    //some random error happened when this is not there.
+    //Dont know if it isnt there now but i dont want to risk it ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯
+    if (overload.length == 0) {
+      overload.push(vertices1[0]);
+    }
+
+    overload = SAT.findNearSupports(overload, axis, []);
+    if (body == shape2) axis.reverse();
+    if (body == shape1) {
+      manifold.verticesA[0] = overload[0];
+      manifold.verticesB[0] = overload[0].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
+      if (overload.length == 2) {
+        manifold.verticesA[1] = overload[1];
+        manifold.verticesB[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
+      }
+    }
+    if (body == shape2) {
+      manifold.verticesA[0] = overload[0].clone()
+        .add(tmp6.copy(axis).multiply(manifold.overlap));
+      manifold.verticesB[0] = overload[0];
+      if (overload.length == 2) {
+        manifold.verticesA[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
+        manifold.verticesB[1] = overload[1];
+      }
+    }
+    manifold.contactNo = overload.length;
+    return manifold
+  },
+  /**
+   * @param {Shape} shape1
+   * @param {Shape} shape2
+   * @param {Object} target
+   */
+  shapesCollided(shape1, shape2, target) {
+    let arr = _arr,
+      boundary;
+    Utils$1.clearArr(arr);
+    shape1.getNormals(shape2, arr);
+    boundary = arr.length;
+    shape2.getNormals(shape1, arr);
+
+    SAT.projectShapesToAxes(shape1, shape2, arr, target, boundary);
+  },
+  /**
+   * @param {Shape} shapeA
+   * @param {Shape} shapeB
+   * @param {Vector[]} axes
+   * @param {Manifold} shapeA
+   * @param {number} iu
+   */
+  projectShapesToAxes(shapeA, shapeB, axes, manifold, iu) {
+    let temp = tmp1$5;
+    temp.vertex = null;
+    temp.body = null;
+    temp.overlap = Infinity;
+    for (let i = 0; i < axes.length; i++) {
+      let axis = tmp4.copy(axes[i]);
+
+      let verticesA = shapeA.getVertices(axis);
+      let verticesB = shapeB.getVertices(axis);
+      let p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2$3);
+      let p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3);
+      let min = p1.max < p2.max ? p1.max : p2.max;
+      let max = p1.min > p2.min ? p1.min : p2.min;
+      let overlap = min - max;
+      if (overlap < 0) return manifold
+
+      if (p1.max < p2.max) axis.reverse();
+      if (
+        (p1.max > p2.max && p1.min < p2.min) ||
+        (p2.max > p1.max && p2.min < p1.min)
+      ) {
+        let max = Math.abs(p1.max - p2.max),
+          min = Math.abs(p1.min - p2.min);
+        if (min < max) {
+          overlap += min;
+        } else {
+          overlap += max;
+          axis.reverse();
+        }
+      }
+      if (overlap < temp.overlap) {
+        temp.overlap = overlap;
+        temp.axis.copy(axis);
+        temp.shape = i <= iu - 1 ? shapeB : shapeA;
+        temp.indexA = p1.indexN;
+        temp.indexB = p2.indexN;
+        temp.verticesA = verticesA;
+        temp.verticesB = verticesB;
+      }
+    }
+    if (temp.overlap > manifold.overlap) {
+      manifold.overlap = temp.overlap;
+      manifold.axis.copy(temp.axis);
+      manifold.dorminantShape = temp.shape;
+      manifold.shapes[0] = shapeA;
+      manifold.shapes[1] = shapeB;
+      manifold.vertShapeA = temp.verticesA;
+      manifold.vertShapeB = temp.verticesB;
+      manifold.indexA = temp.indexA;
+      manifold.indexB = temp.indexB;
+      manifold.done = true;
+    }
+    return manifold
+  },
+  /**
+   * @param {Vector[]} vertices
+   * @param {Vector} axis
+   * @param {Object} target
+   */
+  projectVerticesToAxis(vertices, axis, target) {
+    let min = Infinity,
+      max = -Infinity,
+      nearVertex = null,
+      length = vertices.length;
+
+    for (let i = 0; i < length; i++) {
+      let point = axis.dot(vertices[i]);
+      if (point < min) {
+        min = point;
+        nearVertex = i;
+      }
+      if (point > max) {
+        max = point;
+      }
+    }
+    target.min = min;
+    target.max = max;
+    target.indexN = nearVertex;
+    return target
+  },
+  /**
+   * @param {Vector[]} vertices
+   * @param {Vector} axis
+   * @param {Vector[]} target
+   * @param {number} nearVertexIndex
+   */
+  findNearSupports(vertices, axis, target = [], nearVertexIndex) {
+    let min = Infinity,
+      nearVertices = target,
+      length = vertices.length;
+
+    for (let i = 0; i < length; i++) {
+      let point = axis.dot(vertices[i]);
+      if (
+        Math.abs(point - min) <= 0.1 &&
+        !nearVertices.includes(vertices[i])
+      ) {
+        nearVertices.push(vertices[i]);
+        continue
+      }
+      if (point < min) {
+        min = point;
+        Utils$1.clearArr(nearVertices);
+        nearVertices.push(vertices[i]);
+        i = -1;
+      }
+    }
+    return nearVertices
+  },
+  /**
+   * @param {Shape} shape
+   * @param {Vector} point
+   */
+  shapeContains(shape, point) {
+    if (shape.type == "circle")
+      return SAT.circleContains(shape.position, shape.radius, point)
+    return SAT.verticesContain(shape.vertices, point)
+  },
+  /**
+   * @param {Vector} position
+   * @param {number} radius
+   * @param {Vector} point
+   */
+  circleContains(position, radius, point) {
+    let dx = point.x - position.x,
+      dy = point.y - position.y;
+    if (dx * dx + dy * dy > radius * radius)
+      return false
+    return true
+  },
+  /**
+   * @param {Vector[]} vertices
+   * @param {number} point 
+   */
+  verticesContain(vertices, point) {
+    var pointX = point.x,
+      pointY = point.y,
+      length = vertices.length,
+      vertex = vertices[length - 1],
+      nextVertex;
+    if (length < 2) return false
+    for (var i = 0; i < length; i++) {
+      nextVertex = vertices[i];
+      if ((pointX - vertex.x) * (nextVertex.y - vertex.y) +
+        (pointY - vertex.y) * (vertex.x - nextVertex.x) < 0) {
+        return false;
+      }
+      vertex = nextVertex;
+    }
+
+    return true;
+  }
+};
+
+class NarrowPhase{
+  records = new Map()
+  getCollisionPairs(contactList,clmds){
+  }
+}
+
+/**
+ * Uses the Separation Axis Theorem.
+ * Best when your body shapes have few vertices.
+ */
+class SATNarrowPhase extends NarrowPhase {
+  /**
+   * @param {CollisionPair[]} contactList 
+   * @param {Manifold[]} [clmds=[]]
+   */
+  getCollisionPairs(contactList, clmds = []) {
+    for (var i = 0; i < contactList.length; i++) {
+      let { a, b } = contactList[i];
+      a.sleeping = false;
+      b.sleeping = false;
+      let id = naturalizePair(a.id, b.id);
+      if (!this.records.has(id))
+        this.records.set(id, {
+          bodyA: a,
+          bodyB: b,
+          contactData: {
+            lastOverlap: 0,
+            overlap: -Infinity,
+            done: false,
+            axis: new Vector$1(),
+            verticesA: [],
+            verticesB: [],
+            vertShapeA: null,
+            vertShapeB: null,
+            contactNo: 0,
+            shapes: [],
+            indexA: 0,
+            indexB: 0
+          },
+          stmp: -1,
+          impulse: 0,
+          persistent: false,
+          ca1: new Vector$1(),
+          ca2: new Vector$1(),
+          restitution: 0,
+          staticFriction: 0,
+          kineticFriction: 0,
+          velA: new Vector$1(),
+          velB: new Vector$1(),
+          rotA: 0,
+          rotB: 0
+        });
+      let manifold = this.records.get(id);
+      let collisionData = manifold.contactData;
+      collisionData.overlap = -Infinity;
+      collisionData.done = false;
+      SAT.shapesInBodyCollided(a, b, collisionData);
+      if (collisionData.overlap < 0 || !collisionData.done) continue
+      if (collisionData.contactNo == 2) {
+        Vector$1.lerp(
+          collisionData.verticesA[0],
+          collisionData.verticesA[1],
+          0.5,
+          manifold.ca1
+        ).sub(a.position);
+        Vector$1.lerp(
+          collisionData.verticesB[0],
+          collisionData.verticesB[1],
+          0.5,
+          manifold.ca2
+        ).sub(b.position);
+      } else {
+        manifold.ca1.copy(collisionData.verticesA[0]).sub(a.position);
+        manifold.ca2.copy(collisionData.verticesB[0]).sub(b.position);
+      }
+      manifold.restitution = a.restitution < b.restitution ? a.restitution : b.restitution;
+      manifold.staticFriction = a.staticFriction < b.staticFriction ? a.staticFriction : b.staticFriction;
+      manifold.kineticFriction = a.kineticFriction < b.kineticFriction ? a.kineticFriction : b.kineticFriction;
+      if (a.collisionResponse && b.collisionResponse)
+        clmds.push(manifold);
+    }
+    return clmds
+  }
+}
+
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
@@ -4492,16 +4642,26 @@ class World {
    */
   broadphase = null
   /**
+   * This accurately tests body pairs to check 
+   * for collision and outputs a manifold for each body pair.
+   * 
+   * @type NarrowPhase
+   */
+  narrowphase = null
+  /**
    * @constructor World
    * 
    */
   constructor() {
     this.broadphase = new NaiveBroadphase(this);
+    this.narrowphase = new SATNarrowPhase();
   }
   set gravity(x) {
-    if (typeof x === "object")
-      return this.gravitationalAcceleration.copy(x)
-    this.gravitationalAcceleration.set(0, x);
+    if (typeof x === "object") {
+      this.gravitationalAcceleration.copy(x);
+    } else {
+      this.gravitationalAcceleration.set(0, x);
+    }
   }
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
@@ -4515,76 +4675,7 @@ class World {
    * @private
    */
   narrowPhase() {
-    let
-      collisionData,
-      manifold;
-
-    for (var i = 0; i < this.contactList.length; i++) {
-      let { a, b } = this.contactList[i];
-      a.sleeping = false;
-      b.sleeping = false;
-      let id = naturalizePair(a.id, b.id);
-      if (!this.records.has(id))
-        this.records.set(id, {
-          bodyA: a,
-          bodyB: b,
-          contactData: {
-            lastOverlap: 0,
-            overlap: -Infinity,
-            done: false,
-            axis: new Vector$1(),
-            verticesA: [],
-            verticesB: [],
-            vertShapeA: null,
-            vertShapeB: null,
-            contactNo: 0,
-            shapes: [],
-            indexA: 0,
-            indexB: 0
-          },
-          stmp: -1,
-          impulse: 0,
-          persistent: false,
-          ca1: new Vector$1(),
-          ca2: new Vector$1(),
-          restitution: 0,
-          staticFriction: 0,
-          kineticFriction: 0,
-          velA: new Vector$1(),
-          velB: new Vector$1(),
-          rotA: 0,
-          rotB: 0
-        });
-      manifold = this.records.get(id);
-      collisionData = manifold.contactData;
-      collisionData.overlap = -Infinity;
-      collisionData.done = false;
-      SAT.shapesInBodyCollided(a, b, collisionData);
-      if (collisionData.overlap < 0 || !collisionData.done) continue
-      if (collisionData.contactNo == 2) {
-        Vector$1.lerp(
-          collisionData.verticesA[0],
-          collisionData.verticesA[1],
-          0.5,
-          manifold.ca1
-        ).sub(a.position);
-        Vector$1.lerp(
-          collisionData.verticesB[0],
-          collisionData.verticesB[1],
-          0.5,
-          manifold.ca2
-        ).sub(b.position);
-      } else {
-        manifold.ca1.copy(collisionData.verticesA[0]).sub(a.position);
-        manifold.ca2.copy(collisionData.verticesB[0]).sub(b.position);
-      }
-      manifold.restitution = a.restitution < b.restitution ? a.restitution : b.restitution;
-      manifold.staticFriction = a.staticFriction < b.staticFriction ? a.staticFriction : b.staticFriction;
-      manifold.kineticFriction = a.kineticFriction < b.kineticFriction ? a.kineticFriction : b.kineticFriction;
-      if (a.collisionResponse && b.collisionResponse)
-        this.CLMDs.push(manifold);
-
-    }
+    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, []);
   }
   /*
    * @private
@@ -4608,9 +4699,6 @@ class World {
     let length = this.CLMDs.length,
       manifold,
       inv_dt = 1 / dt;
-      this.count - 1;
-
-
 
     for (var j = 0; j < this.velocitySolverIterations; j++) {
       for (let i = 0; i < length; i++) {
@@ -4665,7 +4753,6 @@ class World {
    * @param {number} dt 
    */
   applyGravity(length, dt) {
-    this.gravitationalAcceleration.clone().multiply(dt);
     for (var i = 0; i < length; i++) {
       let a = this.objects[i];
       if (a.mass)
@@ -4806,7 +4893,7 @@ class World {
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints;
     let temp = arr.pop();
-    if(constraint.index == arr.length) return constraint
+    if (constraint.index == arr.length) return constraint
     arr[constraint.index] = temp;
     temp.index = constraint.index;
     constraint.index = -1;
@@ -4851,6 +4938,8 @@ class World {
     return target
   }
 }
+
+//import { Component } from "./component.js"
 
 /**
  * Holds transformation info of an entity 
@@ -5068,7 +5157,7 @@ class Renderer {
     return this.domElement.height
   }
   set height(x) {
-    return this.domElement.height = x
+    this.domElement.height = x;
   }
 }
 
@@ -5150,7 +5239,6 @@ class Renderer2D extends Renderer {
 }
 
 //Dont get too excited yet :)
-
 
 /**
  * Renders images and paths to the webgpu context of a canvas.
@@ -5297,6 +5385,101 @@ class Sprite {
 Utils$1.inheritComponent(Sprite);
 
 /**
+ * @interface
+*/
+class Material{
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+   * @param {Path2D} [path]
+  */
+  render(ctx,dt,path){
+    throw "Override this method in derived class"
+  }
+}
+
+/**
+ * 
+ * @implements Material
+*/
+class BasicMaterial {
+  /**
+   * 
+   * @type string
+   * @default "white"
+   */
+  fill = "white"
+  /**
+   * 
+   * @type string
+   * @default "black"
+   */
+  stroke = "black"
+  /**
+   * 
+   * @type boolean
+   * @default false
+   */
+  wireframe = false
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+   * @param {Path2D} path
+   */
+  render(ctx,dt, path) {
+    if (!this.wireframe) {
+      ctx.fillStyle = this.fill;
+      ctx.fill(path);
+    }
+    ctx.strokeStyle = this.stroke;
+    ctx.stroke(path);
+  }
+}
+
+/**
+ * 
+ * @implements Material
+ */
+class StaticImageMaterial {
+  /**
+   * @readonly
+   * @type Image
+   */
+  image = null
+  /**
+   * 
+   * @type number
+   */
+  width = 100
+  /**
+   * 
+   * @type number
+   */
+  height = 100
+  /**
+   * @type Vector_like
+   */
+  offset = {
+    x: 0,
+    y: 0
+  }
+  /**
+   * @param {Image} img
+   */
+
+  constructor(img) {
+    //TODO - Find a way to load images synchronously.
+    this.image = img;
+  }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  render(ctx) {
+    ctx.drawImage(this.image, this.offset.x, this.offset.y, this.width, this.height);
+  }
+}
+
+/**
  * @param {CanvasRenderingContext2D} ctx
  * @param {number} x1
  * @param {number} y1
@@ -5403,142 +5586,6 @@ function drawImage(
     x,
     y,
     w, h);
-}
-
-class BufferGeometry {
-  /**
-   * @readonly
-   * @type Vector[]
-   */
-  vertices = null
-  /**
-   * @package
-   * @type Path2D | WebGLVertexArrayObject
-   */
-  drawable = null
-  /**
-   * @param {Vector[]} vertices
-   */
-  constructor(vertices) {
-    this.vertices = vertices || [];
-  }
-  /**
-   * @package
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  init(ctx) {
-    let path = this.drawable = new Path2D();
-    vertices(path, this.vertices, true);
-  }
-}
-
-class CircleGeometry {
-  /**
-   * @param {number} radius
-   */
-  constructor(radius) {
-    this.radius = radius;
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  init(ctx) {
-    this._drawable = new Path2D();
-    circle(path, this.vertices, true);
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    circle(ctx, 0, 0, this.radius);
-  }
-}
-
-/**
- * @interface
-*/
-class Material{
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   * @param {Path2D} [path]
-  */
-  render(ctx,dt,path){
-    throw "Override this method in derived class"
-  }
-}
-
-/**
- * 
- * @implements Material
-*/
-class BasicMaterial {
-  /**
-   * 
-   * @type string
-   * @default "white"
-   */
-  fill = "white"
-  /**
-   * 
-   * @type string
-   * @default "black"
-   */
-  stroke = "black"
-  /**
-   * 
-   * @type boolean
-   * @default false
-   */
-  wireframe = false
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   * @param {Path2D} path
-   */
-  render(ctx,dt, path) {
-    if (!this.wireframe) {
-      ctx.fillStyle = this.fill;
-      ctx.fill(path);
-    }
-    ctx.strokeStyle = this.stroke;
-    ctx.stroke(path);
-  }
-}
-
-/**
- * 
- * @implements Material
- */
-class StaticImageMaterial {
-  /**
-   * @readonly
-   * @type Image
-   */
-  image = null
-  /**
-   * 
-   * @type number
-   */
-  width = 100
-  /**
-   * 
-   * @type number
-   */
-  height = 100
-  /**
-   * @param {Image} img
-   */
-  constructor(img) {
-    //TODO - Find a way to load images synchronously.
-    this.image = img;
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
-  }
 }
 
 /**
@@ -5707,6 +5754,12 @@ class BodySprite extends Sprite {
    * @type {boolean}
    */
   drawBounds = false
+    /**
+   * Determine whether to draw the position of the body.
+   * 
+   * @type {boolean}
+   */
+  drawPosition = true
   /**
    * @param {{}} [options={}] 
    * @param {boolean} [options.drawVelocity=false] Determine whether to draw a representation of the velocity.
@@ -5736,6 +5789,19 @@ class BodySprite extends Sprite {
       this._drawVelocity(this.body, ctx);
     if (this.drawBounds == true)
       this._drawBound(this.body, ctx);
+    if (this.drawPosition)
+      this._drawCenter(this.body, ctx);
+  }
+  _drawCenter(body, ctx) {
+    ctx.beginPath();
+    circle(
+      ctx,
+      body.position.x,
+      body.position.y,
+      2
+    );
+    fill(ctx, "black");
+    ctx.closePath();
   }
   /**
    * @private
@@ -5772,7 +5838,7 @@ class BodySprite extends Sprite {
         body.bounds.max.y - this.body.bounds.min.y
       );
     }
-    stroke(ctx,"red");
+    stroke(ctx, "red");
     ctx.closePath();
   }
   /**
@@ -5791,11 +5857,11 @@ class BodySprite extends Sprite {
           shape.position.y,
           shape.radius);
         Vector$1.fromRad(shape.angle, r).multiply(shape.radius);
-        line(ctx,...shape.position,
+        line(ctx, ...shape.position,
           shape.position.x + r.x,
           shape.position.y + r.y);
       } else {
-        vertices(ctx,shape.vertices, true);
+        vertices(ctx, shape.vertices, true);
       }
     }
     stroke(ctx);
@@ -5808,6 +5874,55 @@ class BodySprite extends Sprite {
   init(parent) {
     this.body = parent.get("body");
     super.init(parent);
+  }
+}
+
+class BufferGeometry {
+  /**
+   * @readonly
+   * @type Vector[]
+   */
+  vertices = null
+  /**
+   * @package
+   * @type Path2D | WebGLVertexArrayObject
+   */
+  drawable = null
+  /**
+   * @param {Vector[]} vertices
+   */
+  constructor(vertices) {
+    this.vertices = vertices || [];
+  }
+  /**
+   * @package
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  init(ctx) {
+    let path = this.drawable = new Path2D();
+    vertices(path, this.vertices, true);
+  }
+}
+
+class CircleGeometry {
+  /**
+   * @param {number} radius
+   */
+  constructor(radius) {
+    this.radius = radius;
+  }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  init(ctx) {
+    this._drawable = new Path2D();
+    circle(path, this.vertices, true);
+  }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  render(ctx) {
+    circle(ctx, 0, 0, this.radius);
   }
 }
 
@@ -6154,195 +6269,7 @@ class CamController {
   }
 }
 
-/**
- * Contains values showing which features are supported,general model of the device and browser used.
- */
-
-const DEVICE = {
-  /**
-   * Whether this device supports WebGPU
-   * 
-   * @type boolean
-   */
-  webgpu: false,
-  /**
-   * Whether this device supports WebGL
-   * 
-   * @type boolean
-   */
-  webgl: false,
-  /**
-   * Whether this device supports 2D canvas
-   * 
-   * @type boolean
-   */
-  canvas: false,
-  /**
-   * Whether this device supports WebAudio
-   * 
-   * @type boolean
-   */
-  webAudio: false,
-  /**
-   * Whether this device supports Audio tag.
-   * 
-   * @type boolean
-   */
-  audio: false,
-
-  /**
-   * A list of audio extensions this device supports.
-   * 
-   * @type array<string>
-   */
-  supportedAudio: [],
-  /**
-   * A list of image extensions this device supports.
-   * 
-   * @type array<string>
-   */
-  supportedImages: [],
-
-  /**
-   * Whether this device uses windows
-   * 
-   * @type boolean
-   */
-  windows: false,
-  /**
-   * Whether this device uses MacOS
-   * 
-   * @type boolean
-   */
-  mac: false,
-  /**
-   * Whether this device uses android
-   * 
-   * @type boolean
-   */
-  android: false,
-  /**
-   * Whether this device uses linux
-   * 
-   * @type boolean
-   */
-  linux: false,
-  /**
-   * Whether this device uses IOS
-   * 
-   * @type boolean
-   */
-  ios: false,
-
-  /**
-   * If browser used is Chrome.
-   * 
-   * @type boolean
-   */
-  chrome: false,
-  /**
-   * If browser used is FireFox.
-   * 
-   * @type boolean
-   */
-  firefox: false,
-  /**
-   * If browser used is Edge.
-   * 
-   * @type boolean
-   */
-  edge: false,
-  /**
-   * If browser used is Internet Explorer.
-   * 
-   * @type boolean
-   */
-  ie: false,
-  /**
-   * If browser used is Safari.
-   * 
-   * @type boolean
-   */
-  safari: false,
-  /**
-   * If browser used is Opera.
-   * 
-   * @type boolean
-   */
-  opera: false
-
-};
-const ua = navigator.userAgent;
-const ae = new Audio();
-
-if (/Android/.test(ua)) {
-  DEVICE.android = true;
-}
-else if (/iP[ao]d|iPhone/i.test(ua)) {
-  DEVICE.ios = true;
-}
-else if (/Linux/.test(ua)) {
-  DEVICE.linux = true;
-}
-else if (/Mac OS/.test(ua)) {
-  DEVICE.mac = true;
-}
-else if (/Windows/.test(ua)) {
-  DEVICE.windows = true;
-}
-
-
-if (window.AudioContext && window.AudioBuffer && window.AudioBufferSourceNode) {
-  DEVICE.webAudio = true;
-}
-
-if (/Chrome/.test(ua)) {
-  DEVICE.chrome = true;
-}
-else if (/Firefox/.test(ua)) {
-  DEVICE.firefox = true;
-}
-else if (/Trident/.test(ua)) {
-  DEVICE.edge = true;
-}
-else if (/Opera/.test(ua))
-{
-  DEVICE.opera = true;
-}
-else if (/Safari/.test(ua))
-{
-  DEVICE.safari = true;
-}
-
-if (DEVICE.audio = !!ae.canPlayType)
-{
-  if (ae.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, ''))
-  {
-    DEVICE.supportedAudio.push("ogg");
-  }
-
-  if (ae.canPlayType('audio/mpeg;').replace(/^no$/, ''))
-  {
-    DEVICE.supportedAudio.push("mp3");
-  }
-  if (ae.canPlayType('audio/wav; codecs="1"').replace(/^no$/, ''))
-  {
-    DEVICE.supportedAudio.push("wav");
-  }
-
-  if (ae.canPlayType('audio/x-m4a;').replace(/^no$/,'') || ae.canPlayType('audio/aac;').replace(/^no$/, ''))
-  {
-    DEVICE.supportedAudio.push("m4a");
-  }
-}
-
-DEVICE.canvas = !!window.CanvasRenderingContext2D;
-DEVICE.webgl = !!window.WebGLRenderingContext;
-
-Object.freeze(DEVICE);
-Object.freeze(DEVICE.supportedAudio);
-Object.freeze(DEVICE.supportedImages);
-
+//import { DEVICE } from "../device/index.js"
 class Loader {
   constructor(manager) {
     this._toload = [];
@@ -6455,7 +6382,6 @@ class Loader {
     }
     if (files.json) {
       for (var i = 0; i < files.json.length; i++) {
-        files.json[i];
         let xhr = new XMLHttpRequest();
         xhr.responseType = "text";
         xhr.open('GET', files.json[i], true);
@@ -6691,7 +6617,7 @@ class Keyboard {
   _onDown = e => {
     let key = this.normalize(e.code);
     this.keys[key] = true;
-    this.activeKeys.push(key);
+    //this.activeKeys.push(key)
   }
     /**
      * @private
@@ -7028,8 +6954,6 @@ class Manager {
     world: null,
     renderer: null,
     input: null,
-    //TODO - cleanup this events prop
-    events: null,
     audio: null
   }
   /**
@@ -7237,9 +7161,9 @@ class Manager {
   remove(object) {
     let index = this.objects.indexOf(object);
     object.removeComponents();
+    object.reset();
     Utils$1.removeElement(this.objects, index);
     this.events.trigger("remove", object);
-
   }
   /**
    * This removes all of the entities and components from the manager
@@ -7467,6 +7391,7 @@ class Manager {
         target.push(entities[i]);
       }
     }
+    return target
   }
   /**
    * Ignore this,im going to remove it and the rest of cloning utilities.
@@ -7695,6 +7620,13 @@ class Entity {
    */
   removeSelf() {
     if (this._global) this._global.remove(this);
+  }
+  /**
+   * This is an internal function,no need to use it.
+   * 
+   * @package
+   */
+  reset() {
     this.active = false;
     this._global = null;
   }
@@ -7864,7 +7796,7 @@ class Entity {
       entity.addTag(a);
     });
     for (var key in obj.comps) {
-      let c =new compList[key]().fromJSON(obj.comps[key]);
+      let c = new compList[key]().fromJSON(obj.comps[key]);
       entity.attach(key, c);
     }
     return entity
@@ -8586,9 +8518,9 @@ class WanderBehaviour extends Behaviour {
  * 
  * @augments Behaviour
 */
-class Pursuit {
+class Pursuit extends Behaviour {
   constructor() {
-
+    super();
   }
     /**
      * @inheritdoc
@@ -8613,12 +8545,14 @@ class Pursuit {
  * 
  * @augments Behaviour
  */
-class Flock {
+class Flock extends Behaviour{
   /**
    * @type Agent[]
    */
   neighbours = []
-  constructor() {}
+  constructor() {
+    super();
+  }
   /**
    * @inheritdoc
    * @param {Agent} agent
@@ -8746,7 +8680,6 @@ class ArriveBehaviour extends Behaviour {
 
 const tmp1 = new Vector$1();
 const tmp2 = new Vector$1();
-const tmp3 = new Vector$1();
 /**
  * Creates a behaviour that follows a certain path.
  * 
@@ -8776,11 +8709,9 @@ class PathFollowing extends Behaviour {
   calc(target, inv_dt) {
     tmp1.copy(this.position);
     let [p1, p2] = this.path.current();
-    tmp2.copy(p2).sub(p1).magnitude();
     tmp2.normalize();
 
     let proj = tmp2.dot(tmp1.sub(p1));
-    tmp3.copy(tmp2).multiply(proj);
     let projPoint = this.path.update(proj);
     tmp1.copy(projPoint).sub(this.position);
     let length = tmp1.magnitude();
@@ -8979,6 +8910,195 @@ class Path {
 }
 
 /**
+ * Contains values showing which features are supported,general model of the device and browser used.
+ */
+
+const DEVICE = {
+  /**
+   * Whether this device supports WebGPU
+   * 
+   * @type boolean
+   */
+  webgpu: false,
+  /**
+   * Whether this device supports WebGL
+   * 
+   * @type boolean
+   */
+  webgl: false,
+  /**
+   * Whether this device supports 2D canvas
+   * 
+   * @type boolean
+   */
+  canvas: false,
+  /**
+   * Whether this device supports WebAudio
+   * 
+   * @type boolean
+   */
+  webAudio: false,
+  /**
+   * Whether this device supports Audio tag.
+   * 
+   * @type boolean
+   */
+  audio: false,
+
+  /**
+   * A list of audio extensions this device supports.
+   * 
+   * @type array<string>
+   */
+  supportedAudio: [],
+  /**
+   * A list of image extensions this device supports.
+   * 
+   * @type array<string>
+   */
+  supportedImages: [],
+
+  /**
+   * Whether this device uses windows
+   * 
+   * @type boolean
+   */
+  windows: false,
+  /**
+   * Whether this device uses MacOS
+   * 
+   * @type boolean
+   */
+  mac: false,
+  /**
+   * Whether this device uses android
+   * 
+   * @type boolean
+   */
+  android: false,
+  /**
+   * Whether this device uses linux
+   * 
+   * @type boolean
+   */
+  linux: false,
+  /**
+   * Whether this device uses IOS
+   * 
+   * @type boolean
+   */
+  ios: false,
+
+  /**
+   * If browser used is Chrome.
+   * 
+   * @type boolean
+   */
+  chrome: false,
+  /**
+   * If browser used is FireFox.
+   * 
+   * @type boolean
+   */
+  firefox: false,
+  /**
+   * If browser used is Edge.
+   * 
+   * @type boolean
+   */
+  edge: false,
+  /**
+   * If browser used is Internet Explorer.
+   * 
+   * @type boolean
+   */
+  ie: false,
+  /**
+   * If browser used is Safari.
+   * 
+   * @type boolean
+   */
+  safari: false,
+  /**
+   * If browser used is Opera.
+   * 
+   * @type boolean
+   */
+  opera: false
+
+};
+const ua = navigator.userAgent;
+const ae = new Audio();
+
+if (/Android/.test(ua)) {
+  DEVICE.android = true;
+}
+else if (/iP[ao]d|iPhone/i.test(ua)) {
+  DEVICE.ios = true;
+}
+else if (/Linux/.test(ua)) {
+  DEVICE.linux = true;
+}
+else if (/Mac OS/.test(ua)) {
+  DEVICE.mac = true;
+}
+else if (/Windows/.test(ua)) {
+  DEVICE.windows = true;
+}
+
+
+if (window.AudioContext && window.AudioBuffer && window.AudioBufferSourceNode) {
+  DEVICE.webAudio = true;
+}
+
+if (/Chrome/.test(ua)) {
+  DEVICE.chrome = true;
+}
+else if (/Firefox/.test(ua)) {
+  DEVICE.firefox = true;
+}
+else if (/Trident/.test(ua)) {
+  DEVICE.edge = true;
+}
+else if (/Opera/.test(ua))
+{
+  DEVICE.opera = true;
+}
+else if (/Safari/.test(ua))
+{
+  DEVICE.safari = true;
+}
+
+if (DEVICE.audio = !!ae.canPlayType)
+{
+  if (ae.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, ''))
+  {
+    DEVICE.supportedAudio.push("ogg");
+  }
+
+  if (ae.canPlayType('audio/mpeg;').replace(/^no$/, ''))
+  {
+    DEVICE.supportedAudio.push("mp3");
+  }
+  if (ae.canPlayType('audio/wav; codecs="1"').replace(/^no$/, ''))
+  {
+    DEVICE.supportedAudio.push("wav");
+  }
+
+  if (ae.canPlayType('audio/x-m4a;').replace(/^no$/,'') || ae.canPlayType('audio/aac;').replace(/^no$/, ''))
+  {
+    DEVICE.supportedAudio.push("m4a");
+  }
+}
+
+DEVICE.canvas = !!window.CanvasRenderingContext2D;
+DEVICE.webgl = !!window.WebGLRenderingContext;
+
+Object.freeze(DEVICE);
+Object.freeze(DEVICE.supportedAudio);
+Object.freeze(DEVICE.supportedImages);
+
+/**
  * Used to manipulate and read from the cookie string.
  * 
  * @module Cookie
@@ -9042,8 +9162,8 @@ const Session = {
    * @param {any} v
   */
   set(k,v) {
-    JSON.stringify(v);
-    sessionStorage.setItem(k,v);
+    let json = JSON.stringify(v);
+    sessionStorage.setItem(k,json);
   },
   /**
    * Gets a value from sessions using a key
@@ -9074,8 +9194,8 @@ const Storage = {
    * @param {any} v
   */
   set(k,v) {
-    JSON.stringify(v);
-    localStorage.setItem(k,v);
+    let json = JSON.stringify(v);
+    localStorage.setItem(k,json);
   },
   /**
    * Gets a value from local storage by its key.
@@ -9094,7 +9214,7 @@ const Storage = {
   }
 };
 
-export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound, BoundingBox, BoundingCircle, Box, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, Err$1 as Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, Input, Interpolation, Keyboard, Line, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, Overlaps, Particle, ParticleSystemSprite, Path, PathFollowing, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SeekBehaviour, Session, Sfx, Shape, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, Touch, Transform, Triangle, Utils$1 as Utils, Vector$1 as Vector, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, circle, clamp, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, exp, fill, fillText, lerp, line, map, naturalizePair, radToDeg, rand, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
+export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound, BoundingBox, BoundingCircle, Box, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, Err$1 as Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, Input, Interpolation, Keyboard, Line, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, NarrowPhase, Overlaps, Particle, ParticleSystemSprite, Path, PathFollowing, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SATNarrowPhase, SeekBehaviour, Session, Sfx, Shape, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, Touch, Transform, Triangle, Trigon, Utils$1 as Utils, Vector$1 as Vector, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, circle, clamp, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, exp, fill, fillText, lerp, line, map, naturalizePair, radToDeg, rand, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
 /**
  * @typedef Bounds
  * @property {Vector_like} max
