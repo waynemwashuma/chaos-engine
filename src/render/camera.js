@@ -1,4 +1,4 @@
-import {Transform} from '../manager/transformComponent.js'
+import {Transform} from '../ecs/transformComponent.js'
 class Camera {
   /**
    * @readonly
