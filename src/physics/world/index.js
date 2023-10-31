@@ -10,7 +10,7 @@ import { Settings } from "../settings.js"
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-class World {
+export class World {
   /**
    * Used to check if a manifold is persistent.
    * 
@@ -113,6 +113,12 @@ class World {
    */
   narrowphase = null
   /**
+   * Moves the bodies forward in time.
+   * 
+   * @type {Intergrator}
+   */
+  intergrator = VerletSolver
+  /**
    * @constructor World
    * 
    */
@@ -208,7 +214,8 @@ class World {
     for (var i = 0; i < length; i++) {
       let a = this.objects[i]
       if (!a.sleeping)
-        VerletSolver.solve(a, dt)
+        this.intergrator.solve(a, dt)
+      //VerletSolver.solve(a, dt)
     }
   }
   /**
@@ -401,8 +408,4 @@ class World {
     this.broadphase.query(bound, target)
     return target
   }
-}
-
-export {
-  World
 }
