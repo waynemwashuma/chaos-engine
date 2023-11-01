@@ -30,7 +30,7 @@ export function circle(ctx, x, y, r) {
 }
 /**
  * @param {CanvasRenderingContext2D} ctx
- * @param {Vector[]} vertices
+ * @param { Vec2[]} vertices
  * @param {boolean} [close=true]
  */
 export function vertices(ctx, vertices, close = true) {

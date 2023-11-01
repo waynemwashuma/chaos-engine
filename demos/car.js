@@ -1,5 +1,5 @@
 import {
-  Vector,
+  Vec2,
   DistanceConstraint,
   Entity,
   Box,
@@ -27,8 +27,8 @@ function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
   let tirebody1 = new Ball(tireSize)
   let tirebody2 = new Ball(tireSize)
   let carbody = new Box(100, 50)
-  let an1 = carbody.setAnchor(new Vector(30,25))
-  let an2 = carbody.setAnchor(new Vector(-30,25))
+  let an1 = carbody.setAnchor(new Vec2(30,25))
+  let an2 = carbody.setAnchor(new Vec2(-30,25))
   let constraint1 = new DistanceConstraint(carbody, tirebody1,carbody.getAnchor(an1))
   let constraint2 = new DistanceConstraint(carbody, tirebody2,carbody.getAnchor(an2))
   let carCompositeBody = new Composite()

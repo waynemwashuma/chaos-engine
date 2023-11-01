@@ -1,12 +1,12 @@
 import { Constraint } from "./constraint.js";
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 
-let tmp1 = new Vector(),
-  tmp2 = new Vector(),
-  tmp3 = new Vector(),
-  tmp4 = new Vector(),
-  tmp5 = new Vector(),
-  zero = new Vector()
+let tmp1 = new Vec2(),
+  tmp2 = new Vec2(),
+  tmp3 = new Vec2(),
+  tmp4 = new Vec2(),
+  tmp5 = new Vec2(),
+  zero = new Vec2()
  /**
   * A constraint that acts like a spring between two bodies
  */
@@ -14,13 +14,13 @@ class SpringConstraint extends Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
-   * @param {Vector} localA
-   * @param {Vector} localB
+   * @param { Vec2} localA
+   * @param { Vec2} localB
    */
   constructor(body1, body2, localA, localB) {
     super(body1, body2)
-    this.localA = new Vector().copy(localA || zero)
-    this.localB = new Vector().copy(localB || zero)
+    this.localA = new Vec2().copy(localA || zero)
+    this.localB = new Vec2().copy(localB || zero)
     this.fixed = !body1.mass || !body2.mass
     this.dampening = 1
     this.maxDistance = 100

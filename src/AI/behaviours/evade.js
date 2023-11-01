@@ -1,7 +1,7 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector,map } from "../../math/index.js"
+import { Vec2,map } from "../../math/index.js"
 
-let tmp1 = new Vector()
+let tmp1 = new Vec2()
 /**
  * Creates a behaviour to evade a certain position.
  * 
@@ -15,7 +15,7 @@ class EvadeBehaviour extends Behaviour {
   */
   radius = 200
   /**
-   * @param {Vector} pursuer
+   * @param { Vec2} pursuer
   */
   constructor(pursuer) {
     super()
@@ -32,9 +32,9 @@ class EvadeBehaviour extends Behaviour {
   }
     /**
    * @inheritdoc
-   * @param {Vector} target
+   * @param { Vec2} target
    * @param {number} inv_dt
-   * @returns Vector the first parameter
+   * @returns Vec2 the first parameter
    */
   calc(target,inv_dt) {
     let difference = tmp1.copy(this.position).sub(this.pursuer)
