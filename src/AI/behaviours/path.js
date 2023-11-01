@@ -1,8 +1,8 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, map } from "../../math/index.js"
+import { Vec2, map } from "../../math/index.js"
 import { circle, fill, stroke } from "../../render/index.js"
-const tmp1 = new Vector()
-const tmp2 = new Vector()
+const tmp1 = new Vec2()
+const tmp2 = new Vec2()
 /**
  * Creates a behaviour that follows a certain path.
  * 
@@ -25,9 +25,9 @@ export class PathFollowing extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {Vector} target
+   * @param { Vec2} target
    * @param {number} inv_dt
-   * @returns Vector the first parameter
+   * @returns Vec2 the first parameter
    */
   calc(target, inv_dt) {
     tmp1.copy(this.position)
@@ -65,7 +65,7 @@ export class PathFollowing extends Behaviour {
   /**
    * Adds a point into the path.
    * 
-   * @param {Vector} point
+   * @param { Vec2} point
    */
   add(point) {
     this.path.add(point)

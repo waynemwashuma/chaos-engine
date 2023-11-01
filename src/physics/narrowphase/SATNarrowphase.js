@@ -1,4 +1,4 @@
-import { Vector, naturalizePair } from "../../math/index.js"
+import { Vec2, naturalizePair } from "../../math/index.js"
 import { SAT } from "../SAT/index.js";
 import { NarrowPhase } from "./Narrowphase.js"
 
@@ -26,7 +26,7 @@ export class SATNarrowPhase extends NarrowPhase {
             lastOverlap: 0,
             overlap: -Infinity,
             done: false,
-            axis: new Vector(),
+            axis: new Vec2(),
             verticesA: [],
             verticesB: [],
             vertShapeA: null,
@@ -39,13 +39,13 @@ export class SATNarrowPhase extends NarrowPhase {
           stmp: -1,
           impulse: 0,
           persistent: false,
-          ca1: new Vector(),
-          ca2: new Vector(),
+          ca1: new Vec2(),
+          ca2: new Vec2(),
           restitution: 0,
           staticFriction: 0,
           kineticFriction: 0,
-          velA: new Vector(),
-          velB: new Vector(),
+          velA: new Vec2(),
+          velB: new Vec2(),
           rotA: 0,
           rotB: 0
         })
@@ -56,13 +56,13 @@ export class SATNarrowPhase extends NarrowPhase {
       SAT.shapesInBodyCollided(a, b, collisionData)
       if (collisionData.overlap < 0 || !collisionData.done) continue
       if (collisionData.contactNo == 2) {
-        Vector.lerp(
+        Vec2.lerp(
           collisionData.verticesA[0],
           collisionData.verticesA[1],
           0.5,
           manifold.ca1
         ).sub(a.position)
-        Vector.lerp(
+        Vec2.lerp(
           collisionData.verticesB[0],
           collisionData.verticesB[1],
           0.5,

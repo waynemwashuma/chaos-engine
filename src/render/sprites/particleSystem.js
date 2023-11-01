@@ -1,5 +1,5 @@
 import { Sprite } from "./sprite.js"
-import { Vector, rand } from "../../math/index.js"
+import { Vec2, rand } from "../../math/index.js"
 import { circle, fill } from "../utils/index.js"
 
 /**
@@ -8,12 +8,12 @@ import { circle, fill } from "../utils/index.js"
 class Particle {
   /**
    * @readonly
-   * @type Vector
+   * @type Vec2
    */
   position = null
   /**
    * @readonly
-   * @type Vector
+   * @type Vec2
    */
   velocity = null
   /**
@@ -39,13 +39,13 @@ class Particle {
    */
   lifespan = 0
   /**
-   * @param {Vector} pos
+   * @param { Vec2} pos
    * @param {number} radius
    * @param {number} [lifespan=5] In seconds
    */
   constructor(pos, radius, lifespan = 5) {
     this.position = pos
-    this.velocity = new Vector()
+    this.velocity = new Vec2()
     this.radius = radius
     this.color = {
       r: 100,
@@ -133,7 +133,7 @@ class ParticleSystemSprite extends Sprite {
    */
   create() {
     return new Particle(
-      new Vector(...this.position),
+      new Vec2(...this.position),
       rand(1, 10),
       rand(1, 6)
     )

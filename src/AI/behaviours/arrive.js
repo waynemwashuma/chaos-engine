@@ -1,8 +1,8 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, map } from "../../math/index.js"
+import { Vec2, map } from "../../math/index.js"
 
-let tmp1 = new Vector(),
-  tmp2 = new Vector()
+let tmp1 = new Vec2(),
+  tmp2 = new Vec2()
 
 /**
  * This provides a seek behaviour which slows down when the agent approaches a target.
@@ -17,7 +17,7 @@ class ArriveBehaviour extends Behaviour {
    */
   radius = 1000
   /**
-   * @param {Vector} target
+   * @param { Vec2} target
    */
   constructor(target) {
     super()
@@ -34,9 +34,9 @@ class ArriveBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {Vector} target
+   * @param { Vec2} target
    * @param {number} inv_dt
-   * @returns Vector the first parameter
+   * @returns Vec2 the first parameter
    */
   calc(target, inv_dt) {
     let difference = tmp1.copy(this.target).sub(this.position)

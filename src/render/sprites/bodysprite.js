@@ -1,5 +1,5 @@
 import { Sprite } from "./sprite.js"
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 import { Shape } from "../../physics/index.js"
 import { BasicMaterial } from "../material/index.js"
 import { ObjType } from "../../physics/settings.js"
@@ -7,7 +7,7 @@ import { circle, rect, vertices, stroke, fill, line } from "../utils/index.js"
 
 
 
-let r = new Vector()
+let r = new Vec2()
 let material = new BasicMaterial()
 material.wireframe = true
 /**
@@ -135,7 +135,7 @@ class BodySprite extends Sprite {
           shape.position.x,
           shape.position.y,
           shape.radius)
-        Vector.fromRad(shape.angle, r).multiply(shape.radius)
+        Vec2.fromRad(shape.angle, r).multiply(shape.radius)
         line(ctx, ...shape.position,
           shape.position.x + r.x,
           shape.position.y + r.y)

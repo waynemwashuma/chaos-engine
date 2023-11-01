@@ -1,6 +1,6 @@
-import { Vector }from "../../math/index.js"
+import { Vec2 }from "../../math/index.js"
 
-let a = new Vector()
+let a = new Vec2()
 
 /**
  * Runge Kutta 4 (RK-4) 

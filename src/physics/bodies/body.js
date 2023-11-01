@@ -1,4 +1,4 @@
-import { Vector, Angle } from "../../math/index.js"
+import { Vec2, Angle } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
@@ -20,23 +20,23 @@ class Body {
    * World space coordinates of a body
    * 
    * @private
-   * @type Vector
+   * @type Vec2
    */
-  _position = new Vector()
+  _position = new Vec2()
   /**
    * velocity of a body.Speed in pixels per second.
    * 
    * @private
-   * @type Vector
+   * @type Vec2
    */
-  _velocity = new Vector()
+  _velocity = new Vec2()
   /**
    * acceleration of a body in pixels per second squared.
    * 
    * @private
-   * @type Vector
+   * @type Vec2
    */
-  _acceleration = new Vector()
+  _acceleration = new Vec2()
   /**
    * World space orientation of a body
    * 
@@ -84,22 +84,22 @@ class Body {
    * Anchors of the body in local space.
    * 
    * @private
-   * @type Vector[]
+   * @type Vec2[]
    */
   _localanchors = []
   /**
    * The original anchors of the body in local space.
    * 
    * @private
-   * @type Vector[]
+   * @type Vec2[]
    */
   anchors = []
   /**
    * Position of a body in the last frame..
    * 
-   * @type Vector
+   * @type Vec2
    */
-  lastPosition = new Vector()
+  lastPosition = new Vec2()
   /**
    * Inverse mass of the body.
    * 
@@ -270,7 +270,7 @@ class Body {
   /**
    * Acceleration of a body
    * 
-   * @type Vector
+   * @type Vec2
    */
   get acceleration() {
     return this._acceleration
@@ -281,7 +281,7 @@ class Body {
   /**
    * Velocity of a body
    * 
-   * @type Vector
+   * @type Vec2
    */
   get velocity() {
     return this._velocity
@@ -358,7 +358,7 @@ class Body {
   /**
    * World space position of a body
    * 
-   * @type Vector
+   * @type Vec2
    */
   get position() {
     return this._position
@@ -413,11 +413,11 @@ class Body {
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
-   * @param {Vector} v The anchor arm
+   * @param { Vec2} v The anchor arm
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vector(v.x, v.y).rotate(this.orientation.radian).add(this.position))
+    this.anchors.push(new Vec2(v.x, v.y).rotate(this.orientation.radian).add(this.position))
     return this._localanchors.push(v) - 1
   }
   /**
@@ -425,7 +425,7 @@ class Body {
    * Treat the returned value as read-only.
    * 
    * @param {number} index the position of the
-   * @returns {Vector}
+   * @returns { Vec2}
    */
   getAnchor(index) {
     return this.anchors[index]
@@ -434,20 +434,20 @@ class Body {
    * Returns a rotated anchor relative to the body.
    * 
    * @param {number} index The position of the anchor.
-   * @param {Vector} [target=Vector] Vector to store results in.
-   * @returns {Vector}
+   * @param { Vec2} [target= Vec2] Vec2 to store results in.
+   * @returns { Vec2}
    */
-  getLocalAnchor(index, target = new Vector()) {
+  getLocalAnchor(index, target = new Vec2()) {
     return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
    * 
-   * @param {Vector} force The force to be applied.
-   * @param {Vector} [arm=Vector] The collision arm.
+   * @param { Vec2} force The force to be applied.
+   * @param { Vec2} [arm= Vec2] The collision arm.
    */
-  applyForce(force, arm = Vector.ZERO) {
+  applyForce(force, arm = Vec2.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
     this.rotation.degree += arm.cross(force) * this.inv_inertia
   }
@@ -547,7 +547,7 @@ class Body {
     body.id = obj.id
     body.mask = obj.mask
     obj.anchors.forEach((v) => {
-      body.setAnchor(new Vector().fromJson(v))
+      body.setAnchor(new Vec2().fromJson(v))
     })
   }
   /**

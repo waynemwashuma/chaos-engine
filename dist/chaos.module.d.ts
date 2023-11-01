@@ -14,13 +14,13 @@ export type Manifold = {
     stmp: number;
     impulse: number;
     persistent: boolean;
-    ca1: Vector;
-    ca2: Vector;
+    ca1: Vec2;
+    ca2: Vec2;
     restitution: number;
     staticFriction: number;
     kineticFriction: number;
-    velA: Vector;
-    velB: Vector;
+    velA: Vec2;
+    velB: Vec2;
     rotA: number;
     rotB: number;
 };
@@ -28,9 +28,9 @@ export type ContactManifold = {
     lastOverlap: number;
     overlap: number;
     done: boolean;
-    axis: Vector;
-    verticesA: Vector[];
-    verticesB: Vector[];
+    axis: Vec2;
+    verticesA: Vec2[];
+    verticesB: Vec2[];
     vertShapeA: Shape;
     vertShapeB: Shape;
     contactNo: number;
@@ -42,9 +42,9 @@ export type Vector_like = {
     y: number;
 };
 export class Agent implements Component {
-    position: Vector;
-    velocity: Vector;
-    acceleration: Vector;
+    position: Vec2;
+    velocity: Vec2;
+    acceleration: Vec2;
     orientation: Angle;
     rotation: Angle;
     maxSpeed: number;
@@ -86,9 +86,9 @@ export class Angle {
     };
 }
 export class ArriveBehaviour extends Behaviour {
-    constructor(target: Vector);
+    constructor(target: Vec2);
     radius: number;
-    target: Vector;
+    target: Vec2;
 }
 export class AudioHandler {
     private ctx;
@@ -121,13 +121,13 @@ export class BasicMaterial implements Material {
     render(ctx: CanvasRenderingContext2D, dt: number, path: Path2D): void;
 }
 export class Behaviour {
-    position: Vector;
-    velocity: Vector;
+    position: Vec2;
+    velocity: Vec2;
     maxSpeed: number;
     maxForce: number;
     active: boolean;
     init(agent: Agent): void;
-    calc(target: Vector, inv_dt: number): void;
+    calc(target: Vec2, inv_dt: number): void;
     draw(renderer: Renderer): void;
 }
 export class Body implements Component {
@@ -147,7 +147,7 @@ export class Body implements Component {
     private _type;
     private _localanchors;
     private anchors;
-    lastPosition: Vector;
+    lastPosition: Vec2;
     inv_mass: number;
     inv_inertia: number;
     restitution: number;
@@ -177,18 +177,18 @@ export class Body implements Component {
     get physicsType(): number;
     get CHOAS_CLASSNAME(): string;
     get CHAOS_OBJ_TYPE(): string;
-    set acceleration(arg: Vector);
-    get acceleration(): Vector;
-    set velocity(arg: Vector);
-    get velocity(): Vector;
+    set acceleration(arg: Vec2);
+    get acceleration(): Vec2;
+    set velocity(arg: Vec2);
+    get velocity(): Vec2;
     set rotation(arg: Angle);
     get rotation(): Angle;
     set angle(arg: number);
     get angle(): number;
     set density(arg: number);
     get density(): number;
-    set position(arg: Vector);
-    get position(): Vector;
+    set position(arg: Vec2);
+    get position(): Vec2;
     set orientation(arg: Angle);
     get orientation(): Angle;
     set angularVelocity(arg: number);
@@ -197,10 +197,10 @@ export class Body implements Component {
     get torque(): number;
     set angularAcceleration(arg: number);
     get angularAcceleration(): number;
-    setAnchor(v: Vector): number;
-    getAnchor(index: number): Vector;
-    getLocalAnchor(index: number, target?: Vector): Vector;
-    applyForce(force: Vector, arm?: Vector): void;
+    setAnchor(v: Vec2): number;
+    getAnchor(index: number): Vec2;
+    getLocalAnchor(index: number, target?: Vec2): Vec2;
+    applyForce(force: Vec2, arm?: Vec2): void;
     init(entity: Entity | null, composited?: boolean): void;
     update(): void;
     toJson(): {
@@ -274,7 +274,7 @@ export class BoundingBox extends Component {
     min: Vector_like;
     intersects(bound: BoundingCircle | BoundingBox): boolean;
     calculateBounds(body: Body, padding?: number): void;
-    update(pos: Vector): void;
+    update(pos: Vec2): void;
     clone(): BoundingBox;
     copy(bounds: BoundingBox): void;
     toJson(): {
@@ -305,18 +305,18 @@ export class Box extends Body {
     constructor(w: number, h: number);
 }
 export class BufferGeometry {
-    constructor(vertices: Vector[]);
-    readonly vertices: Vector[];
+    constructor(vertices: Vec2[]);
+    readonly vertices: Vec2[];
     drawable: Path2D | WebGLVertexArrayObject;
     init(ctx: CanvasRenderingContext2D): void;
 }
 export class CamController {
     constructor(camera: Camera);
-    readonly offset: Vector;
+    readonly offset: Vec2;
     transform: Transform;
     targetPosition: any;
     targetOrientation: Angle;
-    follow(position: Vector, orientation?: Angle): void;
+    follow(position: Vec2, orientation?: Angle): void;
     followEntity(entity: Entity): void;
     setOffset(x: number, y: number): void;
     init(): void;
@@ -324,20 +324,20 @@ export class CamController {
 }
 export class Camera {
     readonly transform: Transform;
-    set position(arg: Vector);
-    get position(): Vector;
+    set position(arg: Vec2);
+    get position(): Vec2;
     update(): void;
 }
 export class Circle extends Shape {
     static calcInertia(mass: number, radius: number): number;
-    constructor(radius: number, offset: Vector, offsetAngle: number);
+    constructor(radius: number, offset: Vec2, offsetAngle: number);
     radius: number;
-    vertices: Vector$1[];
+    vertices: Vec2$1[];
     type: number;
-    get position(): Vector$1;
+    get position(): Vec2$1;
     toJson(): {
         radius: number;
-        offset: Vector;
+        offset: Vec2;
         offAngle: number;
         shapeType: number;
         type: string;
@@ -377,10 +377,10 @@ export class Composite {
     init(entity: Entity | null): void;
     add(object: Constraint | Body): number;
     update(): void;
-    set acceleration(arg: Vector);
-    get acceleration(): Vector;
-    set velocity(arg: Vector);
-    get velocity(): Vector;
+    set acceleration(arg: Vec2);
+    get acceleration(): Vec2;
+    set velocity(arg: Vec2);
+    get velocity(): Vec2;
     set angle(arg: number);
     get angle(): number;
     set mass(arg: number);
@@ -389,15 +389,15 @@ export class Composite {
     get type(): number;
     set density(arg: number);
     get density(): number;
-    set position(arg: Vector);
-    get position(): Vector;
+    set position(arg: Vec2);
+    get position(): Vec2;
     set orientation(arg: number);
     get orientation(): number;
     set angularVelocity(arg: number);
     get angularVelocity(): number;
 }
 export class Constraint {
-    constructor(body1: Body, body2: Body, localA: Vector, localB: Vector);
+    constructor(body1: Body, body2: Body, localA: Vec2, localB: Vec2);
     body1: Body;
     body2: Body;
     localA: any;
@@ -579,9 +579,9 @@ declare namespace Err$1 {
     export function assert(test: boolean, errfunc: Function, message: string): boolean;
 }
 export class EvadeBehaviour extends Behaviour {
-    constructor(pursuer: Vector);
+    constructor(pursuer: Vec2);
     radius: number;
-    pursuer: Vector;
+    pursuer: Vec2;
 }
 export class EventDispatcher {
     private handlers;
@@ -606,15 +606,15 @@ export class Flock extends Behaviour {
     neighbours: Agent[];
 }
 export class Geometry {
-    constructor(vertices: Vector[]);
-    vertices: Vector[];
-    normals: Vector[];
-    _dynNormals: Vector[];
+    constructor(vertices: Vec2[]);
+    vertices: Vec2[];
+    normals: Vec2[];
+    _dynNormals: Vec2[];
     get CHOAS_CLASSNAME(): string;
     get CHAOS_OBJ_TYPE(): string;
-    getNormals(rad: number, target: Vector[]): Vector[];
+    getNormals(rad: number, target: Vec2[]): Vec2[];
     private calcFaceNormals;
-    transform(vertices: Vector[], pos: Vector, rad: any, n: number): void;
+    transform(vertices: Vec2[], pos: Vec2, rad: any, n: number): void;
     toJson(): {
         vertices: any[];
     };
@@ -656,7 +656,7 @@ export class Keyboard {
     private _onUp;
 }
 export class Line extends Shape {
-    constructor(length: number, offset: Vector, offsetAngle: any);
+    constructor(length: number, offset: Vec2, offsetAngle: any);
     length: number;
 }
 export class Loader {
@@ -752,7 +752,7 @@ export class Matrix2 {
     rotate(radians: number): this;
     translate(x: number, y: number): this;
     scale(x: number, y: number): this;
-    transform(v: Vector): Vector;
+    transform(v: Vec2): Vec2;
     invert(): this;
     copy(m: Matrix2): this;
     clone(): Matrix2;
@@ -781,16 +781,16 @@ export class Mouse {
 export class Movable extends Component implements Component {
     constructor(x: number, y: number, a: number);
     entity: any;
-    velocity: Vector$1;
+    velocity: Vec2$1;
     rotation: Angle;
-    acceleration: Vector$1;
+    acceleration: Vec2$1;
     toJson(): {
-        velocity: Vector$1;
+        velocity: Vec2$1;
         rotation: {
             deg: number;
             type: string | number;
         };
-        acceleration: Vector$1;
+        acceleration: Vec2$1;
     };
     fromJson(obj: any): void;
 }
@@ -808,9 +808,9 @@ export namespace Overlaps {
     function AABBvsSphere(a: BoundingBox, b: BoundingCircle): boolean;
 }
 export class Particle {
-    constructor(pos: Vector, radius: number, lifespan?: number);
-    readonly position: Vector;
-    readonly velocity: Vector;
+    constructor(pos: Vec2, radius: number, lifespan?: number);
+    readonly position: Vec2;
+    readonly velocity: Vec2;
     active: boolean;
     radius: number;
     color: {
@@ -847,21 +847,21 @@ export class Path {
     private _finished;
     private _lerpedPoint;
     loop: boolean;
-    add(point: Vector): this;
+    add(point: Vec2): this;
     clear(): this;
     advance(): boolean;
-    update(lerpdist?: number): Vector$1;
+    update(lerpdist?: number): Vec2$1;
     current(): any[];
-    point(): Vector$1;
+    point(): Vec2$1;
     get path(): any[];
     draw(ctx: CanvasRenderingContext2D): void;
 }
 export class PathFollowing extends Behaviour {
     constructor(path: Path);
     path: Path;
-    calc(target: Vector, inv_dt: number): Vector;
+    calc(target: Vec2, inv_dt: number): Vec2;
     clear(): void;
-    add(point: Vector): void;
+    add(point: Vec2): void;
     set loop(arg: boolean);
     get loop(): boolean;
     setPath(path: Path): void;
@@ -869,7 +869,7 @@ export class PathFollowing extends Behaviour {
 }
 export class Pursuit extends Behaviour {
     init(): void;
-    calc(target: Vector): void;
+    calc(target: Vec2): void;
 }
 declare class Tree extends Broadphase {
     constructor(bounds: Bounds, maxdepth?: number);
@@ -885,7 +885,7 @@ declare class Tree extends Broadphase {
 }
 export class Rectangle extends Shape {
     static calcInertia(mass: number, width: number, height: number): number;
-    constructor(width: number, height: number, offset: Vector, offsetAngle: number);
+    constructor(width: number, height: number, offset: Vec2, offsetAngle: number);
     height: number;
     width: number;
 }
@@ -929,9 +929,9 @@ export class SATNarrowPhase extends NarrowPhase {
     getCollisionPairs(contactList: CollisionPair[], clmds?: Manifold[]): Manifold[];
 }
 export class SeekBehaviour extends Behaviour {
-    constructor(target: Vector);
+    constructor(target: Vec2);
     radius: number;
-    target: Vector;
+    target: Vec2;
 }
 export namespace Session {
     function set(k: string, v: any): void;
@@ -965,19 +965,19 @@ export class Shape {
     static calcInertia(): number;
     static CIRCLE: number;
     static POLYGON: number;
-    constructor(vertices: Vector[], offset?: Vector, offsetAngle?: number);
+    constructor(vertices: Vec2[], offset?: Vec2, offsetAngle?: number);
     readonly type: number;
     offAngle: number;
-    offPosition: Vector;
-    vertices: Vector[];
+    offPosition: Vec2;
+    vertices: Vec2[];
     geometry: Geometry;
     get CHOAS_CLASSNAME(): string;
     get CHAOS_OBJ_TYPE(): string;
     get area(): number;
-    getNormals(shape: Shape, target?: Vector[]): Vector[];
-    update(position: Vector, angle: number, scale: number): void;
+    getNormals(shape: Shape, target?: Vec2[]): Vec2[];
+    update(position: Vec2, angle: number, scale: number): void;
     angle: number;
-    getVertices(axis: Vector, target: Vector[]): Vector[];
+    getVertices(axis: Vec2, target: Vec2[]): Vec2[];
     toJson(): {
         type: string;
         geometry: {
@@ -990,8 +990,8 @@ export class Shape {
     fromJson(obj: any): void;
 }
 export class SpringConstraint extends Constraint {
-    localA: Vector$1;
-    localB: Vector$1;
+    localA: Vec2$1;
+    localB: Vec2$1;
     fixed: boolean;
     maxDistance: number;
 }
@@ -1005,8 +1005,8 @@ export class Sprite implements Component {
     parent: Group | null;
     set angle(arg: number);
     get angle(): number;
-    set position(arg: Vector);
-    get position(): Vector;
+    set position(arg: Vec2);
+    get position(): Vec2;
     set orientation(arg: Angle);
     get orientation(): Angle;
     render(ctx: any, dt: any): void;
@@ -1068,11 +1068,11 @@ export class Touch {
 export class Transform implements Component {
     constructor(x: number, y: number, a: number);
     entity: any;
-    position: Vector$1;
+    position: Vec2$1;
     orientation: Angle;
     init(): void;
     toJson(): {
-        position: Vector$1;
+        position: Vec2$1;
         orientation: {
             deg: number;
             type: string | number;
@@ -1082,7 +1082,7 @@ export class Transform implements Component {
 }
 export class Triangle extends Shape {
     static calcInertia(mass: any, base: any, height: any, angle: any): number;
-    constructor(base: number, height: number, angle: number, offset: Vector, offsetAngle: number);
+    constructor(base: number, height: number, angle: number, offset: Vec2, offsetAngle: number);
 }
 export class Trigon extends Body {
     constructor(base: number, height: number, angle?: number);
@@ -1099,18 +1099,18 @@ declare namespace Utils$1 {
     function inheritComponent(component: Function, overrideInit?: boolean, overrideUpdate?: boolean): void;
     function inheritSystem(system: Function): void;
 }
-declare class Vector$1 {
-    static getAbsDegBtwn(v1: Vector, v2: Vector): number;
-    static getAbsRadBtwn(v1: Vector, v2: Vector): number;
-    static getRadBtwn(v1: Vector, v2: Vector): number;
-    static getDegBtwn(v1: Vector, v2: Vector): number;
-    static fromRad(radian: number, target?: Vector): Vector;
-    static fromDeg(degree: number, target?: Vector): Vector;
-    static random(target?: Vector): Vector;
-    static lerp(v1: Vector, v2: Vector, t: number, target?: Vector): Vector;
-    static toDeg(v: Vector): number;
-    static toRad(v: Vector): number;
-    static readonly ZERO: Vector;
+declare class Vec2$1 {
+    static getAbsDegBtwn(v1: Vec2, v2: Vec2): number;
+    static getAbsRadBtwn(v1: Vec2, v2: Vec2): number;
+    static getRadBtwn(v1: Vec2, v2: Vec2): number;
+    static getDegBtwn(v1: Vec2, v2: Vec2): number;
+    static fromRad(radian: number, target?: Vec2): Vec2;
+    static fromDeg(degree: number, target?: Vec2): Vec2;
+    static random(target?: Vec2): Vec2;
+    static lerp(v1: Vec2, v2: Vec2, t: number, target?: Vec2): Vec2;
+    static toDeg(v: Vec2): number;
+    static toRad(v: Vec2): number;
+    static readonly ZERO: Vec2;
     constructor(x: number, y: number);
     x: number;
     y: number;
@@ -1119,29 +1119,29 @@ declare class Vector$1 {
     magnitude(): number;
     setMagnitude(length: number): void;
     magnitudeSquared(): number;
-    distanceTo(v: Vector): number;
-    distanceToSquared(v: Vector): number;
-    add(v: Vector): this;
+    distanceTo(v: Vec2): number;
+    distanceToSquared(v: Vec2): number;
+    add(v: Vec2): this;
     addScalar(n: number): this;
-    sub(v: Vector): this;
+    sub(v: Vec2): this;
     subScalar(n: number): this;
-    dot(v: Vector): number;
-    cross(v: Vector): number;
+    dot(v: Vec2): number;
+    cross(v: Vec2): number;
     multiply(n: number): this;
     divide(n: number): this;
     normalize(): this;
-    equals(v: Vector): boolean;
+    equals(v: Vec2): boolean;
     equalsZero(): boolean;
-    normal(l?: number, target?: Vector): Vector;
-    normalFast(target?: Vector): Vector;
+    normal(l?: number, target?: Vec2): Vec2;
+    normalFast(target?: Vec2): Vec2;
     rotate(rad: number): this;
     toArray(target?: number[], offset?: number): number[];
-    clone(): Vector$1;
-    copy(v: Vector): this;
+    clone(): Vec2$1;
+    copy(v: Vec2): this;
     set(x: number, y: number): this;
     draw(ctx: CanvasRenderingContext2D, x?: number, y?: number, color?: string, scale?: number): this;
     reverse(): this;
-    reflect(normal: number, target?: Vector): Vector;
+    reflect(normal: number, target?: Vec2): Vec2;
     clamp(min?: number, max?: number): this;
     toJson(): this;
     fromJson(obj: any): void;
@@ -1168,7 +1168,7 @@ export class World {
     velocitySolverIterations: number;
     CLMDs: Manifold[];
     contactList: CollisionPair[];
-    gravitationalAcceleration: Vector;
+    gravitationalAcceleration: Vec2;
     fixedFrameRate: number;
     perf: {
         lastTimestamp: number;
@@ -1176,8 +1176,8 @@ export class World {
     };
     broadphase: Broadphase;
     narrowphase: NarrowPhase;
-    set gravity(arg: Vector);
-    get gravity(): Vector;
+    set gravity(arg: Vec2);
+    get gravity(): Vec2;
     private narrowPhase;
     broadPhase(): void;
     private collisionDetection;
@@ -1219,7 +1219,7 @@ export function round(number: number, precision?: number): number;
 export function sq(x: number): number;
 export function sqrt(x: number): number;
 export function stroke(ctx: CanvasRenderingContext2D, color?: string, width?: number): void;
-export function vertices(ctx: CanvasRenderingContext2D, vertices: Vector[], close?: boolean): void;
+export function vertices(ctx: CanvasRenderingContext2D, vertices: Vec2[], close?: boolean): void;
 export function wrapAngle(x: any): any;
 declare class Node {
     constructor(bounds: {
@@ -1265,5 +1265,5 @@ declare class Broadphase {
     getCollisionPairs(target: CollisionPair[]): CollisionPair[];
     query(bounds: Bounds, target: Body[]): Body[];
 }
-declare let r: Vector$1;
-export { Err$1 as Err, Matrix2 as Matrix, Tree as QuadTreeBroadphase, Utils$1 as Utils, Vector$1 as Vector };
+declare let r: Vec2$1;
+export { Err$1 as Err, Matrix2 as Matrix, Tree as QuadTreeBroadphase, Utils$1 as Utils, Vec2$1 as Vec2 };
