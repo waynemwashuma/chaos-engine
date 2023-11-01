@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 
 
 /**
@@ -20,9 +20,9 @@ class Pursuit extends Behaviour {
   }
     /**
      * @inheritdoc
-     * @param {Vector} target
+     * @param { Vec2} target
      * @param {number} inv_dt
-     * @returns Vector the first parameter
+     * @returns Vec2 the first parameter
      */
   calc(target){
     

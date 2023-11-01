@@ -1,8 +1,8 @@
 import { Behaviour } from "./behaviour.js"
-import { Vector, rand } from "../../math/index.js"
+import { Vec2, rand } from "../../math/index.js"
 
-let tmp1 = new Vector(),
-  tmp2 = new Vector()
+let tmp1 = new Vec2(),
+  tmp2 = new Vec2()
   
 /**
  * Creates a behaviour that is used to make an agent wander in an organic manner.
@@ -39,21 +39,21 @@ class WanderBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {Vector} target
+   * @param { Vec2} target
    * @param {number} inv_dt
-   * @returns Vector the first parameter
+   * @returns Vec2 the first parameter
    */
   calc(target, inv_dt) {
 
     this._theta += rand(-this.dtheta, +this.dtheta)
     let forward = tmp1.copy(this.velocity)
     if (forward.equalsZero())
-      Vector.random(forward)
+      Vec2.random(forward)
     let radius = this._radius * 0.8
     forward.setMagnitude(this._radius)
     //ctx.arc(...tmp2.copy(this.position).add(forward), radius, 0, Math.PI * 2)
     //ctx.stroke()
-    Vector.fromDeg(this._theta + Vector.toDeg(this.velocity), tmp2).multiply(radius)
+    Vec2.fromDeg(this._theta + Vec2.toDeg(this.velocity), tmp2).multiply(radius)
     forward.add(tmp2)
     //forward.draw(ctx,...this.position)
     forward.setMagnitude(this.maxSpeed)

@@ -1,6 +1,6 @@
 import { VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
@@ -81,9 +81,9 @@ export class World {
   /**
    * The gravitational pull of the world.
    * 
-   * @type Vector
+   * @type Vec2
    */
-  gravitationalAcceleration = new Vector(0, 0)
+  gravitationalAcceleration = new Vec2(0, 0)
   /**
    * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
    * 
@@ -136,7 +136,7 @@ export class World {
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
-   * @type {Vector }
+   * @type { Vec2 }
    */
   get gravity() {
     return this.gravitationalAcceleration

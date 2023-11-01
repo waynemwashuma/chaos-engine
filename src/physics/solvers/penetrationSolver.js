@@ -1,7 +1,7 @@
-import { Vector, sq }from "../../math/index.js"
+import { Vec2, sq }from "../../math/index.js"
 import { Settings } from "../settings.js"
-const tmp1 = new Vector(),
-  tmp2 = new Vector()
+const tmp1 = new Vec2(),
+  tmp2 = new Vec2()
 let dampen = Settings.posDampen
 
 /**

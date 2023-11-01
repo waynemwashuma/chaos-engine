@@ -1,5 +1,5 @@
 //import { Component } from "./component.js"
-import { Vector, Angle } from "../math/index.js"
+import { Vec2, Angle } from "../math/index.js"
 
 /**
  * Holds transformation info of an entity 
@@ -15,7 +15,7 @@ class Transform {
    * @returns 
    */
   constructor(x,y,a){
-    this.position = new Vector(x,y)
+    this.position = new Vec2(x,y)
     this.orientation = new Angle(a)
   }
   init(){}
