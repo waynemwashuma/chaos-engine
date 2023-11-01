@@ -144,8 +144,8 @@ export class Renderer {
     let canvas = this.domElement
     canvas.style.width = w + "px"
     canvas.style.height = h + "px"
-    canvas.width = w
-    canvas.height = h
+    canvas.width = w * devicePixelRatio
+    canvas.height = h * devicePixelRatio
   }
   /**
    * Width of the renderer
