@@ -11,6 +11,12 @@ import { triangle } from "./triangle.js"
 import { particle } from "./particle.js"
 import { circle } from "./circle.js"
 import { circlestacking } from "./circlestack.js"
+import { wanderer } from "./wanderer.js"
+import { seeker } from "./seeker.js"
+import { restitution } from "./restitution.js"
+import { friction } from "./friction.js"
+
+
 import {
   Manager,
   Renderer2D,
@@ -65,7 +71,7 @@ class CanvasBounds extends Entity {
     super.init(global)
     let renderer = global.getSystem("renderer")
     let walls = createBoundingBox(30, 30, renderer.width - 60, renderer.height - 80, 1000)
-    walls.forEach(w=> {
+    walls.forEach(w => {
       let bound = Entity.Default(w.pos.x, w.pos.y)
       let body = new Box(w.w, w.h)
       bound.attach("body", body)
@@ -78,17 +84,17 @@ class CanvasBounds extends Entity {
 }
 
 export const demos = {
-  manager:new Manager(),
-  renderer:new Renderer2D(),
-  world:new World(),
-  examples:{},
+  manager: new Manager(),
+  renderer: new Renderer2D(),
+  world: new World(),
+  examples: {},
   init: function(selector) {
     this.manager.registerSystem("agent", new AgentManager())
-    this.manager.registerSystem("renderer",this.renderer)
-    this.manager.registerSystem("world",this.world)
+    this.manager.registerSystem("renderer", this.renderer)
+    this.manager.registerSystem("world", this.world)
     let renderer = this.renderer
     renderer.bindTo(selector)
-    renderer.setViewport(innerWidth, innerHeight/1.5)
+    renderer.setViewport(innerWidth, innerHeight / 1.5)
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
@@ -99,23 +105,33 @@ export const demos = {
     this.manager.add(new CanvasBounds())
     this.examples[name](this.manager)
   },
-  play(n){
+  play(n) {
     this.setup(n)
   },
-  register(n,f){
+  register(n, f) {
     this.examples[n] = f
   }
 }
-demos.register("box",box)
-demos.register("stack",stacking)
-demos.register("circle",circle)
-demos.register("circlestacking",circlestacking)
-demos.register("triangle",triangle)
-demos.register("pyramid",pyramid)
-demos.register("random",random)
-demos.register("constraints",constraint)
-demos.register("bridge",bridge)
-demos.register("car",car)
-demos.register("pathfollower",pathfollower)
-demos.register("materials",materials)
-demos.register("particle",particle)
+
+//hysics
+demos.register("box", box)
+demos.register("restitution", restitution)
+demos.register("stack", stacking)
+demos.register("circle", circle)
+demos.register("circlestacking", circlestacking)
+demos.register("triangle", triangle)
+demos.register("pyramid", pyramid)
+demos.register("random", random)
+demos.register("constraints", constraint)
+demos.register("bridge", bridge)
+demos.register("car", car)
+demos.register("friction", friction)
+
+//Renderer
+demos.register("materials", materials)
+demos.register("particle", particle)
+
+//AI
+demos.register("pathfollower", pathfollower)
+demos.register("wanderer", wanderer)
+demos.register("seeker", seeker)

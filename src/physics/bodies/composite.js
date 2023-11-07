@@ -1,4 +1,4 @@
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { ObjType } from "../settings.js"
 
@@ -64,10 +64,10 @@ class Composite {
   /**
    * Acceleration of a body
    * 
-   * @type Vector
+   * @type Vec2
    */
   get acceleration() {
-    let acceleration = new Vector()
+    let acceleration = new Vec2()
     for (var i = 0; i < this.bodies.length; i++) {
       acceleration.copy(this.bodies[i].acceleration)
     }
@@ -81,10 +81,10 @@ class Composite {
   /**
    * Velocity of a body
    * 
-   * @type Vector
+   * @type Vec2
    */
   get velocity() {
-    let velocity = new Vector()
+    let velocity = new Vec2()
 
     for (var i = 0; i < this.bodies.length; i++) {
       velocity.add(this.bodies[i].velocity)
@@ -159,11 +159,11 @@ class Composite {
   /**
    * Position of a body
    * 
-   * @type Vector
+   * @type Vec2
    */
   get position() {
-    let position = new Vector()
-    for (var i = 0; i < this.shapes.length; i++) {
+    let position = new Vec2()
+    for (var i = 0; i < this.bodies.length; i++) {
       position.add(this.bodies[i].position)
     }
     return position

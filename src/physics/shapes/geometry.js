@@ -1,18 +1,18 @@
 class Geometry {
   /**
-   * @type Vector[]
+   * @type Vec2[]
    */
   vertices = null
   /**
-   * @type Vector[]
+   * @type Vec2[]
    */
   normals = null
   /**
-   * @type Vector[]
+   * @type Vec2[]
    */
   _dynNormals = null
   /**
-   * @param {Vector[]} vertices
+   * @param { Vec2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices
@@ -33,7 +33,7 @@ class Geometry {
   }
   /**
    * @param {number} rad
-   * @param {Vector[]} target
+   * @param { Vec2[]} target
    */
   getNormals(rad, target) {
     target = target || []
@@ -44,7 +44,7 @@ class Geometry {
   }
   /**
    * @private
-   * @returns Vector[]
+   * @returns Vec2[]
    */
   calcFaceNormals() {
     const axes = [],
@@ -66,8 +66,8 @@ class Geometry {
   }
   /**
    * @param {number} n
-   * @param {Vector[]} vertices
-   * @param {Vector} pos
+   * @param { Vec2[]} vertices
+   * @param { Vec2} pos
    * @patam {number} rad
    */
   transform(vertices, pos, rad, n) {
@@ -86,7 +86,7 @@ class Geometry {
     return obj
   }
   fromJson(obj){
-    this.vertices = obj.vertices.map(v=>new Vector().fromJson(v))
+    this.vertices = obj.vertices.map(v=>new Vec2().fromJson(v))
     this.normals = this.calcFaceNormals()
     this._dynNormals = this.normals.map(e => e.clone())
   }

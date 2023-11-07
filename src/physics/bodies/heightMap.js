@@ -1,4 +1,4 @@
-import {Vector} from"../../math/index.js"
+import { Vec2} from"../../math/index.js"
 import {Body} from"./body.js"
 import {Line} from "../shapes/index.js"
 
@@ -7,13 +7,13 @@ class HeightMap extends Body {
     let l = [],
       j = []
     for (let i = 0; i < heights.length; i++) {
-      l.push(new Vector(step * i, heights[i]))
+      l.push(new Vec2(step * i, heights[i]))
     }
     for (let i = 1; i < l.length; i++) {
       let line = new Line(l[i - 1], l[i])
       j.push(line)
     }
-    super(new Vector(), ...j)
+    super(new Vec2(), ...j)
     this.mass = 0
     this.mask.layer = 0
   }

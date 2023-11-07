@@ -1,5 +1,5 @@
 import { Utils } from "../utils/index.js"
-import { Vector } from "../math/index.js"
+import { Vec2 } from "../math/index.js"
 
 /**
  * Manages the behaviours for an agent.
@@ -16,7 +16,7 @@ class BehaviourManager {
   /**
    * Accumulated force from behaviours to apply to agent
    */
-  _accumulated = new Vector()
+  _accumulated = new Vec2()
   /**
    * Adds a behavior to the manager
    * 
@@ -51,14 +51,14 @@ class BehaviourManager {
    * @param {number} inv_dt
    */
   update(inv_dt) {
-    let result = new Vector()
+    let result = new Vec2()
     this._accumulated.set(0, 0)
     for (let i = 0; i < this._behaviours.length; i++) {
       this._behaviours[i].calc(result, inv_dt)
       this._accumulated.add(result)
     }
     this._agent.acceleration.add(this._accumulated)
-    this._agent.orientation.radian = Vector.toRad(this._agent.velocity)
+    this._agent.orientation.radian = Vec2.toRad(this._agent.velocity)
   }
   /**
    * Removes all behaviours from a manager.

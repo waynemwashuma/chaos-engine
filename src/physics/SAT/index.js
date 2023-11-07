@@ -1,4 +1,4 @@
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 
 const _arr = [],
@@ -6,7 +6,7 @@ const _arr = [],
     overlap: 0,
     verticesA: null,
     verticesB: null,
-    axis: new Vector(),
+    axis: new Vec2(),
     vertex: null,
     shape: null
   },
@@ -20,9 +20,9 @@ const _arr = [],
     max: 0,
     indexN: 0
   },
-  tmp4 = new Vector(),
-  tmp5 = new Vector(),
-  tmp6 = new Vector()
+  tmp4 = new Vec2(),
+  tmp5 = new Vec2(),
+  tmp6 = new Vec2()
 
 /**
  * Used for narrowphase collision detection and contact info generation.
@@ -109,7 +109,7 @@ export const SAT = {
   /**
    * @param {Shape} shapeA
    * @param {Shape} shapeB
-   * @param {Vector[]} axes
+   * @param { Vec2[]} axes
    * @param {Manifold} shapeA
    * @param {number} iu
    */
@@ -169,8 +169,8 @@ export const SAT = {
     return manifold
   },
   /**
-   * @param {Vector[]} vertices
-   * @param {Vector} axis
+   * @param { Vec2[]} vertices
+   * @param { Vec2} axis
    * @param {Object} target
    */
   projectVerticesToAxis(vertices, axis, target) {
@@ -195,9 +195,9 @@ export const SAT = {
     return target
   },
   /**
-   * @param {Vector[]} vertices
-   * @param {Vector} axis
-   * @param {Vector[]} target
+   * @param { Vec2[]} vertices
+   * @param { Vec2} axis
+   * @param { Vec2[]} target
    * @param {number} nearVertexIndex
    */
   findNearSupports(vertices, axis, target = [], nearVertexIndex) {
@@ -225,7 +225,7 @@ export const SAT = {
   },
   /**
    * @param {Shape} shape
-   * @param {Vector} point
+   * @param { Vec2} point
    */
   shapeContains(shape, point) {
     if (shape.type == "circle")
@@ -233,9 +233,9 @@ export const SAT = {
     return SAT.verticesContain(shape.vertices, point)
   },
   /**
-   * @param {Vector} position
+   * @param { Vec2} position
    * @param {number} radius
-   * @param {Vector} point
+   * @param { Vec2} point
    */
   circleContains(position, radius, point) {
     let dx = point.x - position.x,
@@ -245,7 +245,7 @@ export const SAT = {
     return true
   },
   /**
-   * @param {Vector[]} vertices
+   * @param { Vec2[]} vertices
    * @param {number} point 
    */
   verticesContain(vertices, point) {

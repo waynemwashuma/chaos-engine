@@ -1,6 +1,6 @@
 import { VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
-import { Vector } from "../../math/index.js"
+import { Vec2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
@@ -10,7 +10,7 @@ import { Settings } from "../settings.js"
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-class World {
+export class World {
   /**
    * Used to check if a manifold is persistent.
    * 
@@ -81,9 +81,9 @@ class World {
   /**
    * The gravitational pull of the world.
    * 
-   * @type Vector
+   * @type Vec2
    */
-  gravitationalAcceleration = new Vector(0, 0)
+  gravitationalAcceleration = new Vec2(0, 0)
   /**
    * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
    * 
@@ -113,6 +113,12 @@ class World {
    */
   narrowphase = null
   /**
+   * Moves the bodies forward in time.
+   * 
+   * @type {Intergrator}
+   */
+  intergrator = VerletSolver
+  /**
    * @constructor World
    * 
    */
@@ -130,7 +136,7 @@ class World {
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
-   * @type {Vector }
+   * @type { Vec2 }
    */
   get gravity() {
     return this.gravitationalAcceleration
@@ -208,7 +214,8 @@ class World {
     for (var i = 0; i < length; i++) {
       let a = this.objects[i]
       if (!a.sleeping)
-        VerletSolver.solve(a, dt)
+        this.intergrator.solve(a, dt)
+      //VerletSolver.solve(a, dt)
     }
   }
   /**
@@ -401,8 +408,4 @@ class World {
     this.broadphase.query(bound, target)
     return target
   }
-}
-
-export {
-  World
 }

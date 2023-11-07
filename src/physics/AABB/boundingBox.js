@@ -1,5 +1,5 @@
 import { Overlaps } from "./overlap.js"
-import { Component } from "../../manager/component.js"
+import { Component } from "../../ecs/component.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -106,7 +106,7 @@ export class BoundingBox extends Component {
   /**
    * Translates this bound to the given position.
    * 
-   * @param {Vector} pos
+   * @param { Vec2} pos
    */
   update(pos) {
     let dx = pos.x - this.pos.x

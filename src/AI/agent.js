@@ -10,19 +10,19 @@ class Agent {
   /**
    * The position of the entity.
    * 
-   * @type Vector
+   * @type Vec2
    */
   position = null
   /**
    * The velocity of the entity.
    * 
-   * @type Vector
+   * @type Vec2
    */
   velocity = null
   /**
    * The acceleration of the entity.
    * 
-   * @type Vector
+   * @type Vec2
    */
   acceleration = null
   /**

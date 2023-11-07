@@ -1,4 +1,4 @@
-import {Transform} from '../manager/transformComponent.js'
+import {Transform} from '../ecs/transformComponent.js'
 class Camera {
   /**
    * @readonly
@@ -8,7 +8,7 @@ class Camera {
 
   constructor() { }
   /**
-   * @type Vector
+   * @type Vec2
    */
   get position() {
     return this.transform.position
