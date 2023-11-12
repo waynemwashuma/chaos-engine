@@ -40,6 +40,6 @@ export const Overlaps = {
       (x - b.pos.x) * (x - b.pos.x) +
       (y - b.pos.y) * (y - b.pos.y)
 
-    return distance < b.r;
+    return distance < b.r * b.r;
   }
 }
