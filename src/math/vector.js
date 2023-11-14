@@ -487,5 +487,3 @@ export {
   Vec2,
   Vector
 }
-
-new Vec2()
