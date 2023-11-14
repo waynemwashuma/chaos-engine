@@ -141,7 +141,7 @@ export class Matrix2 {
   /**
    * Transforms the given vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    */
   transform(v) {
     let x = v.x

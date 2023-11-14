@@ -1,5 +1,5 @@
 import { ObjType } from "../settings.js"
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
 /**
  * Base class for constructing different types of constraints.
@@ -12,14 +12,14 @@ class Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
-   * @param { Vec2} localA
-   * @param { Vec2} localB
+   * @param { Vector2} localA
+   * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     this.body1 = body1
     this.body2 = body2
-    this.localA = localA || new Vec2()
-    this.localB = localB || new Vec2()
+    this.localA = localA || new Vector2()
+    this.localB = localB || new Vector2()
     this.stiffness = 50
     this.dampening = 0.03
   }
@@ -81,8 +81,8 @@ class Constraint {
     let constraint = new Constraint(
       bod1,
       bod2,
-      new Vec2().fromJson(obj.localA),
-      new Vec2().fromJson(obj.localB)
+      new Vector2().fromJson(obj.localA),
+      new Vector2().fromJson(obj.localB)
     )
     constraint.stiffness = obj.stiffness
     constraint.dampening = obj.dampening

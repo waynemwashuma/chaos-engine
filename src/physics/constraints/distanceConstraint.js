@@ -1,11 +1,11 @@
 import { Constraint } from "./constraint.js";
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
-let tmp1 = new Vec2(),
-  tmp2 = new Vec2(),
-  tmp3 = new Vec2(),
-  tmp4 = new Vec2(),
-  tmp5 = new Vec2()
+let tmp1 = new Vector2(),
+  tmp2 = new Vector2(),
+  tmp3 = new Vector2(),
+  tmp4 = new Vector2(),
+  tmp5 = new Vector2()
 
 /**
  * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
@@ -14,8 +14,8 @@ class DistanceConstraint extends Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
-   * @param { Vec2} localA
-   * @param { Vec2} localB
+   * @param { Vector2} localA
+   * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     super(body1, body2,localA,localB)

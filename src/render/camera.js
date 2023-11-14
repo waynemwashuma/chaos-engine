@@ -8,7 +8,7 @@ class Camera {
 
   constructor() { }
   /**
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
     return this.transform.position

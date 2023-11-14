@@ -1,5 +1,5 @@
 import { Component } from "./component.js"
-import { Vec2, Angle } from "../math/index.js"
+import { Vector2, Angle } from "../math/index.js"
 /**
  * Component to hold requirements for an entity to move.
  * 
@@ -15,9 +15,9 @@ class Movable extends Component {
    */
   constructor(x, y, a) {
     super()
-    this.velocity = new Vec2(x, y)
+    this.velocity = new Vector2(x, y)
     this.rotation = new Angle(a)
-    this.acceleration = new Vec2()
+    this.acceleration = new Vector2()
   }
   toJson() {
     return {

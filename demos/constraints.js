@@ -1,5 +1,5 @@
 import {
-  Vec2,
+  Vector2,
   Entity,
   Box,
   BodySprite,
@@ -20,8 +20,8 @@ export function constraint(manager) {
   box2.attach("body", body2)
     .attach("sprite", new BodySprite())
   
-  let an1 = body1.setAnchor(new Vec2(25,-25))
-  let an2 = body2.setAnchor(new Vec2(-25,-25))
+  let an1 = body1.setAnchor(new Vector2(25,-25))
+  let an2 = body2.setAnchor(new Vector2(-25,-25))
   
   let constraint1 = new DistanceConstraint(body1,body2,body1.getAnchor(an1),body2.getAnchor(an2))
   

@@ -1,7 +1,7 @@
-import { Vec2 } from "../../math/index.js"
-let position = new Vec2()
-let acceleration = new Vec2()
-let velocity = new Vec2()
+import { Vector2 } from "../../math/index.js"
+let position = new Vector2()
+let acceleration = new Vector2()
+let velocity = new Vector2()
 
 /**
  * Verlet intergration.

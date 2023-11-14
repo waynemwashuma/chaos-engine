@@ -8,13 +8,13 @@ class Behaviour {
   /**
    * The position of the agent.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   position = null
   /**
    * The velocity of the agent.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   velocity = null
   /**
@@ -44,9 +44,9 @@ class Behaviour {
   /**
    * Calculates the amount of force required to satisfy a behavior.
    * 
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target, inv_dt) {}
   /**

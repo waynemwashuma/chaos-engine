@@ -4,7 +4,7 @@ import {
   BasicMaterial,
   StaticImageMaterial,
   SpriteMaterial,
-  Vec2,
+  Vector2,
   Entity
 } from "/src/index.js"
 const assets = {
@@ -15,10 +15,10 @@ const assets = {
 export function materials(manager) {
   manager.clear()
   let geometry = new BufferGeometry([
-  new Vec2(-50, -50),
-  new Vec2(-50, 50),
-  new Vec2(50, 50),
-  new Vec2(50, -50)
+  new Vector2(-50, -50),
+  new Vector2(-50, 50),
+  new Vector2(50, 50),
+  new Vector2(50, -50)
   ])
 
   //Basic material
