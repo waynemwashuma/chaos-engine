@@ -7,7 +7,7 @@ import {
   PathFollowing,
   WanderBehaviour,
   Path,
-  Vec2
+  Vector2
 } from "/src/index.js"
 
 export function pathfollower(manager) {
@@ -30,11 +30,11 @@ export function pathfollower(manager) {
 
   manager.add(a)
 
-  p.add(new Vec2(100,50))
-  p.add(new Vec2(300,100))
-  p.add(new Vec2(300,400))
-  p.add(new Vec2(200,400))
-  p.add(new Vec2(100,350))
+  p.add(new Vector2(100,50))
+  p.add(new Vector2(300,100))
+  p.add(new Vector2(300,400))
+  p.add(new Vector2(200,400))
+  p.add(new Vector2(100,350))
 
   p.loop = true
 }

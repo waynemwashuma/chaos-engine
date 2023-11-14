@@ -9,7 +9,7 @@ let TWO_PI = Math.PI * 2
  * @author Wayne Mwashuma <mwashumawayne@gmail.com>
  * @license MIT
  */
-class Vec2 {
+export class Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
@@ -55,28 +55,28 @@ class Vec2 {
   }
   /**
    *Calculates length of this vector to another vector
-   * @param { Vec2} v the other vector
+   * @param { Vector2} v the other vector
    */
   distanceTo(v) {
     obj.x = this.x - v.x
     obj.y = this.y - v.y
-    return Math.sqrt( Vec2.prototype.magnitudeSquared.call(obj))
+    return Math.sqrt( Vector2.prototype.magnitudeSquared.call(obj))
   }
   /**
    *Calculates length squared of this vector to another vector
    * 
-   * @param { Vec2} v the other vector
+   * @param { Vector2} v the other vector
    * @returns {number}
    */
   distanceToSquared(v) {
     obj.x = this.x - v.x
     obj.y = this.y - v.y
-    return Vec2.prototype.magnitudeSquared.call(obj)
+    return Vector2.prototype.magnitudeSquared.call(obj)
   }
   /**
    * Adds a given vector into this 
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {this}
    */
   add(v) {
@@ -99,7 +99,7 @@ class Vec2 {
   /**
    * Subtracts a given vector from this vector
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {this}
    */
   sub(v) {
@@ -121,7 +121,7 @@ class Vec2 {
   /**
    * Calculates the dot product of two vectors.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   dot(v) {
@@ -130,7 +130,7 @@ class Vec2 {
   /**
    * Calculates the cross product of two vectors.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   cross(v) {
@@ -174,7 +174,7 @@ class Vec2 {
    * Checks to see if this vector is equal to
    * another vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {boolean}
    */
   equals(v) {
@@ -192,21 +192,21 @@ class Vec2 {
    * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
    * 
    * @param {number} l the length of the vector returned.
-   * @param { Vec2} [target = Vec2] Vec2 in which results are stored.
-   * @returns { Vec2}
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   * @returns { Vector2}
    */
   normal(l = 1, target) {
-    target = target || new Vec2()
+    target = target || new Vector2()
     target.copy(this).normalize()
     return target.set(-target.y * l, target.x * l);
   };
   /**
    * Returns the normal to a vector, the normal has the same length as the vector.
    * 
-   * @param { Vec2} [target = Vec2] Vec2 in which results are stored.
-   *  @returns { Vec2}
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   *  @returns { Vector2}
    */
-  normalFast(target = new Vec2()) {
+  normalFast(target = new Vector2()) {
     return target.set(-this.y, this.x)
   }
   /**
@@ -243,16 +243,16 @@ class Vec2 {
    * Copies x and y values of this vector to 
    * a new vector and returns the new vector.
    * 
-   * @return Vec2
+   * @return Vector2
    */
   clone() {
-    return new Vec2(this.x, this.y)
+    return new Vector2(this.x, this.y)
   }
   /**
    * Copies x and y values of another vector
    * to this vector.
    * 
-   * @@param { Vec2} v 
+   * @@param { Vector2} v 
    * @return this
    */
   copy(v) {
@@ -308,10 +308,10 @@ class Vec2 {
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
    * @param {number} normal the unit vector perpendicular to reflection surface
-   * @param { Vec2} [target]
-   * @return { Vec2}
+   * @param { Vector2} [target]
+   * @return { Vector2}
    */
-  reflect(normal, target = new Vec2()) {
+  reflect(normal, target = new Vector2()) {
     return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
   }
   /**
@@ -349,33 +349,33 @@ class Vec2 {
    * Gets the angle (in degrees) between two
    * vectors in the range 0° to 360° in the anticlockwise direction from v1 to v2
    * 
-   * @param { Vec2} v1 start of the angle
-   * @param { Vec2} v2 end of the angle
+   * @param { Vector2} v1 start of the angle
+   * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
   static getAbsDegBtwn(v1, v2) {
     let a = v1.cross(v2)
-    let deg = Vec2.getDegBtwn(v1, v2)
+    let deg = Vector2.getDegBtwn(v1, v2)
     return a < 0 ? deg : 360 - deg
   }
   /**
-   * Same as ` Vec2.getAbsDegBtwn` but returns in radians.
+   * Same as ` Vector2.getAbsDegBtwn` but returns in radians.
    * 
-   * @param { Vec2 } v1 start of the angle
-   * @param { Vec2 } v2 end of the angle
+   * @param { Vector2 } v1 start of the angle
+   * @param { Vector2 } v2 end of the angle
    * @returns {number}
    **/
   static getAbsRadBtwn(v1, v2) {
     let a = v1.cross(v2)
-    let deg = Vec2.getDegBtwn(v1, v2)
+    let deg = Vector2.getDegBtwn(v1, v2)
     return a < 0 ? deg : 360 - deg
   }
   /**
    * Gets the angle (in radians) between two
    * vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
    * 
-   * @param { Vec2} v1 start of the angle
-   * @param { Vec2} v2 end of the angle
+   * @param { Vector2} v1 start of the angle
+   * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
   static getRadBtwn(v1, v2) {
@@ -385,22 +385,22 @@ class Vec2 {
    * Gets the angle (in degrees) between two
    * vectors in shortest direction from v1 to v2 in the range `0°` to `180°`
    * 
-   * @param { Vec2} v1 start of the angle
-   * @param { Vec2} v2 end of the angle
+   * @param { Vector2} v1 start of the angle
+   * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
   static getDegBtwn(v1, v2) {
-    return Vec2.getRadBtwn(v1, v2) * 180 / Math.PI
+    return Vector2.getRadBtwn(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
    * given angle starting from the positive x axis.
    * 
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
-   * @param { Vec2} [target] Vec2 to store results in.
-   * @returns { Vec2}
+   * @param { Vector2} [target] Vector2 to store results in.
+   * @returns { Vector2}
    */
-  static fromRad(radian, target = new Vec2()) {
+  static fromRad(radian, target = new Vector2()) {
     return target.set(Math.cos(radian), Math.sin(radian))
   }
   /**
@@ -408,32 +408,32 @@ class Vec2 {
    * given angle from the positive x axis
    * 
    * @param {number} degree angle in radians from `0°` to `360°`
-   * @param { Vec2} [target] Vec2 to store results in.
-   * @returns { Vec2}
+   * @param { Vector2} [target] Vector2 to store results in.
+   * @returns { Vector2}
    */
   static fromDeg(degree, target) {
-    return Vec2.fromRad(degree * Math.PI / 180, target)
+    return Vector2.fromRad(degree * Math.PI / 180, target)
   }
   /**
-   * Generates a new unit Vec2 in a random direction
+   * Generates a new unit Vector2 in a random direction
    * 
-   * @param { Vec2} [target]
-   * @returns { Vec2}
+   * @param { Vector2} [target]
+   * @returns { Vector2}
    */
   static random(target) {
-    return Vec2.fromRad(Math.random() * TWO_PI, target)
+    return Vector2.fromRad(Math.random() * TWO_PI, target)
   }
   /**
-   * Returns a Vec2 that has been lerped between v1 and v2
-   * @param { Vec2} v1 the vector to lerp from
-   * @param { Vec2} v2 the vector to lerp from
-   * @param {number} t a value from 0 to 1 to scale the new Vec2 between v1 and v2
-   * @param { Vec2} [target] the vector to store results into
+   * Returns a Vector2 that has been lerped between v1 and v2
+   * @param { Vector2} v1 the vector to lerp from
+   * @param { Vector2} v2 the vector to lerp from
+   * @param {number} t a value from 0 to 1 to scale the new Vector2 between v1 and v2
+   * @param { Vector2} [target] the vector to store results into
    * 
-   * @returns { Vec2}
+   * @returns { Vector2}
    */
-  static lerp(v1, v2, t, target = new Vec2()) {
-    target = target || new Vec2()
+  static lerp(v1, v2, t, target = new Vector2()) {
+    target = target || new Vector2()
     return target.set(
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
@@ -443,17 +443,17 @@ class Vec2 {
   /**
    * Returns the angle in degrees between the positive x-axis and the vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   static toDeg(v) {
-    return Vec2.toRad(v) / Math.PI * 180
+    return Vector2.toRad(v) / Math.PI * 180
   }
 
   /**
    * Returns the angle in radians between the positive x-axis and the vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   static toRad(v) {
@@ -466,12 +466,26 @@ class Vec2 {
    * 
    * @static
    * @readonly
-   * @type { Vec2}
+   * @type { Vector2}
    */
-  static ZERO = Object.freeze(new Vec2())
+  static ZERO = Object.freeze(new Vector2())
 
 }
-
+class Vector extends Vector2{
+  constructor(x,y){
+    super(x,y)
+    console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.")
+  }
+}
+class Vec2 extends Vector2{
+  constructor(x,y){
+    super(x,y)
+    console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.")
+  }
+}
 export {
-  Vec2
+  Vec2,
+  Vector
 }
+
+new Vec2()

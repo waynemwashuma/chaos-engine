@@ -1,12 +1,12 @@
 import { Sprite } from "./sprite.js"
 import { BufferGeometry } from "../geometry/index.js"
 import { BasicMaterial } from "../material/index.js"
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
 let geometry = new BufferGeometry([
-  new Vec2(-10, -10),
-  new Vec2(-10, 10),
-  new Vec2(20, 0)
+  new Vector2(-10, -10),
+  new Vector2(-10, 10),
+  new Vector2(20, 0)
   ])
 let material = new BasicMaterial()
 material.fill = "purple"

@@ -1,11 +1,11 @@
-import { Vec2, clamp } from "../../math/index.js"
+import { Vector2, clamp } from "../../math/index.js"
 import { vertices, stroke } from "../../render/index.js"
 
-let tmp = new Vec2()
+let tmp = new Vector2()
 export class Path {
   /**
    * @private
-   * type Vec2[]
+   * type Vector2[]
    */
   _points = []
   /**
@@ -43,15 +43,15 @@ export class Path {
   _finished = false
   /**
    * @private
-   * type Vec2 
+   * type Vector2 
    */
-  _lerpedPoint = new Vec2()
+  _lerpedPoint = new Vector2()
   /**
    * type boolean 
    */
   loop = false
   /**
-   * @param { Vec2} point
+   * @param { Vector2} point
    */
   add(point) {
     this._points.push(point)
@@ -100,7 +100,7 @@ export class Path {
       if (!this.advance()) this._finished = true
     }
     this._lerp_t = clamp(this._lerp_t, 0, 1)
-    Vec2.lerp(
+    Vector2.lerp(
       this._points[this._way[0]],
       this._points[this._way[1]],
       this._lerp_t,

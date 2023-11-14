@@ -1,5 +1,5 @@
 import { Behaviour } from "./behaviour.js"
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
 
 /**
@@ -25,9 +25,9 @@ class Flock extends Behaviour{
   }
   /**
    * @inheritdoc
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target,inv_dt) {
 

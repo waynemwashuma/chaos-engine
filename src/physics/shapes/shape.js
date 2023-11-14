@@ -1,8 +1,8 @@
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
 
-let tmp1 = new Vec2()
+let tmp1 = new Vector2()
 
 /**
  * This class makes a body tangible
@@ -25,13 +25,13 @@ class Shape {
   /**
    * The offset position of this shape from this body's position.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   offPosition = null
   /**
    * The vertices describing the shape.
    * 
-   * @type Vec2[]
+   * @type Vector2[]
    */
   vertices = null
   /**
@@ -42,11 +42,11 @@ class Shape {
   geometry = null
 
   /**
-   * @param { Vec2[]} vertices The vertices of the shape in local space coordinates.
-   * @param { Vec2} [offset=vector] offset position relative to parent body
+   * @param { Vector2[]} vertices The vertices of the shape in local space coordinates.
+   * @param { Vector2} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vec2(), offsetAngle = 0) {
+  constructor(vertices, offset = new Vector2(), offsetAngle = 0) {
     this.offPosition = offset
     this.offAngle = offsetAngle * Math.PI / 180
     this.vertices = vertices.map(v => v.clone())
@@ -75,8 +75,8 @@ class Shape {
    * Returns the normals of the faces when rotated.
    * 
    * @param {Shape} shape
-   * @param { Vec2[]} [target=[]] An array where results are stored.
-   * @returns { Vec2[]}
+   * @param { Vector2[]} [target=[]] An array where results are stored.
+   * @returns { Vector2[]}
    */
   getNormals(shape, target) {
     return this.geometry.getNormals(this.angle, target)
@@ -84,7 +84,7 @@ class Shape {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param { Vec2} position the world position of the body
+   * @param { Vector2} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {number} scale the scale of the body
    */
@@ -96,9 +96,9 @@ class Shape {
   /**
    * Returns the world coordinates of the vertices.
    * 
-   * @param { Vec2} axis
-   * @param { Vec2[]} target 
-   * @returns { Vec2[]}
+   * @param { Vector2} axis
+   * @param { Vector2[]} target 
+   * @returns { Vector2[]}
    */
   getVertices(axis, target) {
     return this.vertices

@@ -1,4 +1,4 @@
-import { Vec2, Angle } from "../../math/index.js"
+import { Vector2, Angle } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 
 /**
@@ -55,7 +55,7 @@ class Sprite {
   /**
    * World space position.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
     return this._position
@@ -89,9 +89,9 @@ class Sprite {
    */
   init(entity) {
     if(!entity){
-      this._position = new Vec2()
+      this._position = new Vector2()
       this._orientation = new Angle()
-      this._scale = new Vec2(1,1)
+      this._scale = new Vector2(1,1)
       return
     }
     this.entity = entity
@@ -100,7 +100,7 @@ class Sprite {
     this._position = transform.position
     this._orientation = transform.orientation
     //TODO - Correct this later
-    this._scale = new Vec2(1,1)
+    this._scale = new Vector2(1,1)
     return this
   }
   toJson(){
