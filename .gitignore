@@ -11,3 +11,5 @@ res.json
 tests
 *.res.js
 *.txt
+animations
+system.js

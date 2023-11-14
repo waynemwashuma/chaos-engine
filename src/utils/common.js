@@ -177,3 +177,13 @@ Utils.inheritSystem = function(system) {
     }
   }
 }
+export function mixin(from, to) {
+  let proto = from.prototype
+  let proto2 = to.prototype
+  for (var name in proto) {
+    let method = proto[name]
+    if (name in proto2) continue
+    
+    proto2[name] = method
+  }
+}
