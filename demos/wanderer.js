@@ -4,7 +4,7 @@ import {
   BodySprite,
   AgentSprite,
   WanderBehaviour,
-  Vec2,
+  Vector2,
   Box,
   rand
 } from "/src/index.js"

@@ -4,7 +4,7 @@ import {
   AgentSprite,
   SeekBehaviour,
   EvadeBehaviour,
-  Vec2,
+  Vector2,
   Box,
   rand
 } from "/src/index.js"

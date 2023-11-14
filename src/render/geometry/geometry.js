@@ -1,10 +1,10 @@
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 import { vertices } from "../utils/index.js"
 
 export class BufferGeometry {
   /**
    * @readonly
-   * @type Vec2[]
+   * @type Vector2[]
    */
   vertices = null
   /**
@@ -13,7 +13,7 @@ export class BufferGeometry {
    */
   drawable = null
   /**
-   * @param { Vec2[]} vertices
+   * @param { Vector2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices || []

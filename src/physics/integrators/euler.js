@@ -1,6 +1,6 @@
-import { Vec2 }from "../../math/index.js"
+import { Vector2 }from "../../math/index.js"
 
-let a = new Vec2()
+let a = new Vector2()
 
 /**
  * Semi implicit euler integration.

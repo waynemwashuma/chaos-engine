@@ -1,10 +1,10 @@
-import { Vec2, sq }from "../../math/index.js"
+import { Vector2, sq }from "../../math/index.js"
 
-let tmp1 = new Vec2(),
-  tmp2 = new Vec2(),
-  tmp3 = new Vec2(),
-  tmp4 = new Vec2(),
-  tmp5 = new Vec2()
+let tmp1 = new Vector2(),
+  tmp2 = new Vector2(),
+  tmp3 = new Vector2(),
+  tmp4 = new Vector2(),
+  tmp5 = new Vector2()
 
 /**
  * Solves for impulse along collision tangent for a given body pair.

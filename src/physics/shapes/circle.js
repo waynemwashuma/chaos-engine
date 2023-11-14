@@ -1,8 +1,8 @@
 import { Shape } from "./shape.js"
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
-let _vec1 = new Vec2()
-let _vec2 = new Vec2()
+let _vec1 = new Vector2()
+let _vec2 = new Vector2()
 let _arr = []
 
 /**
@@ -16,14 +16,14 @@ class Circle extends Shape {
   radius = 0
   /**
    * @param {number} radius 
-   * @param { Vec2} offset Positional offset from the body center.
+   * @param { Vector2} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius, offset, offsetAngle) {
 
     //the first vertex is position 
     super([], offset, offsetAngle)
-    this.vertices = [new Vec2(), new Vec2(), new Vec2()]
+    this.vertices = [new Vector2(), new Vector2(), new Vector2()]
     this.radius = radius
     this.type = Shape.CIRCLE
   }
@@ -41,9 +41,9 @@ class Circle extends Shape {
   /**
    * @inheritdoc
    * 
-   * @param { Vec2} axis
-   * @param { Vec2[]} out 
-   * @returns { Vec2[]}
+   * @param { Vector2} axis
+   * @param { Vector2[]} out 
+   * @returns { Vector2[]}
    */
   getVertices(axis, out) {
     let target = out || []
@@ -56,8 +56,8 @@ class Circle extends Shape {
   /**
    * 
    * @param {Shape} shape 
-   * @param { Vec2[]} [target=[]] target
-   * @returns Array< Vec2>
+   * @param { Vector2[]} [target=[]] target
+   * @returns Array< Vector2>
    */
   getNormals(shape, target = []) {
     let min = null,
@@ -76,7 +76,7 @@ class Circle extends Shape {
   /**
    * @inheritdoc
    * 
-   * @param { Vec2} position
+   * @param { Vector2} position
    * @param {number} angle
    * @param {number} scale 
    */
@@ -100,7 +100,7 @@ class Circle extends Shape {
   fromJson(obj) {
     return new Circle(
       obj.radius,
-      new Vec2().fromJson(obj.offset),
+      new Vector2().fromJson(obj.offset),
       obj.offAngle
     )
   }

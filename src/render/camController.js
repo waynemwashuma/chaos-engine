@@ -1,22 +1,22 @@
-import { Vec2 } from '../math/index.js'
+import { Vector2 } from '../math/index.js'
 
 export class CamController {
   /**
    * @readonly
-   * @type Vec2
+   * @type Vector2
    */
-  offset = new Vec2()
+  offset = new Vector2()
   /**
    * @param {Camera} camera
    */
   constructor(camera) {
     this.transform = camera.transform
-    this.offset = new Vec2()
+    this.offset = new Vector2()
     this.targetPosition = null
     this.targetOrientation = null
   }
   /**
-   * @param { Vec2} position
+   * @param { Vector2} position
    * @param {Angle} orientation
    */
   follow(position, orientation = null) {
