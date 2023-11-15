@@ -359,15 +359,15 @@ export class Clock {
 export class Component {
     static fromJson(): void;
     static toJson(): void;
-    entity: Entity | null;
+    static implement(component: any): void;
     destroy(): void;
     get CHOAS_CLASSNAME(): string;
     get CHAOS_OBJ_TYPE(): string;
     init(entity: Entity): void;
     update(dt: number): void;
-    get(n: string): any;
+    get(entity: any, n: string): any;
     requires(...names: string[]): void;
-    query(bound: CircleBounding | BoxBounding, target?: Entity): Entity[];
+    query(entity: any, bound: CircleBounding | BoxBounding, target?: Entity): any;
 }
 export class Composite {
     entity: Entity | null;
@@ -569,7 +569,7 @@ export class Entity {
         type: string;
     };
 }
-declare namespace Err$1 {
+export namespace Err {
     export function warn(message: string): void;
     function _throw(message: string): never;
     export { _throw as throw };
@@ -577,6 +577,7 @@ declare namespace Err$1 {
     export function log(message: string): void;
     export function warnOnce(message: string): void;
     export function assert(test: boolean, errfunc: Function, message: string): boolean;
+    export function deprecate(message: string): void;
 }
 export class EvadeBehaviour extends Behaviour {
     constructor(pursuer: Vector2);
@@ -629,7 +630,7 @@ export class Group extends Sprite {
     remove(sprite: Sprite | Group, recursive?: boolean, index?: number): boolean;
     render(ctx: CanvasRenderingContext2D, dt: number): void;
 }
-export class Input {
+declare class Input$1 {
     constructor(eventHandler: DOMEventHandler);
     DOMEventHandler: DOMEventHandler;
     mouse: Mouse;
@@ -680,7 +681,7 @@ export class Loader {
     _getType(url: any): "audio" | "image" | "json";
     loadAll(files?: {}): void;
 }
-export class Manager {
+declare class Manager$1 {
     static DefaultSystem(name: string): System;
     constructor(options?: {
         autoPlay?: boolean;
@@ -726,9 +727,9 @@ export class Manager {
     unregisterSystem(n: string): void;
     setComponentList(n: string, arr?: Component[]): void;
     getComponentList(n: string): Component[];
-    getEntityByComponents(comps: Array<string>): Entity;
+    getEntityByComponents(comps: Array<string>, entities?: Entity[]): Entity;
     getEntitiesByComponents(comps: Array<string>, entities?: Entity[], target?: Entity[]): Entity[];
-    getEntityByTags(tags: Array<string>): Entity;
+    getEntityByTags(tags: Array<string>, entities?: Entity[]): Entity;
     getEntitiesByTags(tags: string[], entities?: Entity[], target?: Entity[]): Entity[];
     private infertype;
     private clone;
@@ -867,6 +868,13 @@ export class PathFollowing extends Behaviour {
     setPath(path: Path): void;
     draw(ctx: any): void;
 }
+export class Perf {
+    _start: number;
+    _time: number;
+    start(): void;
+    end(): number;
+    fps(): number;
+}
 export class Pursuit extends Behaviour {
     init(): void;
     calc(target: Vector2): void;
@@ -989,6 +997,16 @@ export class Shape {
     };
     fromJson(obj: any): void;
 }
+export class Signal {
+    constructor(value: any);
+    _listeners: any[];
+    _value: any;
+    set value(arg: any);
+    get value(): any;
+    addListener(listener: any, callOnce?: boolean): void;
+    removeListener(listener: any): void;
+    _detach(bindingIndex: any): void;
+}
 export class SpringConstraint extends Constraint {
     localA: Vector2$1;
     localB: Vector2$1;
@@ -1053,6 +1071,11 @@ export namespace Storage {
     function clear(): void;
 }
 export class System {
+    static implement(system: any): void;
+    init(): void;
+    update(): void;
+    add(component: any): void;
+    remove(component: any): void;
 }
 export class Touch {
     constructor(eh: DOMEventHandler);
@@ -1097,7 +1120,12 @@ declare namespace Utils$1 {
     function removeElement<T>(arr: T[], index: number): T;
     function generateID(): number;
     function inheritComponent(component: Function, overrideInit?: boolean, overrideUpdate?: boolean): void;
-    function inheritSystem(system: Function): void;
+}
+export class Vec2 extends Vector2$1 {
+    constructor(x: any, y: any);
+}
+export class Vector extends Vector2$1 {
+    constructor(x: any, y: any);
 }
 declare class Vector2$1 {
     static getAbsDegBtwn(v1: Vector2, v2: Vector2): number;
@@ -1176,6 +1204,7 @@ export class World {
     };
     broadphase: Broadphase;
     narrowphase: NarrowPhase;
+    intergrator: Intergrator;
     set gravity(arg: Vector2);
     get gravity(): Vector2;
     private narrowPhase;
@@ -1201,6 +1230,14 @@ export class World {
 export function arc(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, start: number, end: number): void;
 export function circle(ctx: CanvasRenderingContext2D, x: number, y: number, r: number): void;
 export function clamp(value: number, min: number, max: number): number;
+export function createEntity(x: number, y: number, a: number): Entity;
+export function createManager(options?: {
+    autoPlay?: boolean;
+    files?: any;
+    physics?: boolean;
+    renderer?: boolean;
+    input?: boolean;
+}): any;
 export function defaultCollisionHandler(clmds: CollisionPair[]): void;
 export function defaultPrecollisionHandler(clmds: Manifold[]): void;
 export function degToRad(deg: number): number;
@@ -1211,6 +1248,7 @@ export function fillText(ctx: CanvasRenderingContext2D, text: string, x: number,
 export function lerp(a: number, b: number, t: number): number;
 export function line(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): void;
 export function map(v: number, x1: number, y1: number, x2: number, y2: number): number;
+export function mixin(from: any, to: any, props?: any[]): void;
 export function naturalizePair(a: number, b: number): number;
 export function radToDeg(rad: number): number;
 export function rand(min?: number, max?: number): number;
@@ -1266,4 +1304,4 @@ declare class Broadphase {
     query(bounds: Bounds, target: Body[]): Body[];
 }
 declare let r: Vector2$1;
-export { Err$1 as Err, Matrix2 as Matrix, Tree as QuadTreeBroadphase, Utils$1 as Utils, Vector2$1 as Vector2 };
+export { Input$1 as Input, Manager$1 as Manager, Matrix2 as Matrix, Tree as QuadTreeBroadphase, Utils$1 as Utils, Vector2$1 as Vector2 };

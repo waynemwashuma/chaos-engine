@@ -70,7 +70,7 @@ const Overlaps = {
       (x - b.pos.x) * (x - b.pos.x) +
       (y - b.pos.y) * (y - b.pos.y);
 
-    return distance < b.r;
+    return distance < b.r * b.r;
   }
 };
 
@@ -80,7 +80,7 @@ let mess = [];
 /**
  * A set of functions to streamline logging of items to the console
 */
-const Err$1 = {};
+const Err = {};
 
 /**
  * Logs out a warning to the console.
@@ -88,7 +88,7 @@ const Err$1 = {};
  * @memberof Err
  * @param {string} message
  */
-Err$1.warn = function(message) {
+Err.warn = function(message) {
   console.warn(marker + message);
 };
 
@@ -98,7 +98,7 @@ Err$1.warn = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.throw = function(message) {
+Err.throw = function(message) {
   throw new Error(marker + message)
 };
 
@@ -108,7 +108,7 @@ Err$1.throw = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.error = function(message) {
+Err.error = function(message) {
   console.error(marker + message);
 };
 
@@ -118,7 +118,7 @@ Err$1.error = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.log = function(message) {
+Err.log = function(message) {
   console.log(marker + message);
 };
 /**
@@ -127,10 +127,10 @@ Err$1.log = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.warnOnce = function(message) {
+Err.warnOnce = function warnOnce(message) {
   if (mess.includes(message)) return
   mess.push(message);
-  Err$1.warn(message);
+  Err.warn(message);
 };
 /**
  * Logs out a message,warning or error to the console according to the supplied log function.
@@ -140,9 +140,19 @@ Err$1.warnOnce = function(message) {
  * @param {string} message
  * @param {Function} errfunc
  */
-Err$1.assert = function(test, errfunc, message) {
+Err.assert = function(test, errfunc, message) {
   if (!test) errfunc(message);
   return test
+};
+
+/**
+ * Logs out a warning to the console.
+ * 
+ * @memberof Err
+ * @param {string} message
+ */
+Err.deprecate = function deprecate(message) {
+  Err.warnOnce(message);
 };
 
 /**
@@ -253,7 +263,7 @@ Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpda
   }
   if (!proto.update && overrideUpdate) {
     proto.update = function() {
-      Err$1.warnOnce("Please override the update function in the component " + proto.constructor.name);
+      Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
 
     };
   }
@@ -263,7 +273,7 @@ Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpda
   proto.requires = function(...names) {
     for (var i = 0; i < names.length; i++)
       if (!this.entity.has(names[i]))
-        Err$1.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
+        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
   };
 
   proto.query = function(bound, target = []) {
@@ -291,38 +301,26 @@ Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpda
   });
 };
 /**
- * Mixes the functions required by a system into a class.
+ * Mixes the functions required by an object  into another object.
  * 
  * @memberof Utils
- * @param {Function} system the class constructor function to add methods to.
+ *  @param {Object} from the object constructor function to add methods from.
+ * @param {Object} to the object constructor function to add methods to.
  */
-Utils$1.inheritSystem = function(system) {
-  if (system == void 0 || typeof system !== "function") return
-  let proto = system.prototype;
-  if (!proto.init) {
-    proto.init = function() {
-      Err$1.warnOnce("Please override the init method in the system " + proto.constructor.name);
-    };
+function mixin(from, to,props = []) {
+  let proto = from.prototype;
+  let proto2 = to.prototype;
+  console.log(proto2);
+  Object.assign(proto,from);
+  for (let name of props) {
+    props[name];
+    //if(!(methodName in proto))continue
+    //if (methodName in proto2) continue
+    
+    proto2[name] = proto[name];
   }
-  if (!proto.update) {
-    proto.update = function() {
-      Err$1.warnOnce("Please override the update method in the system " + proto.constructor.name);
-
-    };
-  }
-  if (!proto.add) {
-    proto.add = function(component) {
-      this.objects.push(component);
-    };
-  }
-
-  if (!proto.remove) {
-    proto.remove = function(component) {
-      let index = this.objects.indexOf(component);
-      Utils$1.removeElement(this.objects, index);
-    };
-  }
-};
+  //console.log(new to());
+}
 
 /**
  * Handles time management for the game.
@@ -361,25 +359,34 @@ class Clock {
   }
 }
 
+class Perf{
+  _start = 0
+  _time = 0
+  start(){
+    this._start = Performance.now();
+  }
+  end(){
+    this._time = Performance.now() - this._start;
+    return this._time
+  }
+  fps(){
+    return 1000/this._time
+  }
+}
+
 /**
  * A helper class.
  * Since there are no interfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
- * Use instead Utils.inheritComponent() if you have your own hierarchy of classes.
+ * Use instead `Component.implement()` if you have your own hierarchy of classes.
  * In typescript,this would be an interface.
  * 
  * @interface
  * 
  */
 class Component {
-  /**
-   * @type Entity | null
-   */
-  entity = null
 
-  destroy() {
-    this.entity = null;
-  }
+  destroy() {}
   /**
    * @type string
    */
@@ -393,25 +400,20 @@ class Component {
     return "component"
   }
   /**
-
    * @param {Entity} entity
-
   */
-  init(entity) {
-    this.entity = entity;
-  }
+  init(entity) {}
   /**
    * @param {number} dt
    */
   update(dt) {
     Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
-
   }
   /**
    * @param {string} n
    */
-  get(n) {
-    return this.entity.getComponent(n);
+  get(entity,n) {
+    return entity.getComponent(n);
   }
   /**
    * @param {...string} names
@@ -425,8 +427,8 @@ class Component {
    * @param {CircleBounding | BoxBounding} bound
    * @param {Entity} [target=[]]
    */
-  query(bound, target = []) {
-    return this.entity.query(bound, target)
+  query(entity,bound, target = []) {
+    return entity.query(bound, target)
   }
   static fromJson() {
     throw "Implement static method fromJson() in your component " + this.CHOAS_CLASSNAME
@@ -434,36 +436,10 @@ class Component {
   static toJson() {
     throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
   }
+  static implement(component) {
+    Utils$1.inheritComponent(component);
+  }
 }
-Utils$1.inheritComponent(Component);
-/**
- * Destroys the component.
- * 
- * @function
- * @name Component#destroy
- */
-/**
- * Initializes a component.
- * 
- * @function
- * @name Component#init
- * @param {Entity} entity
- */
-/**
- * Updates a component.Called by the system which manages its type.
- * 
- * @function
- * @name Component#update
- * @param {number} dt
- */
-/**
- * Gets a component in the entity containing this entity.
- * 
- * @function
- * @name Component#requires
- * @param {string} ...names
- * @throws Qhen a named component isnt in the parent entity
- */
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -1328,6 +1304,18 @@ class Vector2$1 {
    */
   static ZERO = Object.freeze(new Vector2$1())
 
+}
+class Vector extends Vector2$1{
+  constructor(x,y){
+    super(x,y);
+    console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.");
+  }
+}
+class Vec2 extends Vector2$1{
+  constructor(x,y){
+    super(x,y);
+    console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.");
+  }
 }
 
 /**
@@ -2913,7 +2901,7 @@ class Body {
    */
   static DYNAMIC = ObjType.DYNAMIC
 }
-Utils$1.inheritComponent(Body, false, false);
+Component.implement(Body);
 
 /**
  * A body with a circle shape on it.
@@ -3131,7 +3119,7 @@ class Composite {
    */
   get position() {
     let position = new Vector2$1();
-    for (var i = 0; i < this.shapes.length; i++) {
+    for (var i = 0; i < this.bodies.length; i++) {
       position.add(this.bodies[i].position);
     }
     return position
@@ -3177,7 +3165,7 @@ class Composite {
     }
   }
 }
-Utils$1.inheritComponent(Composite);
+Component.implement(Composite);
 
 class Trigon extends Body {
     /**
@@ -4649,6 +4637,12 @@ class World {
    */
   narrowphase = null
   /**
+   * Moves the bodies forward in time.
+   * 
+   * @type {Intergrator}
+   */
+  intergrator = VerletSolver
+  /**
    * @constructor World
    * 
    */
@@ -4744,7 +4738,8 @@ class World {
     for (var i = 0; i < length; i++) {
       let a = this.objects[i];
       if (!a.sleeping)
-        VerletSolver.solve(a, dt);
+        this.intergrator.solve(a, dt);
+      //VerletSolver.solve(a, dt)
     }
   }
   /**
@@ -5134,8 +5129,8 @@ class Renderer {
     let canvas = this.domElement;
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = w * devicePixelRatio;
+    canvas.height = h * devicePixelRatio;
   }
   /**
    * Width of the renderer
@@ -5382,7 +5377,7 @@ class Sprite {
     this.parent = renderer.getById(obj.parent);
   }
 }
-Utils$1.inheritComponent(Sprite);
+Component.implement(Sprite);
 
 /**
  * @interface
@@ -6301,7 +6296,7 @@ class Loader {
         } else if (type === "json") {
           that.json[name] = JSON.parse(xhr.response);
         } else {
-          return Err$1.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
+          return Err.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
         }
         that._filesLoaded += 1;
 
@@ -6322,7 +6317,7 @@ class Loader {
       },
       onerror: function(e) {
         that._filesErr += 1;
-        Err$1.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
+        Err.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
         if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish();
       }
     };
@@ -6570,6 +6565,41 @@ const Events = {
    PAUSE : "pause",
    PLAY : "play"
 };
+
+class Signal {
+  _listeners = []
+  _value = null
+  constructor(value){
+    this._value = value;
+  }
+  set value(x) {
+    this._value == x;
+    for (var i = 0; i < this._listeners.length; i++) {
+      let func = this._listeners[i];
+      func.listener(this);
+      if(func.callOnce)
+      this.removeListener(func.listener);
+    }
+  }
+  get value() {
+    return this._value
+  }
+  addListener(listener,callOnce=false) {
+    this._listeners.push({
+      listener,
+      callOnce
+    });
+  }
+  removeListener(listener) {
+    for (var i = 0; i < this._listeners.length; i++) {
+      if (this._listeners[i].listener == listener)
+        return this._detach(i)
+    }
+  }
+  _detach(bindingIndex){
+    this._listeners.splice(i, 1);
+  }
+}
 
 /**
  * Handled the keyboard input of an application on a PC.
@@ -6858,7 +6888,7 @@ class Touch {
  * This handles all inputs from the mouse,touch and keyboards.
  * 
  */
-class Input {
+class Input$1 {
   /**
    * This attaches callbacks to the DOM.
    * 
@@ -6915,7 +6945,7 @@ class Input {
  * entities and ensuring that systems are updated every frame.
  * 
  */
-class Manager {
+class Manager$1 {
   /**
    * RAF number of current frame.Used for pausing the manager.
    * 
@@ -7064,7 +7094,7 @@ class Manager {
       input: true
     }, options);
     if (options.input)
-      this.registerSystem("input", new Input());
+      this.registerSystem("input", new Input$1());
     if (options.physics) {
       this.registerSystem("world", new World());
       this.events.add("collision", defaultCollisionHandler);
@@ -7101,7 +7131,7 @@ class Manager {
    */
   add(object) {
     if (object.manager) {
-      Err$1.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object);
+      Err.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object);
       return
     }
     this.objects.push(object);
@@ -7254,7 +7284,7 @@ class Manager {
    */
   registerClass(obj, override = false) {
     let n = obj.name.toLowerCase();
-    if (n in this._classes && !override) return Err$1.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
+    if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
     this._classes[n] = obj;
   }
   /**
@@ -7336,7 +7366,7 @@ class Manager {
    * @param {Array<String>} comps An array containing the component names to be searched
    * @returns {Entity} 
    */
-  getEntityByComponents(comps) {
+  getEntityByComponents(comps,entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < comps.length; j++) {
         if (!entities[i].has(comps[j])) continue
@@ -7368,7 +7398,7 @@ class Manager {
    * @param {Array<String>} tags An array containing the tags to be searched
    * @returns {Entity} 
    */
-  getEntityByTags(tags) {
+  getEntityByTags(tags,entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < tags.length; j++) {
         if (!entities[i].hasTag(tags[j])) continue
@@ -7403,7 +7433,7 @@ class Manager {
     if (n) {
       if (n in this._classes)
         return new this._classes[n]()
-      Err$1.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`);
+      Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`);
     }
     return obj instanceof Array ? [] : {}
   }
@@ -7465,35 +7495,51 @@ class Manager {
  * Updates components assigned to it.
  * 
  * @interface
-*/
-class System{}
+ */
+class System {
+  init() {
+    Err.warnOnce("Please override the init method in the system " + proto.constructor.name);
+  }
+  update() {
+    Err.warnOnce("Please override the update method in the system " + proto.constructor.name);
 
-Utils$1.inheritSystem(System);
+  }
+  add(component) {
+    this.objects.push(component);
+  }
+  remove(component) {
+    let index = this.objects.indexOf(component);
+    Utils$1.removeElement(this.objects, index);
+  }
+  static implement(system) {
+    mixin(System,system);
+  }
+}
 
 /**
  * 
  * @function
  * @name System#add
  * @param {Component} component
-*/
+ */
 /**
  * 
  * @function
  * @name System#remove
  * @param {Component} component
-*/
+ */
 /**
  * 
  * @function
  * @name System#init
  * @param {Manager} manager
  */
- /**
-  * 
-  * @function
-  * @name System#update
-  * @param {number} dt
-  */
+/**
+ * 
+ * @function
+ * @name System#update
+ * @param {number} dt
+ */
 
 /**
  * Component to hold requirements for an entity to move.
@@ -7821,6 +7867,52 @@ class Entity {
     obj.type = this.CHAOS_OBJ_TYPE;
     return obj
   }
+}
+
+/**
+ * @param {number} x x-position of entity 
+ * @param {number} y y-position of entity 
+ * @param {number} a angle in degrees
+ */
+
+function createEntity(x, y, a) {
+  return new Entity()
+    .attach("transform", new Transform(x, y, a))
+    .attach("movable", new Movable())
+    .attach("bounds", new Bound())
+}
+
+/**
+ * Creates a new instance of Manager class with given default systems.
+ * 
+ * @param {Object} [options] 
+ * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
+ * @param {Object} [options.files={}] manager is passed onto the Loader.Please check `Loader.load()` for more information on it.
+ * @param {boolean} [options.physics=true] Adds physics world as a System.
+ * @param {boolean} [options.renderer=true] Adds a renderer as a system.
+ * @param {boolean} [options.input=true] Adds input as a system.
+ * 
+ **/
+function createManager(options) {
+  options = Object.assign({
+    autoPlay: true,
+    physics: true,
+    renderer: true,
+    input: true
+  }, options);
+
+  let manager = new Manager();
+
+  if (options.input)
+    manager.registerSystem("input", new Input());
+  if (options.physics) {
+    manager.registerSystem("world", new World());
+    manager.events.add("collision", defaultCollisionHandler);
+    manager.events.add("precollision", defaultPrecollisionHandler);
+  }
+  if (options.renderer)
+    manager.registerSystem("renderer", new Renderer2D());
+  return manager
 }
 
 /**
@@ -8343,7 +8435,7 @@ class Agent {
     this.behaviours.draw(ctx);
   }
 }
-Utils$1.inheritComponent(Agent);
+Component.implement(Agent);
 
 /**
  * Base class for implementing customized behaviours.
@@ -8709,7 +8801,7 @@ class PathFollowing extends Behaviour {
   calc(target, inv_dt) {
     tmp1.copy(this.position);
     let [p1, p2] = this.path.current();
-    tmp2.normalize();
+    tmp2.copy(p2).sub(p1).normalize();
 
     let proj = tmp2.dot(tmp1.sub(p1));
     let projPoint = this.path.update(proj);
@@ -9214,7 +9306,7 @@ const Storage = {
   }
 };
 
-export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound, BoundingBox, BoundingCircle, Box, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, Err$1 as Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, Input, Interpolation, Keyboard, Line, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, NarrowPhase, Overlaps, Particle, ParticleSystemSprite, Path, PathFollowing, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SATNarrowPhase, SeekBehaviour, Session, Sfx, Shape, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, Touch, Transform, Triangle, Trigon, Utils$1 as Utils, Vector2$1 as Vector2, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, circle, clamp, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, exp, fill, fillText, lerp, line, map, naturalizePair, radToDeg, rand, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
+export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound, BoundingBox, BoundingCircle, Box, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, Input$1 as Input, Interpolation, Keyboard, Line, Loader, Manager$1 as Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, NarrowPhase, Overlaps, Particle, ParticleSystemSprite, Path, PathFollowing, Perf, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SATNarrowPhase, SeekBehaviour, Session, Sfx, Shape, Signal, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, Touch, Transform, Triangle, Trigon, Utils$1 as Utils, Vec2, Vector, Vector2$1 as Vector2, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, circle, clamp, createEntity, createManager, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, exp, fill, fillText, lerp, line, map, mixin, naturalizePair, radToDeg, rand, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
 /**
  * @typedef Bounds
  * @property {Vector_like} max
