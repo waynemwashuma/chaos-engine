@@ -151,13 +151,17 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
  *  @param {Object} from the object constructor function to add methods from.
  * @param {Object} to the object constructor function to add methods to.
  */
-export function mixin(from, to) {
+export function mixin(from, to,props = []) {
   let proto = from.prototype
   let proto2 = to.prototype
-  for (var name in proto) {
-    let method = proto[name]
-    if (name in proto2) continue
+  console.log(proto2);
+  Object.assign(proto,from)
+  for (let name of props) {
+    let methodName = props[name]
+    //if(!(methodName in proto))continue
+    //if (methodName in proto2) continue
     
-    proto2[name] = method
+    proto2[name] = proto[name]
   }
+  //console.log(new to());
 }
