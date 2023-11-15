@@ -1,5 +1,6 @@
 import { Vector2, Angle } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
+import { Component } from "../../ecs/index.js"
+import {Utils} from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
@@ -571,7 +572,7 @@ class Body {
    */
   static DYNAMIC = ObjType.DYNAMIC
 }
-Utils.inheritComponent(Body, false, false)
+Component.implement(Body)
 export {
   Body
 }
