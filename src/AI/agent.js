@@ -1,4 +1,4 @@
-import { Utils } from "../utils/index.js"
+import { Component } from "../ecs/index.js"
 import { BehaviourManager } from "./behaviourManager.js"
 
 /**
@@ -10,19 +10,19 @@ class Agent {
   /**
    * The position of the entity.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   position = null
   /**
    * The velocity of the entity.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   velocity = null
   /**
    * The acceleration of the entity.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   acceleration = null
   /**
@@ -100,7 +100,7 @@ class Agent {
     this.behaviours.draw(ctx)
   }
 }
-Utils.inheritComponent(Agent)
+Component.implement(Agent)
 export {
   Agent
 }

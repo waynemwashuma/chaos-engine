@@ -1,5 +1,5 @@
 import {
-  Vec2,
+  Vector2,
   Box,
   DistanceConstraint,
   Entity,
@@ -41,8 +41,8 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
 
   for (var i = 1; i < number; i++) {
     let chain = new Box(w, h)
-    let an1 = prev.setAnchor(new Vec2(w/2,0))
-    let an2 = prev.setAnchor(new Vec2(w/2,0))
+    let an1 = prev.setAnchor(new Vector2(w/2,0))
+    let an2 = prev.setAnchor(new Vector2(w/2,0))
     let constraint = new DistanceConstraint(prev, chain,  prev.getAnchor(an1),chain.getAnchor(an2))
 
     bodies.push(
@@ -55,15 +55,15 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     prev = chain
   }
   if (pin1) {
-    let an1 = pin1.get("body").setAnchor(new Vec2(0,0))
-    let an2 = bodies[0].get("body").setAnchor(new Vec2(-w/2,0))
+    let an1 = pin1.get("body").setAnchor(new Vector2(0,0))
+    let an2 = bodies[0].get("body").setAnchor(new Vector2(-w/2,0))
     let constraint = new DistanceConstraint(pin1.get("body"), bodies[0].get("body"), pin1.get("body").getAnchor(an1),  bodies[0].get("body").getAnchor(an2))
     constraints.push(constraint)
     pin1.get("body").mask.group = 1
   }
   if (pin2) {
-    let an1 = pin2.get("body").setAnchor(new Vec2(0,0))
-    let an2 = bodies[bodies.length - 1].get("body").setAnchor(new Vec2(w/2,0))
+    let an1 = pin2.get("body").setAnchor(new Vector2(0,0))
+    let an2 = bodies[bodies.length - 1].get("body").setAnchor(new Vector2(w/2,0))
     let constraint = new DistanceConstraint(pin2.get("body"), bodies[bodies.length - 1].get("body"), pin2.get("body").getAnchor(an1),  bodies[bodies.length - 1].get("body").getAnchor(an2))
     constraints.push(constraint)
     pin2.get("body").mask.group = 1

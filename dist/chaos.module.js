@@ -70,7 +70,7 @@ const Overlaps = {
       (x - b.pos.x) * (x - b.pos.x) +
       (y - b.pos.y) * (y - b.pos.y);
 
-    return distance < b.r;
+    return distance < b.r * b.r;
   }
 };
 
@@ -80,7 +80,7 @@ let mess = [];
 /**
  * A set of functions to streamline logging of items to the console
 */
-const Err$1 = {};
+const Err = {};
 
 /**
  * Logs out a warning to the console.
@@ -88,7 +88,7 @@ const Err$1 = {};
  * @memberof Err
  * @param {string} message
  */
-Err$1.warn = function(message) {
+Err.warn = function(message) {
   console.warn(marker + message);
 };
 
@@ -98,7 +98,7 @@ Err$1.warn = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.throw = function(message) {
+Err.throw = function(message) {
   throw new Error(marker + message)
 };
 
@@ -108,7 +108,7 @@ Err$1.throw = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.error = function(message) {
+Err.error = function(message) {
   console.error(marker + message);
 };
 
@@ -118,7 +118,7 @@ Err$1.error = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.log = function(message) {
+Err.log = function(message) {
   console.log(marker + message);
 };
 /**
@@ -127,10 +127,10 @@ Err$1.log = function(message) {
  * @memberof Err
  * @param {string} message
  */
-Err$1.warnOnce = function(message) {
+Err.warnOnce = function warnOnce(message) {
   if (mess.includes(message)) return
   mess.push(message);
-  Err$1.warn(message);
+  Err.warn(message);
 };
 /**
  * Logs out a message,warning or error to the console according to the supplied log function.
@@ -140,9 +140,19 @@ Err$1.warnOnce = function(message) {
  * @param {string} message
  * @param {Function} errfunc
  */
-Err$1.assert = function(test, errfunc, message) {
+Err.assert = function(test, errfunc, message) {
   if (!test) errfunc(message);
   return test
+};
+
+/**
+ * Logs out a warning to the console.
+ * 
+ * @memberof Err
+ * @param {string} message
+ */
+Err.deprecate = function deprecate(message) {
+  Err.warnOnce(message);
 };
 
 /**
@@ -253,7 +263,7 @@ Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpda
   }
   if (!proto.update && overrideUpdate) {
     proto.update = function() {
-      Err$1.warnOnce("Please override the update function in the component " + proto.constructor.name);
+      Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
 
     };
   }
@@ -263,7 +273,7 @@ Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpda
   proto.requires = function(...names) {
     for (var i = 0; i < names.length; i++)
       if (!this.entity.has(names[i]))
-        Err$1.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
+        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
   };
 
   proto.query = function(bound, target = []) {
@@ -291,38 +301,26 @@ Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpda
   });
 };
 /**
- * Mixes the functions required by a system into a class.
+ * Mixes the functions required by an object  into another object.
  * 
  * @memberof Utils
- * @param {Function} system the class constructor function to add methods to.
+ *  @param {Object} from the object constructor function to add methods from.
+ * @param {Object} to the object constructor function to add methods to.
  */
-Utils$1.inheritSystem = function(system) {
-  if (system == void 0 || typeof system !== "function") return
-  let proto = system.prototype;
-  if (!proto.init) {
-    proto.init = function() {
-      Err$1.warnOnce("Please override the init method in the system " + proto.constructor.name);
-    };
+function mixin(from, to,props = []) {
+  let proto = from.prototype;
+  let proto2 = to.prototype;
+  console.log(proto2);
+  Object.assign(proto,from);
+  for (let name of props) {
+    props[name];
+    //if(!(methodName in proto))continue
+    //if (methodName in proto2) continue
+    
+    proto2[name] = proto[name];
   }
-  if (!proto.update) {
-    proto.update = function() {
-      Err$1.warnOnce("Please override the update method in the system " + proto.constructor.name);
-
-    };
-  }
-  if (!proto.add) {
-    proto.add = function(component) {
-      this.objects.push(component);
-    };
-  }
-
-  if (!proto.remove) {
-    proto.remove = function(component) {
-      let index = this.objects.indexOf(component);
-      Utils$1.removeElement(this.objects, index);
-    };
-  }
-};
+  //console.log(new to());
+}
 
 /**
  * Handles time management for the game.
@@ -361,25 +359,34 @@ class Clock {
   }
 }
 
+class Perf{
+  _start = 0
+  _time = 0
+  start(){
+    this._start = Performance.now();
+  }
+  end(){
+    this._time = Performance.now() - this._start;
+    return this._time
+  }
+  fps(){
+    return 1000/this._time
+  }
+}
+
 /**
  * A helper class.
  * Since there are no interfaces in JavaScript,
  * you might have to extend this to create a component, but there is another solution.
- * Use instead Utils.inheritComponent() if you have your own hierarchy of classes.
+ * Use instead `Component.implement()` if you have your own hierarchy of classes.
  * In typescript,this would be an interface.
  * 
  * @interface
  * 
  */
 class Component {
-  /**
-   * @type Entity | null
-   */
-  entity = null
 
-  destroy() {
-    this.entity = null;
-  }
+  destroy() {}
   /**
    * @type string
    */
@@ -393,25 +400,20 @@ class Component {
     return "component"
   }
   /**
-
    * @param {Entity} entity
-
   */
-  init(entity) {
-    this.entity = entity;
-  }
+  init(entity) {}
   /**
    * @param {number} dt
    */
   update(dt) {
     Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
-
   }
   /**
    * @param {string} n
    */
-  get(n) {
-    return this.entity.getComponent(n);
+  get(entity,n) {
+    return entity.getComponent(n);
   }
   /**
    * @param {...string} names
@@ -425,8 +427,8 @@ class Component {
    * @param {CircleBounding | BoxBounding} bound
    * @param {Entity} [target=[]]
    */
-  query(bound, target = []) {
-    return this.entity.query(bound, target)
+  query(entity,bound, target = []) {
+    return entity.query(bound, target)
   }
   static fromJson() {
     throw "Implement static method fromJson() in your component " + this.CHOAS_CLASSNAME
@@ -434,36 +436,10 @@ class Component {
   static toJson() {
     throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
   }
+  static implement(component) {
+    Utils$1.inheritComponent(component);
+  }
 }
-Utils$1.inheritComponent(Component);
-/**
- * Destroys the component.
- * 
- * @function
- * @name Component#destroy
- */
-/**
- * Initializes a component.
- * 
- * @function
- * @name Component#init
- * @param {Entity} entity
- */
-/**
- * Updates a component.Called by the system which manages its type.
- * 
- * @function
- * @name Component#update
- * @param {number} dt
- */
-/**
- * Gets a component in the entity containing this entity.
- * 
- * @function
- * @name Component#requires
- * @param {string} ...names
- * @throws Qhen a named component isnt in the parent entity
- */
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -570,7 +546,7 @@ class BoundingBox extends Component {
   /**
    * Translates this bound to the given position.
    * 
-   * @param { Vec2} pos
+   * @param { Vector2} pos
    */
   update(pos) {
     let dx = pos.x - this.pos.x;
@@ -867,7 +843,7 @@ let TWO_PI = Math.PI * 2;
  * @author Wayne Mwashuma <mwashumawayne@gmail.com>
  * @license MIT
  */
-class Vec2$1 {
+class Vector2$1 {
   /**
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
@@ -913,28 +889,28 @@ class Vec2$1 {
   }
   /**
    *Calculates length of this vector to another vector
-   * @param { Vec2} v the other vector
+   * @param { Vector2} v the other vector
    */
   distanceTo(v) {
     obj$1.x = this.x - v.x;
     obj$1.y = this.y - v.y;
-    return Math.sqrt( Vec2$1.prototype.magnitudeSquared.call(obj$1))
+    return Math.sqrt( Vector2$1.prototype.magnitudeSquared.call(obj$1))
   }
   /**
    *Calculates length squared of this vector to another vector
    * 
-   * @param { Vec2} v the other vector
+   * @param { Vector2} v the other vector
    * @returns {number}
    */
   distanceToSquared(v) {
     obj$1.x = this.x - v.x;
     obj$1.y = this.y - v.y;
-    return Vec2$1.prototype.magnitudeSquared.call(obj$1)
+    return Vector2$1.prototype.magnitudeSquared.call(obj$1)
   }
   /**
    * Adds a given vector into this 
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {this}
    */
   add(v) {
@@ -957,7 +933,7 @@ class Vec2$1 {
   /**
    * Subtracts a given vector from this vector
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {this}
    */
   sub(v) {
@@ -979,7 +955,7 @@ class Vec2$1 {
   /**
    * Calculates the dot product of two vectors.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   dot(v) {
@@ -988,7 +964,7 @@ class Vec2$1 {
   /**
    * Calculates the cross product of two vectors.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   cross(v) {
@@ -1032,7 +1008,7 @@ class Vec2$1 {
    * Checks to see if this vector is equal to
    * another vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {boolean}
    */
   equals(v) {
@@ -1050,21 +1026,21 @@ class Vec2$1 {
    * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
    * 
    * @param {number} l the length of the vector returned.
-   * @param { Vec2} [target = Vec2] Vec2 in which results are stored.
-   * @returns { Vec2}
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   * @returns { Vector2}
    */
   normal(l = 1, target) {
-    target = target || new Vec2$1();
+    target = target || new Vector2$1();
     target.copy(this).normalize();
     return target.set(-target.y * l, target.x * l);
   };
   /**
    * Returns the normal to a vector, the normal has the same length as the vector.
    * 
-   * @param { Vec2} [target = Vec2] Vec2 in which results are stored.
-   *  @returns { Vec2}
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   *  @returns { Vector2}
    */
-  normalFast(target = new Vec2$1()) {
+  normalFast(target = new Vector2$1()) {
     return target.set(-this.y, this.x)
   }
   /**
@@ -1101,16 +1077,16 @@ class Vec2$1 {
    * Copies x and y values of this vector to 
    * a new vector and returns the new vector.
    * 
-   * @return Vec2
+   * @return Vector2
    */
   clone() {
-    return new Vec2$1(this.x, this.y)
+    return new Vector2$1(this.x, this.y)
   }
   /**
    * Copies x and y values of another vector
    * to this vector.
    * 
-   * @@param { Vec2} v 
+   * @@param { Vector2} v 
    * @return this
    */
   copy(v) {
@@ -1166,10 +1142,10 @@ class Vec2$1 {
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
    * @param {number} normal the unit vector perpendicular to reflection surface
-   * @param { Vec2} [target]
-   * @return { Vec2}
+   * @param { Vector2} [target]
+   * @return { Vector2}
    */
-  reflect(normal, target = new Vec2$1()) {
+  reflect(normal, target = new Vector2$1()) {
     return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
   }
   /**
@@ -1207,33 +1183,33 @@ class Vec2$1 {
    * Gets the angle (in degrees) between two
    * vectors in the range 0° to 360° in the anticlockwise direction from v1 to v2
    * 
-   * @param { Vec2} v1 start of the angle
-   * @param { Vec2} v2 end of the angle
+   * @param { Vector2} v1 start of the angle
+   * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
   static getAbsDegBtwn(v1, v2) {
     let a = v1.cross(v2);
-    let deg = Vec2$1.getDegBtwn(v1, v2);
+    let deg = Vector2$1.getDegBtwn(v1, v2);
     return a < 0 ? deg : 360 - deg
   }
   /**
-   * Same as ` Vec2.getAbsDegBtwn` but returns in radians.
+   * Same as ` Vector2.getAbsDegBtwn` but returns in radians.
    * 
-   * @param { Vec2 } v1 start of the angle
-   * @param { Vec2 } v2 end of the angle
+   * @param { Vector2 } v1 start of the angle
+   * @param { Vector2 } v2 end of the angle
    * @returns {number}
    **/
   static getAbsRadBtwn(v1, v2) {
     let a = v1.cross(v2);
-    let deg = Vec2$1.getDegBtwn(v1, v2);
+    let deg = Vector2$1.getDegBtwn(v1, v2);
     return a < 0 ? deg : 360 - deg
   }
   /**
    * Gets the angle (in radians) between two
    * vectors in the shortest direction from v1 to v2 in the range of `0` to `Math.PI`
    * 
-   * @param { Vec2} v1 start of the angle
-   * @param { Vec2} v2 end of the angle
+   * @param { Vector2} v1 start of the angle
+   * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
   static getRadBtwn(v1, v2) {
@@ -1243,22 +1219,22 @@ class Vec2$1 {
    * Gets the angle (in degrees) between two
    * vectors in shortest direction from v1 to v2 in the range `0°` to `180°`
    * 
-   * @param { Vec2} v1 start of the angle
-   * @param { Vec2} v2 end of the angle
+   * @param { Vector2} v1 start of the angle
+   * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
   static getDegBtwn(v1, v2) {
-    return Vec2$1.getRadBtwn(v1, v2) * 180 / Math.PI
+    return Vector2$1.getRadBtwn(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
    * given angle starting from the positive x axis.
    * 
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
-   * @param { Vec2} [target] Vec2 to store results in.
-   * @returns { Vec2}
+   * @param { Vector2} [target] Vector2 to store results in.
+   * @returns { Vector2}
    */
-  static fromRad(radian, target = new Vec2$1()) {
+  static fromRad(radian, target = new Vector2$1()) {
     return target.set(Math.cos(radian), Math.sin(radian))
   }
   /**
@@ -1266,32 +1242,32 @@ class Vec2$1 {
    * given angle from the positive x axis
    * 
    * @param {number} degree angle in radians from `0°` to `360°`
-   * @param { Vec2} [target] Vec2 to store results in.
-   * @returns { Vec2}
+   * @param { Vector2} [target] Vector2 to store results in.
+   * @returns { Vector2}
    */
   static fromDeg(degree, target) {
-    return Vec2$1.fromRad(degree * Math.PI / 180, target)
+    return Vector2$1.fromRad(degree * Math.PI / 180, target)
   }
   /**
-   * Generates a new unit Vec2 in a random direction
+   * Generates a new unit Vector2 in a random direction
    * 
-   * @param { Vec2} [target]
-   * @returns { Vec2}
+   * @param { Vector2} [target]
+   * @returns { Vector2}
    */
   static random(target) {
-    return Vec2$1.fromRad(Math.random() * TWO_PI, target)
+    return Vector2$1.fromRad(Math.random() * TWO_PI, target)
   }
   /**
-   * Returns a Vec2 that has been lerped between v1 and v2
-   * @param { Vec2} v1 the vector to lerp from
-   * @param { Vec2} v2 the vector to lerp from
-   * @param {number} t a value from 0 to 1 to scale the new Vec2 between v1 and v2
-   * @param { Vec2} [target] the vector to store results into
+   * Returns a Vector2 that has been lerped between v1 and v2
+   * @param { Vector2} v1 the vector to lerp from
+   * @param { Vector2} v2 the vector to lerp from
+   * @param {number} t a value from 0 to 1 to scale the new Vector2 between v1 and v2
+   * @param { Vector2} [target] the vector to store results into
    * 
-   * @returns { Vec2}
+   * @returns { Vector2}
    */
-  static lerp(v1, v2, t, target = new Vec2$1()) {
-    target = target || new Vec2$1();
+  static lerp(v1, v2, t, target = new Vector2$1()) {
+    target = target || new Vector2$1();
     return target.set(
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
@@ -1301,17 +1277,17 @@ class Vec2$1 {
   /**
    * Returns the angle in degrees between the positive x-axis and the vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   static toDeg(v) {
-    return Vec2$1.toRad(v) / Math.PI * 180
+    return Vector2$1.toRad(v) / Math.PI * 180
   }
 
   /**
    * Returns the angle in radians between the positive x-axis and the vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    * @returns {number}
    */
   static toRad(v) {
@@ -1324,10 +1300,22 @@ class Vec2$1 {
    * 
    * @static
    * @readonly
-   * @type { Vec2}
+   * @type { Vector2}
    */
-  static ZERO = Object.freeze(new Vec2$1())
+  static ZERO = Object.freeze(new Vector2$1())
 
+}
+class Vector extends Vector2$1{
+  constructor(x,y){
+    super(x,y);
+    console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.");
+  }
+}
+class Vec2 extends Vector2$1{
+  constructor(x,y){
+    super(x,y);
+    console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.");
+  }
 }
 
 /**
@@ -1558,7 +1546,7 @@ class Matrix2 {
   /**
    * Transforms the given vector.
    * 
-   * @param { Vec2} v
+   * @param { Vector2} v
    */
   transform(v) {
     let x = v.x;
@@ -1890,19 +1878,19 @@ const Interpolation = {
 
 class Geometry {
   /**
-   * @type Vec2[]
+   * @type Vector2[]
    */
   vertices = null
   /**
-   * @type Vec2[]
+   * @type Vector2[]
    */
   normals = null
   /**
-   * @type Vec2[]
+   * @type Vector2[]
    */
   _dynNormals = null
   /**
-   * @param { Vec2[]} vertices
+   * @param { Vector2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices;
@@ -1923,7 +1911,7 @@ class Geometry {
   }
   /**
    * @param {number} rad
-   * @param { Vec2[]} target
+   * @param { Vector2[]} target
    */
   getNormals(rad, target) {
     target = target || [];
@@ -1934,7 +1922,7 @@ class Geometry {
   }
   /**
    * @private
-   * @returns Vec2[]
+   * @returns Vector2[]
    */
   calcFaceNormals() {
     const axes = [],
@@ -1956,8 +1944,8 @@ class Geometry {
   }
   /**
    * @param {number} n
-   * @param { Vec2[]} vertices
-   * @param { Vec2} pos
+   * @param { Vector2[]} vertices
+   * @param { Vector2} pos
    * @patam {number} rad
    */
   transform(vertices, pos, rad, n) {
@@ -1976,7 +1964,7 @@ class Geometry {
     return obj
   }
   fromJson(obj){
-    this.vertices = obj.vertices.map(v=>new Vec2().fromJson(v));
+    this.vertices = obj.vertices.map(v=>new Vector2().fromJson(v));
     this.normals = this.calcFaceNormals();
     this._dynNormals = this.normals.map(e => e.clone());
   }
@@ -2022,7 +2010,7 @@ const Settings = {
   type:BodyType.DYNAMIC
 };
 
-let tmp1$c = new Vec2$1();
+let tmp1$c = new Vector2$1();
 
 /**
  * This class makes a body tangible
@@ -2045,13 +2033,13 @@ class Shape {
   /**
    * The offset position of this shape from this body's position.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   offPosition = null
   /**
    * The vertices describing the shape.
    * 
-   * @type Vec2[]
+   * @type Vector2[]
    */
   vertices = null
   /**
@@ -2062,11 +2050,11 @@ class Shape {
   geometry = null
 
   /**
-   * @param { Vec2[]} vertices The vertices of the shape in local space coordinates.
-   * @param { Vec2} [offset=vector] offset position relative to parent body
+   * @param { Vector2[]} vertices The vertices of the shape in local space coordinates.
+   * @param { Vector2} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vec2$1(), offsetAngle = 0) {
+  constructor(vertices, offset = new Vector2$1(), offsetAngle = 0) {
     this.offPosition = offset;
     this.offAngle = offsetAngle * Math.PI / 180;
     this.vertices = vertices.map(v => v.clone());
@@ -2095,8 +2083,8 @@ class Shape {
    * Returns the normals of the faces when rotated.
    * 
    * @param {Shape} shape
-   * @param { Vec2[]} [target=[]] An array where results are stored.
-   * @returns { Vec2[]}
+   * @param { Vector2[]} [target=[]] An array where results are stored.
+   * @returns { Vector2[]}
    */
   getNormals(shape, target) {
     return this.geometry.getNormals(this.angle, target)
@@ -2104,7 +2092,7 @@ class Shape {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param { Vec2} position the world position of the body
+   * @param { Vector2} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {number} scale the scale of the body
    */
@@ -2116,9 +2104,9 @@ class Shape {
   /**
    * Returns the world coordinates of the vertices.
    * 
-   * @param { Vec2} axis
-   * @param { Vec2[]} target 
-   * @returns { Vec2[]}
+   * @param { Vector2} axis
+   * @param { Vector2[]} target 
+   * @returns { Vector2[]}
    */
   getVertices(axis, target) {
     return this.vertices
@@ -2160,19 +2148,19 @@ class Line extends Shape {
   length = 0
   /**
    * @param {number} length
-   * @param { Vec2} offset
+   * @param { Vector2} offset
    * @param {number} pffsetAngle
   */
   constructor(length,offset,offsetAngle) {
-    let start = new Vec2$1(1).multiply(length / 2),
-      end = new Vec2$1(1).multiply(-length / 2);
+    let start = new Vector2$1(1).multiply(length / 2),
+      end = new Vector2$1(1).multiply(-length / 2);
     super([start, end],offset,offsetAngle);
     this.length = length;
   }
 }
 
-let _vec1 = new Vec2$1();
-let _vec2 = new Vec2$1();
+let _vec1 = new Vector2$1();
+let _vec2 = new Vector2$1();
 
 /**
  * A circular shape.
@@ -2185,14 +2173,14 @@ class Circle extends Shape {
   radius = 0
   /**
    * @param {number} radius 
-   * @param { Vec2} offset Positional offset from the body center.
+   * @param { Vector2} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius, offset, offsetAngle) {
 
     //the first vertex is position 
     super([], offset, offsetAngle);
-    this.vertices = [new Vec2$1(), new Vec2$1(), new Vec2$1()];
+    this.vertices = [new Vector2$1(), new Vector2$1(), new Vector2$1()];
     this.radius = radius;
     this.type = Shape.CIRCLE;
   }
@@ -2210,9 +2198,9 @@ class Circle extends Shape {
   /**
    * @inheritdoc
    * 
-   * @param { Vec2} axis
-   * @param { Vec2[]} out 
-   * @returns { Vec2[]}
+   * @param { Vector2} axis
+   * @param { Vector2[]} out 
+   * @returns { Vector2[]}
    */
   getVertices(axis, out) {
     let target = out || [];
@@ -2225,8 +2213,8 @@ class Circle extends Shape {
   /**
    * 
    * @param {Shape} shape 
-   * @param { Vec2[]} [target=[]] target
-   * @returns Array< Vec2>
+   * @param { Vector2[]} [target=[]] target
+   * @returns Array< Vector2>
    */
   getNormals(shape, target = []) {
     let min = null,
@@ -2245,7 +2233,7 @@ class Circle extends Shape {
   /**
    * @inheritdoc
    * 
-   * @param { Vec2} position
+   * @param { Vector2} position
    * @param {number} angle
    * @param {number} scale 
    */
@@ -2269,7 +2257,7 @@ class Circle extends Shape {
   fromJson(obj) {
     return new Circle(
       obj.radius,
-      new Vec2$1().fromJson(obj.offset),
+      new Vector2$1().fromJson(obj.offset),
       obj.offAngle
     )
   }
@@ -2287,14 +2275,14 @@ class Rectangle extends Shape {
   /**
    * @param {number} width
    * @param {number} height
-   * @param { Vec2} offset Positional offset from the body center.
+   * @param { Vector2} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(width, height, offset, offsetAngle) {
-    let v1 = new Vec2$1(-width / 2, -height / 2);
-    let v2 = new Vec2$1(-width / 2, height / 2);
-    let v3 = new Vec2$1(width / 2, height / 2);
-    let v4 = new Vec2$1(width / 2, -height / 2);
+    let v1 = new Vector2$1(-width / 2, -height / 2);
+    let v2 = new Vector2$1(-width / 2, height / 2);
+    let v3 = new Vector2$1(width / 2, height / 2);
+    let v4 = new Vector2$1(width / 2, -height / 2);
     super([v1, v2, v3, v4], offset, offsetAngle);
     this.height = height;
     this.width = width;
@@ -2315,7 +2303,7 @@ class Rectangle extends Shape {
 
 }
 
-let tmp1$b = new Vec2$1();
+let tmp1$b = new Vector2$1();
 
 /**
  * A triangular shape.
@@ -2327,16 +2315,16 @@ class Triangle extends Shape {
    * @param {number} base Length of one side.
    * @param {number} height Length of a second side.
    * @param {number} angle The angle between the two sides.
-   * @param { Vec2} offset Positional offset from the body center.
+   * @param { Vector2} offset Positional offset from the body center.
    * @param {number} offsetAngle Angular offset from the body center.
    * 
    */
   constructor(base, height, angle, offset, offsetAngle) {
-    let l1 = new Vec2$1().set(1, 0).multiply(base);
-    let l2 = Vec2$1.fromRad(angle).multiply(height/Math.sin(angle));
+    let l1 = new Vector2$1().set(1, 0).multiply(base);
+    let l2 = Vector2$1.fromRad(angle).multiply(height/Math.sin(angle));
     let center = tmp1$b.set((l1.x + l2.x) / 3, l2.y / 3);
     super([
-      new Vec2$1().sub(center),
+      new Vector2$1().sub(center),
       l1.sub(center),
       l2.sub(center)
     ], offset, offsetAngle);
@@ -2362,23 +2350,23 @@ class Body {
    * World space coordinates of a body
    * 
    * @private
-   * @type Vec2
+   * @type Vector2
    */
-  _position = new Vec2$1()
+  _position = new Vector2$1()
   /**
    * velocity of a body.Speed in pixels per second.
    * 
    * @private
-   * @type Vec2
+   * @type Vector2
    */
-  _velocity = new Vec2$1()
+  _velocity = new Vector2$1()
   /**
    * acceleration of a body in pixels per second squared.
    * 
    * @private
-   * @type Vec2
+   * @type Vector2
    */
-  _acceleration = new Vec2$1()
+  _acceleration = new Vector2$1()
   /**
    * World space orientation of a body
    * 
@@ -2426,22 +2414,22 @@ class Body {
    * Anchors of the body in local space.
    * 
    * @private
-   * @type Vec2[]
+   * @type Vector2[]
    */
   _localanchors = []
   /**
    * The original anchors of the body in local space.
    * 
    * @private
-   * @type Vec2[]
+   * @type Vector2[]
    */
   anchors = []
   /**
    * Position of a body in the last frame..
    * 
-   * @type Vec2
+   * @type Vector2
    */
-  lastPosition = new Vec2$1()
+  lastPosition = new Vector2$1()
   /**
    * Inverse mass of the body.
    * 
@@ -2612,7 +2600,7 @@ class Body {
   /**
    * Acceleration of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get acceleration() {
     return this._acceleration
@@ -2623,7 +2611,7 @@ class Body {
   /**
    * Velocity of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get velocity() {
     return this._velocity
@@ -2700,7 +2688,7 @@ class Body {
   /**
    * World space position of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
     return this._position
@@ -2755,11 +2743,11 @@ class Body {
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
-   * @param { Vec2} v The anchor arm
+   * @param { Vector2} v The anchor arm
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vec2$1(v.x, v.y).rotate(this.orientation.radian).add(this.position));
+    this.anchors.push(new Vector2$1(v.x, v.y).rotate(this.orientation.radian).add(this.position));
     return this._localanchors.push(v) - 1
   }
   /**
@@ -2767,7 +2755,7 @@ class Body {
    * Treat the returned value as read-only.
    * 
    * @param {number} index the position of the
-   * @returns { Vec2}
+   * @returns { Vector2}
    */
   getAnchor(index) {
     return this.anchors[index]
@@ -2776,20 +2764,20 @@ class Body {
    * Returns a rotated anchor relative to the body.
    * 
    * @param {number} index The position of the anchor.
-   * @param { Vec2} [target= Vec2] Vec2 to store results in.
-   * @returns { Vec2}
+   * @param { Vector2} [target= Vector2] Vector2 to store results in.
+   * @returns { Vector2}
    */
-  getLocalAnchor(index, target = new Vec2$1()) {
+  getLocalAnchor(index, target = new Vector2$1()) {
     return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
    * 
-   * @param { Vec2} force The force to be applied.
-   * @param { Vec2} [arm= Vec2] The collision arm.
+   * @param { Vector2} force The force to be applied.
+   * @param { Vector2} [arm= Vector2] The collision arm.
    */
-  applyForce(force, arm = Vec2$1.ZERO) {
+  applyForce(force, arm = Vector2$1.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass));
     this.rotation.degree += arm.cross(force) * this.inv_inertia;
   }
@@ -2889,7 +2877,7 @@ class Body {
     body.id = obj.id;
     body.mask = obj.mask;
     obj.anchors.forEach((v) => {
-      body.setAnchor(new Vec2$1().fromJson(v));
+      body.setAnchor(new Vector2$1().fromJson(v));
     });
   }
   /**
@@ -2913,7 +2901,7 @@ class Body {
    */
   static DYNAMIC = ObjType.DYNAMIC
 }
-Utils$1.inheritComponent(Body, false, false);
+Component.implement(Body);
 
 /**
  * A body with a circle shape on it.
@@ -3033,10 +3021,10 @@ class Composite {
   /**
    * Acceleration of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get acceleration() {
-    let acceleration = new Vec2$1();
+    let acceleration = new Vector2$1();
     for (var i = 0; i < this.bodies.length; i++) {
       acceleration.copy(this.bodies[i].acceleration);
     }
@@ -3050,10 +3038,10 @@ class Composite {
   /**
    * Velocity of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get velocity() {
-    let velocity = new Vec2$1();
+    let velocity = new Vector2$1();
 
     for (var i = 0; i < this.bodies.length; i++) {
       velocity.add(this.bodies[i].velocity);
@@ -3127,11 +3115,11 @@ class Composite {
   /**
    * Position of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
-    let position = new Vec2$1();
-    for (var i = 0; i < this.shapes.length; i++) {
+    let position = new Vector2$1();
+    for (var i = 0; i < this.bodies.length; i++) {
       position.add(this.bodies[i].position);
     }
     return position
@@ -3177,7 +3165,7 @@ class Composite {
     }
   }
 }
-Utils$1.inheritComponent(Composite);
+Component.implement(Composite);
 
 class Trigon extends Body {
     /**
@@ -3218,14 +3206,14 @@ class Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
-   * @param { Vec2} localA
-   * @param { Vec2} localB
+   * @param { Vector2} localA
+   * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     this.body1 = body1;
     this.body2 = body2;
-    this.localA = localA || new Vec2$1();
-    this.localB = localB || new Vec2$1();
+    this.localA = localA || new Vector2$1();
+    this.localB = localB || new Vector2$1();
     this.stiffness = 50;
     this.dampening = 0.03;
   }
@@ -3287,8 +3275,8 @@ class Constraint {
     let constraint = new Constraint(
       bod1,
       bod2,
-      new Vec2$1().fromJson(obj.localA),
-      new Vec2$1().fromJson(obj.localB)
+      new Vector2$1().fromJson(obj.localA),
+      new Vector2$1().fromJson(obj.localB)
     );
     constraint.stiffness = obj.stiffness;
     constraint.dampening = obj.dampening;
@@ -3296,11 +3284,11 @@ class Constraint {
   }
 }
 
-let tmp1$a = new Vec2$1(),
-  tmp2$8 = new Vec2$1(),
-  tmp3$4 = new Vec2$1(),
-  tmp4$4 = new Vec2$1(),
-  tmp5$3 = new Vec2$1();
+let tmp1$a = new Vector2$1(),
+  tmp2$8 = new Vector2$1(),
+  tmp3$4 = new Vector2$1(),
+  tmp4$4 = new Vector2$1(),
+  tmp5$3 = new Vector2$1();
 
 /**
  * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
@@ -3309,8 +3297,8 @@ class DistanceConstraint extends Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
-   * @param { Vec2} localA
-   * @param { Vec2} localB
+   * @param { Vector2} localA
+   * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     super(body1, body2,localA,localB);
@@ -3355,12 +3343,12 @@ class DistanceConstraint extends Constraint {
   }
 }
 
-let tmp1$9 = new Vec2$1(),
-  tmp2$7 = new Vec2$1(),
-  tmp3$3 = new Vec2$1(),
-  tmp4$3 = new Vec2$1(),
-  tmp5$2 = new Vec2$1(),
-  zero = new Vec2$1();
+let tmp1$9 = new Vector2$1(),
+  tmp2$7 = new Vector2$1(),
+  tmp3$3 = new Vector2$1(),
+  tmp4$3 = new Vector2$1(),
+  tmp5$2 = new Vector2$1(),
+  zero = new Vector2$1();
  /**
   * A constraint that acts like a spring between two bodies
  */
@@ -3368,13 +3356,13 @@ class SpringConstraint extends Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
-   * @param { Vec2} localA
-   * @param { Vec2} localB
+   * @param { Vector2} localA
+   * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     super(body1, body2);
-    this.localA = new Vec2$1().copy(localA || zero);
-    this.localB = new Vec2$1().copy(localB || zero);
+    this.localA = new Vector2$1().copy(localA || zero);
+    this.localB = new Vector2$1().copy(localB || zero);
     this.fixed = !body1.mass || !body2.mass;
     this.dampening = 1;
     this.maxDistance = 100;
@@ -3411,11 +3399,11 @@ class SpringConstraint extends Constraint {
   }
 }
 
-new Vec2$1();
+new Vector2$1();
 
-let position = new Vec2$1();
-let acceleration = new Vec2$1();
-let velocity = new Vec2$1();
+let position = new Vector2$1();
+let acceleration = new Vector2$1();
+let velocity = new Vector2$1();
 
 /**
  * Verlet intergration.
@@ -3441,11 +3429,11 @@ class VerletSolver {
   }
 }
 
-let tmp1$8 = new Vec2$1(),
-  tmp2$6 = new Vec2$1(),
-  tmp3$2 = new Vec2$1(),
-  tmp4$2 = new Vec2$1(),
-  tmp5$1 = new Vec2$1();
+let tmp1$8 = new Vector2$1(),
+  tmp2$6 = new Vector2$1(),
+  tmp3$2 = new Vector2$1(),
+  tmp4$2 = new Vector2$1(),
+  tmp5$1 = new Vector2$1();
 
 /**
  * Solves for impulse along collision tangent for a given body pair.
@@ -3521,8 +3509,8 @@ const ContactSolver = {
   }
 };
 
-const tmp1$7 = new Vec2$1(),
-  tmp2$5 = new Vec2$1();
+const tmp1$7 = new Vector2$1(),
+  tmp2$5 = new Vector2$1();
 let dampen = Settings.posDampen;
 
 /**
@@ -3544,10 +3532,10 @@ const PenetrationSolver = {
   }
 };
 
-let tmp1$6 = new Vec2$1(),
-  tmp2$4 = new Vec2$1(),
-  tmp3$1 = new Vec2$1(),
-  tmp4$1 = new Vec2$1();
+let tmp1$6 = new Vector2$1(),
+  tmp2$4 = new Vector2$1(),
+  tmp3$1 = new Vector2$1(),
+  tmp4$1 = new Vector2$1();
 
 /**
  * Solves for the collision normal impulse of a given body pair.
@@ -4196,7 +4184,7 @@ const _arr = [],
     overlap: 0,
     verticesA: null,
     verticesB: null,
-    axis: new Vec2$1(),
+    axis: new Vector2$1(),
     vertex: null,
     shape: null
   },
@@ -4210,9 +4198,9 @@ const _arr = [],
     max: 0,
     indexN: 0
   },
-  tmp4 = new Vec2$1(),
-  tmp5 = new Vec2$1(),
-  tmp6 = new Vec2$1();
+  tmp4 = new Vector2$1(),
+  tmp5 = new Vector2$1(),
+  tmp6 = new Vector2$1();
 
 /**
  * Used for narrowphase collision detection and contact info generation.
@@ -4299,7 +4287,7 @@ const SAT = {
   /**
    * @param {Shape} shapeA
    * @param {Shape} shapeB
-   * @param { Vec2[]} axes
+   * @param { Vector2[]} axes
    * @param {Manifold} shapeA
    * @param {number} iu
    */
@@ -4359,8 +4347,8 @@ const SAT = {
     return manifold
   },
   /**
-   * @param { Vec2[]} vertices
-   * @param { Vec2} axis
+   * @param { Vector2[]} vertices
+   * @param { Vector2} axis
    * @param {Object} target
    */
   projectVerticesToAxis(vertices, axis, target) {
@@ -4385,9 +4373,9 @@ const SAT = {
     return target
   },
   /**
-   * @param { Vec2[]} vertices
-   * @param { Vec2} axis
-   * @param { Vec2[]} target
+   * @param { Vector2[]} vertices
+   * @param { Vector2} axis
+   * @param { Vector2[]} target
    * @param {number} nearVertexIndex
    */
   findNearSupports(vertices, axis, target = [], nearVertexIndex) {
@@ -4415,7 +4403,7 @@ const SAT = {
   },
   /**
    * @param {Shape} shape
-   * @param { Vec2} point
+   * @param { Vector2} point
    */
   shapeContains(shape, point) {
     if (shape.type == "circle")
@@ -4423,9 +4411,9 @@ const SAT = {
     return SAT.verticesContain(shape.vertices, point)
   },
   /**
-   * @param { Vec2} position
+   * @param { Vector2} position
    * @param {number} radius
-   * @param { Vec2} point
+   * @param { Vector2} point
    */
   circleContains(position, radius, point) {
     let dx = point.x - position.x,
@@ -4435,7 +4423,7 @@ const SAT = {
     return true
   },
   /**
-   * @param { Vec2[]} vertices
+   * @param { Vector2[]} vertices
    * @param {number} point 
    */
   verticesContain(vertices, point) {
@@ -4487,7 +4475,7 @@ class SATNarrowPhase extends NarrowPhase {
             lastOverlap: 0,
             overlap: -Infinity,
             done: false,
-            axis: new Vec2$1(),
+            axis: new Vector2$1(),
             verticesA: [],
             verticesB: [],
             vertShapeA: null,
@@ -4500,13 +4488,13 @@ class SATNarrowPhase extends NarrowPhase {
           stmp: -1,
           impulse: 0,
           persistent: false,
-          ca1: new Vec2$1(),
-          ca2: new Vec2$1(),
+          ca1: new Vector2$1(),
+          ca2: new Vector2$1(),
           restitution: 0,
           staticFriction: 0,
           kineticFriction: 0,
-          velA: new Vec2$1(),
-          velB: new Vec2$1(),
+          velA: new Vector2$1(),
+          velB: new Vector2$1(),
           rotA: 0,
           rotB: 0
         });
@@ -4517,13 +4505,13 @@ class SATNarrowPhase extends NarrowPhase {
       SAT.shapesInBodyCollided(a, b, collisionData);
       if (collisionData.overlap < 0 || !collisionData.done) continue
       if (collisionData.contactNo == 2) {
-        Vec2$1.lerp(
+        Vector2$1.lerp(
           collisionData.verticesA[0],
           collisionData.verticesA[1],
           0.5,
           manifold.ca1
         ).sub(a.position);
-        Vec2$1.lerp(
+        Vector2$1.lerp(
           collisionData.verticesB[0],
           collisionData.verticesB[1],
           0.5,
@@ -4617,9 +4605,9 @@ class World {
   /**
    * The gravitational pull of the world.
    * 
-   * @type Vec2
+   * @type Vector2
    */
-  gravitationalAcceleration = new Vec2$1(0, 0)
+  gravitationalAcceleration = new Vector2$1(0, 0)
   /**
    * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
    * 
@@ -4649,6 +4637,12 @@ class World {
    */
   narrowphase = null
   /**
+   * Moves the bodies forward in time.
+   * 
+   * @type {Intergrator}
+   */
+  intergrator = VerletSolver
+  /**
    * @constructor World
    * 
    */
@@ -4666,7 +4660,7 @@ class World {
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
-   * @type { Vec2 }
+   * @type { Vector2 }
    */
   get gravity() {
     return this.gravitationalAcceleration
@@ -4744,7 +4738,8 @@ class World {
     for (var i = 0; i < length; i++) {
       let a = this.objects[i];
       if (!a.sleeping)
-        VerletSolver.solve(a, dt);
+        this.intergrator.solve(a, dt);
+      //VerletSolver.solve(a, dt)
     }
   }
   /**
@@ -4955,7 +4950,7 @@ class Transform {
    * @returns 
    */
   constructor(x,y,a){
-    this.position = new Vec2$1(x,y);
+    this.position = new Vector2$1(x,y);
     this.orientation = new Angle(a);
   }
   init(){}
@@ -4980,7 +4975,7 @@ class Camera {
 
   constructor() { }
   /**
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
     return this.transform.position
@@ -5134,8 +5129,8 @@ class Renderer {
     let canvas = this.domElement;
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = w * devicePixelRatio;
+    canvas.height = h * devicePixelRatio;
   }
   /**
    * Width of the renderer
@@ -5316,7 +5311,7 @@ class Sprite {
   /**
    * World space position.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
     return this._position
@@ -5350,9 +5345,9 @@ class Sprite {
    */
   init(entity) {
     if(!entity){
-      this._position = new Vec2$1();
+      this._position = new Vector2$1();
       this._orientation = new Angle();
-      this._scale = new Vec2$1(1,1);
+      this._scale = new Vector2$1(1,1);
       return
     }
     this.entity = entity;
@@ -5361,7 +5356,7 @@ class Sprite {
     this._position = transform.position;
     this._orientation = transform.orientation;
     //TODO - Correct this later
-    this._scale = new Vec2$1(1,1);
+    this._scale = new Vector2$1(1,1);
     return this
   }
   toJson(){
@@ -5382,7 +5377,7 @@ class Sprite {
     this.parent = renderer.getById(obj.parent);
   }
 }
-Utils$1.inheritComponent(Sprite);
+Component.implement(Sprite);
 
 /**
  * @interface
@@ -5511,7 +5506,7 @@ function circle(ctx, x, y, r) {
 }
 /**
  * @param {CanvasRenderingContext2D} ctx
- * @param { Vec2[]} vertices
+ * @param { Vector2[]} vertices
  * @param {boolean} [close=true]
  */
 function vertices(ctx, vertices, close = true) {
@@ -5728,7 +5723,7 @@ class SpriteMaterial {
   }
 }
 
-let r = new Vec2$1();
+let r = new Vector2$1();
 let material$1 = new BasicMaterial();
 material$1.wireframe = true;
 /**
@@ -5856,7 +5851,7 @@ class BodySprite extends Sprite {
           shape.position.x,
           shape.position.y,
           shape.radius);
-        Vec2$1.fromRad(shape.angle, r).multiply(shape.radius);
+        Vector2$1.fromRad(shape.angle, r).multiply(shape.radius);
         line(ctx, ...shape.position,
           shape.position.x + r.x,
           shape.position.y + r.y);
@@ -5880,7 +5875,7 @@ class BodySprite extends Sprite {
 class BufferGeometry {
   /**
    * @readonly
-   * @type Vec2[]
+   * @type Vector2[]
    */
   vertices = null
   /**
@@ -5889,7 +5884,7 @@ class BufferGeometry {
    */
   drawable = null
   /**
-   * @param { Vec2[]} vertices
+   * @param { Vector2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices || [];
@@ -5927,9 +5922,9 @@ class CircleGeometry {
 }
 
 let geometry = new BufferGeometry([
-  new Vec2$1(-10, -10),
-  new Vec2$1(-10, 10),
-  new Vec2$1(20, 0)
+  new Vector2$1(-10, -10),
+  new Vector2$1(-10, 10),
+  new Vector2$1(20, 0)
   ]);
 let material = new BasicMaterial();
 material.fill = "purple";
@@ -5972,12 +5967,12 @@ class AgentSprite extends Sprite {
 class Particle {
   /**
    * @readonly
-   * @type Vec2
+   * @type Vector2
    */
   position = null
   /**
    * @readonly
-   * @type Vec2
+   * @type Vector2
    */
   velocity = null
   /**
@@ -6003,13 +5998,13 @@ class Particle {
    */
   lifespan = 0
   /**
-   * @param { Vec2} pos
+   * @param { Vector2} pos
    * @param {number} radius
    * @param {number} [lifespan=5] In seconds
    */
   constructor(pos, radius, lifespan = 5) {
     this.position = pos;
-    this.velocity = new Vec2$1();
+    this.velocity = new Vector2$1();
     this.radius = radius;
     this.color = {
       r: 100,
@@ -6097,7 +6092,7 @@ class ParticleSystemSprite extends Sprite {
    */
   create() {
     return new Particle(
-      new Vec2$1(...this.position),
+      new Vector2$1(...this.position),
       rand(1, 10),
       rand(1, 6)
     )
@@ -6225,20 +6220,20 @@ class Group extends Sprite {
 class CamController {
   /**
    * @readonly
-   * @type Vec2
+   * @type Vector2
    */
-  offset = new Vec2$1()
+  offset = new Vector2$1()
   /**
    * @param {Camera} camera
    */
   constructor(camera) {
     this.transform = camera.transform;
-    this.offset = new Vec2$1();
+    this.offset = new Vector2$1();
     this.targetPosition = null;
     this.targetOrientation = null;
   }
   /**
-   * @param { Vec2} position
+   * @param { Vector2} position
    * @param {Angle} orientation
    */
   follow(position, orientation = null) {
@@ -6301,7 +6296,7 @@ class Loader {
         } else if (type === "json") {
           that.json[name] = JSON.parse(xhr.response);
         } else {
-          return Err$1.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
+          return Err.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
         }
         that._filesLoaded += 1;
 
@@ -6322,7 +6317,7 @@ class Loader {
       },
       onerror: function(e) {
         that._filesErr += 1;
-        Err$1.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
+        Err.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
         if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish();
       }
     };
@@ -6570,6 +6565,41 @@ const Events = {
    PAUSE : "pause",
    PLAY : "play"
 };
+
+class Signal {
+  _listeners = []
+  _value = null
+  constructor(value){
+    this._value = value;
+  }
+  set value(x) {
+    this._value == x;
+    for (var i = 0; i < this._listeners.length; i++) {
+      let func = this._listeners[i];
+      func.listener(this);
+      if(func.callOnce)
+      this.removeListener(func.listener);
+    }
+  }
+  get value() {
+    return this._value
+  }
+  addListener(listener,callOnce=false) {
+    this._listeners.push({
+      listener,
+      callOnce
+    });
+  }
+  removeListener(listener) {
+    for (var i = 0; i < this._listeners.length; i++) {
+      if (this._listeners[i].listener == listener)
+        return this._detach(i)
+    }
+  }
+  _detach(bindingIndex){
+    this._listeners.splice(i, 1);
+  }
+}
 
 /**
  * Handled the keyboard input of an application on a PC.
@@ -6858,7 +6888,7 @@ class Touch {
  * This handles all inputs from the mouse,touch and keyboards.
  * 
  */
-class Input {
+class Input$1 {
   /**
    * This attaches callbacks to the DOM.
    * 
@@ -6915,7 +6945,7 @@ class Input {
  * entities and ensuring that systems are updated every frame.
  * 
  */
-class Manager {
+class Manager$1 {
   /**
    * RAF number of current frame.Used for pausing the manager.
    * 
@@ -7064,7 +7094,7 @@ class Manager {
       input: true
     }, options);
     if (options.input)
-      this.registerSystem("input", new Input());
+      this.registerSystem("input", new Input$1());
     if (options.physics) {
       this.registerSystem("world", new World());
       this.events.add("collision", defaultCollisionHandler);
@@ -7101,7 +7131,7 @@ class Manager {
    */
   add(object) {
     if (object.manager) {
-      Err$1.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object);
+      Err.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object);
       return
     }
     this.objects.push(object);
@@ -7254,7 +7284,7 @@ class Manager {
    */
   registerClass(obj, override = false) {
     let n = obj.name.toLowerCase();
-    if (n in this._classes && !override) return Err$1.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
+    if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
     this._classes[n] = obj;
   }
   /**
@@ -7336,7 +7366,7 @@ class Manager {
    * @param {Array<String>} comps An array containing the component names to be searched
    * @returns {Entity} 
    */
-  getEntityByComponents(comps) {
+  getEntityByComponents(comps,entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < comps.length; j++) {
         if (!entities[i].has(comps[j])) continue
@@ -7368,7 +7398,7 @@ class Manager {
    * @param {Array<String>} tags An array containing the tags to be searched
    * @returns {Entity} 
    */
-  getEntityByTags(tags) {
+  getEntityByTags(tags,entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < tags.length; j++) {
         if (!entities[i].hasTag(tags[j])) continue
@@ -7403,7 +7433,7 @@ class Manager {
     if (n) {
       if (n in this._classes)
         return new this._classes[n]()
-      Err$1.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`);
+      Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`);
     }
     return obj instanceof Array ? [] : {}
   }
@@ -7465,35 +7495,51 @@ class Manager {
  * Updates components assigned to it.
  * 
  * @interface
-*/
-class System{}
+ */
+class System {
+  init() {
+    Err.warnOnce("Please override the init method in the system " + proto.constructor.name);
+  }
+  update() {
+    Err.warnOnce("Please override the update method in the system " + proto.constructor.name);
 
-Utils$1.inheritSystem(System);
+  }
+  add(component) {
+    this.objects.push(component);
+  }
+  remove(component) {
+    let index = this.objects.indexOf(component);
+    Utils$1.removeElement(this.objects, index);
+  }
+  static implement(system) {
+    mixin(System,system);
+  }
+}
 
 /**
  * 
  * @function
  * @name System#add
  * @param {Component} component
-*/
+ */
 /**
  * 
  * @function
  * @name System#remove
  * @param {Component} component
-*/
+ */
 /**
  * 
  * @function
  * @name System#init
  * @param {Manager} manager
  */
- /**
-  * 
-  * @function
-  * @name System#update
-  * @param {number} dt
-  */
+/**
+ * 
+ * @function
+ * @name System#update
+ * @param {number} dt
+ */
 
 /**
  * Component to hold requirements for an entity to move.
@@ -7510,9 +7556,9 @@ class Movable extends Component {
    */
   constructor(x, y, a) {
     super();
-    this.velocity = new Vec2$1(x, y);
+    this.velocity = new Vector2$1(x, y);
     this.rotation = new Angle(a);
-    this.acceleration = new Vec2$1();
+    this.acceleration = new Vector2$1();
   }
   toJson() {
     return {
@@ -7821,6 +7867,52 @@ class Entity {
     obj.type = this.CHAOS_OBJ_TYPE;
     return obj
   }
+}
+
+/**
+ * @param {number} x x-position of entity 
+ * @param {number} y y-position of entity 
+ * @param {number} a angle in degrees
+ */
+
+function createEntity(x, y, a) {
+  return new Entity()
+    .attach("transform", new Transform(x, y, a))
+    .attach("movable", new Movable())
+    .attach("bounds", new Bound())
+}
+
+/**
+ * Creates a new instance of Manager class with given default systems.
+ * 
+ * @param {Object} [options] 
+ * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
+ * @param {Object} [options.files={}] manager is passed onto the Loader.Please check `Loader.load()` for more information on it.
+ * @param {boolean} [options.physics=true] Adds physics world as a System.
+ * @param {boolean} [options.renderer=true] Adds a renderer as a system.
+ * @param {boolean} [options.input=true] Adds input as a system.
+ * 
+ **/
+function createManager(options) {
+  options = Object.assign({
+    autoPlay: true,
+    physics: true,
+    renderer: true,
+    input: true
+  }, options);
+
+  let manager = new Manager();
+
+  if (options.input)
+    manager.registerSystem("input", new Input());
+  if (options.physics) {
+    manager.registerSystem("world", new World());
+    manager.events.add("collision", defaultCollisionHandler);
+    manager.events.add("precollision", defaultPrecollisionHandler);
+  }
+  if (options.renderer)
+    manager.registerSystem("renderer", new Renderer2D());
+  return manager
 }
 
 /**
@@ -8185,7 +8277,7 @@ class BehaviourManager {
   /**
    * Accumulated force from behaviours to apply to agent
    */
-  _accumulated = new Vec2$1()
+  _accumulated = new Vector2$1()
   /**
    * Adds a behavior to the manager
    * 
@@ -8220,14 +8312,14 @@ class BehaviourManager {
    * @param {number} inv_dt
    */
   update(inv_dt) {
-    let result = new Vec2$1();
+    let result = new Vector2$1();
     this._accumulated.set(0, 0);
     for (let i = 0; i < this._behaviours.length; i++) {
       this._behaviours[i].calc(result, inv_dt);
       this._accumulated.add(result);
     }
     this._agent.acceleration.add(this._accumulated);
-    this._agent.orientation.radian = Vec2$1.toRad(this._agent.velocity);
+    this._agent.orientation.radian = Vector2$1.toRad(this._agent.velocity);
   }
   /**
    * Removes all behaviours from a manager.
@@ -8253,19 +8345,19 @@ class Agent {
   /**
    * The position of the entity.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   position = null
   /**
    * The velocity of the entity.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   velocity = null
   /**
    * The acceleration of the entity.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   acceleration = null
   /**
@@ -8343,7 +8435,7 @@ class Agent {
     this.behaviours.draw(ctx);
   }
 }
-Utils$1.inheritComponent(Agent);
+Component.implement(Agent);
 
 /**
  * Base class for implementing customized behaviours.
@@ -8355,13 +8447,13 @@ class Behaviour {
   /**
    * The position of the agent.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   position = null
   /**
    * The velocity of the agent.
    * 
-   * @type Vec2
+   * @type Vector2
    */
   velocity = null
   /**
@@ -8391,9 +8483,9 @@ class Behaviour {
   /**
    * Calculates the amount of force required to satisfy a behavior.
    * 
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target, inv_dt) {}
   /**
@@ -8404,7 +8496,7 @@ class Behaviour {
   draw(renderer) {}
 }
 
-let tmp1$4 = new Vec2$1();
+let tmp1$4 = new Vector2$1();
 /**
  * Creates a behaviour to evade a certain position.
  * 
@@ -8418,7 +8510,7 @@ class EvadeBehaviour extends Behaviour {
   */
   radius = 200
   /**
-   * @param { Vec2} pursuer
+   * @param { Vector2} pursuer
   */
   constructor(pursuer) {
     super();
@@ -8435,9 +8527,9 @@ class EvadeBehaviour extends Behaviour {
   }
     /**
    * @inheritdoc
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target,inv_dt) {
     let difference = tmp1$4.copy(this.position).sub(this.pursuer);
@@ -8451,8 +8543,8 @@ class EvadeBehaviour extends Behaviour {
   }
 }
 
-let tmp1$3 = new Vec2$1(),
-  tmp2$2 = new Vec2$1();
+let tmp1$3 = new Vector2$1(),
+  tmp2$2 = new Vector2$1();
   
 /**
  * Creates a behaviour that is used to make an agent wander in an organic manner.
@@ -8489,21 +8581,21 @@ class WanderBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target, inv_dt) {
 
     this._theta += rand(-this.dtheta, +this.dtheta);
     let forward = tmp1$3.copy(this.velocity);
     if (forward.equalsZero())
-      Vec2$1.random(forward);
+      Vector2$1.random(forward);
     let radius = this._radius * 0.8;
     forward.setMagnitude(this._radius);
     //ctx.arc(...tmp2.copy(this.position).add(forward), radius, 0, Math.PI * 2)
     //ctx.stroke()
-    Vec2$1.fromDeg(this._theta + Vec2$1.toDeg(this.velocity), tmp2$2).multiply(radius);
+    Vector2$1.fromDeg(this._theta + Vector2$1.toDeg(this.velocity), tmp2$2).multiply(radius);
     forward.add(tmp2$2);
     //forward.draw(ctx,...this.position)
     forward.setMagnitude(this.maxSpeed);
@@ -8531,9 +8623,9 @@ class Pursuit extends Behaviour {
   }
     /**
      * @inheritdoc
-     * @param { Vec2} target
+     * @param { Vector2} target
      * @param {number} inv_dt
-     * @returns Vec2 the first parameter
+     * @returns Vector2 the first parameter
      */
   calc(target){
     
@@ -8563,16 +8655,16 @@ class Flock extends Behaviour{
   }
   /**
    * @inheritdoc
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target,inv_dt) {
 
   }
 }
 
-let tmp1$2 = new Vec2$1();
+let tmp1$2 = new Vector2$1();
   
 /**
  * Creates a behaviour to seek out a target and move towards it.
@@ -8588,11 +8680,11 @@ class SeekBehaviour extends Behaviour {
   */
   radius = 100
   /**
-   * @type Vec2
+   * @type Vector2
   */
   target = null
   /**
-   * @param { Vec2} target
+   * @param { Vector2} target
   */
   constructor(target) {
     super();
@@ -8608,9 +8700,9 @@ class SeekBehaviour extends Behaviour {
   }
     /**
      * @inheritdoc
-     * @param { Vec2} target
+     * @param { Vector2} target
      * @param {number} inv_dt
-     * @returns Vec2 the first parameter
+     * @returns Vector2 the first parameter
      */
   calc(target,inv_dt) {
     let difference = tmp1$2.copy(this.target).sub(this.position);
@@ -8622,8 +8714,8 @@ class SeekBehaviour extends Behaviour {
   }
 }
 
-let tmp1$1 = new Vec2$1(),
-  tmp2$1 = new Vec2$1();
+let tmp1$1 = new Vector2$1(),
+  tmp2$1 = new Vector2$1();
 
 /**
  * This provides a seek behaviour which slows down when the agent approaches a target.
@@ -8638,7 +8730,7 @@ class ArriveBehaviour extends Behaviour {
    */
   radius = 1000
   /**
-   * @param { Vec2} target
+   * @param { Vector2} target
    */
   constructor(target) {
     super();
@@ -8655,9 +8747,9 @@ class ArriveBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target, inv_dt) {
     let difference = tmp1$1.copy(this.target).sub(this.position);
@@ -8678,8 +8770,8 @@ class ArriveBehaviour extends Behaviour {
   }
 }
 
-const tmp1 = new Vec2$1();
-const tmp2 = new Vec2$1();
+const tmp1 = new Vector2$1();
+const tmp2 = new Vector2$1();
 /**
  * Creates a behaviour that follows a certain path.
  * 
@@ -8702,14 +8794,14 @@ class PathFollowing extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param { Vec2} target
+   * @param { Vector2} target
    * @param {number} inv_dt
-   * @returns Vec2 the first parameter
+   * @returns Vector2 the first parameter
    */
   calc(target, inv_dt) {
     tmp1.copy(this.position);
     let [p1, p2] = this.path.current();
-    tmp2.normalize();
+    tmp2.copy(p2).sub(p1).normalize();
 
     let proj = tmp2.dot(tmp1.sub(p1));
     let projPoint = this.path.update(proj);
@@ -8742,7 +8834,7 @@ class PathFollowing extends Behaviour {
   /**
    * Adds a point into the path.
    * 
-   * @param { Vec2} point
+   * @param { Vector2} point
    */
   add(point) {
     this.path.add(point);
@@ -8779,11 +8871,11 @@ class PathFollowing extends Behaviour {
   }
 }
 
-let tmp = new Vec2$1();
+let tmp = new Vector2$1();
 class Path {
   /**
    * @private
-   * type Vec2[]
+   * type Vector2[]
    */
   _points = []
   /**
@@ -8821,15 +8913,15 @@ class Path {
   _finished = false
   /**
    * @private
-   * type Vec2 
+   * type Vector2 
    */
-  _lerpedPoint = new Vec2$1()
+  _lerpedPoint = new Vector2$1()
   /**
    * type boolean 
    */
   loop = false
   /**
-   * @param { Vec2} point
+   * @param { Vector2} point
    */
   add(point) {
     this._points.push(point);
@@ -8878,7 +8970,7 @@ class Path {
       if (!this.advance()) this._finished = true;
     }
     this._lerp_t = clamp(this._lerp_t, 0, 1);
-    Vec2$1.lerp(
+    Vector2$1.lerp(
       this._points[this._way[0]],
       this._points[this._way[1]],
       this._lerp_t,
@@ -9214,7 +9306,7 @@ const Storage = {
   }
 };
 
-export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound, BoundingBox, BoundingCircle, Box, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, Err$1 as Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, Input, Interpolation, Keyboard, Line, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, NarrowPhase, Overlaps, Particle, ParticleSystemSprite, Path, PathFollowing, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SATNarrowPhase, SeekBehaviour, Session, Sfx, Shape, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, Touch, Transform, Triangle, Trigon, Utils$1 as Utils, Vec2$1 as Vec2, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, circle, clamp, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, exp, fill, fillText, lerp, line, map, naturalizePair, radToDeg, rand, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
+export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound, BoundingBox, BoundingCircle, Box, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Component, Composite, Constraint, Cookies, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, Err, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, Input$1 as Input, Interpolation, Keyboard, Line, Loader, Manager$1 as Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable, NaiveBroadphase, NarrowPhase, Overlaps, Particle, ParticleSystemSprite, Path, PathFollowing, Perf, Pursuit, Tree as QuadTreeBroadphase, Rectangle, Renderer, Renderer2D, SATNarrowPhase, SeekBehaviour, Session, Sfx, Shape, Signal, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, Touch, Transform, Triangle, Trigon, Utils$1 as Utils, Vec2, Vector, Vector2$1 as Vector2, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, circle, clamp, createEntity, createManager, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, exp, fill, fillText, lerp, line, map, mixin, naturalizePair, radToDeg, rand, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
 /**
  * @typedef Bounds
  * @property {Vector_like} max
@@ -9233,13 +9325,13 @@ export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler,
  * @property {number} stmp
  * @property {number} impulse
  * @property {boolean} persistent 
- * @property { Vec2} ca1
- * @property { Vec2} ca2
+ * @property { Vector2} ca1
+ * @property { Vector2} ca2
  * @property {number} restitution
  * @property {number} staticFriction
  * @property {number} kineticFriction
- * @property { Vec2} velA
- * @property { Vec2} velB
+ * @property { Vector2} velA
+ * @property { Vector2} velB
  * @property {number} rotA
  * @property {number} rotB
  */
@@ -9249,9 +9341,9 @@ export { Agent, AgentManager, AgentSprite, Angle, ArriveBehaviour, AudioHandler,
  * @property {number} lastOverlap
  * @property {number} overlap=-Infinity
  * @property {boolean} done=false
- * @property { Vec2} axis
- * @property { Vec2[]} verticesA
- * @property { Vec2[]} verticesB
+ * @property { Vector2} axis
+ * @property { Vector2[]} verticesA
+ * @property { Vector2[]} verticesB
  * @property {Shape} vertShapeA
  * @property {Shape} vertShapeB
  * @property {number} contactNo

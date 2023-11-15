@@ -1,8 +1,8 @@
-import { Vec2, sq }from "../../math/index.js"
-let tmp1 = new Vec2(),
-  tmp2 = new Vec2(),
-  tmp3 = new Vec2(),
-  tmp4 = new Vec2()
+import { Vector2, sq }from "../../math/index.js"
+let tmp1 = new Vector2(),
+  tmp2 = new Vector2(),
+  tmp3 = new Vector2(),
+  tmp4 = new Vector2()
 
 /**
  * Solves for the collision normal impulse of a given body pair.

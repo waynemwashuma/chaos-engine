@@ -12,13 +12,13 @@
  * @property {number} stmp
  * @property {number} impulse
  * @property {boolean} persistent 
- * @property { Vec2} ca1
- * @property { Vec2} ca2
+ * @property { Vector2} ca1
+ * @property { Vector2} ca2
  * @property {number} restitution
  * @property {number} staticFriction
  * @property {number} kineticFriction
- * @property { Vec2} velA
- * @property { Vec2} velB
+ * @property { Vector2} velA
+ * @property { Vector2} velB
  * @property {number} rotA
  * @property {number} rotB
  */
@@ -28,9 +28,9 @@
  * @property {number} lastOverlap
  * @property {number} overlap=-Infinity
  * @property {boolean} done=false
- * @property { Vec2} axis
- * @property { Vec2[]} verticesA
- * @property { Vec2[]} verticesB
+ * @property { Vector2} axis
+ * @property { Vector2[]} verticesA
+ * @property { Vector2[]} verticesB
  * @property {Shape} vertShapeA
  * @property {Shape} vertShapeB
  * @property {number} contactNo

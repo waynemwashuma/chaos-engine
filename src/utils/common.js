@@ -145,35 +145,23 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
   })
 }
 /**
- * Mixes the functions required by a system into a class.
+ * Mixes the functions required by an object  into another object.
  * 
  * @memberof Utils
- * @param {Function} system the class constructor function to add methods to.
+ *  @param {Object} from the object constructor function to add methods from.
+ * @param {Object} to the object constructor function to add methods to.
  */
-Utils.inheritSystem = function(system) {
-  if (system == void 0 || typeof system !== "function") return
-  let proto = system.prototype
-  if (!proto.init) {
-    proto.init = function() {
-      Err.warnOnce("Please override the init method in the system " + proto.constructor.name)
-    }
+export function mixin(from, to,props = []) {
+  let proto = from.prototype
+  let proto2 = to.prototype
+  console.log(proto2);
+  Object.assign(proto,from)
+  for (let name of props) {
+    let methodName = props[name]
+    //if(!(methodName in proto))continue
+    //if (methodName in proto2) continue
+    
+    proto2[name] = proto[name]
   }
-  if (!proto.update) {
-    proto.update = function() {
-      Err.warnOnce("Please override the update method in the system " + proto.constructor.name)
-
-    }
-  }
-  if (!proto.add) {
-    proto.add = function(component) {
-      this.objects.push(component)
-    }
-  }
-
-  if (!proto.remove) {
-    proto.remove = function(component) {
-      let index = this.objects.indexOf(component)
-      Utils.removeElement(this.objects, index)
-    }
-  }
+  //console.log(new to());
 }

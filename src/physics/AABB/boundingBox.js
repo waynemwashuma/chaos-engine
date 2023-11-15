@@ -106,7 +106,7 @@ export class BoundingBox extends Component {
   /**
    * Translates this bound to the given position.
    * 
-   * @param { Vec2} pos
+   * @param { Vector2} pos
    */
   update(pos) {
     let dx = pos.x - this.pos.x

@@ -1,7 +1,7 @@
 import { Behaviour } from "./behaviour.js"
-import { Vec2 } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
-let tmp1 = new Vec2()
+let tmp1 = new Vector2()
   
 /**
  * Creates a behaviour to seek out a target and move towards it.
@@ -17,11 +17,11 @@ class SeekBehaviour extends Behaviour {
   */
   radius = 100
   /**
-   * @type Vec2
+   * @type Vector2
   */
   target = null
   /**
-   * @param { Vec2} target
+   * @param { Vector2} target
   */
   constructor(target) {
     super()
@@ -37,9 +37,9 @@ class SeekBehaviour extends Behaviour {
   }
     /**
      * @inheritdoc
-     * @param { Vec2} target
+     * @param { Vector2} target
      * @param {number} inv_dt
-     * @returns Vec2 the first parameter
+     * @returns Vector2 the first parameter
      */
   calc(target,inv_dt) {
     let difference = tmp1.copy(this.target).sub(this.position)

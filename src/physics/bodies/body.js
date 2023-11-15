@@ -1,5 +1,6 @@
-import { Vec2, Angle } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
+import { Vector2, Angle } from "../../math/index.js"
+import { Component } from "../../ecs/index.js"
+import {Utils} from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
@@ -20,23 +21,23 @@ class Body {
    * World space coordinates of a body
    * 
    * @private
-   * @type Vec2
+   * @type Vector2
    */
-  _position = new Vec2()
+  _position = new Vector2()
   /**
    * velocity of a body.Speed in pixels per second.
    * 
    * @private
-   * @type Vec2
+   * @type Vector2
    */
-  _velocity = new Vec2()
+  _velocity = new Vector2()
   /**
    * acceleration of a body in pixels per second squared.
    * 
    * @private
-   * @type Vec2
+   * @type Vector2
    */
-  _acceleration = new Vec2()
+  _acceleration = new Vector2()
   /**
    * World space orientation of a body
    * 
@@ -84,22 +85,22 @@ class Body {
    * Anchors of the body in local space.
    * 
    * @private
-   * @type Vec2[]
+   * @type Vector2[]
    */
   _localanchors = []
   /**
    * The original anchors of the body in local space.
    * 
    * @private
-   * @type Vec2[]
+   * @type Vector2[]
    */
   anchors = []
   /**
    * Position of a body in the last frame..
    * 
-   * @type Vec2
+   * @type Vector2
    */
-  lastPosition = new Vec2()
+  lastPosition = new Vector2()
   /**
    * Inverse mass of the body.
    * 
@@ -270,7 +271,7 @@ class Body {
   /**
    * Acceleration of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get acceleration() {
     return this._acceleration
@@ -281,7 +282,7 @@ class Body {
   /**
    * Velocity of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get velocity() {
     return this._velocity
@@ -358,7 +359,7 @@ class Body {
   /**
    * World space position of a body
    * 
-   * @type Vec2
+   * @type Vector2
    */
   get position() {
     return this._position
@@ -413,11 +414,11 @@ class Body {
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
-   * @param { Vec2} v The anchor arm
+   * @param { Vector2} v The anchor arm
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vec2(v.x, v.y).rotate(this.orientation.radian).add(this.position))
+    this.anchors.push(new Vector2(v.x, v.y).rotate(this.orientation.radian).add(this.position))
     return this._localanchors.push(v) - 1
   }
   /**
@@ -425,7 +426,7 @@ class Body {
    * Treat the returned value as read-only.
    * 
    * @param {number} index the position of the
-   * @returns { Vec2}
+   * @returns { Vector2}
    */
   getAnchor(index) {
     return this.anchors[index]
@@ -434,20 +435,20 @@ class Body {
    * Returns a rotated anchor relative to the body.
    * 
    * @param {number} index The position of the anchor.
-   * @param { Vec2} [target= Vec2] Vec2 to store results in.
-   * @returns { Vec2}
+   * @param { Vector2} [target= Vector2] Vector2 to store results in.
+   * @returns { Vector2}
    */
-  getLocalAnchor(index, target = new Vec2()) {
+  getLocalAnchor(index, target = new Vector2()) {
     return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
    * 
-   * @param { Vec2} force The force to be applied.
-   * @param { Vec2} [arm= Vec2] The collision arm.
+   * @param { Vector2} force The force to be applied.
+   * @param { Vector2} [arm= Vector2] The collision arm.
    */
-  applyForce(force, arm = Vec2.ZERO) {
+  applyForce(force, arm = Vector2.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
     this.rotation.degree += arm.cross(force) * this.inv_inertia
   }
@@ -547,7 +548,7 @@ class Body {
     body.id = obj.id
     body.mask = obj.mask
     obj.anchors.forEach((v) => {
-      body.setAnchor(new Vec2().fromJson(v))
+      body.setAnchor(new Vector2().fromJson(v))
     })
   }
   /**
@@ -571,7 +572,7 @@ class Body {
    */
   static DYNAMIC = ObjType.DYNAMIC
 }
-Utils.inheritComponent(Body, false, false)
+Component.implement(Body)
 export {
   Body
 }
