@@ -1,5 +1,5 @@
 import { Vector2, Angle } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
+import { Component } from "../../ecs/index.js"
 
 /**
  * This is the base class used to render images and paths onto the renderer.
@@ -121,7 +121,7 @@ class Sprite {
     this.parent = renderer.getById(obj.parent)
   }
 }
-Utils.inheritComponent(Sprite)
+Component.implement(Sprite)
 export {
   Sprite
 }

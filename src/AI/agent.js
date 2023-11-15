@@ -1,4 +1,4 @@
-import { Utils } from "../utils/index.js"
+import { Component } from "../ecs/index.js"
 import { BehaviourManager } from "./behaviourManager.js"
 
 /**
@@ -100,7 +100,7 @@ class Agent {
     this.behaviours.draw(ctx)
   }
 }
-Utils.inheritComponent(Agent)
+Component.implement(Agent)
 export {
   Agent
 }
