@@ -1,5 +1,5 @@
 import { Vector2 } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
+import { Component } from "../../ecs/index.js"
 import { ObjType } from "../settings.js"
 
 /**
@@ -209,7 +209,7 @@ class Composite {
     }
   }
 }
-Utils.inheritComponent(Composite)
+Component.implement(Composite)
 export {
   Composite
 }
