@@ -443,7 +443,7 @@ class Manager {
    * @param {Array<String>} comps An array containing the component names to be searched
    * @returns {Entity} 
    */
-  getEntityByComponents(comps) {
+  getEntityByComponents(comps,entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < comps.length; j++) {
         if (!entities[i].has(comps[j])) continue
@@ -475,7 +475,7 @@ class Manager {
    * @param {Array<String>} tags An array containing the tags to be searched
    * @returns {Entity} 
    */
-  getEntityByTags(tags) {
+  getEntityByTags(tags,entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < tags.length; j++) {
         if (!entities[i].hasTag(tags[j])) continue
