@@ -6,7 +6,6 @@ let TWO_PI = Math.PI * 2
 /**
  * This is a 2D vector class.
  * 
- * @author Wayne Mwashuma <mwashumawayne@gmail.com>
  * @license MIT
  */
 export class Vector2 {
@@ -471,19 +470,15 @@ export class Vector2 {
   static ZERO = Object.freeze(new Vector2())
 
 }
-class Vector extends Vector2{
+export class Vector extends Vector2{
   constructor(x,y){
     super(x,y)
     console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }
-class Vec2 extends Vector2{
+export class Vec2 extends Vector2{
   constructor(x,y){
     super(x,y)
     console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.")
   }
-}
-export {
-  Vec2,
-  Vector
 }
