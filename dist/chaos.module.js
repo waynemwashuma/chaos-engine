@@ -6573,7 +6573,7 @@ class Signal {
     this._value = value;
   }
   set value(x) {
-    this._value == x;
+    this._value = x;
     for (var i = 0; i < this._listeners.length; i++) {
       let func = this._listeners[i];
       func.listener(this);
