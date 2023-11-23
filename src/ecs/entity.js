@@ -214,12 +214,14 @@ export class Entity {
   /**
    * A helper function to create a new Entity with transform,movable and bounds components.
    * 
+   * @depreciated
    * @param {number} x
    * @param {number} y
    * @param {number} a
    * @returns {Entity}
    */
   static Default(x, y, a) {
+    console.warn("'Entity.Default()' is depreciated,use 'createEntity()' instead.")
     return new Entity()
       .attach("transform", new Transform(x, y, a))
       .attach("movable", new Movable())
