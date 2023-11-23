@@ -1,28 +1,13 @@
-import { World } from "../physics/index.js"
-import { Renderer2D } from "../render/index.js"
 import { Loader } from "../loader/index.js"
-import {
-  Clock,
-  Utils,
-  Err
-} from "../utils/index.js"
-import {
-  EventDispatcher,
-  defaultCollisionHandler,
-  defaultPrecollisionHandler
-} from "../events/index.js"
-import { Input } from "../inputs/index.js"
+import { Clock, Utils, Err } from "../utils/index.js"
+import { EventDispatcher } from "../events/index.js"
 
-
-/**
- * 
- */
 /**
  * This class is responsible for managing all
  * entities and ensuring that systems are updated every frame.
  * 
  */
-class Manager {
+export class Manager {
   /**
    * RAF number of current frame.Used for pausing the manager.
    * 
@@ -154,31 +139,8 @@ class Manager {
   }
   /**
    * Creates a new instance of Manager class
-   * 
-   * @param {Object} [options] 
-   * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
-   * @param {Object} [options.files={}] This is passed onto the Loader.Please check `Loader.load()` for more information on it.
-   * @param {boolean} [options.physics=true] Adds physics world as a System.
-   * @param {boolean} [options.renderer=true] Adds a renderer as a system.
-   * @param {boolean} [options.input=true] Adds input as a system.
-   * 
    **/
   constructor(options = {}) {
-    options = Object.assign({
-      autoPlay: true,
-      physics: true,
-      renderer: true,
-      input: true
-    }, options)
-    if (options.input)
-      this.registerSystem("input", new Input())
-    if (options.physics) {
-      this.registerSystem("world", new World())
-      this.events.add("collision", defaultCollisionHandler)
-      this.events.add("precollision", defaultPrecollisionHandler)
-    }
-    if (options.renderer)
-      this.registerSystem("renderer", new Renderer2D())
     this.loader.onfinish = e => {
       this.init()
       this.play()
@@ -443,7 +405,7 @@ class Manager {
    * @param {Array<String>} comps An array containing the component names to be searched
    * @returns {Entity} 
    */
-  getEntityByComponents(comps,entities = this.objects) {
+  getEntityByComponents(comps, entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < comps.length; j++) {
         if (!entities[i].has(comps[j])) continue
@@ -475,7 +437,7 @@ class Manager {
    * @param {Array<String>} tags An array containing the tags to be searched
    * @returns {Entity} 
    */
-  getEntityByTags(tags,entities = this.objects) {
+  getEntityByTags(tags, entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < tags.length; j++) {
         if (!entities[i].hasTag(tags[j])) continue
@@ -566,7 +528,4 @@ class Manager {
     ///TODO - What will happen if there is no world?   ...Yes,it will crash.
     return this._coreSystems.world.query(bound)
   }
-}
-export {
-  Manager
 }
