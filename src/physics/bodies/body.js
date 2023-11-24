@@ -8,9 +8,8 @@ import { Shape } from "../shapes/index.js"
 /**
  * Holds information needed for collision detection and response.
  * 
- * @implements Component
  */
-class Body {
+export class Body extends Component{
   /**
    * Unique identification of a body.
    * 
@@ -224,6 +223,7 @@ class Body {
    * @param {Shape[]} shapes
    */
   constructor(...shapes) {
+    super()
     this.type = Settings.type
     this.shapes = shapes
     this.mass = 1
@@ -571,8 +571,4 @@ class Body {
    * @type number
    */
   static DYNAMIC = ObjType.DYNAMIC
-}
-Component.implement(Body)
-export {
-  Body
 }
