@@ -14,11 +14,16 @@ export function fpsDebugger(manager) {
   container.style.color = "white"
   
   manager.registerSystem("fps",{
+    updateTime : 0.5,
+    timerDt : 0,
     init(manager){
       this.perf = manager.perf
     },
     update(dt){
-      container.innerHTML = this.perf.fps()
+      this.timerDt += dt
+      if(this.timerDt < this.updateTime)return
+      container.innerHTML = this.perf.fps().toFixed(2)
+      this.timerDt = 0
     }
   })
 }
