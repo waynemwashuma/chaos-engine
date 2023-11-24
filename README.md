@@ -56,7 +56,7 @@ import * as CHAOS from "chaos-studio"
 ```
 #### OR:
 
-Get the [umd file](https://github.com/waynemwashuma/chaos-engine/dist)
+Get the [umd file](https://github.com/waynemwashuma/chaos-engine/dist/chaos.umd.js)
 from the dist folder of the [repository](https://github.com/waynemwashuma/chaos-engine),
 put it in your root directory and add it to
 your html page like so:
@@ -107,7 +107,7 @@ world.gravity = 900
 So far there is nothing on the screen... Lets fix that.
 ```javascript
 //Creates an entity on which we can add(attach) component to.
-let box = CHAOS.Entity.Default(innerWidth / 2, 100)
+let box = CHAOS.createEntity(innerWidth/2,innerHeight/2)
 
 //Creates a physics component.
 let boxBody = new CHAOS.Box(40, 40)
@@ -130,7 +130,7 @@ Now you should see a box falling into nothingness.
 Lets add ground it can land on.
 ```javascript
 //Creates an entity that we call ground on which we can add(attach) component to.
-let ground = CHAOS.Entity.Default(innerWidth / 2, innerHeight - 100)
+let ground = CHAOS.createEntity(innerWidth / 2, innerHeight - 100)
 
 //Creates a physics component to iteract physically with other entities
 let groundBody = new CHAOS.Box(400, 20)
@@ -159,17 +159,17 @@ game.add(ground)
  
 ## **** FUTURE WORK ****
  
- [] Add a webgl renderer(~~dont have a direct plan for this yet~~ Now i do :) ) 
- [] Stabilize the collision response to work well with large forces such as (gravity =  10000)
- [] Stabilize rotational stacking in the physics engine
- [] ~~Add game state class for managing the game~~
- [] Add an animation system.
- [] Add tutorials to this game engine
- [] Add appropriate demos to the project and get a website running for them
- [] Add some error handling mechanisms 
- [x] Add Serialization/Deserialization of objects(on the way)
- [] Kinematic bodies.
- [] Collision masking using bits(bit masking)
- [] More AI behaviors.
- [] Add indexedDB to Storage API.
- [] An audio tag fallback to Web audio (if necessary )
+ - [] Add a webgl renderer(~~dont have a direct plan for this yet~~ Now i do :) ) 
+ - [] Stabilize the collision response to work well with large forces such as (gravity =  10000)
+ - [] Stabilize rotational stacking in the physics engine
+ - [] ~~Add game state class for managing the game~~
+ - [] Add an animation system.
+ - [] Add tutorials to this game engine
+ - [] Add appropriate demos to the project and get a website running for them
+ - [] Add some error handling mechanisms 
+ - [x] Add Serialization/Deserialization of objects(on the way)
+ - [] Kinematic bodies.
+ - [] Collision masking using bits(bit masking)
+ - [] More AI behaviors.
+ - [] Add indexedDB to Storage API.
+ - [] An audio tag fallback to Web audio (if necessary )
