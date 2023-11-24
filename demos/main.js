@@ -30,7 +30,6 @@ let pause = createCheckbox("pause", "Pause",optionTab, function() {
 
 
 
-
 function createCheckbox(id, text, parent, func) {
   let p = document.createElement("p")
   p.id = id;
