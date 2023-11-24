@@ -27,7 +27,8 @@ import {
   Box,
   BodySprite,
   Body,
-  TweenManager
+  TweenManager,
+  fpsDebugger
 } from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
@@ -102,7 +103,7 @@ export const demos = {
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
-    //renderer.addUI(new DebugMesh(this.manager))
+    fpsDebugger(this.manager)
   },
   setup: function(name) {
     this.manager.clear()
@@ -116,8 +117,7 @@ export const demos = {
     this.examples[n] = f
   }
 }
-
-//hysics
+//Physics
 demos.register("box", box)
 demos.register("restitution", restitution)
 demos.register("stack", stacking)
@@ -139,4 +139,6 @@ demos.register("particle", particle)
 demos.register("pathfollower", pathfollower)
 demos.register("wanderer", wanderer)
 demos.register("seeker", seeker)
+
+//Animation
 demos.register("animation", animation)
