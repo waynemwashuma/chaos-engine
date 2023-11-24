@@ -16,6 +16,7 @@ class RungeKuttaSolver{
     a.copy(body.velocity)
     body.position.add(a.mult(dt))
     body.acceleration.set(0,0)
+    body.torque.radian = 0
   }
 }
 export{
