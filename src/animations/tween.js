@@ -17,7 +17,7 @@ export class Tween {
   _interpolationFunc = Interpolation.Linear
   _easingFunction = Easing.linear
   _timeTaken = 0
-  _updateFunc = () => {}
+  _updateFunc = NoUpdateThrow
   _next = null
   /**
    *@template {T}
@@ -147,4 +147,8 @@ export function ColorUpdate(lerpFunc, to, from, t, into) {
 
 export function AngleUpdate(lerpFunc, to, from, t, into) {
   into.rad = lerpFunc(from.rad, to.rad, t)
+}
+
+function NoUpdateThrow() {
+  throw "The Tween does not have a valid onUpdate callback."
 }

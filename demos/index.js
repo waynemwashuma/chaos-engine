@@ -16,6 +16,7 @@ import { triangle } from "./triangle.js"
 import { seeker } from "./seeker.js"
 import { restitution } from "./restitution.js"
 import { friction } from "./friction.js"
+import { animation } from "./animation.js"
 
 
 import {
@@ -26,7 +27,8 @@ import {
   Entity,
   Box,
   BodySprite,
-  Body
+  Body,
+  TweenManager
 } from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
@@ -88,11 +90,13 @@ export const demos = {
   manager: new Manager(),
   renderer: new Renderer2D(),
   world: new World(),
+  tweenManager:new TweenManager(),
   examples: {},
   init: function(selector) {
     this.manager.registerSystem("agent", new AgentManager())
     this.manager.registerSystem("renderer", this.renderer)
     this.manager.registerSystem("world", this.world)
+    this.manager.registerSystem("tween", this.tweenManager)
     let renderer = this.renderer
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight / 1.5)
@@ -136,3 +140,4 @@ demos.register("particle", particle)
 demos.register("pathfollower", pathfollower)
 demos.register("wanderer", wanderer)
 demos.register("seeker", seeker)
+demos.register("animation", animation)
