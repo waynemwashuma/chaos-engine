@@ -1,4 +1,5 @@
 export * from "./ecs/index.js"
+export * from "./animations/index.js"
 export * from "./physics/index.js"
 export * from "./render/index.js"
 export * from "./inputs/index.js"
