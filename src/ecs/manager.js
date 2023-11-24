@@ -1,5 +1,5 @@
 import { Loader } from "../loader/index.js"
-import { Clock, Utils, Err } from "../utils/index.js"
+import { Clock, Utils, Err, Perf } from "../utils/index.js"
 import { EventDispatcher } from "../events/index.js"
 
 /**
@@ -103,10 +103,7 @@ export class Manager {
    * This is an artifact of me debugging this.
    * TODO - Should implement a better soluton
    */
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
+  perf = new Perf()
   /**
    * look at Loader for more info.
    * 
@@ -123,6 +120,7 @@ export class Manager {
    * @private
    */
   _update = accumulate => {
+    this.perf.start()
     let dt = this.clock.update(accumulate)
 
     if (this._accumulator < this.frameRate) {
@@ -135,6 +133,7 @@ export class Manager {
     this.events.trigger("update")
     this.events.trigger("updateEnd")
     this._accumulator = 0
+    this.perf.end()
     this.RAF()
   }
   /**
@@ -313,7 +312,7 @@ export class Manager {
       this.events.trigger("precollision", world.contactList)
       this.events.trigger("collision", world.CLMDs)
     }
-    this.perf.total = performance.now() - totalTS
+    
   }
   /**
    * This registers a class into the manager so that ot can be used in cloning an entity.
