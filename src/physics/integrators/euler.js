@@ -18,6 +18,7 @@ class EulerSolver{
     body.angularVelocity += body.angularAcceleration * dt
     body.angle += body.angularVelocity * dt
     body.acceleration.set(0,0)
+    body.torque.radian = 0
   }
 }
 export{
