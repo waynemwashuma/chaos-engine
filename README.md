@@ -159,17 +159,17 @@ game.add(ground)
  
 ## **** FUTURE WORK ****
  
- - [] Add a webgl renderer(~~dont have a direct plan for this yet~~ Now i do :) ) 
- - [] Stabilize the collision response to work well with large forces such as (gravity =  10000)
- - [] Stabilize rotational stacking in the physics engine
- - [] ~~Add game state class for managing the game~~
- - [] Add an animation system.
+ - [ ] Add a webgl renderer(~~dont have a direct plan for this yet~~ Now i do :) ) 
+ - [ ] Stabilize the collision response to work well with large forces such as (gravity =  10000)
+ - [ ] Stabilize rotational stacking in the physics engine
+ - [ ] ~~Add game state class for managing the game~~
+ - [ ] Add an animation system.
  - [] Add tutorials to this game engine
- - [] Add appropriate demos to the project and get a website running for them
- - [] Add some error handling mechanisms 
+ - [ ] Add appropriate demos to the project and get a website running for them
+ - [ ] Add some error handling mechanisms 
  - [x] Add Serialization/Deserialization of objects(on the way)
- - [] Kinematic bodies.
- - [] Collision masking using bits(bit masking)
- - [] More AI behaviors.
- - [] Add indexedDB to Storage API.
- - [] An audio tag fallback to Web audio (if necessary )
+ - [ ] Kinematic bodies.
+ - [ ] Collision masking using bits(bit masking)
+ - [ ] More AI behaviors.
+ - [ ] Add indexedDB to Storage API.
+ - [ ] An audio tag fallback to Web audio (if necessary )
