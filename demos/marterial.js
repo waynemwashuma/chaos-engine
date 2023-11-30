@@ -5,7 +5,7 @@ import {
   StaticImageMaterial,
   SpriteMaterial,
   Vector2,
-  Entity
+  createEntity
 } from "/src/index.js"
 const assets = {
   static: "./assets/static2.jpeg"
@@ -47,7 +47,7 @@ export function materials(manager) {
 }
 
 function createsprite(x, y, geometry, material) {
-  let entity = Entity.Default(x, y)
+  let entity = createEntity(x, y)
   entity.attach("sprite", new Sprite(geometry, material))
   return entity
 }

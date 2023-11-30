@@ -1,5 +1,5 @@
 import {
-  Entity,
+  createEntity,
   Agent,
   Ball,
   BodySprite,
@@ -13,7 +13,7 @@ import {
 export function pathfollower(manager) {
   manager.getSystem("world").gravity = 0
 
-  let a = Entity.Default(100, 100)
+  let a = createEntity(100, 100)
 
   let aa = new Agent()
 

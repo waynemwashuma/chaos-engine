@@ -1,5 +1,5 @@
 import {
-  Entity,
+  createEntity,
   Agent,
   BodySprite,
   AgentSprite,
@@ -21,7 +21,7 @@ export function wanderer(manager) {
 }
 
 function createWonderer(x, y) {
-  let a = Entity.Default(x, y)
+  let a = createEntity(x, y)
   let aa = new Agent()
 
   a.attach("body", new Box(30, 20))

@@ -1,7 +1,7 @@
 import {
   BodySprite,
   Ball,
-  Entity
+  createEntity
 } from "/src/index.js"
 
 
@@ -12,7 +12,7 @@ export function circlestacking(manager) {
 
 function stack(x, y,r, no, spacing, manager) {
   for (var i = 0; i < no; i++) {
-    let entity = Entity.Default(x, y + (r + spacing) * i)
+    let entity = createEntity(x, y + (r + spacing) * i)
       .attach("body",new Ball(r))
       .attach("sprite",new BodySprite())
     manager.add(entity)
