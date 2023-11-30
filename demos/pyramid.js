@@ -1,7 +1,7 @@
 import {
   Box,
   BodySprite,
-  Entity
+  createEntity
 } from "/src/index.js"
 
 export function pyramid(manager) {
@@ -14,7 +14,7 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
   for (var j = no; j > 0; j--) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
-      let entity = Entity.Default(dx + w * i, y + (h + spacing) * j)
+      let entity = createEntity(dx + w * i, y + (h + spacing) * j)
         .attach("sprite", new BodySprite())
         .attach("body", new Box(w, h))
       manager.add(entity)

@@ -1,7 +1,7 @@
 import {
   Vector2,
   DistanceConstraint,
-  Entity,
+  createEntity,
   Box,
   Ball,
   Composite,
@@ -22,7 +22,7 @@ export function car(manager) {
 }
 
 function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
-  let car = Entity.Default(x, y)
+  let car = createEntity(x, y)
 
   let tirebody1 = new Ball(tireSize)
   let tirebody2 = new Ball(tireSize)

@@ -1,5 +1,5 @@
 import {
-  Entity,
+  createEntity,
   Box,
   Ball,
   BodySprite,
@@ -8,13 +8,13 @@ import {
 export function friction(manager) {
   let world = manager.getSystem("world")
   
-  let floor1 = Entity.Default(200,300,20)
+  let floor1 = createEntity(200,300,20)
   let body1 = new Box(300,20)
-  let entity1 = Entity.Default(100,237)
+  let entity1 = createEntity(100,237)
   let body2 = new Ball(15)
-  let floor2 = Entity.Default(200,200,20)
+  let floor2 = createEntity(200,200,20)
   let body3 = new Box(300,20)
-  let entity2 = Entity.Default(100,100,20)
+  let entity2 = createEntity(100,100,20)
   let body4 = new Box(50,30)
   
   body1.type = Body.STATIC
