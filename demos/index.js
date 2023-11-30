@@ -24,12 +24,13 @@ import {
   Renderer2D,
   World,
   AgentManager,
-  Entity,
+  createEntity,
   Box,
   BodySprite,
   Body,
   TweenManager,
-  fpsDebugger
+  fpsDebugger,
+  Entity
 } from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
@@ -76,7 +77,7 @@ class CanvasBounds extends Entity {
     let renderer = global.getSystem("renderer")
     let walls = createBoundingBox(30, 30, renderer.width - 60, renderer.height - 80, 1000)
     walls.forEach(w => {
-      let bound = Entity.Default(w.pos.x, w.pos.y)
+      let bound = createEntity(w.pos.x, w.pos.y)
       let body = new Box(w.w, w.h)
       bound.attach("body", body)
         .attach("sprite", new BodySprite())

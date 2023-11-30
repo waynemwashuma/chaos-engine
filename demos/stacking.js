@@ -1,7 +1,7 @@
 import {
   BodySprite,
   Box,
-  Entity
+  createEntity
 } from "/src/index.js"
 
 
@@ -12,7 +12,7 @@ export function stacking(manager) {
 
 function stack(x, y, w, h, no, spacing, manager) {
   for (var i = 0; i < no; i++) {
-    let entity = Entity.Default(x, y + (h + spacing) * i)
+    let entity = createEntity(x, y + (h + spacing) * i)
       .attach("body",new Box(w, h))
       .attach("sprite",new BodySprite())
     manager.add(entity)

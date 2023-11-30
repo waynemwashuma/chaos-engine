@@ -1,5 +1,5 @@
 import {
-  Entity,
+  createEntity,
   Box,
   BodySprite,
   Body
@@ -8,13 +8,13 @@ import {
 export function restitution(manager) {
   let world = manager.getSystem("world")
 
-  let box = Entity.Default(100, 100)
+  let box = createEntity(100, 100)
   let body = new Box(50, 50)
-  let box2 = Entity.Default(200, 100)
+  let box2 = createEntity(200, 100)
   let body2 = new Box(50, 50)
-  let box3 = Entity.Default(300, 100)
+  let box3 = createEntity(300, 100)
   let body3 = new Box(50, 50)
-  let floor = Entity.Default(200, 400)
+  let floor = createEntity(200, 400)
   let body4 = new Box(400, 20)
 
   body.restitution = 1

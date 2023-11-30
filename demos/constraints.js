@@ -1,6 +1,6 @@
 import {
   Vector2,
-  Entity,
+  createEntity,
   Box,
   BodySprite,
   DistanceConstraint,
@@ -9,8 +9,8 @@ import {
 export function constraint(manager) {
   let world = manager.getSystem("world")
   
-  let box1 = Entity.Default(200, 300)
-  let box2 = Entity.Default(200, 360)
+  let box1 = createEntity(200, 300)
+  let box2 = createEntity(200, 360)
 
   let body1 = new Box(50, 50)
   let body2 = new Box(50, 50)

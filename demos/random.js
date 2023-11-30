@@ -1,7 +1,7 @@
 import {
   rand,
   BodySprite,
-  Entity,
+  createEntity,
   Box,
   Ball
 } from "/src/index.js"
@@ -15,7 +15,7 @@ export function random(manager) {
 function randomEntities(n, manager) {
   for (let i = 0; i < n; i++) {
     let props = rand()
-    let entity = Entity.Default(rand(100, 300), rand(100, 500))
+    let entity = createEntity(rand(100, 300), rand(100, 500))
       .attach("sprite",new BodySprite())
     if (props <= .50)
       entity.attach("body",new Box(rand(10, 50), rand(5, 40)))
