@@ -40,7 +40,3 @@ export class Rectangle extends Shape {
   }
 
 }
-
-export {
-  Rectangle
-}
