@@ -466,7 +466,7 @@ export class Body extends Component{
       this.update()
       return
     }
-    this.requires("transform", "movable", "bounds")
+    this.requires(entity,"transform", "movable", "bounds")
 
     let transform = entity.get("transform")
     let bounds = entity.get("bounds").bounds

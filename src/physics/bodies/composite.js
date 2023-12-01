@@ -43,7 +43,7 @@ class Composite {
     this.bodies.forEach(e => {
       e.init(entity, true)
     })
-    this.requires("transform")
+    this.requires(entity,"transform")
 
   }
   /**
