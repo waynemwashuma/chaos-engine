@@ -3,7 +3,7 @@ let mess = []
 
 /**
  * A set of functions to streamline logging of items to the console
-*/
+ */
 export const Err = {}
 
 /**
@@ -75,6 +75,9 @@ Err.assert = function(test, errfunc, message) {
  * @memberof Err
  * @param {string} message
  */
-Err.deprecate = function deprecate(message) {
+Err.deprecate = function deprecate(original, replacement = "") {
+  let message = `"${original}" has been depreciated.`
+  if (replacement !== "")
+    message += `Use "${replacement}" instead.`
   Err.warnOnce(message)
 }
