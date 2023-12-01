@@ -1,5 +1,8 @@
 import { Sprite } from "./sprite.js"
 import { round }from "../../math/index.js"
+
+///TODO : Remove this class as it is not needed.
+
 class DebugMesh extends Sprite {
   constructor(manager) {
     super()

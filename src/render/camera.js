@@ -1,5 +1,5 @@
 import {Transform} from '../ecs/transformComponent.js'
-class Camera {
+export class Camera {
   /**
    * @readonly
    * @type Transform
@@ -17,7 +17,4 @@ class Camera {
     this.transform.position.copy(x)
   }
   update() {}
-}
-export {
-  Camera
 }

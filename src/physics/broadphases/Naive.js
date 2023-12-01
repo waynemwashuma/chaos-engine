@@ -3,7 +3,7 @@ import { Broadphase } from "./broadphase.js"
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
 */
-class NaiveBroadphase extends Broadphase {
+export class NaiveBroadphase extends Broadphase {
   /**
    * @private
    * @type Body[]
@@ -59,8 +59,4 @@ class NaiveBroadphase extends Broadphase {
     return target
   }
 
-}
-
-export {
-  NaiveBroadphase
 }

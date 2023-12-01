@@ -6,7 +6,7 @@ import {Rectangle} from "../shapes/index.js"
  * 
  * @augments Body
 */
-class Box extends Body {
+export class Box extends Body {
   /**
    * @param {number} w
    * @param {number} h
@@ -28,8 +28,4 @@ class Box extends Body {
   get mass(){
     return this._mass
   }
-}
-
-export {
-  Box
 }

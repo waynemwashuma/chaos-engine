@@ -7,7 +7,7 @@ import { Vector2 } from "../../math/index.js"
  * 
  * @augments Behaviour
 */
-class Pursuit extends Behaviour {
+export class Pursuit extends Behaviour {
   constructor() {
     super()
   }
@@ -27,8 +27,4 @@ class Pursuit extends Behaviour {
   calc(target){
     
   }
-}
-
-export {
-  Pursuit
 }

@@ -7,7 +7,7 @@ let velocity = new Vector2()
  * Verlet intergration.
  * Used so that constraints can be stable at little performance cost.
  */
-class VerletSolver {
+export class VerletSolver {
   /**
    * @param {Body} body
    * @param {number} dt
@@ -26,7 +26,4 @@ class VerletSolver {
     body.angularVelocity += body.angularAcceleration * dt * 0.5
     body.torque.radian = 0
   }
-}
-export {
-  VerletSolver
 }

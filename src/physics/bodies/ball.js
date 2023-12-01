@@ -7,7 +7,7 @@ import { Circle } from "../shapes/index.js"
  * 
  * @augments Body
  */
-class Ball extends Body {
+export class Ball extends Body {
   /**
    * @param {number} radius
   */
@@ -27,8 +27,4 @@ class Ball extends Body {
     this.inv_mass = x === 0 ? 0 : 1 / x
     this.inertia = Circle.calcInertia(this.mass, this.shapes[0].radius)
   }
-}
-
-export {
-  Ball
 }

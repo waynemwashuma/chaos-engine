@@ -6,7 +6,7 @@ import { Vector2 } from "../math/index.js"
  * 
  * @package
  */
-class BehaviourManager {
+export class BehaviourManager {
   /**
    * A list of behaviors
    * 
@@ -73,7 +73,4 @@ class BehaviourManager {
   draw(renderer) {
     this._behaviours.forEach(b => b.draw(renderer))
   }
-}
-export {
-  BehaviourManager
 }

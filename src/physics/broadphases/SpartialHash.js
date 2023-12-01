@@ -15,7 +15,7 @@ class Client {
  * 
  * @extends Broadphase
  */
-class Grid extends Broadphase {
+export class GridBroadphase extends Broadphase {
   bins = []
   bounds = null
   constructor(bounds, divX, divY) {
@@ -157,8 +157,4 @@ class Grid extends Broadphase {
     }
     return target
   }
-}
-
-export {
-  Grid //as GridBroadphase
 }

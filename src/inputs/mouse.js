@@ -2,7 +2,7 @@
  * This handles all inputs from mouse and touchpad on laptops
  */
 
-class Mouse {
+export class Mouse {
   /**
    * Number of times the mouse has been clicked.
    * 
@@ -159,8 +159,4 @@ class Mouse {
   update() {
     this.lastPosition = { ...this.position }
   }
-}
-
-export {
-  Mouse
 }

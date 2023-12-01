@@ -3,7 +3,7 @@
  * An extendable object pool for optimizing performance.
  */
 
-class Pool {
+export class Pool {
   /**
    * List of objects
    * 
@@ -80,8 +80,4 @@ class Pool {
   create() {
     return {}
   }
-}
-
-export {
-  Pool
 }
