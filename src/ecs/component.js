@@ -48,7 +48,7 @@ export class Component {
   requires(entity,...names) {
     for (var i = 0; i < names.length; i++)
       if (!entity.has(names[i]))
-        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
+        Err.throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
   }
   /**
    * @param {CircleBounding | BoxBounding} bound

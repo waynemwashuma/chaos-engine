@@ -471,7 +471,7 @@ export class Manager {
     if (n) {
       if (n in this._classes)
         return new this._classes[n]()
-      Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`)
+      Err.throws(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`)
     }
     return obj instanceof Array ? [] : {}
   }
