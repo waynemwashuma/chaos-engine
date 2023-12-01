@@ -7,7 +7,7 @@ import { Component } from "./component.js"
  * 
  * @implements Component
  */
-class Bound extends Component {
+export class Bound extends Component {
   /**
    * The actual bounds.Used for collision detection.
    * 
@@ -23,8 +23,4 @@ class Bound extends Component {
   fromJson(obj){
     this.bpunds.fromJson(obj.bounds)
   }
-}
-
-export {
-  Bound
 }

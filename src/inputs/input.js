@@ -7,7 +7,7 @@ import { DOMEventHandler } from "../events/index.js"
  * This handles all inputs from the mouse,touch and keyboards.
  * 
  */
-class Input {
+export class Input {
   /**
    * This attaches callbacks to the DOM.
    * 
@@ -54,7 +54,4 @@ class Input {
     this.keyboard.dispose()
     this.touch.dispose()
   }
-}
-export {
-  Input
 }

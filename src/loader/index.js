@@ -1,6 +1,7 @@
 //import { DEVICE } from "../device/index.js"
 import { Err } from "../utils/index.js"
-class Loader {
+
+export class Loader {
   constructor(manager) {
     this._toload = []
     this.imgs = {}
@@ -122,8 +123,4 @@ class Loader {
 
     }
   }
-}
-
-export {
-  Loader
 }

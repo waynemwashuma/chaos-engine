@@ -9,7 +9,7 @@ let tmp1 = new Vector2(),
  * 
  * @augments Behaviour
  */
-class ArriveBehaviour extends Behaviour {
+export class ArriveBehaviour extends Behaviour {
   /**
    * Radius in which to expect the agent to start slowing down.
    * 
@@ -55,8 +55,4 @@ class ArriveBehaviour extends Behaviour {
     steering.draw(ctx, ...this.position)
     target.add(steering)
   }
-}
-
-export {
-  ArriveBehaviour
 }

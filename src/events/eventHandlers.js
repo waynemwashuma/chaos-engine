@@ -3,7 +3,7 @@
  * 
  * @param {CollisionPair[]} clmds an array of collision manifolds
 */
-function defaultCollisionHandler(clmds) {
+export function defaultCollisionHandler(clmds) {
   let a, b
   for (let i = 0; i < clmds.length; i++) {
     a = clmds[i].bodyA.entity.getHandler("collision")
@@ -27,7 +27,7 @@ function defaultCollisionHandler(clmds) {
  * 
  * @param {Manifold[]} clmds an array of collision manifolds
 */
-function defaultPrecollisionHandler(clmds) {
+export function defaultPrecollisionHandler(clmds) {
   let a, b
   for (let i = 0; i < clmds.length; i++) {
     a = clmds[i].a.entity.getHandler("precollision")
@@ -44,8 +44,4 @@ function defaultPrecollisionHandler(clmds) {
       clmds[i]
     )
   }
-}
-export {
-  defaultCollisionHandler,
-  defaultPrecollisionHandler
 }

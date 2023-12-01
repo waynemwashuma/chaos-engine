@@ -1,7 +1,7 @@
 import { Shape } from "./shape.js"
 import { Vector2 }from "../../math/index.js"
 
-class Line extends Shape {
+export class Line extends Shape {
   /**
    * @type number
   */
@@ -17,8 +17,4 @@ class Line extends Shape {
     super([start, end],offset,offsetAngle)
     this.length = length
   }
-}
-
-export {
-  Line
 }

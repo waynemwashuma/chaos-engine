@@ -1,7 +1,7 @@
 /**
  * Handled the keyboard input of an application on a PC.
 */
-class Keyboard {
+export class Keyboard {
   /**
    * Dictionary of keys showing if they are active or not.
    * 
@@ -52,8 +52,4 @@ class Keyboard {
   _onUp = e =>{
     this.keys[this.normalize(e.code)] = false
   }
-}
-
-export {
-  Keyboard
 }

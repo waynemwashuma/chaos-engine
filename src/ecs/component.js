@@ -11,7 +11,7 @@ import { Utils, Err, mixin } from "../utils/index.js"
  * @interface
  * 
  */
-class Component {
+export class Component {
 
   destroy() {}
   /**
@@ -66,7 +66,4 @@ class Component {
   static implement(component) {
     Utils.inheritComponent(component)
   }
-}
-export {
-  Component
 }

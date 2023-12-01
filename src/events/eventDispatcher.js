@@ -2,7 +2,7 @@
  * This class manages all events by a game manager.
  * When adding a handler to an event with another handler,the latter will not be overriden,rather,the former will be added to complement the latter.
  */
-class EventDispatcher {
+export class EventDispatcher {
   /**
    * A dictionary of callback functions
    * 
@@ -37,7 +37,4 @@ class EventDispatcher {
     }
     this.handlers[name] = [handler]
   }
-}
-export {
-  EventDispatcher
 }

@@ -11,7 +11,7 @@ let _arr = []
  * 
  * @augments Shape
  */
-class Circle extends Shape {
+export class Circle extends Shape {
   angle = 0
   radius = 0
   /**
@@ -104,8 +104,4 @@ class Circle extends Shape {
       obj.offAngle
     )
   }
-}
-
-export {
-  Circle
 }

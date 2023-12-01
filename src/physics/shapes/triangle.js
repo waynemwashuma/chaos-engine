@@ -8,7 +8,7 @@ let tmp1 = new Vector2()
  * 
  * @augments Shape
  */
-class Triangle extends Shape {
+export class Triangle extends Shape {
   /**
    * @param {number} base Length of one side.
    * @param {number} height Length of a second side.
@@ -30,8 +30,4 @@ class Triangle extends Shape {
   static calcInertia(mass,base,height,angle){
     return 0.5 * mass * base * height * (1 - 2/3 * (1 - (Math.cos(2 * angle * 180/Math.PI))/2))
   }
-}
-
-export {
-  Triangle
 }

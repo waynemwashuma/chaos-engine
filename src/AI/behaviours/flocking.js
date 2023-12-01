@@ -7,7 +7,7 @@ import { Vector2 } from "../../math/index.js"
  * 
  * @augments Behaviour
  */
-class Flock extends Behaviour{
+export class Flock extends Behaviour{
   /**
    * @type Agent[]
    */
@@ -32,8 +32,4 @@ class Flock extends Behaviour{
   calc(target,inv_dt) {
 
   }
-}
-
-export {
-  Flock
 }

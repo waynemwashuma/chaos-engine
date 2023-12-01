@@ -4,7 +4,7 @@
  * @abstract
  */
 
-class Behaviour {
+export class Behaviour {
   /**
    * The position of the agent.
    * 
@@ -55,7 +55,4 @@ class Behaviour {
    * @param {Renderer} renderer
    */
   draw(renderer) {}
-}
-export {
-  Behaviour
 }
