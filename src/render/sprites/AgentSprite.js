@@ -31,7 +31,7 @@ export class AgentSprite extends Sprite {
    */
   init(entity) {
     super.init(entity)
-    this.requires("agent")
+    this.requires(entity,"agent")
     this.agent = entity.get("agent")
   }
   /**

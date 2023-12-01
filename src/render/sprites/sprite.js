@@ -95,7 +95,7 @@ class Sprite {
       return
     }
     this.entity = entity
-    this.requires("transform")
+    this.requires(entity,"transform")
     let transform = entity.get("transform")
     this._position = transform.position
     this._orientation = transform.orientation

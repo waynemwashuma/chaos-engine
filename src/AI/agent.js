@@ -59,8 +59,7 @@ class Agent {
    * @param {Entity} entity
    */
   init(entity) {
-    this.entity = entity
-    this.requires("transform", "movable")
+    this.requires(entity,"transform", "movable")
     let move = entity.get("movable"),
       transform = entity.get("transform")
     this.velocity = move.velocity

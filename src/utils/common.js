@@ -114,10 +114,10 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
   proto.get = function(n) {
     return this.entity.getComponent(n);
   }
-  proto.requires = function(...names) {
+  proto.requires = function(entity,...names) {
     for (var i = 0; i < names.length; i++)
-      if (!this.entity.has(names[i]))
-        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`)
+      if (!entity.has(names[i]))
+        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
   }
 
   proto.query = function(bound, target = []) {
