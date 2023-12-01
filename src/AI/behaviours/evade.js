@@ -7,7 +7,7 @@ let tmp1 = new Vector2()
  * 
  * @augments Behaviour
 */
-class EvadeBehaviour extends Behaviour {
+export class EvadeBehaviour extends Behaviour {
   /**
    * Distance in which to begin evading.
    * 
@@ -46,8 +46,4 @@ class EvadeBehaviour extends Behaviour {
     steering.clamp(0, this.maxForce)
     target.copy(steering)
   }
-}
-
-export{
-  EvadeBehaviour
 }

@@ -5,7 +5,7 @@ import { ObjType } from "../settings.js"
 /**
  * Holds a group of related bodies and constraints.
  */
-class Composite {
+export class Composite {
   /**
    * Entity this belongs to.
    * 
@@ -210,6 +210,3 @@ class Composite {
   }
 }
 Component.implement(Composite)
-export {
-  Composite
-}

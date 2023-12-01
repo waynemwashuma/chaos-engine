@@ -1,4 +1,4 @@
-class IndexedList {
+export class IndexedList {
   _keys = new Map()
   _list = []
   get(name) {

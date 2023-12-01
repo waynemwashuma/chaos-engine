@@ -5,7 +5,7 @@ import { circle, fill } from "../utils/index.js"
 /**
  * Its a fricking particle!
  */
-class Particle {
+export class Particle {
   /**
    * @readonly
    * @type Vector2
@@ -84,7 +84,7 @@ class Particle {
  * This creates a particle system 
  * @augments Sprite
  */
-class ParticleSystemSprite extends Sprite {
+export class ParticleSystemSprite extends Sprite {
   /**
    * @private
    */
@@ -176,8 +176,4 @@ class ParticleSystemSprite extends Sprite {
       this.initParticles(this.frameIncrease)
     }
   }
-}
-export {
-  Particle,
-  ParticleSystemSprite
 }

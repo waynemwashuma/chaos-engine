@@ -6,7 +6,7 @@ import { BehaviourManager } from "./behaviourManager.js"
  * 
  * @implements Component
  */
-class Agent {
+export class Agent {
   /**
    * The position of the entity.
    * 
@@ -100,6 +100,3 @@ class Agent {
   }
 }
 Component.implement(Agent)
-export {
-  Agent
-}

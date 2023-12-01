@@ -8,10 +8,6 @@ import { Broadphase } from "./broadphase.js"
  * 
  * @extends Broadphase
 */
-class Tree extends Broadphase{
+export class AABBBroadphase extends Broadphase{
   
-}
-
-export {
-  Tree as AABBBroadphase
 }

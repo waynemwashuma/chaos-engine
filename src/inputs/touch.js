@@ -3,7 +3,7 @@
  * 
  * Realized i need to massively change this to make it work well.
  */
-class Touch {
+export class Touch {
   /**
    * @type TouchEvent[]
    */
@@ -60,8 +60,4 @@ class Touch {
     this.touches = e.touches
   }
   update() {}
-}
-
-export {
-  Touch
 }

@@ -5,7 +5,7 @@ import { Vector2, Angle } from "../math/index.js"
  * 
  * @implements Component
  */
-class Movable extends Component {
+export class Movable extends Component {
   entity = null
   /**  * 
    * @param {number} x
@@ -31,7 +31,4 @@ class Movable extends Component {
     this.rotation.fromJson(obj.rptatjon)
     this.acceleration.fromJson(obj.acceleration)
   }
-}
-export {
-  Movable
 }

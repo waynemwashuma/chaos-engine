@@ -8,7 +8,7 @@ let tmp1 = new Vector2()
  * 
  * @augments Behaviour
 */
-class SeekBehaviour extends Behaviour {
+export class SeekBehaviour extends Behaviour {
   /**
    * Not implemented.
    * Radius in which to seek out the target.
@@ -49,8 +49,4 @@ class SeekBehaviour extends Behaviour {
     steering.clamp(0, this.maxForce)
     target.copy(steering)
   }
-}
-
-export {
-  SeekBehaviour
 }

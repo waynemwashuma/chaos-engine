@@ -1,4 +1,4 @@
-class Geometry {
+export class Geometry {
   /**
    * @type Vector2[]
    */
@@ -90,8 +90,4 @@ class Geometry {
     this.normals = this.calcFaceNormals()
     this._dynNormals = this.normals.map(e => e.clone())
   }
-}
-
-export {
-  Geometry
 }

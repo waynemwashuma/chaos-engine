@@ -8,7 +8,7 @@ import { Component } from "../../ecs/index.js"
  * @implements Component
  * TODO - ADD id property to this class and Group class.
  */
-class Sprite {
+export class Sprite {
   /**
    * @private
    */
@@ -122,6 +122,3 @@ class Sprite {
   }
 }
 Component.implement(Sprite)
-export {
-  Sprite
-}

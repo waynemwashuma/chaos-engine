@@ -6,7 +6,7 @@ import { Vector2, Angle } from "../math/index.js"
  * 
  * @implements Component
  */
-class Transform {
+export class Transform {
   entity = null
   /**
    * @param {number} x
@@ -29,7 +29,4 @@ class Transform {
     this.position.fromJson(obj.position)
     this.orientation.fromJson(obj.orientation)
   }
-}
-export {
-  Transform
 }

@@ -10,7 +10,7 @@ let tmp1 = new Vector2(),
  /**
   * A constraint that acts like a spring between two bodies
  */
-class SpringConstraint extends Constraint {
+export class SpringConstraint extends Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
@@ -55,7 +55,4 @@ class SpringConstraint extends Constraint {
       body1.rotation.radian += force.cross(arm1) * body1.inv_inertia
       body2.rotation.radian += force.cross(arm2) * -body2.inv_inertia
   }
-}
-export {
-  SpringConstraint
 }

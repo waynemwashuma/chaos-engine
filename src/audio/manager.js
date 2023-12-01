@@ -4,7 +4,7 @@ import { Sfx } from "./audio.js"
 /**
  * Manages playing of audio using Web Audio.
  */
-class AudioHandler {
+export class AudioHandler {
   /**
    * Audio context to use.
    * 
@@ -197,8 +197,4 @@ class AudioHandler {
     sfx.disconnect()
     Utils.removeElement(this.playing, id)
   }
-}
-
-export {
-  AudioHandler
 }
