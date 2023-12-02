@@ -12,7 +12,7 @@ import {
 export function wanderer(manager) {
   manager.getSystem("world").gravity = 0
 
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 100; i++) {
     manager.add(createWonderer(
       rand(100, innerWidth-100),
       rand(100, innerHeight - 100)

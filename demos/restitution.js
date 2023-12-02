@@ -20,7 +20,7 @@ export function restitution(manager) {
   body.restitution = 1
   body2.restitution = 0.6
   body3.restitution = 0.2
-  body4.restitution = 0.02
+  body4.restitution = 1
   body4.type = Body.STATIC
 
   box.attach("body", body)
