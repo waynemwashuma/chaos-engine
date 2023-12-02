@@ -143,3 +143,5 @@ demos.register("seeker", seeker)
 
 //Animation
 demos.register("animation", animation)
+
+console.log(demos.manager);
