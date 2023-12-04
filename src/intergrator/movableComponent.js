@@ -1,12 +1,10 @@
-import { Component } from "./component.js"
+import { Component } from "../ecs/index.js"
 import { Vector2, Angle } from "../math/index.js"
 /**
  * Component to hold requirements for an entity to move.
  * 
- * @implements Component
  */
 export class Movable extends Component {
-  entity = null
   /**  * 
    * @param {number} x
    * @param {number} y

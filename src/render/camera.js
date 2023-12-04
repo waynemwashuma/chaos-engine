@@ -1,4 +1,4 @@
-import {Transform} from '../ecs/transformComponent.js'
+import {Transform} from '../intergrator/index.js'
 export class Camera {
   /**
    * @readonly

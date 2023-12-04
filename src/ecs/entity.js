@@ -1,7 +1,3 @@
-import { Movable } from "./movableComponent.js"
-import { Transform } from "./transformComponent.js"
-import { Bound } from "./boundsComponent.js"
-
 /**
  * This is a container to hold components,tags and event handlers.
  * 

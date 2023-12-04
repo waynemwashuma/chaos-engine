@@ -1,11 +1,10 @@
 import { BoundingBox } from "../physics/index.js"
-import { Component } from "./component.js"
+import { Component } from "../ecs/index.js"
 
 
 /**
  * Component to hold the bounds of an entity.
  * 
- * @implements Component
  */
 export class Bound extends Component {
   /**
@@ -14,7 +13,6 @@ export class Bound extends Component {
    * @type BoundingBox | BoundingCircle
    */
   bounds = new BoundingBox()
-  entity = null
   toJson(){
     return {
       bounds:this.bounds.toJson()
