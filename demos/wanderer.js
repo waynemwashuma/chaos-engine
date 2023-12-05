@@ -1,10 +1,8 @@
 import {
   createEntity,
   Agent,
-  BodySprite,
   AgentSprite,
   WanderBehaviour,
-  Vector2,
   Box,
   rand
 } from "/src/index.js"

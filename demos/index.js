@@ -30,7 +30,8 @@ import {
   Body,
   TweenManager,
   fpsDebugger,
-  Entity
+  Entity,
+  Intergrator
 } from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
@@ -99,6 +100,7 @@ export const demos = {
     this.manager.registerSystem("renderer", this.renderer)
     this.manager.registerSystem("world", this.world)
     this.manager.registerSystem("tween", this.tweenManager)
+    this.manager.registerSystem("obj",new Intergrator())
     let renderer = this.renderer
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight / 1.5)

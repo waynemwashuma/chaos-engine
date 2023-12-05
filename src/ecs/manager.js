@@ -295,9 +295,7 @@ export class Manager {
     let world = this._coreSystems["world"],
       renderer = this._coreSystems["renderer"],
       input = this._coreSystems["input"]
-
-    let totalTS = performance.now()
-
+      
     //the only reason this is here is that
     //i need to debug stuff visually - ill remove it later.
     if (renderer) renderer.clear()
@@ -313,17 +311,6 @@ export class Manager {
       this.events.trigger("collision", world.CLMDs)
     }
     
-  }
-  /**
-   * This registers a class into the manager so that ot can be used in cloning an entity.
-   * 
-   * @param {function} obj The class or constructor function to register
-   * @param {boolean} override Whether to override an existing class
-   */
-  registerClass(obj, override = false) {
-    let n = obj.name.toLowerCase()
-    if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
-    this._classes[n] = obj
   }
   /**
    * Used to register a system
@@ -465,37 +452,6 @@ export class Manager {
    * Ignore this,im going to remove it and the rest of cloning utilities.
    * @private
    * @deprecated
-   */
-  infertype(obj) {
-    let n = obj.CHOAS_CLASSNAME
-    if (n) {
-      if (n in this._classes)
-        return new this._classes[n]()
-      Err.throws(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`)
-    }
-    return obj instanceof Array ? [] : {}
-  }
-  /**
-   * Deep copies an entity
-   * 
-   * @deprecated
-   * @private
-   * @returns {Entity}
-   */
-  clone(obj) {
-    if (typeof obj !== "object") return obj
-    let object = this.infertype(obj)
-    for (var key in obj) {
-      object[key] = this.clone(obj[key])
-    }
-    return object
-  }
-  /**
-   * Creates a system that allows you to use the `Component.update` method for the given componentList whose name is given.
-   * 
-   * @param {string} name The name of componentList this system is taking care of.
-   * 
-   * @returns {System}
    */
   static DefaultSystem(name) {
     let n = name

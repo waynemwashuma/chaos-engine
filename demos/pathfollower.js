@@ -2,10 +2,8 @@ import {
   createEntity,
   Agent,
   Ball,
-  BodySprite,
   AgentSprite,
   PathFollowing,
-  WanderBehaviour,
   Path,
   Vector2
 } from "/src/index.js"
