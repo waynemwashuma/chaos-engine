@@ -187,11 +187,11 @@ export class Manager {
    * @param {Component} c An object implementing Component
    */
   addComponent(n, c) {
-    if (n === "body") {
+    if (n === "body" && this._coreSystems.world != void 0) {
       this._coreSystems.world.add(c)
       return
     }
-    if (n === "sprite") {
+    if (n === "sprite" && this._coreSystems.renderer != void 0) {
       this._coreSystems.renderer.add(c)
       return
     }
@@ -208,11 +208,11 @@ export class Manager {
    * @param { Component } c An object implementing Component interface
    */
   removeComponent(n, c) {
-    if (n === "body") {
+    if (n === "body"  && this._coreSystems.world != void 0) {
       this._coreSystems.world.remove(c)
       return
     }
-    if (n === "sprite") {
+    if (n === "sprite"  && this._coreSystems.renderer != void 0) {
       this._coreSystems.renderer.remove(c)
       return
     }
