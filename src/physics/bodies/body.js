@@ -281,7 +281,7 @@ export class Body extends Component{
   }
   /**
    * Velocity of a body
-   * 
+
    * @type Vector2
    */
   get velocity() {
@@ -476,6 +476,7 @@ export class Body extends Component{
     this._velocity = move.velocity
     this._position = transform.position
     this._orientation = transform.orientation
+    this._torque = move.torque
     this.bounds = bounds
 
     this.update()
