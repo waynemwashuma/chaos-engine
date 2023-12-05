@@ -119,20 +119,16 @@ export class World {
    */
   intergrator = VerletSolver
   /**
-   * @constructor World
-   * 
+   * @type boolean
+   * @default true
    */
+  enableIntergrate = true
+
   constructor() {
     this.broadphase = new NaiveBroadphase(this)
     this.narrowphase = new SATNarrowPhase()
   }
-  set gravity(x) {
-    if (typeof x === "object") {
-      this.gravitationalAcceleration.copy(x)
-    } else {
-      this.gravitationalAcceleration.set(0, x)
-    }
-  }
+  
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
@@ -141,6 +137,15 @@ export class World {
   get gravity() {
     return this.gravitationalAcceleration
   }
+
+  set gravity(x) {
+    if (typeof x === "object") {
+      this.gravitationalAcceleration.copy(x)
+    } else {
+      this.gravitationalAcceleration.set(0, x)
+    }
+  }
+
   /**
    * @private
    */
@@ -275,7 +280,8 @@ export class World {
     this.collisionDetection()
     this.collisionResponse(dt)
     this.updateConstraints(dt)
-    this.intergrate(dt, length)
+    if (this.enableIntergrate)
+      this.intergrate(dt, length)
     this.updateBodies(length)
     this.count += 1
     this.perf.total = performance.now() - this.perf.lastTimestamp
