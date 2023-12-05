@@ -151,7 +151,6 @@ export function mixin(from, to,props = []) {
   console.log(proto2);
   Object.assign(proto,from)
   for (let name of props) {
-    let methodName = props[name]
     //if(!(methodName in proto))continue
     //if (methodName in proto2) continue
     
