@@ -5,51 +5,23 @@ import {Utils} from "../utils/index.js"
 export class Intergrator extends System {
   active = false
   solver = EulerSolver.solve
-  transforms = []
-  movables = []
-  bounds = []
+  objects = []
   constructor() {
     super()
   }
   init(manager) {
-    let world = manager.getSystem("world")
-    if (world) return
+    const world = manager.getSystem("world")
+    if (world) world.enableIntergrate = false
     this.active = true
-
-    manager.setComponentList("transform", this.transforms)
-    manager.setComponentList("bound", this.bounds)
-    manager.setComponentList("movable", this.movables)
-    manager.event.add("add", (entity) => {
-      if (!entity.has('transform')) return
-      this.transforms.push(
-        entity.get("transform")
-      )
-      this.transforms.push(
-        entity.get("transform")
-      )
-      this.bounds.push(
-        entity.get("transform")
-      )
-    })
-    manager.event.add("remove", entity => {
-      if (!entity.has('transform')) return
-      this.transforms.push(
-        entity.get("transform")
-      )
-      this.transforms.push(
-        entity.get("transform")
-      )
-      this.bounds.push(
-        entity.get("transform")
-      )
-    })
+    
+    manager.setComponentList("movable", this.objects)
   }
   update(dt) {
-    for (var i = 0; i < this.transforms.length; i++) {
-      if (this.movables[i] == void 0) return
+    for (let i = 0; i < this.objects.length; i++) {
+      if (this.objects[i] == void 0) return
       this.solver(
-        this.transforms[i],
-        this.movables[i],
+        this.objects[i].transform,
+        this.objects[i],
         dt
       )
     }
@@ -75,7 +47,7 @@ export class EulerSolver {
     velocity.add(acceleration.multiply(dt))
     a.copy(velocity)
     position.add(a.multiply(dt))
-    rotation.radian += rotation.radian * dt
+    rotation.radian += torque.radian * dt
     orientation.radian += rotation.radian * dt
     acceleration.set(0, 0)
     torque.radian = 0

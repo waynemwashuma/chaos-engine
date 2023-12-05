@@ -13,10 +13,15 @@ export class Movable extends Component {
    */
   constructor(x, y, a) {
     super()
+    this.transform = null
     this.velocity = new Vector2(x, y)
     this.rotation = new Angle(a)
     this.acceleration = new Vector2()
     this.torque = new Angle()
+  }
+  init(entity){
+    this.requires(entity,"transform")
+    this.transform = entity.get("transform")
   }
   toJson() {
     return {
