@@ -376,7 +376,7 @@ export class Manager {
    */
   unregisterSystem(n) {
     if (n in this._coreSystems)
-      return this._systems[this._systemsMap[n]] = null
+      return this._coreSystems[n] = null
     delete this._systems[this._systemsMap[n]]
     delete this._systemsMap[n]
   }
