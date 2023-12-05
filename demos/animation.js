@@ -1,12 +1,9 @@
 import {
-  Entity,
   Vector2,
-  Box,
   Sprite,
   BufferGeometry,
   BasicMaterial,
   Tween,
-  TweenManager,
   createEntity,
   Vector2Update,
   Easing
