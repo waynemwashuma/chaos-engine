@@ -50,7 +50,6 @@ export class Entity {
    * Removes all components and handlers from an entity while removing it from its manager
    */
   destroy() {
-    this.removeSelf()
     for (let k in this._components) {
       let comp = this._components[k]
       if (comp.destroy)
@@ -60,7 +59,7 @@ export class Entity {
     for (let k in this._handlers) {
       delete this._handlers[k]
     }
-
+    this.removeSelf()
   }
   /**
    * Removes an entity and its components from its manager whilst retaining its components and handlers
