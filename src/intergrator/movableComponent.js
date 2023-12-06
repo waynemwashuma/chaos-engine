@@ -19,9 +19,10 @@ export class Movable extends Component {
     this.acceleration = new Vector2()
     this.torque = new Angle()
   }
-  init(entity){
-    this.requires(entity,"transform")
-    this.transform = entity.get("transform")
+  init(entity) {
+    this.requires(entity, "transform")
+    if (!this.transform)
+      this.transform = entity.get("transform")
   }
   toJson() {
     return {

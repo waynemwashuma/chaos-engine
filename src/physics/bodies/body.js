@@ -4,7 +4,7 @@ import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
-import { Movable , Transform} from "../../intergrator/index.js"
+import { Movable, Transform } from "../../intergrator/index.js"
 /**
  * Holds information needed for collision detection and response.
  * 
@@ -16,8 +16,8 @@ export class Body extends Component {
    * @type number
    */
   id = Utils.generateID()
-  _transform = null
-  _movable = null
+  _transform = new Transform()
+  _movable = new Movable()
   _mass = 1
   /**
    * Rotational inertia of the body.
@@ -409,13 +409,18 @@ export class Body extends Component {
   /**
    * Initializes the body to its given.Called by the world or an entity manager.
    * 
-   * @param {Entity | null} entity
+   * @param { Entity } [entity]
    * @param {boolean} [composited=false]
    */
   init(entity, composited = false) {
     this.entity = entity
-    if (composited) {
+    if (composited || entity == void 0) {
       this.bounds = new BoundingBox()
+      if (entity != void 0) {
+        this._movable.transform = this._transform
+        entity.manager.addComponent("transform",this._transform)
+        entity.manager.addComponent("movable",this._movable)
+      }
       this.update()
       return
     }
@@ -445,6 +450,10 @@ export class Body extends Component {
       this.bounds.calculateBounds(this, this.boundPadding)
     this.bounds.update(this.position)
     //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
+  }
+  
+  destroy(){
+    this.entity.manager.removeComponent(this._movable)
   }
   toJson() {
     let obj = {
