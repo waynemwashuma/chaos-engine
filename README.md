@@ -168,7 +168,7 @@ game.add(ground)
  - [ ] Stabilize rotational stacking in the physics engine
  - [ ] ~~Add game state class for managing the game~~
  - [ ] Add an animation system.
- - [] Add tutorials to this game engine
+ - [ ] Add tutorials to this game engine
  - [ ] Add appropriate demos to the project and get a website running for them
  - [ ] Add some error handling mechanisms 
  - [x] Add Serialization/Deserialization of objects(on the way)
