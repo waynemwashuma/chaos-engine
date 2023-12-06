@@ -1,7 +1,9 @@
-/**
+import {System} from "../ecs/index.js"
+
+  /**
  * A system that manages agent components by updating them.
  */
-export class AgentManager {
+export class AgentManager extends System{
   /**
    * A list of agents to update every frame.
    * 
