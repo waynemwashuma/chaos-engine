@@ -4,6 +4,9 @@ export class IndexedList {
   get(name) {
     return this._list[this._keys[name]]
   }
+  get(name){
+    return this._list[this._keys.get(name)]
+  }
   push(name, value) {
     this._keys[name] = this._list.length
     this._list.push(value)
