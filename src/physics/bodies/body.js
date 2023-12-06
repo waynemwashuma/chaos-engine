@@ -1,70 +1,23 @@
 import { Vector2, Angle } from "../../math/index.js"
 import { Component } from "../../ecs/index.js"
-import {Utils} from "../../utils/index.js"
+import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
-
+import { Movable , Transform} from "../../intergrator/index.js"
 /**
  * Holds information needed for collision detection and response.
  * 
  */
-export class Body extends Component{
+export class Body extends Component {
   /**
    * Unique identification of a body.
    * 
    * @type number
    */
   id = Utils.generateID()
-  /**
-   * World space coordinates of a body
-   * 
-   * @private
-   * @type Vector2
-   */
-  _position = new Vector2()
-  /**
-   * velocity of a body.Speed in pixels per second.
-   * 
-   * @private
-   * @type Vector2
-   */
-  _velocity = new Vector2()
-  /**
-   * acceleration of a body in pixels per second squared.
-   * 
-   * @private
-   * @type Vector2
-   */
-  _acceleration = new Vector2()
-  /**
-   * World space orientation of a body
-   * 
-   * @private
-   * @type Angle
-   */
-  _orientation = new Angle()
-  /**
-   * Rotation of a body
-   * 
-   * @private
-   * @type Angle
-   */
-  _rotation = new Angle()
-  /**
-   * Torque of the body
-   * 
-   * @private
-   * @type Angle
-   */
-  _torque = new Angle()
-  /**
-   * Mass of the body.
-   * 
-   * @private
-   * @type number
-   * @default 1
-   */
+  _transform = null
+  _movable = null
   _mass = 1
   /**
    * Rotational inertia of the body.
@@ -274,10 +227,10 @@ export class Body extends Component{
    * @type Vector2
    */
   get acceleration() {
-    return this._acceleration
+    return this._movable.acceleration
   }
   set acceleration(x) {
-    this._acceleration.copy(x)
+    this._movable.acceleration.copy(x)
   }
   /**
    * Velocity of a body
@@ -285,10 +238,10 @@ export class Body extends Component{
    * @type Vector2
    */
   get velocity() {
-    return this._velocity
+    return this._movable.velocity
   }
   set velocity(x) {
-    this._velocity.copy(x)
+    this._movable.velocity.copy(x)
   }
   /**
    * Rotation of a body
@@ -296,10 +249,10 @@ export class Body extends Component{
    * @type Angle
    */
   get rotation() {
-    return this._rotation
+    return this._movable.rotation
   }
   set rotation(x) {
-    this._rotation.copy(x)
+    this._movable.rotation.copy(x)
   }
   /**
    * Orientation of a body in degrees.
@@ -362,10 +315,10 @@ export class Body extends Component{
    * @type Vector2
    */
   get position() {
-    return this._position
+    return this._transform.position
   }
   set position(x) {
-    this._position.copy(x)
+    this._transform.position.copy(x)
   }
   /**
    * Orientation of a body
@@ -373,10 +326,10 @@ export class Body extends Component{
    * @type Angle
    */
   set orientation(r) {
-    this._orientation.copy(r)
+    this._transform.orientation.copy(r)
   }
   get orientation() {
-    return this._orientation
+    return this._transform.orientation
   }
   /**
    * Angular velocity of a body in degrees
@@ -395,10 +348,10 @@ export class Body extends Component{
    * @type number 
    */
   get torque() {
-    return this._torque
+    return this._movable.torque
   }
   set torque(x) {
-    this._torque.degree = x.degree
+    this._movable.torque.radian = x.radian
   }
   /**
    * Angular acceleration of a body in degrees
@@ -406,10 +359,10 @@ export class Body extends Component{
    * @type number 
    */
   get angularAcceleration() {
-    return this._torque.degree
+    return this._movable.torque.degree
   }
   set angularAcceleration(x) {
-    this._torque.degree = x
+    this._movable.torque.degree = x
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -418,7 +371,7 @@ export class Body extends Component{
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vector2(v.x, v.y).rotate(this.orientation.radian).add(this.position))
+    this.anchors.push(new Vector2(v.x, v.y))
     return this._localanchors.push(v) - 1
   }
   /**
@@ -466,17 +419,13 @@ export class Body extends Component{
       this.update()
       return
     }
-    this.requires(entity,"transform", "movable", "bounds")
+    this.requires(entity, "transform", "movable", "bounds")
 
     let transform = entity.get("transform")
     let bounds = entity.get("bounds").bounds
     let move = entity.get("movable")
-    this._acceleration = move.acceleration
-    this._rotation = move.rotation
-    this._velocity = move.velocity
-    this._position = transform.position
-    this._orientation = transform.orientation
-    this._torque = move.torque
+    this._transform = transform
+    this._movable = move
     this.bounds = bounds
 
     this.update()
@@ -487,7 +436,7 @@ export class Body extends Component{
    */
   update() {
     for (var i = 0; i < this.shapes.length; i++) {
-      this.shapes[i].update(this.position, this._orientation.radian)
+      this.shapes[i].update(this.position, this.orientation.radian)
     }
     for (var i = 0; i < this.anchors.length; i++) {
       this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian) //.add(this.position)
