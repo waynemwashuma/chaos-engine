@@ -5,7 +5,7 @@ import { ObjType } from "../settings.js"
 /**
  * Holds a group of related bodies and constraints.
  */
-export class Composite {
+export class Composite extends Component {
   /**
    * Entity this belongs to.
    * 
@@ -43,7 +43,7 @@ export class Composite {
     this.bodies.forEach(e => {
       e.init(entity, true)
     })
-    this.requires(entity,"transform")
+    this.requires(entity, "transform")
 
   }
   /**
@@ -130,13 +130,13 @@ export class Composite {
     }
     return mass
   }
-  set type(x){
+  set type(x) {
     for (var i = 0; i < this.bodies.length; i++) {
       this.bodies[i].type = x
     }
   }
-  get type(){
-    return this.bodies[0]?.type 
+  get type() {
+    return this.bodies[0]?.type
   }
   /**
    * Density of a body.
@@ -208,5 +208,9 @@ export class Composite {
       this.bodies[i].angularVelocity = x
     }
   }
+  destroy() {
+    this.bodies.forEach(b => {
+      b.destroy()
+    })
+  }
 }
-Component.implement(Composite)
