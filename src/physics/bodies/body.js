@@ -453,7 +453,7 @@ export class Body extends Component {
   }
   
   destroy(){
-    this.entity.manager.removeComponent(this._movable)
+    this.entity.manager.removeComponent("movable",this._movable)
   }
   toJson() {
     let obj = {
