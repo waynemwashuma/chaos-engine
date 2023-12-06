@@ -195,8 +195,10 @@ export class Manager {
       this._coreSystems.renderer.add(c)
       return
     }
-    if (n in this._componentLists)
-      this._componentLists[n].push(c)
+    if (n in this._compMap) {
+      const name = this._compMap[n]
+      this._systems[this._systemsMap[name]].add(c)
+    }
   }
   /**
    * This removes a component from a componentList
@@ -216,8 +218,11 @@ export class Manager {
       this._coreSystems.renderer.remove(c)
       return
     }
-    if (n in this._componentLists)
-      Utils.removeElement(this._componentLists[n], this._componentLists[n].indexOf(c))
+    if (n in this._compMap){
+      const name = this._compMap[n]
+      this._systems[this._systemsMap[name]].remove(c)
+    }
+      
   }
   /**
    * Removes an entity from the manager.
@@ -324,9 +329,6 @@ export class Manager {
     if (sys.init) sys.init(this)
     if (this._systemsMap[n] !== undefined) return
     switch (n) {
-      case "events":
-        this._coreSystems.events = sys
-        break
       case "world":
         this._coreSystems.world = sys
         break
