@@ -13,7 +13,7 @@
         "destination":"./docs",
         "recurse":true,
         "encoding":"utf-8",
-        "template":"templates/jsdoc-template",
+        "template":"doc-template",
         "readme":"readme.md"
     }
 }
