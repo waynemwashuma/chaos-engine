@@ -128,7 +128,7 @@ export class World {
     this.broadphase = new NaiveBroadphase(this)
     this.narrowphase = new SATNarrowPhase()
   }
-  
+
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
@@ -325,6 +325,7 @@ export class World {
    * @param {Body | Composite | Constraint} object
    */
   remove(object) {
+    object.destroy()
     if (object.physicsType == ObjType.BODY) {
       this.removeBody(object)
     } else if (object.physicsType == ObjType.CONSTRAINT) {
