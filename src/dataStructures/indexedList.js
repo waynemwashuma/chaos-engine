@@ -1,9 +1,6 @@
 export class IndexedList {
   _keys = new Map()
   _list = []
-  get(name) {
-    return this._list[this._keys[name]]
-  }
   get(name){
     return this._list[this._keys.get(name)]
   }
