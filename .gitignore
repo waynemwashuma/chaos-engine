@@ -12,3 +12,4 @@ tests
 *.res.js
 *.txt
 demos
+raycaster
