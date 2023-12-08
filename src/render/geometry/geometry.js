@@ -23,7 +23,10 @@ export class BufferGeometry {
    * @param {CanvasRenderingContext2D} ctx
    */
   init(ctx) {
-    let path = this.drawable = new Path2D()
-    vertices(path, this.vertices, true)
+    this.updateVertices(this.vertices)
+  }
+  updateVertices(data){
+    const path = this.drawable = new Path2D()
+    vertices(path, data, true)
   }
 }
