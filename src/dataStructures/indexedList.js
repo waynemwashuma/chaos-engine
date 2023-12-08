@@ -5,7 +5,7 @@ export class IndexedList {
     return this._list[this._keys.get(name)]
   }
   push(name, value) {
-    this._keys[name] = this._list.length
+    this._keys.set(name,this._list.length)
     this._list.push(value)
   }
   remove(name) {
@@ -13,6 +13,7 @@ export class IndexedList {
       this._keys.get(name),
       1
     )
+    this._keys.delete(name)
   }
   values() {
     return this._list
