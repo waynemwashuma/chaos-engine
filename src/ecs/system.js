@@ -7,10 +7,10 @@ import { mixin, Err, Utils } from "../utils/index.js"
  */
 export class System {
   init() {
-    Err.warnOnce("Please override the init method in the system " + proto.constructor.name)
+    Err.warnOnce("Please override the init method in the system " + this.constructor.name)
   }
   update() {
-    Err.warnOnce("Please override the update method in the system " + proto.constructor.name)
+    Err.warnOnce("Please override the update method in the system " + this.constructor.name)
 
   }
   add(component) {
