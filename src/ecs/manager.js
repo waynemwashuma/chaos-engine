@@ -385,7 +385,7 @@ export class Manager {
    * @returns {Component[]} An array of components
    */
   getComponentList(n) {
-    return this._componentList[n]
+    return this._componentLists[n]
   }
   /**
    * Finds the first entity with all the components and returns it.
