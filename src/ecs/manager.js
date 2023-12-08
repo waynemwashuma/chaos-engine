@@ -210,19 +210,19 @@ export class Manager {
    * @param { Component } c An object implementing Component interface
    */
   removeComponent(n, c) {
-    if (n === "body"  && this._coreSystems.world != void 0) {
+    if (n === "body" && this._coreSystems.world != void 0) {
       this._coreSystems.world.remove(c)
       return
     }
-    if (n === "sprite"  && this._coreSystems.renderer != void 0) {
+    if (n === "sprite" && this._coreSystems.renderer != void 0) {
       this._coreSystems.renderer.remove(c)
       return
     }
-    if (n in this._compMap){
+    if (n in this._compMap) {
       const name = this._compMap[n]
       this._systems[this._systemsMap[name]].remove(c)
     }
-      
+
   }
   /**
    * Removes an entity from the manager.
@@ -232,11 +232,11 @@ export class Manager {
    * @param {Entity} object The entity to remove
    */
   remove(object) {
+    this.events.trigger("remove", object)
     let index = this.objects.indexOf(object)
     object.removeComponents()
     object.reset()
     Utils.removeElement(this.objects, index)
-    this.events.trigger("remove", object)
   }
   /**
    * This removes all of the entities and components from the manager
@@ -300,7 +300,7 @@ export class Manager {
     let world = this._coreSystems["world"],
       renderer = this._coreSystems["renderer"],
       input = this._coreSystems["input"]
-      
+
     //the only reason this is here is that
     //i need to debug stuff visually - ill remove it later.
     if (renderer) renderer.clear()
@@ -315,7 +315,7 @@ export class Manager {
       this.events.trigger("precollision", world.contactList)
       this.events.trigger("collision", world.CLMDs)
     }
-    
+
   }
   /**
    * Used to register a system
