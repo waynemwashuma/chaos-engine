@@ -47,10 +47,10 @@ export class Sprite {
    * @type number
    */
   get angle() {
-    return this._orientation.radian * 180 / Math.PI
+    return this._orientation.value * 180 / Math.PI
   }
   set angle(x) {
-    this._orientation.degree = x
+    this._orientation.value = x * Math.PI/180
   }
   /**
    * World space position.
@@ -78,7 +78,7 @@ export class Sprite {
     ctx.save()
     ctx.beginPath()
     ctx.translate(...this._position)
-    ctx.rotate(this._orientation.radian)
+    ctx.rotate(this._orientation.value)
     ctx.scale(...this._scale)
     this.material?.render(ctx,dt,this.geometry?.drawable)
     ctx.closePath()

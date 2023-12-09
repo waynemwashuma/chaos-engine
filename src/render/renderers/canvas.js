@@ -43,7 +43,7 @@ export class Renderer2D extends Renderer {
       this.background.update(this, dt)
     this.ctx.save()
     this.ctx.translate(this.camera.transform.position.x,-this.camera.transform.position.y)
-    this.ctx.rotate(this.camera.transform.orientation.radian)
+    this.ctx.rotate(this.camera.transform.orientation.value)
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].render(this.ctx, dt)
     }

@@ -1,5 +1,4 @@
 import { Err } from "../utils/index.js"
-console.log(Err);
 /**
  * Wrapper class since JavaScript doesn't support references to numbers explicitly.
  * Keeps record of the orientation of an entity.
@@ -33,8 +32,7 @@ class Angle {
 
   //TODO - Change this to radians instead
   constructor(deg = 0) {
-    this._deg = deg || 0
-    this._rad = deg * Math.PI / 180 || 0
+    this.value = deg * Math.PI/2
   }
   /**
    * @type string
@@ -115,11 +113,11 @@ class Angle {
    * @param {Angle} angle
    */
   copy(angle) {
-    this.degree = angle.degree
+    this.value = angle.value
   }
 
   fromJSON(obj) {
-    this.degree = obj.deg
+    this.value = obj.val
   }
   /**
    * @returns {{
@@ -129,7 +127,7 @@ class Angle {
    */
   toJson() {
     return {
-      deg: this._deg,
+      val: this.value,
       type: this.CHAOS_OBJ_TYPE
     }
   }

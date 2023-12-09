@@ -52,7 +52,7 @@ export class SpringConstraint extends Constraint {
       body1.velocity.add(tmp5.copy(force).multiply(-body1.inv_mass))
       body2.velocity.add(tmp5.copy(force).multiply(body2.inv_mass))
       
-      body1.rotation.radian += force.cross(arm1) * body1.inv_inertia
-      body2.rotation.radian += force.cross(arm2) * -body2.inv_inertia
+      body1.rotation.value += force.cross(arm1) * body1.inv_inertia
+      body2.rotation.value += force.cross(arm2) * -body2.inv_inertia
   }
 }
