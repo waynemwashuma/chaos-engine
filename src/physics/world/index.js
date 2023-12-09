@@ -189,8 +189,8 @@ export class World {
         manifold = this.CLMDs[i]
         manifold.bodyA.velocity.add(manifold.velA)
         manifold.bodyB.velocity.add(manifold.velB)
-        manifold.bodyA.rotation.radian += manifold.rotA
-        manifold.bodyB.rotation.radian += manifold.rotB
+        manifold.bodyA.rotation.value += manifold.rotA
+        manifold.bodyB.rotation.value += manifold.rotB
       }
     }
 

@@ -11,8 +11,8 @@ export const ImpulseSolver = {
   solve(manifold) {
     let { bodyA, bodyB, ca1, ca2, restitution } = manifold
     let { axis } = manifold.contactData
-    let a$va = tmp1.set(ca1.y * -bodyA.rotation.radian, ca1.x * bodyA.rotation.radian)
-    let a$vb = tmp2.set(ca2.y * -bodyB.rotation.radian, ca2.x * bodyB.rotation.radian)
+    let a$va = tmp1.set(ca1.y * -bodyA.rotation.value, ca1.x * bodyA.rotation.value)
+    let a$vb = tmp2.set(ca2.y * -bodyB.rotation.value, ca2.x * bodyB.rotation.value)
     let va = tmp3.copy(bodyA.velocity).add(a$va)
     let vb = tmp4.copy(bodyB.velocity).add(a$vb)
     let vp = va.sub(vb)

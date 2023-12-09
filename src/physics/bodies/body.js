@@ -1,4 +1,4 @@
-import { Vector2, Angle } from "../../math/index.js"
+import { Vector2, Angle,degToRad,radToDeg } from "../../math/index.js"
 import { Component } from "../../ecs/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
@@ -260,10 +260,10 @@ export class Body extends Component {
    * @type number
    */
   set angle(angle) {
-    this.orientation.degree = angle
+    this.orientation.value = degToRad(angle)
   }
   get angle() {
-    return this.orientation.degree
+    return radToDeg(this.orientation.value)
   }
   /**
    * Mass of a body.
@@ -337,10 +337,10 @@ export class Body extends Component {
    * @type number 
    */
   get angularVelocity() {
-    return this.rotation.degree
+    return radToDeg(this.rotation.value)
   }
   set angularVelocity(x) {
-    this.rotation.degree = x
+    this.rotation.value = degToRad(x)
   }
   /**
    * Torque of a body in degrees
@@ -351,7 +351,7 @@ export class Body extends Component {
     return this._movable.torque
   }
   set torque(x) {
-    this._movable.torque.radian = x.radian
+    this._movable.torque.copy(x)
   }
   /**
    * Angular acceleration of a body in degrees
@@ -359,10 +359,10 @@ export class Body extends Component {
    * @type number 
    */
   get angularAcceleration() {
-    return this._movable.torque.degree
+    return radToDeg(this._movable.torque.value)
   }
   set angularAcceleration(x) {
-    this._movable.torque.degree = x
+    this._movable.torque.value = degToRad(x)
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -392,7 +392,7 @@ export class Body extends Component {
    * @returns { Vector2}
    */
   getLocalAnchor(index, target = new Vector2()) {
-    return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
+    return target.copy(this._localanchors[index]).rotate(this.orientation.value)
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
@@ -403,7 +403,7 @@ export class Body extends Component {
    */
   applyForce(force, arm = Vector2.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
-    this.rotation.degree += arm.cross(force) * this.inv_inertia
+    this.rotation.value += arm.cross(force) * this.inv_inertia
   }
 
   /**
@@ -441,10 +441,10 @@ export class Body extends Component {
    */
   update() {
     for (var i = 0; i < this.shapes.length; i++) {
-      this.shapes[i].update(this.position, this.orientation.radian)
+      this.shapes[i].update(this.position, this.orientation.value)
     }
     for (var i = 0; i < this.anchors.length; i++) {
-      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian) //.add(this.position)
+      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.value) //.add(this.position)
     }
     if (this.autoUpdateBound)
       this.bounds.calculateBounds(this, this.boundPadding)

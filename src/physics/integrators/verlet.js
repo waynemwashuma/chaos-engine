@@ -24,6 +24,6 @@ export class VerletSolver {
     body.angularVelocity += body.angularAcceleration * dt * 0.5
     body.angle += body.angularVelocity * dt
     body.angularVelocity += body.angularAcceleration * dt * 0.5
-    body.torque.radian = 0
+    body.torque.value = 0
   }
 }
