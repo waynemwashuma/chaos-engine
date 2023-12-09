@@ -44,7 +44,7 @@ export function log(message) {
 export function warnOnce(message) {
   if (mess.includes(message)) return
   mess.push(message)
-  Err.warn(message)
+  warn(message)
 }
 /**
  * Logs out a message,warning or error to the console according to the supplied log function.
@@ -67,5 +67,5 @@ export function deprecate(original, replacement = "") {
   let message = `"${original}" has been depreciated.`
   if (replacement !== "")
     message += `Use "${replacement}" instead.`
-  Err.warnOnce(message)
+  warnOnce(message)
 }
