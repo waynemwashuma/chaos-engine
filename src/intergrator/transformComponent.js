@@ -1,13 +1,11 @@
-//import { Component } from "./component.js"
+import { Component } from "../ecs/index.js"
 import { Vector2, Angle } from "../math/index.js"
 
 /**
  * Holds transformation info of an entity 
  * 
- * @implements Component
  */
-class Transform {
-  entity = null
+export class Transform extends Component{
   /**
    * @param {number} x
    * @param {number} y
@@ -15,6 +13,7 @@ class Transform {
    * @returns 
    */
   constructor(x,y,a){
+    super()
     this.position = new Vector2(x,y)
     this.orientation = new Angle(a)
   }
@@ -29,7 +28,4 @@ class Transform {
     this.position.fromJson(obj.position)
     this.orientation.fromJson(obj.orientation)
   }
-}
-export {
-  Transform
 }

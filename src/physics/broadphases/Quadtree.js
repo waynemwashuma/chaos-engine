@@ -342,7 +342,7 @@ class Node {
  * 
  * @extends Broadphase
  */
-class Tree extends Broadphase {
+export class QuadTreeBroadphase extends Broadphase {
   /**
    * @param {Bounds} bounds The region it operates on.
    * @param {number} [maxdepth=3] Maximum number of branches.
@@ -467,10 +467,6 @@ class Tree extends Broadphase {
   getCollisionPairs(target) {
     this._root.getCollisionPairs(target, [])
   }
-}
-
-export {
-  Tree as QuadTreeBroadphase,
 }
 
 /**

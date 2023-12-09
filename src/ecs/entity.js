@@ -1,7 +1,3 @@
-import { Movable } from "./movableComponent.js"
-import { Transform } from "./transformComponent.js"
-import { Bound } from "./boundsComponent.js"
-
 /**
  * This is a container to hold components,tags and event handlers.
  * 
@@ -54,7 +50,6 @@ export class Entity {
    * Removes all components and handlers from an entity while removing it from its manager
    */
   destroy() {
-    this.removeSelf()
     for (let k in this._components) {
       let comp = this._components[k]
       if (comp.destroy)
@@ -64,7 +59,7 @@ export class Entity {
     for (let k in this._handlers) {
       delete this._handlers[k]
     }
-
+    this.removeSelf()
   }
   /**
    * Removes an entity and its components from its manager whilst retaining its components and handlers
@@ -214,12 +209,14 @@ export class Entity {
   /**
    * A helper function to create a new Entity with transform,movable and bounds components.
    * 
+   * @depreciated
    * @param {number} x
    * @param {number} y
    * @param {number} a
    * @returns {Entity}
    */
   static Default(x, y, a) {
+    console.warn("'Entity.Default()' is depreciated,use 'createEntity()' instead.")
     return new Entity()
       .attach("transform", new Transform(x, y, a))
       .attach("movable", new Movable())

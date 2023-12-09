@@ -10,7 +10,7 @@ let tmp1 = new Vector2(),
 /**
  * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
  */
-class DistanceConstraint extends Constraint {
+export class DistanceConstraint extends Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
@@ -55,10 +55,7 @@ class DistanceConstraint extends Constraint {
     body1.position.add(tmp5.copy(force).multiply(-body1.inv_mass))
     body2.position.add(tmp5.copy(force).multiply(body2.inv_mass))
 
-    body1.rotation.radian += tmp4.cross(arm1) * body1.inv_inertia
-    body2.rotation.radian += tmp4.cross(arm2) * -body2.inv_inertia
+    body1.rotation.value += tmp4.cross(arm1) * body1.inv_inertia
+    body2.rotation.value += tmp4.cross(arm2) * -body2.inv_inertia
   }
-}
-export {
-  DistanceConstraint
 }

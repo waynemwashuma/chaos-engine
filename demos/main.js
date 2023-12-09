@@ -3,7 +3,7 @@ import { demos } from "./index.js"
 
 demos.init("#can")
 
-demos.setup("box")
+demos.setup("raycaster")
 
 let optionTab = document.querySelector("#options-checkbox")
 let demoOption = document.querySelector("#demos")
@@ -20,7 +20,6 @@ let pause = createCheckbox("pause", "Pause",optionTab, function() {
   pause.firstChild.checked?demos.manager.pause():demos.manager.play()
   console.log(pause.firstChild.checked);
 })
-
 
 
 

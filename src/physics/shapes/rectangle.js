@@ -1,7 +1,7 @@
 import { Shape } from "./shape.js"
 import { Vector2, sq }from "../../math/index.js"
 
-class Rectangle extends Shape {
+export class Rectangle extends Shape {
   /**
    * @type number
    */
@@ -39,8 +39,4 @@ class Rectangle extends Shape {
     return this.width * this.height
   }
 
-}
-
-export {
-  Rectangle
 }

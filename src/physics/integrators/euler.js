@@ -6,7 +6,7 @@ let a = new Vector2()
  * Semi implicit euler integration.
  * More stable than explicit euler intergration.
 */
-class EulerSolver{
+export class EulerSolver{
   /**
    * @param {Body} body
    * @param {number} dt
@@ -18,8 +18,6 @@ class EulerSolver{
     body.angularVelocity += body.angularAcceleration * dt
     body.angle += body.angularVelocity * dt
     body.acceleration.set(0,0)
+    body.torque.value = 0
   }
-}
-export{
-  EulerSolver
 }

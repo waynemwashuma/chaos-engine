@@ -1,8 +1,5 @@
-import { Movable } from "./movableComponent.js"
-import { Transform } from "./transformComponent.js"
-import { Bound } from "./boundsComponent.js"
-import { Entity } from "./entity.js"
-
+import { Entity } from "../ecs/index.js"
+import { Transform, Bound, Movable } from "../intergrator/index.js"
 /**
  * @param {number} x x-position of entity 
  * @param {number} y y-position of entity 

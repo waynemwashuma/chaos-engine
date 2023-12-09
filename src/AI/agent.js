@@ -3,10 +3,8 @@ import { BehaviourManager } from "./behaviourManager.js"
 
 /**
  * This is a component class used to add AI behavior to an entity.
- * 
- * @implements Component
  */
-class Agent {
+export class Agent extends Component{
   /**
    * The position of the entity.
    * 
@@ -59,8 +57,7 @@ class Agent {
    * @param {Entity} entity
    */
   init(entity) {
-    this.entity = entity
-    this.requires("transform", "movable")
+    this.requires(entity,"transform", "movable")
     let move = entity.get("movable"),
       transform = entity.get("transform")
     this.velocity = move.velocity
@@ -99,8 +96,4 @@ class Agent {
   draw(ctx) {
     this.behaviours.draw(ctx)
   }
-}
-Component.implement(Agent)
-export {
-  Agent
 }

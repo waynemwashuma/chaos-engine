@@ -1,10 +1,8 @@
 import {
-  Entity,
+  createEntity,
   Agent,
-  BodySprite,
   AgentSprite,
   WanderBehaviour,
-  Vector2,
   Box,
   rand
 } from "/src/index.js"
@@ -12,7 +10,7 @@ import {
 export function wanderer(manager) {
   manager.getSystem("world").gravity = 0
 
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 100; i++) {
     manager.add(createWonderer(
       rand(100, innerWidth-100),
       rand(100, innerHeight - 100)
@@ -21,7 +19,7 @@ export function wanderer(manager) {
 }
 
 function createWonderer(x, y) {
-  let a = Entity.Default(x, y)
+  let a = createEntity(x, y)
   let aa = new Agent()
 
   a.attach("body", new Box(30, 20))

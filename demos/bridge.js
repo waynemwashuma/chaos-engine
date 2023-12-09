@@ -2,7 +2,7 @@ import {
   Vector2,
   Box,
   DistanceConstraint,
-  Entity,
+  createEntity,
   BodySprite
 } from "/src/index.js"
 
@@ -11,10 +11,10 @@ export function bridge(manager) {
 
   world.gravity = 1000
   
-  let pin1 = Entity.Default(100, 200)
+  let pin1 = createEntity(100, 200)
     .attach("body",new Box(20, 20))
     .attach("sprite",new BodySprite())
-  let pin2 = Entity.Default(350, 200)
+  let pin2 = createEntity(350, 200)
     .attach("body",new Box(20, 20))
     .attach("sprite",new BodySprite())
   let chain = createChain(50, 200, 50, 10, 5, 50, pin1, pin2)
@@ -31,7 +31,7 @@ export function bridge(manager) {
 function createChain(x, y, w, h, number, spacing, pin1, pin2) {
   let prev = new Box(w, h),
     bodies = [
-      Entity.Default(x, y)
+      createEntity(x, y)
       .attach("body", prev)
       .attach("sprite", new BodySprite())
       ],
@@ -46,7 +46,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     let constraint = new DistanceConstraint(prev, chain,  prev.getAnchor(an1),chain.getAnchor(an2))
 
     bodies.push(
-      Entity.Default(x * i, y)
+      createEntity(x * i, y)
       .attach("body", chain)
       .attach("sprite", new BodySprite())
     )

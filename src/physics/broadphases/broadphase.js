@@ -6,7 +6,7 @@
  * @see GridBroadphase
  * @see AABBBroadphase
  */
-class Broadphase {
+export class Broadphase {
   /**
    * Checks to see if two bodies can proceed to have their bounding boxes checked 
    * 
@@ -65,8 +65,4 @@ class Broadphase {
    * @returns {Body[]}
    */
   query(bounds, target) {}
-}
-
-export {
-  Broadphase
 }

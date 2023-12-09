@@ -1,10 +1,5 @@
-import { Err } from "./error.js"
-/**
- * Contains a subset of useful functionality.
- * 
- * @module Utils
- */
-export const Utils = {}
+import { throws } from "./error.js"
+
 let tmpID = 0
 
 /**
@@ -15,7 +10,7 @@ let tmpID = 0
  * @param {T[]} arr1
  * @param {T[]} arr2
  */
-Utils.appendArr = function appendArr(arr1, arr2) {
+export function appendArr(arr1, arr2) {
   for (var i = 0; i < arr2.length; i++) {
     arr1.push(arr2[i])
   }
@@ -27,7 +22,7 @@ Utils.appendArr = function appendArr(arr1, arr2) {
  * @template T
  * @param {T[]} arr
  */
-Utils.clearArr = function(arr) {
+export function clearArr(arr) {
   for (var i = arr.length; i > 0; i--) {
     arr.pop()
   }
@@ -40,7 +35,7 @@ Utils.clearArr = function(arr) {
  * @param {T[]} arr
  * @param {number} number
  */
-Utils.popArr = function(arr, number) {
+export function popArr(arr, number) {
   let length = arr.length
   for (var i = length; i > length - number; i--) {
     arr.pop()
@@ -54,7 +49,7 @@ Utils.popArr = function(arr, number) {
  * @param {T[]} arr
  * @param {number} index
  */
-Utils.removeElement = function(arr, index) {
+export function removeElement(arr, index) {
   if (index == -1) return null
   if (arr.length - 1 == index) return arr.pop()
 
@@ -67,7 +62,7 @@ Utils.removeElement = function(arr, index) {
  * 
  * @memberof Utils
  */
-Utils.generateID = function() {
+export function generateID() {
   return (tmpID += 1)
 }
 
@@ -79,7 +74,7 @@ Utils.generateID = function() {
  * @param {boolean} [overrideInit=true]
  * @param {boolean} [overrideUpdate=true]
  */
-Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate = true) {
+export function inheritComponent(component, overrideInit = true, overrideUpdate = true) {
   if (component == void 0 || typeof component !== "function") return
   let proto = component.prototype
 
@@ -114,10 +109,10 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
   proto.get = function(n) {
     return this.entity.getComponent(n);
   }
-  proto.requires = function(...names) {
+  proto.requires = function(entity,...names) {
     for (var i = 0; i < names.length; i++)
-      if (!this.entity.has(names[i]))
-        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`)
+      if (!entity.has(names[i]))
+        throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
   }
 
   proto.query = function(bound, target = []) {
@@ -147,7 +142,6 @@ Utils.inheritComponent = function(component, overrideInit = true, overrideUpdate
 /**
  * Mixes the functions required by an object  into another object.
  * 
- * @memberof Utils
  *  @param {Object} from the object constructor function to add methods from.
  * @param {Object} to the object constructor function to add methods to.
  */
@@ -157,7 +151,6 @@ export function mixin(from, to,props = []) {
   console.log(proto2);
   Object.assign(proto,from)
   for (let name of props) {
-    let methodName = props[name]
     //if(!(methodName in proto))continue
     //if (methodName in proto2) continue
     

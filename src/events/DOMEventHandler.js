@@ -1,7 +1,7 @@
 /**
  * This handles events created by the DOM.
  */
-class DOMEventHandler {
+export class DOMEventHandler {
   /**
    * A dictionary of callback functions
    * 
@@ -70,8 +70,4 @@ class DOMEventHandler {
   Ill leave it for now.
   */
   init() {}
-}
-
-export {
-  DOMEventHandler
 }

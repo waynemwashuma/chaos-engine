@@ -1,11 +1,9 @@
 import {
-  Entity,
+  createEntity,
   Agent,
   Ball,
-  BodySprite,
   AgentSprite,
   PathFollowing,
-  WanderBehaviour,
   Path,
   Vector2
 } from "/src/index.js"
@@ -13,7 +11,7 @@ import {
 export function pathfollower(manager) {
   manager.getSystem("world").gravity = 0
 
-  let a = Entity.Default(100, 100)
+  let a = createEntity(100, 100)
 
   let aa = new Agent()
 

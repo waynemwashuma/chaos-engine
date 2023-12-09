@@ -1,28 +1,13 @@
-import { World } from "../physics/index.js"
-import { Renderer2D } from "../render/index.js"
 import { Loader } from "../loader/index.js"
-import {
-  Clock,
-  Utils,
-  Err
-} from "../utils/index.js"
-import {
-  EventDispatcher,
-  defaultCollisionHandler,
-  defaultPrecollisionHandler
-} from "../events/index.js"
-import { Input } from "../inputs/index.js"
+import { Clock, Utils, Err, Perf } from "../utils/index.js"
+import { EventDispatcher } from "../events/index.js"
 
-
-/**
- * 
- */
 /**
  * This class is responsible for managing all
  * entities and ensuring that systems are updated every frame.
  * 
  */
-class Manager {
+export class Manager {
   /**
    * RAF number of current frame.Used for pausing the manager.
    * 
@@ -118,10 +103,7 @@ class Manager {
    * This is an artifact of me debugging this.
    * TODO - Should implement a better soluton
    */
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
+  perf = new Perf()
   /**
    * look at Loader for more info.
    * 
@@ -138,6 +120,7 @@ class Manager {
    * @private
    */
   _update = accumulate => {
+    this.perf.start()
     let dt = this.clock.update(accumulate)
 
     if (this._accumulator < this.frameRate) {
@@ -150,35 +133,13 @@ class Manager {
     this.events.trigger("update")
     this.events.trigger("updateEnd")
     this._accumulator = 0
+    this.perf.end()
     this.RAF()
   }
   /**
    * Creates a new instance of Manager class
-   * 
-   * @param {Object} [options] 
-   * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
-   * @param {Object} [options.files={}] This is passed onto the Loader.Please check `Loader.load()` for more information on it.
-   * @param {boolean} [options.physics=true] Adds physics world as a System.
-   * @param {boolean} [options.renderer=true] Adds a renderer as a system.
-   * @param {boolean} [options.input=true] Adds input as a system.
-   * 
    **/
   constructor(options = {}) {
-    options = Object.assign({
-      autoPlay: true,
-      physics: true,
-      renderer: true,
-      input: true
-    }, options)
-    if (options.input)
-      this.registerSystem("input", new Input())
-    if (options.physics) {
-      this.registerSystem("world", new World())
-      this.events.add("collision", defaultCollisionHandler)
-      this.events.add("precollision", defaultPrecollisionHandler)
-    }
-    if (options.renderer)
-      this.registerSystem("renderer", new Renderer2D())
     this.loader.onfinish = e => {
       this.init()
       this.play()
@@ -226,16 +187,18 @@ class Manager {
    * @param {Component} c An object implementing Component
    */
   addComponent(n, c) {
-    if (n === "body") {
+    if (n === "body" && this._coreSystems.world != void 0) {
       this._coreSystems.world.add(c)
       return
     }
-    if (n === "sprite") {
+    if (n === "sprite" && this._coreSystems.renderer != void 0) {
       this._coreSystems.renderer.add(c)
       return
     }
-    if (n in this._componentLists)
-      this._componentLists[n].push(c)
+    if (n in this._compMap) {
+      const name = this._compMap[n]
+      this._systems[this._systemsMap[name]].add(c)
+    }
   }
   /**
    * This removes a component from a componentList
@@ -247,16 +210,19 @@ class Manager {
    * @param { Component } c An object implementing Component interface
    */
   removeComponent(n, c) {
-    if (n === "body") {
+    if (n === "body" && this._coreSystems.world != void 0) {
       this._coreSystems.world.remove(c)
       return
     }
-    if (n === "sprite") {
+    if (n === "sprite" && this._coreSystems.renderer != void 0) {
       this._coreSystems.renderer.remove(c)
       return
     }
-    if (n in this._componentLists)
-      Utils.removeElement(this._componentLists[n], this._componentLists[n].indexOf(c))
+    if (n in this._compMap) {
+      const name = this._compMap[n]
+      this._systems[this._systemsMap[name]].remove(c)
+    }
+
   }
   /**
    * Removes an entity from the manager.
@@ -266,11 +232,11 @@ class Manager {
    * @param {Entity} object The entity to remove
    */
   remove(object) {
+    this.events.trigger("remove", object)
     let index = this.objects.indexOf(object)
     object.removeComponents()
     object.reset()
     Utils.removeElement(this.objects, index)
-    this.events.trigger("remove", object)
   }
   /**
    * This removes all of the entities and components from the manager
@@ -335,8 +301,6 @@ class Manager {
       renderer = this._coreSystems["renderer"],
       input = this._coreSystems["input"]
 
-    let totalTS = performance.now()
-
     //the only reason this is here is that
     //i need to debug stuff visually - ill remove it later.
     if (renderer) renderer.clear()
@@ -351,18 +315,7 @@ class Manager {
       this.events.trigger("precollision", world.contactList)
       this.events.trigger("collision", world.CLMDs)
     }
-    this.perf.total = performance.now() - totalTS
-  }
-  /**
-   * This registers a class into the manager so that ot can be used in cloning an entity.
-   * 
-   * @param {function} obj The class or constructor function to register
-   * @param {boolean} override Whether to override an existing class
-   */
-  registerClass(obj, override = false) {
-    let n = obj.name.toLowerCase()
-    if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
-    this._classes[n] = obj
+
   }
   /**
    * Used to register a system
@@ -376,9 +329,6 @@ class Manager {
     if (sys.init) sys.init(this)
     if (this._systemsMap[n] !== undefined) return
     switch (n) {
-      case "events":
-        this._coreSystems.events = sys
-        break
       case "world":
         this._coreSystems.world = sys
         break
@@ -415,7 +365,7 @@ class Manager {
    */
   unregisterSystem(n) {
     if (n in this._coreSystems)
-      return this._systems[this._systemsMap[n]] = null
+      return this._coreSystems[n] = null
     delete this._systems[this._systemsMap[n]]
     delete this._systemsMap[n]
   }
@@ -435,7 +385,7 @@ class Manager {
    * @returns {Component[]} An array of components
    */
   getComponentList(n) {
-    return this._componentList[n]
+    return this._componentLists[n]
   }
   /**
    * Finds the first entity with all the components and returns it.
@@ -443,7 +393,7 @@ class Manager {
    * @param {Array<String>} comps An array containing the component names to be searched
    * @returns {Entity} 
    */
-  getEntityByComponents(comps,entities = this.objects) {
+  getEntityByComponents(comps, entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < comps.length; j++) {
         if (!entities[i].has(comps[j])) continue
@@ -475,7 +425,7 @@ class Manager {
    * @param {Array<String>} tags An array containing the tags to be searched
    * @returns {Entity} 
    */
-  getEntityByTags(tags,entities = this.objects) {
+  getEntityByTags(tags, entities = this.objects) {
     for (let i = 0; i < entities.length; i++) {
       for (let j = 0; j < tags.length; j++) {
         if (!entities[i].hasTag(tags[j])) continue
@@ -504,37 +454,6 @@ class Manager {
    * Ignore this,im going to remove it and the rest of cloning utilities.
    * @private
    * @deprecated
-   */
-  infertype(obj) {
-    let n = obj.CHOAS_CLASSNAME
-    if (n) {
-      if (n in this._classes)
-        return new this._classes[n]()
-      Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`)
-    }
-    return obj instanceof Array ? [] : {}
-  }
-  /**
-   * Deep copies an entity
-   * 
-   * @deprecated
-   * @private
-   * @returns {Entity}
-   */
-  clone(obj) {
-    if (typeof obj !== "object") return obj
-    let object = this.infertype(obj)
-    for (var key in obj) {
-      object[key] = this.clone(obj[key])
-    }
-    return object
-  }
-  /**
-   * Creates a system that allows you to use the `Component.update` method for the given componentList whose name is given.
-   * 
-   * @param {string} name The name of componentList this system is taking care of.
-   * 
-   * @returns {System}
    */
   static DefaultSystem(name) {
     let n = name
@@ -566,7 +485,4 @@ class Manager {
     ///TODO - What will happen if there is no world?   ...Yes,it will crash.
     return this._coreSystems.world.query(bound)
   }
-}
-export {
-  Manager
 }

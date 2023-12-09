@@ -6,7 +6,7 @@ let a = new Vector2()
  * Runge Kutta 4 (RK-4) 
  * Has the highest accuracy but causes low performance.Greate for non real-time stuff that needs accuracy.
 */
-class RungeKuttaSolver{
+export class RungeKuttaSolver{
     /**
    * @param {Body} body
    * @param {number} dt
@@ -16,8 +16,6 @@ class RungeKuttaSolver{
     a.copy(body.velocity)
     body.position.add(a.mult(dt))
     body.acceleration.set(0,0)
+    body.torque.value = 0
   }
-}
-export{
-  RungeKuttaSolver
 }

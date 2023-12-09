@@ -8,7 +8,7 @@ import { Component } from "../../ecs/index.js"
  * @implements Component
  * TODO - ADD id property to this class and Group class.
  */
-class Sprite {
+export class Sprite {
   /**
    * @private
    */
@@ -47,10 +47,10 @@ class Sprite {
    * @type number
    */
   get angle() {
-    return this._orientation.radian * 180 / Math.PI
+    return this._orientation.value * 180 / Math.PI
   }
   set angle(x) {
-    this._orientation.degree = x
+    this._orientation.value = x * Math.PI/180
   }
   /**
    * World space position.
@@ -78,7 +78,7 @@ class Sprite {
     ctx.save()
     ctx.beginPath()
     ctx.translate(...this._position)
-    ctx.rotate(this._orientation.radian)
+    ctx.rotate(this._orientation.value)
     ctx.scale(...this._scale)
     this.material?.render(ctx,dt,this.geometry?.drawable)
     ctx.closePath()
@@ -95,7 +95,7 @@ class Sprite {
       return
     }
     this.entity = entity
-    this.requires("transform")
+    this.requires(entity,"transform")
     let transform = entity.get("transform")
     this._position = transform.position
     this._orientation = transform.orientation
@@ -122,6 +122,3 @@ class Sprite {
   }
 }
 Component.implement(Sprite)
-export {
-  Sprite
-}

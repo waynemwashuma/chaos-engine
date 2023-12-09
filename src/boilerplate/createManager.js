@@ -1,5 +1,7 @@
 import { World } from "../physics/index.js"
 import { Renderer2D } from "../render/index.js"
+import { Input } from "../inputs/index.js"
+import { Manager } from "../ecs/index.js"
 import {
   defaultCollisionHandler,
   defaultPrecollisionHandler
@@ -14,6 +16,7 @@ import {
  * @param {boolean} [options.renderer=true] Adds a renderer as a system.
  * @param {boolean} [options.input=true] Adds input as a system.
  * 
+ * @returns {Manager}
  **/
 export function createManager(options) {
   options = Object.assign({

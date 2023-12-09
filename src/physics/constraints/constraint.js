@@ -8,7 +8,7 @@ import { Vector2 } from "../../math/index.js"
  * @see DistanceConstraint
  * @see SpringConstraint
  */
-class Constraint {
+export class Constraint {
   /**
    * @param {Body} body1
    * @param {Body} body2
@@ -88,7 +88,4 @@ class Constraint {
     constraint.dampening = obj.dampening
     return constraint
   }
-}
-export {
-  Constraint
 }

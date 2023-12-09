@@ -23,74 +23,26 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { Vector2, Angle } from "../../math/index.js"
+            <pre class="prettyprint source linenums"><code>import { Vector2, Angle,degToRad,radToDeg } from "../../math/index.js"
 import { Component } from "../../ecs/index.js"
-import {Utils} from "../../utils/index.js"
+import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../AABB/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
-
+import { Movable, Transform } from "../../intergrator/index.js"
 /**
  * Holds information needed for collision detection and response.
  * 
- * @implements Component
  */
-class Body {
+export class Body extends Component {
   /**
    * Unique identification of a body.
    * 
    * @type number
    */
   id = Utils.generateID()
-  /**
-   * World space coordinates of a body
-   * 
-   * @private
-   * @type Vector2
-   */
-  _position = new Vector2()
-  /**
-   * velocity of a body.Speed in pixels per second.
-   * 
-   * @private
-   * @type Vector2
-   */
-  _velocity = new Vector2()
-  /**
-   * acceleration of a body in pixels per second squared.
-   * 
-   * @private
-   * @type Vector2
-   */
-  _acceleration = new Vector2()
-  /**
-   * World space orientation of a body
-   * 
-   * @private
-   * @type Angle
-   */
-  _orientation = new Angle()
-  /**
-   * Rotation of a body
-   * 
-   * @private
-   * @type Angle
-   */
-  _rotation = new Angle()
-  /**
-   * Torque of the body
-   * 
-   * @private
-   * @type Angle
-   */
-  _torque = new Angle()
-  /**
-   * Mass of the body.
-   * 
-   * @private
-   * @type number
-   * @default 1
-   */
+  _transform = new Transform()
+  _movable = new Movable()
   _mass = 1
   /**
    * Rotational inertia of the body.
@@ -249,6 +201,7 @@ class Body {
    * @param {Shape[]} shapes
    */
   constructor(...shapes) {
+    super()
     this.type = Settings.type
     this.shapes = shapes
     this.mass = 1
@@ -299,21 +252,21 @@ class Body {
    * @type Vector2
    */
   get acceleration() {
-    return this._acceleration
+    return this._movable.acceleration
   }
   set acceleration(x) {
-    this._acceleration.copy(x)
+    this._movable.acceleration.copy(x)
   }
   /**
    * Velocity of a body
-   * 
+
    * @type Vector2
    */
   get velocity() {
-    return this._velocity
+    return this._movable.velocity
   }
   set velocity(x) {
-    this._velocity.copy(x)
+    this._movable.velocity.copy(x)
   }
   /**
    * Rotation of a body
@@ -321,10 +274,10 @@ class Body {
    * @type Angle
    */
   get rotation() {
-    return this._rotation
+    return this._movable.rotation
   }
   set rotation(x) {
-    this._rotation.copy(x)
+    this._movable.rotation.copy(x)
   }
   /**
    * Orientation of a body in degrees.
@@ -332,10 +285,10 @@ class Body {
    * @type number
    */
   set angle(angle) {
-    this.orientation.degree = angle
+    this.orientation.value = degToRad(angle)
   }
   get angle() {
-    return this.orientation.degree
+    return radToDeg(this.orientation.value)
   }
   /**
    * Mass of a body.
@@ -387,10 +340,10 @@ class Body {
    * @type Vector2
    */
   get position() {
-    return this._position
+    return this._transform.position
   }
   set position(x) {
-    this._position.copy(x)
+    this._transform.position.copy(x)
   }
   /**
    * Orientation of a body
@@ -398,10 +351,10 @@ class Body {
    * @type Angle
    */
   set orientation(r) {
-    this._orientation.copy(r)
+    this._transform.orientation.copy(r)
   }
   get orientation() {
-    return this._orientation
+    return this._transform.orientation
   }
   /**
    * Angular velocity of a body in degrees
@@ -409,10 +362,10 @@ class Body {
    * @type number 
    */
   get angularVelocity() {
-    return this.rotation.degree
+    return radToDeg(this.rotation.value)
   }
   set angularVelocity(x) {
-    this.rotation.degree = x
+    this.rotation.value = degToRad(x)
   }
   /**
    * Torque of a body in degrees
@@ -420,10 +373,10 @@ class Body {
    * @type number 
    */
   get torque() {
-    return this._torque
+    return this._movable.torque
   }
   set torque(x) {
-    this._torque.degree = x.degree
+    this._movable.torque.copy(x)
   }
   /**
    * Angular acceleration of a body in degrees
@@ -431,10 +384,10 @@ class Body {
    * @type number 
    */
   get angularAcceleration() {
-    return this._torque.degree
+    return radToDeg(this._movable.torque.value)
   }
   set angularAcceleration(x) {
-    this._torque.degree = x
+    this._movable.torque.value = degToRad(x)
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -443,7 +396,7 @@ class Body {
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vector2(v.x, v.y).rotate(this.orientation.radian).add(this.position))
+    this.anchors.push(new Vector2(v.x, v.y))
     return this._localanchors.push(v) - 1
   }
   /**
@@ -464,7 +417,7 @@ class Body {
    * @returns { Vector2}
    */
   getLocalAnchor(index, target = new Vector2()) {
-    return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
+    return target.copy(this._localanchors[index]).rotate(this.orientation.value)
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
@@ -475,32 +428,34 @@ class Body {
    */
   applyForce(force, arm = Vector2.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
-    this.rotation.degree += arm.cross(force) * this.inv_inertia
+    this.rotation.value += arm.cross(force) * this.inv_inertia
   }
 
   /**
    * Initializes the body to its given.Called by the world or an entity manager.
    * 
-   * @param {Entity | null} entity
+   * @param { Entity } [entity]
    * @param {boolean} [composited=false]
    */
   init(entity, composited = false) {
     this.entity = entity
-    if (composited) {
+    if (composited || entity == void 0) {
       this.bounds = new BoundingBox()
+      if (entity != void 0) {
+        this._movable.transform = this._transform
+        entity.manager.addComponent("transform",this._transform)
+        entity.manager.addComponent("movable",this._movable)
+      }
       this.update()
       return
     }
-    this.requires("transform", "movable", "bounds")
+    this.requires(entity, "transform", "movable", "bounds")
 
     let transform = entity.get("transform")
     let bounds = entity.get("bounds").bounds
     let move = entity.get("movable")
-    this._acceleration = move.acceleration
-    this._rotation = move.rotation
-    this._velocity = move.velocity
-    this._position = transform.position
-    this._orientation = transform.orientation
+    this._transform = transform
+    this._movable = move
     this.bounds = bounds
 
     this.update()
@@ -511,15 +466,19 @@ class Body {
    */
   update() {
     for (var i = 0; i &lt; this.shapes.length; i++) {
-      this.shapes[i].update(this.position, this._orientation.radian)
+      this.shapes[i].update(this.position, this.orientation.value)
     }
     for (var i = 0; i &lt; this.anchors.length; i++) {
-      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian) //.add(this.position)
+      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.value) //.add(this.position)
     }
     if (this.autoUpdateBound)
       this.bounds.calculateBounds(this, this.boundPadding)
     this.bounds.update(this.position)
     //this.angle = this.angle > 360 ? this.angle - 360 : this.angle &lt; 0 ? 360 + this.angle : this.angle
+  }
+  
+  destroy(){
+    this.entity.manager.removeComponent("movable",this._movable)
   }
   toJson() {
     let obj = {
@@ -596,10 +555,6 @@ class Body {
    * @type number
    */
   static DYNAMIC = ObjType.DYNAMIC
-}
-Component.implement(Body)
-export {
-  Body
 }</code></pre>
         </article>
     </section>
@@ -610,13 +565,13 @@ export {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="CamController_CamController.html">CamController</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Geometry.html">Geometry</a></li><li><a href="Grid.html">Grid</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Line.html">Line</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="ParticleSystemSprite.html">ParticleSystemSprite</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SATNarrowPhase.html">SATNarrowPhase</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Tree.html">Tree</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Trigon_Trigon.html">Trigon</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li><li><a href="System.html">System</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Err">Err</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#createEntity">createEntity</a></li><li><a href="global.html#createManager">createManager</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#vertices">vertices</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-utils_index.html">utils/index</a></li></ul><h3>Classes</h3><ul><li><a href="AABBBroadphase.html">AABBBroadphase</a></li><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="CamController_CamController.html">CamController</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Geometry_Geometry.html">Geometry</a></li><li><a href="GridBroadphase.html">GridBroadphase</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Line_Line.html">Line</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="ParticleSystemSprite.html">ParticleSystemSprite</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="QuadTreeBroadphase.html">QuadTreeBroadphase</a></li><li><a href="Rectangle_Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SATNarrowPhase.html">SATNarrowPhase</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Trigon_Trigon.html">Trigon</a></li><li><a href="Tween.html">Tween</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li><li><a href="System.html">System</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#RayCastModes">RayCastModes</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#Vector2Update">Vector2Update</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#assert">assert</a></li><li><a href="global.html#bodyDebugger">bodyDebugger</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#createEntity">createEntity</a></li><li><a href="global.html#createManager">createManager</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#deprecate">deprecate</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#t">t</a></li><li><a href="global.html#throws">throws</a></li><li><a href="global.html#vertices">vertices</a></li><li><a href="global.html#warn">warn</a></li><li><a href="global.html#warnOnce">warnOnce</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Nov 23 2023 11:12:05 GMT+0300 (East Africa Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Dec 09 2023 16:05:50 GMT+0300 (East Africa Time)
 </footer>
 
 <script> prettyPrint(); </script>

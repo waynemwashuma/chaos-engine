@@ -9,7 +9,7 @@ let tmp1 = new Vector2(),
  * 
  * @augments Behaviour
 */
-class WanderBehaviour extends Behaviour {
+export class WanderBehaviour extends Behaviour {
   /**
    * This sets a point on the perimeter circle that is infront of the agent.
    * 
@@ -61,8 +61,4 @@ class WanderBehaviour extends Behaviour {
     target.copy(forward)
   }
 
-}
-
-export {
-  WanderBehaviour
 }

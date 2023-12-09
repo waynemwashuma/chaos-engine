@@ -119,20 +119,16 @@ export class World {
    */
   intergrator = VerletSolver
   /**
-   * @constructor World
-   * 
+   * @type boolean
+   * @default true
    */
+  enableIntergrate = true
+
   constructor() {
     this.broadphase = new NaiveBroadphase(this)
     this.narrowphase = new SATNarrowPhase()
   }
-  set gravity(x) {
-    if (typeof x === "object") {
-      this.gravitationalAcceleration.copy(x)
-    } else {
-      this.gravitationalAcceleration.set(0, x)
-    }
-  }
+
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
@@ -141,6 +137,15 @@ export class World {
   get gravity() {
     return this.gravitationalAcceleration
   }
+
+  set gravity(x) {
+    if (typeof x === "object") {
+      this.gravitationalAcceleration.copy(x)
+    } else {
+      this.gravitationalAcceleration.set(0, x)
+    }
+  }
+
   /**
    * @private
    */
@@ -184,8 +189,8 @@ export class World {
         manifold = this.CLMDs[i]
         manifold.bodyA.velocity.add(manifold.velA)
         manifold.bodyB.velocity.add(manifold.velB)
-        manifold.bodyA.rotation.radian += manifold.rotA
-        manifold.bodyB.rotation.radian += manifold.rotB
+        manifold.bodyA.rotation.value += manifold.rotA
+        manifold.bodyB.rotation.value += manifold.rotB
       }
     }
 
@@ -275,7 +280,8 @@ export class World {
     this.collisionDetection()
     this.collisionResponse(dt)
     this.updateConstraints(dt)
-    this.intergrate(dt, length)
+    if (this.enableIntergrate)
+      this.intergrate(dt, length)
     this.updateBodies(length)
     this.count += 1
     this.perf.total = performance.now() - this.perf.lastTimestamp
@@ -319,6 +325,7 @@ export class World {
    * @param {Body | Composite | Constraint} object
    */
   remove(object) {
+    object.destroy()
     if (object.physicsType == ObjType.BODY) {
       this.removeBody(object)
     } else if (object.physicsType == ObjType.CONSTRAINT) {

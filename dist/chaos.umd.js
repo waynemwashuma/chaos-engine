@@ -34,139 +34,89 @@ SOFTWARE.
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.CHAOS = {}));
 })(this, (function (exports) { 'use strict';
 
-  /**
-   * This module is used to check if bounds of a body overlap
-   */
-  const Overlaps = {
-    /**
-     * Checks if two AABB overlap
-     * 
-     * @param {BoundingBox} a
-     * @param {BoundingBox} b
-     */
-    AABBColliding(a, b) {
-      return (
-        a.min.x <= b.max.x &&
-        a.max.x >= b.min.x &&
-        a.min.y <= b.max.y &&
-        a.max.y >= b.min.y
-      )
-    },
-    /**
-     * Checks if two BoundingCircles overlap
-     * 
-     * @param {BoundingCircle} a
-     * @param {BoundingCircle} b
-     */
-    boundSpheresColliding(a, b) {
-      const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
-        (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
-      return distance < a.r * a.r + b.r * b.r;
-    },
-      /**
-       * Checks if An AABB and a CircleBound overlap
-       * 
-       * @param {BoundingBox} a
-       * @param {BoundingCircle} b
-       */
-    AABBvsSphere(a, b) {
-      const x = Math.max(a.min.x, Math.min(b.pos.x, a.max.x));
-      const y = Math.max(a.min.y, Math.min(b.pos.y, a.max.y));
-      const distance =
-        (x - b.pos.x) * (x - b.pos.x) +
-        (y - b.pos.y) * (y - b.pos.y);
-
-      return distance < b.r * b.r;
-    }
-  };
-
   let marker = `🚀Chaos Engine Says::::\n`;
   let mess = [];
 
   /**
-   * A set of functions to streamline logging of items to the console
-  */
-  const Err = {};
-
-  /**
    * Logs out a warning to the console.
-   * 
-   * @memberof Err
+   *
    * @param {string} message
    */
-  Err.warn = function(message) {
+  function warn(message) {
     console.warn(marker + message);
-  };
+  }
 
   /**
    * Throws a fatal error.
    * 
-   * @memberof Err
    * @param {string} message
    */
-  Err.throw = function(message) {
+  function throws(message) {
     throw new Error(marker + message)
-  };
+  }
 
   /**
    * Logs out a non fatal error to the console.
    * 
-   * @memberof Err
    * @param {string} message
    */
-  Err.error = function(message) {
+  function error(message) {
     console.error(marker + message);
-  };
+  }
 
   /**
    * Logs out a message to the console.
    * 
-   * @memberof Err
    * @param {string} message
    */
-  Err.log = function(message) {
+  function log(message) {
     console.log(marker + message);
-  };
+  }
   /**
    * Logs out a warning once to the console.
    * 
-   * @memberof Err
    * @param {string} message
    */
-  Err.warnOnce = function warnOnce(message) {
+  function warnOnce(message) {
     if (mess.includes(message)) return
     mess.push(message);
-    Err.warn(message);
-  };
+    warn(message);
+  }
   /**
    * Logs out a message,warning or error to the console according to the supplied log function.
    * 
-   * @memberof Err
    * @param {boolean} test
    * @param {string} message
    * @param {Function} errfunc
    */
-  Err.assert = function(test, errfunc, message) {
+  function assert(test, errfunc, message) {
     if (!test) errfunc(message);
     return test
-  };
+  }
 
   /**
    * Logs out a warning to the console.
    * 
-   * @memberof Err
    * @param {string} message
    */
-  Err.deprecate = function deprecate(message) {
-    Err.warnOnce(message);
-  };
+  function deprecate(original, replacement = "") {
+    let message = `"${original}" has been depreciated.`;
+    if (replacement !== "")
+      message += `Use "${replacement}" instead.`;
+    warnOnce(message);
+  }
 
-  /**
-   * Contains a subset of useful functionality.
-   * 
-   * @module Utils
-   */
-  const Utils$1 = {};
+  var error$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    warn: warn,
+    throws: throws,
+    error: error,
+    log: log,
+    warnOnce: warnOnce,
+    assert: assert,
+    deprecate: deprecate
+  });
+
   let tmpID = 0;
 
   /**
@@ -177,11 +127,11 @@ SOFTWARE.
    * @param {T[]} arr1
    * @param {T[]} arr2
    */
-  Utils$1.appendArr = function appendArr(arr1, arr2) {
+  function appendArr(arr1, arr2) {
     for (var i = 0; i < arr2.length; i++) {
       arr1.push(arr2[i]);
     }
-  };
+  }
   /**
    * Clears an array
    * 
@@ -189,11 +139,11 @@ SOFTWARE.
    * @template T
    * @param {T[]} arr
    */
-  Utils$1.clearArr = function(arr) {
+  function clearArr(arr) {
     for (var i = arr.length; i > 0; i--) {
       arr.pop();
     }
-  };
+  }
   /**
    * Removes a number of items at the end of an array
    * 
@@ -202,12 +152,12 @@ SOFTWARE.
    * @param {T[]} arr
    * @param {number} number
    */
-  Utils$1.popArr = function(arr, number) {
+  function popArr(arr, number) {
     let length = arr.length;
     for (var i = length; i > length - number; i--) {
       arr.pop();
     }
-  };
+  }
   /**
    * Removes an element by its index from an array
    * 
@@ -216,22 +166,22 @@ SOFTWARE.
    * @param {T[]} arr
    * @param {number} index
    */
-  Utils$1.removeElement = function(arr, index) {
+  function removeElement(arr, index) {
     if (index == -1) return null
     if (arr.length - 1 == index) return arr.pop()
 
     let temp = arr[index];
     arr[index] = arr.pop();
     return temp
-  };
+  }
   /**
    * Generates a unique id when called
    * 
    * @memberof Utils
    */
-  Utils$1.generateID = function() {
+  function generateID() {
     return (tmpID += 1)
-  };
+  }
 
   /**
    * Mixes the functions required by a component into a class.
@@ -241,7 +191,7 @@ SOFTWARE.
    * @param {boolean} [overrideInit=true]
    * @param {boolean} [overrideUpdate=true]
    */
-  Utils$1.inheritComponent = function(component, overrideInit = true, overrideUpdate = true) {
+  function inheritComponent(component, overrideInit = true, overrideUpdate = true) {
     if (component == void 0 || typeof component !== "function") return
     let proto = component.prototype;
 
@@ -276,10 +226,10 @@ SOFTWARE.
     proto.get = function(n) {
       return this.entity.getComponent(n);
     };
-    proto.requires = function(...names) {
+    proto.requires = function(entity,...names) {
       for (var i = 0; i < names.length; i++)
-        if (!this.entity.has(names[i]))
-          Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
+        if (!entity.has(names[i]))
+          throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`);
     };
 
     proto.query = function(bound, target = []) {
@@ -305,11 +255,10 @@ SOFTWARE.
       enumerable: true,
       configurable: false
     });
-  };
+  }
   /**
    * Mixes the functions required by an object  into another object.
    * 
-   * @memberof Utils
    *  @param {Object} from the object constructor function to add methods from.
    * @param {Object} to the object constructor function to add methods to.
    */
@@ -319,7 +268,6 @@ SOFTWARE.
     console.log(proto2);
     Object.assign(proto,from);
     for (let name of props) {
-      props[name];
       //if(!(methodName in proto))continue
       //if (methodName in proto2) continue
       
@@ -327,6 +275,17 @@ SOFTWARE.
     }
     //console.log(new to());
   }
+
+  var common = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    appendArr: appendArr,
+    clearArr: clearArr,
+    popArr: popArr,
+    removeElement: removeElement,
+    generateID: generateID,
+    inheritComponent: inheritComponent,
+    mixin: mixin
+  });
 
   /**
    * Handles time management for the game.
@@ -369,14 +328,837 @@ SOFTWARE.
     _start = 0
     _time = 0
     start(){
-      this._start = Performance.now();
+      this._start = performance.now();
     }
     end(){
-      this._time = Performance.now() - this._start;
+      this._time = performance.now() - this._start;
       return this._time
     }
     fps(){
       return 1000/this._time
+    }
+  }
+
+  //import { DEVICE } from "../device/index.js"
+
+  class Loader {
+    constructor(manager) {
+      this._toload = [];
+      this.imgs = {};
+      this.sfx = {};
+      this.json = {};
+      this._progressBytes = 0;
+      this._totalBytes = 0;
+      this._filesErr = 0;
+      this._filesLoaded = 0;
+      this._totalFileNo = 0;
+      const that = this;
+      this.onfinish = null;
+      this._handlers = {
+        onload: function(xhr, e) {
+          let type = that._getType(xhr.responseURL);
+          let name = that._getName(xhr.responseURL);
+          if (e.lengthComputable === false) {
+            that._handlers.onerror(xhr, e);
+            return
+          }
+          if (type === "image") {
+            that.imgs[name] = new Image();
+            that.imgs[name].src = URL.createObjectURL(xhr.response);
+          } else if (type === "audio") {
+            that.sfx[name] = xhr.response;
+            //if using webAudio,just set it to the buffer 
+            //else find a way to put this buffer into an audio tag
+          } else if (type === "json") {
+            that.json[name] = JSON.parse(xhr.response);
+          } else {
+            return warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
+          }
+          that._filesLoaded += 1;
+
+          if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) {
+            that.onfinish();
+          }
+
+        },
+        onheadload: function(e) {
+          if (e.total === 0 || !e.lengthComputable) return
+          that._totalBytes += e.total;
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', files.images[i], true);
+
+          xhr.onload = e => that._handlers.onload(xhr);
+          xhr.onerror = that._handlers.onerror(xhr);
+          xhr.send();
+        },
+        onerror: function(e) {
+          that._filesErr += 1;
+          warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
+          if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish();
+        }
+      };
+    }
+    _getName(url) {
+      if (url.includes("/")) {
+        let tmp = url.split("/");
+        url = tmp[tmp.length - 1];
+      }
+      return url.split(".")[0]
+    }
+    _getType(url) {
+      let ext;
+      if (url.includes("/")) {
+        let tmp = url.split("/");
+        url = tmp[tmp.length - 1];
+      }
+      ext = url.split(".")[1];
+
+      if (ext === "jpg" || ext === "png" || ext === "jpeg") return "image"
+      if (ext === "mp3" || ext === "ogg") return "audio"
+      if (ext === "json") return "json"
+    }
+    loadAll(files = {}) {
+      this._totalFileNo =
+        (files.images?.length || 0) +
+        (files.audio?.length || 0) +
+        (files.json?.length || 0);
+      if (this._totalFileNo === 0) {
+        this.onfinish();
+        return
+      }
+      if (files.images) {
+        for (var i = 0; i < files.images.length; i++) {
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', files.images[i], true);
+          xhr.responseType = "blob";
+          xhr.onload = e => {
+            this._handlers.onload(xhr, e);
+
+          };
+          xhr.onerror = e => this._handlers.onerror(xhr);
+          xhr.send();
+
+        }
+      }
+      if (files.audio) {
+        for (var i = 0; i < files.audio.length; i++) {
+          let xhr = new XMLHttpRequest();
+          xhr.responseType = "arraybuffer";
+          xhr.open('GET', files.audio[i], true);
+          xhr.onload = e => this._handlers.onload(xhr, e);
+          xhr.onerror = e => this._handlers.onerror(xhr);
+          xhr.send();
+
+        }
+      }
+      if (files.json) {
+        for (var i = 0; i < files.json.length; i++) {
+          let xhr = new XMLHttpRequest();
+          xhr.responseType = "text";
+          xhr.open('GET', files.json[i], true);
+          xhr.onload = e => this._handlers.onload(xhr, e);
+          xhr.onerror = e => this._handlers.onerror(xhr);
+          xhr.send();
+        }
+
+      }
+    }
+  }
+
+  /**
+   * This class manages all events by a game manager.
+   * When adding a handler to an event with another handler,the latter will not be overriden,rather,the former will be added to complement the latter.
+   */
+  class EventDispatcher {
+    /**
+     * A dictionary of callback functions
+     * 
+     * @private
+     * @type Object<string,function[]>
+     */
+    handlers = {}
+    /**
+     * This fires all event handlers of a certain event.
+     * 
+     * @param {string} n the name of event fired.
+     * @param {any} data The payload of the event.
+     */
+    trigger(n, data) {
+      if (n in this.handlers)
+        this.handlers[n].forEach(h => h(data));
+    }
+    /**
+     * Ignore this,must be here for it to be a system.Might make this class not a system later
+     */
+    init() {}
+    /**
+     * Adds an event handler to an event dispatcher.
+     * 
+     * @param {string} name name of the event.
+     * @param {function} handler Function to be called when the event is triggered.
+     */
+    add(name, handler) {
+      if (name in this.handlers) {
+        this.handlers[name].push(handler);
+        return
+      }
+      this.handlers[name] = [handler];
+    }
+  }
+
+  /**
+   * This handles events created by the DOM.
+   */
+  class DOMEventHandler {
+    /**
+     * A dictionary of callback functions
+     * 
+     * @private
+     * @type Object<string,function[]>
+     */
+    handlers = {}
+    /**
+     * A dictionary of the main callback functions
+     * 
+     * @private
+     * @type Object<string,function>
+     */
+    _evHandlers = {}
+    /**
+     * Adds an eventlistener.
+     * 
+     * @param {string} e Name of the DOMEvent.
+     * @param {function} h The eventlistener.
+     */
+    add(e, h) {
+      if (this.handlers[e])
+        return this.handlers[e].push(h)
+      this.handlers[e] = [h];
+      let listener = (event) => {
+        let handlers = this.handlers[e];
+        for (var i = 0; i < handlers.length; i++) {
+          handlers[i](event);
+        }
+      };
+      document.addEventListener(e, listener);
+      this._evHandlers[e] = listener;
+    }
+    /**
+     * Removes an eventlistener.
+     * 
+     * @param {string} e Name of the DOMEvent.
+     * @param {function} h The eventlistener.
+     */
+    remove(e, h) {
+      this.handlers[e].splice(this.handlers[e].indexOf(h), 1);
+      if (!this.handlers[e].length)
+        this.dispose(e);
+    }
+    /**
+     * Removes all eventlisteners of an event.
+     * 
+     * @param {string} e Name of the DOMEvent.
+     * @param {function} h The eventlistener.
+     */
+    disposeEvent(e) {
+      document.removeEventListener(e, this._evHandlers[e]);
+      delete this.handlers[e];
+      delete this._evHandlers[e];
+    }
+    /**
+     * Clears all eventlisteners of every event registered.
+     */
+    clear() {
+      for (var ev in this.handlers) {
+        this.dispose(ev);
+      }
+    }
+    /* 
+    Donno why this is here,but i do know past me has a reason for this being here.
+    Ill leave it for now.
+    */
+    init() {}
+  }
+
+  /**
+   * This provides a way to fire off an entity's collision event handler registered to it.
+   * 
+   * @param {CollisionPair[]} clmds an array of collision manifolds
+  */
+  function defaultCollisionHandler(clmds) {
+    let a, b;
+    for (let i = 0; i < clmds.length; i++) {
+      a = clmds[i].bodyA.entity.getHandler("collision");
+      b = clmds[i].bodyB.entity.getHandler("collision");
+
+      if (a) a(
+        clmds[i].bodyA.entity,
+        clmds[i].bodyB.entity,
+        clmds[i]
+      );
+      if (b) b(
+        clmds[i].bodyB.entity,
+        clmds[i].bodyA.entity,
+        clmds[i]
+      );
+    }
+  }
+
+  /**
+   * This provides a way to fire off an entity's precollision event handler registered to it
+   * 
+   * @param {Manifold[]} clmds an array of collision manifolds
+  */
+  function defaultPrecollisionHandler(clmds) {
+    let a, b;
+    for (let i = 0; i < clmds.length; i++) {
+      a = clmds[i].a.entity.getHandler("precollision");
+      b = clmds[i].b.entity.getHandler("precollision");
+
+      if (a) a(
+        clmds[i].a.entity,
+        clmds[i].b.entity,
+        clmds[i]
+      );
+      if (b) b(
+        clmds[i].b.entity,
+        clmds[i].a.entity,
+        clmds[i]
+      );
+    }
+  }
+
+  /**@enum {string}*/
+  const Events = {
+    COLLISION : "collision",
+    PRECOLLISION : "precollision",
+    PREUPDATE : "preupdate",
+    POSTUPDATE : "postupdate",
+     UPDATE : "postupdate",  
+     INITIALIZE : "init",
+     ADD : "add",
+     REMOVE : "remove",
+     PAUSE : "pause",
+     PLAY : "play"
+  };
+
+  class Signal {
+    _listeners = []
+    _value = null
+    constructor(value){
+      this._value = value;
+    }
+    set value(x) {
+      this._value = x;
+      for (var i = 0; i < this._listeners.length; i++) {
+        let func = this._listeners[i];
+        func.listener(this);
+        if(func.callOnce)
+        this.removeListener(func.listener);
+      }
+    }
+    get value() {
+      return this._value
+    }
+    addListener(listener,callOnce=false) {
+      this._listeners.push({
+        listener,
+        callOnce
+      });
+    }
+    removeListener(listener) {
+      for (var i = 0; i < this._listeners.length; i++) {
+        if (this._listeners[i].listener == listener)
+          return this._detach(i)
+      }
+    }
+    _detach(bindingIndex){
+      this._listeners.splice(i, 1);
+    }
+  }
+
+  /**
+   * This class is responsible for managing all
+   * entities and ensuring that systems are updated every frame.
+   * 
+   */
+  class Manager {
+    /**
+     * RAF number of current frame.Used for pausing the manager.
+     * 
+     * @private
+     * @type number
+     */
+    _rafID = undefined
+    /**
+     * @private
+     * @type {Object<string, function>}
+     */
+    _classes = {}
+    /**
+     * 
+     * @private
+     * @type Object<string,Component[]>
+     */
+    _componentLists = {}
+    /**
+     * 
+     * @private
+     * @type System[]
+     */
+    _systems = []
+    /**
+     * 
+     * @private
+     * @type {{
+       world:World,
+       renderer:Renderer,
+       input:Input,
+       audio:AudioHandler
+     }}
+     */
+    _coreSystems = {
+      world: null,
+      renderer: null,
+      input: null,
+      audio: null
+    }
+    /**
+     * 
+     * @private
+     * @type boolean
+     */
+    _initialized = false
+    /**
+     * Whether or not the manager is playing.
+     * 
+     * @type boolean
+     */
+    playing = false
+    /**
+     * 
+     * @private
+     * @type Object<string, number>
+     */
+    _systemsMap = {}
+    /**
+     * 
+     * @private
+     * @type Object<string, string>
+     */
+    _compMap = {}
+    /**
+     * Master clock for the game
+     * 
+     * @type Clock
+     */
+    clock = new Clock()
+    /**
+     * 
+     * @private
+     * @type Entity[]
+     */
+    objects = []
+    /**
+     * 
+     * @private
+     * @type number
+     */
+    _accumulator = 0
+    /**
+     * Ideal framerate of the manager.Not implemented corrretly.
+     * TODO correct it
+     * 
+     * @type number
+     */
+    frameRate = 0
+    /**
+     * 
+     * @ignore.
+     * This is an artifact of me debugging this.
+     * TODO - Should implement a better soluton
+     */
+    perf = new Perf()
+    /**
+     * look at Loader for more info.
+     * 
+     * @readonly
+     * @type Loader
+     */
+    loader = new Loader()
+    /**
+     * @readonly
+     * @type EventDispatcher
+     */
+    events = new EventDispatcher()
+    /**
+     * @private
+     */
+    _update = accumulate => {
+      this.perf.start();
+      let dt = this.clock.update(accumulate);
+
+      if (this._accumulator < this.frameRate) {
+        this._accumulator += dt;
+        this.RAF();
+        return
+      }
+      this.events.trigger("updateStart");
+      this.update(dt);
+      this.events.trigger("update");
+      this.events.trigger("updateEnd");
+      this._accumulator = 0;
+      this.perf.end();
+      this.RAF();
+    }
+    /**
+     * Creates a new instance of Manager class
+     **/
+    constructor(options = {}) {
+      this.loader.onfinish = e => {
+        this.init();
+        this.play();
+      };
+      this.loader.loadAll(options.files);
+    }
+    /**
+     * This initializes the manager.
+     * No need to call this function directly.
+     * This is called after the preloader finishes loading all its files.
+     * 
+     */
+    init() {
+      for (var i = 0; i < this.objects.length; i++) {
+        this.objects[i].init(this);
+      }
+      //this.initSystems()
+      this.events.trigger("init", this);
+      this.update(0);
+      this._initialized = true;
+      if (this.playing) this.play();
+    }
+    /**
+     * Adds an entity to the manager and initializes it.
+     * 
+     * @param {Entity} object The entity to add
+     */
+    add(object) {
+      if (object.manager) {
+        warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`);
+        return
+      }
+      this.objects.push(object);
+      object.init(this);
+      this.events.trigger("add", object);
+    }
+    /**
+     * This adds a component to a componentList
+     * if the componentList is there else exits
+     * without an error.
+     * There is no need for you to use this method
+     * as it is for internal use only and may change in the future 
+     * 
+     * @param {string} n name of the component
+     * @param {Component} c An object implementing Component
+     */
+    addComponent(n, c) {
+      if (n === "body" && this._coreSystems.world != void 0) {
+        this._coreSystems.world.add(c);
+        return
+      }
+      if (n === "sprite" && this._coreSystems.renderer != void 0) {
+        this._coreSystems.renderer.add(c);
+        return
+      }
+      if (n in this._compMap) {
+        const name = this._compMap[n];
+        this._systems[this._systemsMap[name]].add(c);
+      }
+    }
+    /**
+     * This removes a component from a componentList
+     * if the componentList is there else exits
+     * without an error.
+     * There is no need for you to use this method
+     * as it is for internal use only and may change in the future 
+     * @param { string } n name of the component *
+     * @param { Component } c An object implementing Component interface
+     */
+    removeComponent(n, c) {
+      if (n === "body" && this._coreSystems.world != void 0) {
+        this._coreSystems.world.remove(c);
+        return
+      }
+      if (n === "sprite" && this._coreSystems.renderer != void 0) {
+        this._coreSystems.renderer.remove(c);
+        return
+      }
+      if (n in this._compMap) {
+        const name = this._compMap[n];
+        this._systems[this._systemsMap[name]].remove(c);
+      }
+
+    }
+    /**
+     * Removes an entity from the manager.
+     * Note that this doesn't destroy the entity, only removes it and its components from the manager.
+     * To destroy the entity,use `Entity.destroy()` method.
+     * 
+     * @param {Entity} object The entity to remove
+     */
+    remove(object) {
+      this.events.trigger("remove", object);
+      let index = this.objects.indexOf(object);
+      object.removeComponents();
+      object.reset();
+      removeElement(this.objects, index);
+    }
+    /**
+     * This removes all of the entities and components from the manager
+     */
+    clear() {
+      for (let i = this.objects.length - 1; i >= 0; i--) {
+        this.remove(this.objects[i]);
+      }
+    }
+    /**
+     * This method requests an animation frame from the browser
+     * 
+     * @private
+     */
+    RAF() {
+      this._rafID = requestAnimationFrame(this._update);
+    }
+    /**
+     * This starts up the update loop of the manager
+     */
+    play() {
+      if (!this._initialized) {
+        this.playing = true;
+        return
+      }
+      this.RAF();
+      this.events.trigger("play");
+    }
+    /**
+     * This stops the update loop of the manager
+     */
+    pause() {
+      if (!this._initialized) {
+        this.playing = false;
+        return
+      }
+      cancelAnimationFrame(this._rafID);
+      this.events.trigger("pause");
+    }
+    /**
+     * This method might be useless as systems are initialized on being added
+     * 
+     * @private 
+     */
+    initSystems() {
+      for (var i = 0; i < this._systems.length; i++) {
+        for (var j = 0; j < this._systems[i].length; j++) {
+          this._systems[i][j].init(this);
+        }
+      }
+    }
+
+    /**
+     * Marches the update loop forward,updating
+     * the systems
+     * You shouldn't mess with this/call it or everything will explode with undetectable errors.
+     * 
+     * @private
+     */
+    update(dt = 0.016) {
+      let world = this._coreSystems["world"],
+        renderer = this._coreSystems["renderer"],
+        input = this._coreSystems["input"];
+
+      //the only reason this is here is that
+      //i need to debug stuff visually - ill remove it later.
+      if (renderer) renderer.clear();
+
+      for (var i = 0; i < this._systems.length; i++) {
+        this._systems[i].update(dt);
+      }
+      if (input) input.update();
+      if (world) world.update(dt);
+      if (renderer) renderer.update(dt);
+      if (world) {
+        this.events.trigger("precollision", world.contactList);
+        this.events.trigger("collision", world.CLMDs);
+      }
+
+    }
+    /**
+     * Used to register a system
+     * 
+     * @param {string} n The name for the system
+     * @param {System} sys The system to be addad
+     * 
+     * @param {string} [cn=n] The componentList name that the system will primarily take care of
+     */
+    registerSystem(n, sys, cn = n) {
+      if (sys.init) sys.init(this);
+      if (this._systemsMap[n] !== undefined) return
+      switch (n) {
+        case "world":
+          this._coreSystems.world = sys;
+          break
+        case "renderer":
+          this._coreSystems.renderer = sys;
+          break
+        case "input":
+          this._coreSystems.input = sys;
+          break
+        default:
+          this._systemsMap[n] = this._systems.length;
+          this._systems.push(sys);
+          this._compMap[cn] = n;
+      }
+    }
+    /**
+     * Gets the named system
+     * 
+     * @param {string} n the name the system was registered with.
+     * 
+     * @return {System}
+     */
+    getSystem(n) {
+      if (n in this._coreSystems)
+        return this._coreSystems[n]
+      return this._systems[this._systemsMap[n]]
+    }
+    /**
+     * Removes a system from the manager.
+     * 
+     * @param {string} n The name of the system
+     * @returns {void}
+     * 
+     */
+    unregisterSystem(n) {
+      if (n in this._coreSystems)
+        return this._coreSystems[n] = null
+      delete this._systems[this._systemsMap[n]];
+      delete this._systemsMap[n];
+    }
+    /**
+     * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
+     * 
+     * @param {string} n The name of the components to store into the created componentlist
+     * @param {Component[]} [arr=[]] A reference to the array to store components in.
+     */
+    setComponentList(n, arr = []) {
+      this._componentLists[n] = arr;
+    }
+    /**
+     * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
+     * 
+     * @param {string} n The name of the components to store into the created componentlist
+     * @returns {Component[]} An array of components
+     */
+    getComponentList(n) {
+      return this._componentLists[n]
+    }
+    /**
+     * Finds the first entity with all the components and returns it.
+     * 
+     * @param {Array<String>} comps An array containing the component names to be searched
+     * @returns {Entity} 
+     */
+    getEntityByComponents(comps, entities = this.objects) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < comps.length; j++) {
+          if (!entities[i].has(comps[j])) continue
+          return entities[i]
+        }
+      }
+    }
+    /**
+     * Finds the first entity with all the tag and returns it.
+     * 
+     * @param {Array<String>} comps An array containing the component names to be searched
+     * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+     * @param {Entity[]} [target]
+     * 
+     * @returns {Entity[]} 
+     */
+    getEntitiesByComponents(comps, entities = this.objects, target = []) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < comps.length; j++) {
+          if (!entities[i].has(comps[j])) continue
+          target.push(entities[i]);
+        }
+      }
+      return target
+    }
+    /**
+     * Finds the first entity with all the tag and returns it.
+     * 
+     * @param {Array<String>} tags An array containing the tags to be searched
+     * @returns {Entity} 
+     */
+    getEntityByTags(tags, entities = this.objects) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < tags.length; j++) {
+          if (!entities[i].hasTag(tags[j])) continue
+          return entities[i]
+        }
+      }
+    }
+    /**
+     * Finds the entities with all the tag and returns them in an array.
+     * 
+     * @param {string[]} tags An array containing the tags to be searched
+     * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
+     * @param {Entity[]} target
+     * @returns {Entity[]} 
+     */
+    getEntitiesByTags(tags, entities = this.objects, target = []) {
+      for (let i = 0; i < entities.length; i++) {
+        for (let j = 0; j < tags.length; j++) {
+          if (!entities[i].hasTag(tags[j])) continue
+          target.push(entities[i]);
+        }
+      }
+      return target
+    }
+    /**
+     * Ignore this,im going to remove it and the rest of cloning utilities.
+     * @private
+     * @deprecated
+     */
+    static DefaultSystem(name) {
+      let n = name;
+      return {
+        init(manager) {
+          manager.setComponentList(n);
+        },
+        update(dt) {
+          let comp = manager.getComponentList(n);
+          for (let i = 0; i < comp.length; i++) {
+            comp[i].update(dt);
+          }
+        },
+        add(comp) {
+          manager.getComponentList(n).push(comp);
+        },
+        remove(comp) {
+          let list = manager.getComponentList(n),
+            index = list.indexOf(comp);
+          removeElement(list, index);
+        }
+      }
+    }
+    /**
+     * @param {BoundingCircle | BoundingBpx  } bound
+     * @returns Entity[]
+     */
+    query(bound) {
+      ///TODO - What will happen if there is no world?   ...Yes,it will crash.
+      return this._coreSystems.world.query(bound)
     }
   }
 
@@ -413,7 +1195,7 @@ SOFTWARE.
      * @param {number} dt
      */
     update(dt) {
-      Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
+      warnOnce("Please override the update function in the component " + proto.constructor.name);
     }
     /**
      * @param {string} n
@@ -424,10 +1206,10 @@ SOFTWARE.
     /**
      * @param {...string} names
      */
-    requires(...names) {
+    requires(entity,...names) {
       for (var i = 0; i < names.length; i++)
-        if (!this.entity.has(names[i]))
-          Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`);
+        if (!entity.has(names[i]))
+          throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`);
     }
     /**
      * @param {CircleBounding | BoxBounding} bound
@@ -443,271 +1225,345 @@ SOFTWARE.
       throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
     }
     static implement(component) {
-      Utils$1.inheritComponent(component);
+      inheritComponent(component);
     }
   }
 
   /**
-   * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+   * Updates components assigned to it.
+   * 
+   * @interface
    */
-  class BoundingBox extends Component {
-    /**
-     * 
-     * @type Vector_like
-     */
-    pos = null
-    /**
-     * The upper limit of the bounding box
-     * 
-     * @type Vector_like
-     */
-    max = null
-    /**
-     * The lower limit of the bounding box
-     * 
-     * @type Vector_like
-     */
-    min = null
-    /**
-     * @param {number} [minX=0]
-     * @param {number} [minY=0]
-     * @param {number} [maxX=0]
-     * @param {number} [maxY=0]
-     */
-    constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
-      super();
-      this.pos = {
-        x: 0,
-        y: 0
-      };
-      this.max = {
-        x: maxX,
-        y: maxY
-      };
-      this.min = {
-        x: minX,
-        y: minY
-      };
+  class System {
+    init() {
+      warnOnce("Please override the init method in the system " + this.constructor.name);
     }
-    /**
-     * 
-     * Checks to see if this intersects with another bounding box
-     * @param {BoundingCircle | BoundingBox} bound the bound to check  intersection with
-     * @returns boolean
-     **/
-    intersects(bound) {
-      if (bound.r)
-        return Overlaps.AABBvsSphere(this, bound)
-      return Overlaps.AABBColliding(this, bound)
-    }
-    /**
-     * Calculates the bounds of the body
-     * 
-     * @param {Body} body Body to calculate max and min from
-     * @param {Number} padding increases the size of the bounds
-     */
-    calculateBounds(body, padding = 0) {
-      let minX = Number.MAX_SAFE_INTEGER,
-        minY = Number.MAX_SAFE_INTEGER,
-        maxX = -Number.MAX_SAFE_INTEGER,
-        maxY = -Number.MAX_SAFE_INTEGER;
+    update() {
+      warnOnce("Please override the update method in the system " + this.constructor.name);
 
-      if (body.shapes.length == 0) {
-        this.min.x = body.position.x;
-        this.max.x = body.position.x;
-        this.min.y = body.position.y;
-        this.max.y = body.position.y;
-        this.pos.x = body.position.x;
-        this.pos.y = body.position.y;
-        return
-      }
-      for (var i = 0; i < body.shapes.length; i++) {
-        let shape = body.shapes[i];
-        if (shape.type == 0) {
-          let idx = body.position.x - shape.radius,
-            idy = body.position.y - shape.radius,
-            mdx = body.position.x + shape.radius,
-            mdy = body.position.y + shape.radius;
-          if (!minX || idx < minX) minX = idx;
-          if (!maxX || mdx > maxX) maxX = mdx;
-          if (!minY || idy < minY) minY = idy;
-          if (!maxY || mdy > maxY) maxY = mdy;
-          continue
-        }
-        for (var j = 0; j < shape.vertices.length; j++) {
-          let vertex = shape.vertices[j];
-          if (vertex.x < minX) minX = vertex.x;
-          if (vertex.x > maxX) maxX = vertex.x;
-          if (vertex.y < minY) minY = vertex.y;
-          if (vertex.y > maxY) maxY = vertex.y;
-        }
-      }
-      this.min.x = minX - padding;
-      this.max.x = maxX + padding;
-      this.min.y = minY - padding;
-      this.max.y = maxY + padding;
-      this.pos.x = body.position.x;
-      this.pos.y = body.position.y;
     }
-    /**
-     * Translates this bound to the given position.
-     * 
-     * @param { Vector2} pos
-     */
-    update(pos) {
-      let dx = pos.x - this.pos.x;
-      let dy = pos.y - this.pos.y;
+    add(component) {
+      this.objects.push(component);
+    }
+    remove(component) {
+      let index = this.objects.indexOf(component);
+      removeElement(this.objects, index);
+    }
+    static implement(system) {
+      mixin(System,system);
+    }
+  }
 
-      this.pos.x = pos.x;
-      this.pos.y = pos.y;
-      this.min.x += dx;
-      this.max.x += dx;
-      this.min.y += dy;
-      this.max.y += dy;
+  /**
+   * 
+   * @function
+   * @name System#add
+   * @param {Component} component
+   */
+  /**
+   * 
+   * @function
+   * @name System#remove
+   * @param {Component} component
+   */
+  /**
+   * 
+   * @function
+   * @name System#init
+   * @param {Manager} manager
+   */
+  /**
+   * 
+   * @function
+   * @name System#update
+   * @param {number} dt
+   */
+
+  /**
+   * This is a container to hold components,tags and event handlers.
+   * 
+   * @class
+   * @public
+   */
+  class Entity {
+    /**
+     * Dictionary of component to manage.
+     * 
+     * @private
+     * @type Object<string,Component>
+     */
+    _components = {}
+    /**
+     * Dictionary of handlers to call during an event.
+     * 
+     * @private
+     * @type Object<string,function>
+     */
+    _handlers = {}
+    /**
+     * A list of tags to identify an entity.
+     * 
+     * @private
+     * @type Set<string>
+     */
+    _tags = new Set()
+    /**
+     * The manager handling this entity.
+     * 
+     * @private
+     * @type Manager
+     */
+    _global = null
+    /**
+     * A flag to show if the entity is added to a manager.
+     * 
+     * @type {boolean}
+     */
+    active = false
+
+    get CHAOS_OBJ_TYPE() {
+      return "entity"
+    }
+    get CHAOS_CLASSNAME() {
+      return this.constructor.name.toLowerCase()
     }
     /**
-     * Deep copies a bounding box to a new one.
-     * 
-     * @returns BoundingBox
+     * Removes all components and handlers from an entity while removing it from its manager
      */
-    clone() {
-      return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
+    destroy() {
+      for (let k in this._components) {
+        let comp = this._components[k];
+        if (comp.destroy)
+          comp.destroy();
+        delete this._components[k];
+      }
+      for (let k in this._handlers) {
+        delete this._handlers[k];
+      }
+      this.removeSelf();
     }
     /**
-     * Deep copies another bounding box.
-     * 
-     * @param {BoundingBox} bounds
+     * Removes an entity and its components from its manager whilst retaining its components and handlers
      */
-    copy(bounds) {
-      this.pos.x = bounds.pos.x;
-      this.pos.y = bounds.pos.y;
-      this.min.x = bounds.min.x;
-      this.min.y = bounds.min.y;
-      this.max.x = bounds.max.x;
-      this.max.y = bounds.max.y;
+    removeSelf() {
+      if (this._global) this._global.remove(this);
     }
+    /**
+     * This is an internal function,no need to use it.
+     * 
+     * @package
+     */
+    reset() {
+      this.active = false;
+      this._global = null;
+    }
+    /**
+     * Removes all components of an entity from its manager but keeps the entity inside the manager.
+     * This is an internal function so no need on your part to use it.
+     */
+    removeComponents() {
+      if (this._global === void 0) return
+      for (var k in this._components) {
+        this._global.removeComponent(k, this._components[k]);
+      }
+    }
+    /**
+     * Gets the current manager of an entity
+     * 
+     * @returns {Manager}
+     */
+    get manager() {
+      return this._global
+    }
+    /**
+     * Adds a component into an entity
+     * 
+     * @param {String} n Name of the component.
+     * @param {Component} c The component to add.
+     * 
+     * @returns {this}
+     */
+    attach(n, c) {
+      this._components[n] = c;
+      if (this.manager) {
+        c.init(this);
+        this._global.addComponent(n, c);
+      }
+      return this
+    }
+    /**
+     * Removes a component from an entity.
+     * 
+     * @param {String} n Name pf the component
+     * @rerurns {this}
+     */
+    remove(n) {
+      this._global.removeComponent(n, this._components[n]);
+      delete this._components[n];
+      return this
+    }
+    /**
+     * Registers a function to handle a named event.
+     * 
+     * @param {string} n Name of the event
+     * @param {function} h The function to be called when an event is fired.
+     */
+    register(n, h) {
+      this._handlers[n] = h;
+    }
+    /**
+     * Removes an event handler function of the given name
+     * 
+     * @param {string} n Name of the event
+     */
+    unregister(n) {
+      if (!(n in this._handlers)) return
+      delete this._handlers[n];
+    }
+    /**
+     * Returns an event handler which can be fired during an event
+     * 
+     * @param {string} n Name of the event
+     * @returns {function | undefined}
+     */
+    getHandler(n) {
+      return this._handlers[n]
+    }
+    /**
+     * Returns the named component.
+     * 
+     * @param {string} n Name of the component.
+     * @returns {Component | undefined }
+     */
+    get(n) {
+      return this._components[n]
+    }
+    /**
+     * Used to check if the component exists in an entity
+     * 
+     * @param {string} n Name of the component.
+     * @returns {boolean}
+     */
+    has(n) {
+      return n in this._components
+    }
+    /**
+     * Adds a tag into an entity.
+     * 
+     * @param {string} n The tag to be added
+     */
+    addTag(n) {
+      this._tags.add(n);
+    }
+    /**
+     * Removes a tag from an entity.
+     * 
+     * @param {string} n The tag to be added
+     */
+    removeTag(n) {
+      this._tags.delete(n);
+    }
+    /**
+     * Checks if a tag exists in an entity.
+     * 
+     * @param {string} n The tag to be added
+     * @returns {boolean}
+     */
+    hasTag(n) {
+      return this._tags.has(n)
+    }
+    /**
+     * Initializes the components within an entity and marks it as active.
+     * It is called by an instance of a game manager so no need to call it manually
+     * 
+     * @package
+     * @param {Manager} global
+     */
+    init(global) {
+      this._global = global;
+      this.active = true;
+      for (let k in this._components) {
+        this._components[k].init(this);
+        global.addComponent(k, this._components[k]);
+      }
+    }
+    /**
+     * A helper function to create a new Entity with transform,movable and bounds components.
+     * 
+     * @depreciated
+     * @param {number} x
+     * @param {number} y
+     * @param {number} a
+     * @returns {Entity}
+     */
+    static Default(x, y, a) {
+      console.warn("'Entity.Default()' is depreciated,use 'createEntity()' instead.");
+      return new Entity()
+        .attach("transform", new Transform(x, y, a))
+        .attach("movable", new Movable())
+        .attach("bounds", new Bound())
+    }
+    /**
+     * Search an entity's manager for entities in a given bound.
+     * 
+     * @param {Bounds} bound the region to search entitities in.
+     * @param {Entity[]} [target=[]] An array to store results in.
+     * @returns {Entity[]}
+     */
+    query(bound, target = []) {
+      return this._global.query(bound, target)
+    }
+    /**
+     * Todo - type serialization docs correctly
+     * @param {{}} obj
+     * @param {Map<string,function>} compList 
+     */
+    fromJSON(obj, compList) {
+      let entity = this;
+
+      obj.tags.forEach((a) => {
+        entity.addTag(a);
+      });
+      for (var key in obj.comps) {
+        let c = new compList[key]().fromJSON(obj.comps[key]);
+        entity.attach(key, c);
+      }
+      return entity
+    }
+    /**
+     * @returns {{
+       deg: number,
+       type:string
+     }}
+     */
     toJson() {
-      return {
-        posX: this.pos.x,
-        posY: this.pos.y,
-        minX: this.min.x,
-        minY: this.min.y,
-        maxX: this.max.x,
-        maxY: this.max.y,
+      let obj = {
+        comps: {},
+        tags: []
+      };
+      for (var key in this._components) {
+        obj.comps[key] = this._components[key].toJson();
       }
-    }
-    fromJson(obj) {
-      this.pos.x = obj.posX;
-      this.pos.y = obj.posY;
-      this.min.x = obj.minX;
-      this.min.y = obj.minY;
-      this.max.x = obj.maxX;
-      this.max.y = obj.maxY;
-    }
-    /**
-     * Combines two bounds to create a new one that covers the previous two.
-     * 
-     * @param {BoundingBox} bound1 
-     * @param {BoundingBox} bound2 
-     * @param {BoundingBox} target Bound to store results into.
-     * @returns BoundingBox
-     */
-    static union(bound1, bound2, target) {
-      target = target || new BoundingBox();
-
-      target.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x;
-      target.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y;
-      target.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x;
-      target.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y;
-      return target
+      this._tags.forEach((a) => {
+        obj.tags.push(a);
+      });
+      obj.type = this.CHAOS_OBJ_TYPE;
+      return obj
     }
   }
 
-  /**
-   * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
-   */
-  class BoundingCircle {
-    /**
-     * 
-     * @type number
-    */
-    r = 0
-    /**
-     * 
-     * @type Vector_like
-    */
-    pos = null
-    /**
-     * @param {number} [r=0]
-     */
-    constructor(r = 0) {
-      this.r = r;
-      this.pos = { x: 0, y: 0 };
+  class TweenManager extends System {
+    objects = []
+    init(manager) {
+      manager.setComponentList("tween", this.objects);
     }
-    /**
-     * 
-     * Checks to see if this intersects with another bounding box
-     * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
-     **/
-    intersects(bound) {
-      if (bound.r)
-        return Overlaps.boundSpheresColliding(this, bound)
-      return Overlaps.AABBvsSphere(bound, this)
-    }
-    /**
-     * Calculates the bounds of the body
-     * 
-     * @param {Body} body Body to calculate max and min from
-     * @@param {Number} padding increases the size of the bounds
-     */
-    calculateBounds(body, padding = 0) {
-      let radsq = 0,
-        shape,
-        vertices,
-        tmp;
-      for (var i = 0; i < body.shapes.length; i++) {
-        shape = body.shapes[i];
-        if (shape.radius) {
-          tmp = shape.radius * shape.radius;
-          if (tmp > radsq) radsq = tmp;
-          continue
-        }
-        for (var j = 0; j < body.shapes[i].vertices.length; j++) {
-          vertices = body.shapes[i].vertices;
-          for (var j = 0; j < vertices.length; j++) {
-            tmp = vertices[j].distanceToSquared(body.position);
-            if (tmp > radsq) radsq = tmp;
-          }
-          
-        }
-      }
-      this.pos.x = body.position.x;
-      this.pos.y = body.position.y;
-      this.r = Math.sqrt(radsq);
-    }
-    /**
-     * Translates this bound to the given position.
-     * 
-     * @param {Vector_like} pos
-     */
-    update(pos) {
-      //let dx = pos.x - this.pos.x
-      //let dy = pos.y - this.pos.y
 
-      this.pos.x = pos.x;
-      this.pos.y = pos.y;
-    }
-    toJson(){
-      return {
-        posX:this.pos.x,
-        posY:this.pos.y,
-        r:this.r
+    update(dt) {
+      for (var i = 0; i < this.objects.length; i++) {
+        let tween = this.objects[i];
+
+        tween.update(dt);
       }
-    }
-    fromJson(obj){
-      this.pos.x = obj.posX;
-      this.pos.y = obj.posY;
-      this.r = obj.r;
     }
   }
 
@@ -846,7 +1702,6 @@ SOFTWARE.
   /**
    * This is a 2D vector class.
    * 
-   * @author Wayne Mwashuma <mwashumawayne@gmail.com>
    * @license MIT
    */
   class Vector2$1 {
@@ -1329,27 +2184,35 @@ SOFTWARE.
    * Keeps record of the orientation of an entity.
    */
   class Angle {
-    /**
-     * Orientation in degrees.
-     * 
-     * @private
-     * @type number
-     */
-    _deg = 0
+
     /**
      * Orientation in radians.
      * 
      * @private
      * @type number
      */
-    _rad = 0
+    _value = 0
+    /**
+     * Cosine of the angle.
+     * 
+     * @private
+     * @type number
+     */
+    _cos = 0
+    /**
+     * Cosine of the angle.
+     * 
+     * @private
+     * @type number
+     */
+    _sin = 0
     /**
      * @param {number} [deg=0] Orientation in degrees.
      */
+
     //TODO - Change this to radians instead
     constructor(deg = 0) {
-      this._deg = deg || 0;
-      this._rad = deg * Math.PI / 180 || 0;
+      this.value = deg * Math.PI/2;
     }
     /**
      * @type string
@@ -1365,23 +2228,64 @@ SOFTWARE.
     }
     /**
      * The orientation in degrees.
+     * @deprecated
      */
     set degree(x) {
-      this._deg = x;
-      this._rad = x * Math.PI / 180;
+      deprecate("Angle.degree");
+      this.value = x * Math.PI / 180;
+    }
+    get _rad(){
+      return this._value
+    }
+    set _rad(x){
+      this._value = x;
+    }
+    get _deg(){
+      return this.value * 180/Math.PI
+    }
+    set _deg(x){
+      this.value = x * Math.PI/180;
     }
     /**
      * The orientation in radians.
+     * 
+     * @deprecated
      */
     set radian(x) {
-      this._rad = x;
-      this._deg = x * 180 / Math.PI;
+      deprecate("Angle.radian", "Angle.value");
+      this.value = x;
     }
     get radian() {
-      return this._rad
+      deprecate("Angle.radian", "Angle.value");
+      return this.value
     }
     get degree() {
-      return this._deg
+      deprecate("Angle.degree");
+      return this.value * 180/Math.PI
+    }
+    /**
+     * The angle in radians.
+     * @type number
+     */
+    get value() {
+      return this._value
+    }
+    set value(x) {
+      this._value = x;
+      this._cos = Math.cos(x);
+      this._sin = Math.sin(x);
+    }
+    /**
+     * @type number
+     */
+    get cos() {
+      return this._cos
+    }
+    /**
+     * @type number
+     */
+    get sin() {
+      return this._sin
     }
     /**
      * Copies the orientation of another angle.
@@ -1389,11 +2293,11 @@ SOFTWARE.
      * @param {Angle} angle
      */
     copy(angle) {
-      this.degree = angle.degree;
+      this.value = angle.value;
     }
-    
+
     fromJSON(obj) {
-      this.degree = obj.deg;
+      this.value = obj.val;
     }
     /**
      * @returns {{
@@ -1403,7 +2307,7 @@ SOFTWARE.
      */
     toJson() {
       return {
-        deg: this._deg,
+        val: this.value,
         type: this.CHAOS_OBJ_TYPE
       }
     }
@@ -1636,211 +2540,164 @@ SOFTWARE.
   }
 
   const Easing = {
-    Linear: {
-      In: function(x) {
-        return x;
-      },
-      Out: function(x) {
-        return x;
-      },
-      InOut: function(x) {
-        return x;
-      },
+    linear: function(x) {
+      return x;
     },
-    Quadratic: {
-      In: function(x) {
-        return x * x;
-      },
-      Out: function(x) {
-        return x * (2 - x);
-      },
-      InOut: function(x) {
-        if ((x *= 2) < 1) {
-          return 0.5 * x * x;
-        }
-        return -0.5 * (--x * (x - 2) - 1);
-      },
+    quadraticIn: function(x) {
+      return x * x;
     },
-    Cubic: {
-      In: function(x) {
-        return x * x * x;
-      },
-      Out: function(x) {
-        return --x * x * x + 1;
-      },
-      InOut: function(x) {
-        if ((x *= 2) < 1) {
-          return 0.5 * x * x * x;
-        }
-        return 0.5 * ((x -= 2) * x * x + 2);
-      },
+    quadraticOut: function(x) {
+      return x * (2 - x);
     },
-    Quartic: {
-      In: function(x) {
-        return x * x * x * x;
-      },
-      Out: function(x) {
-        return 1 - --x * x * x * x;
-      },
-      InOut: function(x) {
-        if ((x *= 2) < 1) {
-          return 0.5 * x * x * x * x;
-        }
-        return -0.5 * ((x -= 2) * x * x * x - 2);
-      },
+    quadraticInOut: function(x) {
+      if ((x *= 2) < 1) {
+        return 0.5 * x * x;
+      }
+      return -0.5 * (--x * (x - 2) - 1);
     },
-    Quintic: {
-      In: function(x) {
-        return x * x * x * x * x;
-      },
-      Out: function(x) {
-        return --x * x * x * x * x + 1;
-      },
-      InOut: function(x) {
-        if ((x *= 2) < 1) {
-          return 0.5 * x * x * x * x * x;
-        }
-        return 0.5 * ((x -= 2) * x * x * x * x + 2);
-      },
+    cubicIn: function(x) {
+      return x * x * x;
     },
-    Sinusoidal: {
-      In: function(x) {
-        return 1 - Math.sin(((1.0 - x) * Math.PI) / 2);
-      },
-      Out: function(x) {
-        return Math.sin((x * Math.PI) / 2);
-      },
-      InOut: function(x) {
-        return 0.5 * (1 - Math.sin(Math.PI * (0.5 - x)));
-      },
+    cubicOut: function(x) {
+      return --x * x * x + 1;
     },
-    Exponential: {
-      In: function(x) {
-        return x === 0 ? 0 : Math.pow(1024, x - 1);
-      },
-      Out: function(x) {
-        return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
-      },
-      InOut: function(x) {
-        if (x === 0) {
-          return 0;
-        }
-        if (x === 1) {
-          return 1;
-        }
-        if ((x *= 2) < 1) {
-          return 0.5 * Math.pow(1024, x - 1);
-        }
-        return 0.5 * (-Math.pow(2, -10 * (x - 1)) + 2);
-      },
+    cubicInOut: function(x) {
+      if ((x *= 2) < 1) {
+        return 0.5 * x * x * x;
+      }
+      return 0.5 * ((x -= 2) * x * x + 2);
     },
-    Circular: {
-      In: function(x) {
-        return 1 - Math.sqrt(1 - x * x);
-      },
-      Out: function(x) {
-        return Math.sqrt(1 - --x * x);
-      },
-      InOut: function(x) {
-        if ((x *= 2) < 1) {
-          return -0.5 * (Math.sqrt(1 - x * x) - 1);
-        }
-        return 0.5 * (Math.sqrt(1 - (x -= 2) * x) + 1);
-      },
+    quarticIn: function(x) {
+      return x * x * x * x;
     },
-    Elastic: {
-      In: function(x) {
-        if (x === 0) {
-          return 0;
-        }
-        if (x === 1) {
-          return 1;
-        }
-        return -Math.pow(2, 10 * (x - 1)) * Math.sin((x - 1.1) * 5 * Math.PI);
-      },
-      Out: function(x) {
-        if (x === 0) {
-          return 0;
-        }
-        if (x === 1) {
-          return 1;
-        }
-        return Math.pow(2, -10 * x) * Math.sin((x - 0.1) * 5 * Math.PI) + 1;
-      },
-      InOut: function(x) {
-        if (x === 0) {
-          return 0;
-        }
-        if (x === 1) {
-          return 1;
-        }
-        x *= 2;
-        if (x < 1) {
-          return -0.5 * Math.pow(2, 10 * (x - 1)) * Math.sin((x - 1.1) * 5 * Math.PI);
-        }
-        return 0.5 * Math.pow(2, -10 * (x - 1)) * Math.sin((x - 1.1) * 5 * Math.PI) + 1;
-      },
+    quarticOut: function(x) {
+      return 1 - --x * x * x * x;
     },
-    Back: {
-      In: function(x) {
-        var s = 1.70158;
-        return x === 1 ? 1 : x * x * ((s + 1) * x - s);
-      },
-      Out: function(x) {
-        var s = 1.70158;
-        return x === 0 ? 0 : --x * x * ((s + 1) * x + s) + 1;
-      },
-      InOut: function(x) {
-        var s = 1.70158 * 1.525;
-        if ((x *= 2) < 1) {
-          return 0.5 * (x * x * ((s + 1) * x - s));
-        }
-        return 0.5 * ((x -= 2) * x * ((s + 1) * x + s) + 2);
-      },
+    quarticInOut: function(x) {
+      if ((x *= 2) < 1) {
+        return 0.5 * x * x * x * x;
+      }
+      return -0.5 * ((x -= 2) * x * x * x - 2);
     },
-    Bounce: {
-      In: function(x) {
-        return 1 - Easing.Bounce.Out(1 - x);
-      },
-      Out: function(x) {
-        if (x < 1 / 2.75) {
-          return 7.5625 * x * x;
-        }
-        else if (x < 2 / 2.75) {
-          return 7.5625 * (x -= 1.5 / 2.75) * x + 0.75;
-        }
-        else if (x < 2.5 / 2.75) {
-          return 7.5625 * (x -= 2.25 / 2.75) * x + 0.9375;
-        }
-        else {
-          return 7.5625 * (x -= 2.625 / 2.75) * x + 0.984375;
-        }
-      },
-      InOut: function(x) {
-        if (x < 0.5) {
-          return Easing.Bounce.In(x * 2) * 0.5;
-        }
-        return Easing.Bounce.Out(x * 2 - 1) * 0.5 + 0.5;
-      },
+    quinticIn: function(x) {
+      return x * x * x * x * x;
     },
-    generatePow: function(power) {
-      if (power === void 0) { power = 4; }
-      power = power < Number.EPSILON ? Number.EPSILON : power;
-      power = power > 10000 ? 10000 : power;
-      return {
-        In: function(x) {
-          return Math.pow(x, power);
-        },
-        Out: function(x) {
-          return 1 - Math.pow((1 - x), power);
-        },
-        InOut: function(x) {
-          if (x < 0.5) {
-            return Math.pow((x * 2), power) / 2;
-          }
-          return (1 - Math.pow((2 - x * 2), power)) / 2 + 0.5;
-        },
-      };
+    quinticOut: function(x) {
+      return --x * x * x * x * x + 1;
+    },
+    quinticInOut: function(x) {
+      if ((x *= 2) < 1) {
+        return 0.5 * x * x * x * x * x;
+      }
+      return 0.5 * ((x -= 2) * x * x * x * x + 2);
+    },
+    sinusoidalIn: function(x) {
+      return 1 - Math.sin(((1.0 - x) * Math.PI) / 2);
+    },
+    sinusoidalOut: function(x) {
+      return Math.sin((x * Math.PI) / 2);
+    },
+    sinusoidalInOut: function(x) {
+      return 0.5 * (1 - Math.sin(Math.PI * (0.5 - x)));
+    },
+    exponentialIn: function(x) {
+      return x === 0 ? 0 : Math.pow(1024, x - 1);
+    },
+    exponentialOut: function(x) {
+      return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+    },
+    exponentialInOut: function(x) {
+      if (x === 0) {
+        return 0;
+      }
+      if (x === 1) {
+        return 1;
+      }
+      if ((x *= 2) < 1) {
+        return 0.5 * Math.pow(1024, x - 1);
+      }
+      return 0.5 * (-Math.pow(2, -10 * (x - 1)) + 2);
+    },
+    circularIn: function(x) {
+      return 1 - Math.sqrt(1 - x * x);
+    },
+    circularOut: function(x) {
+      return Math.sqrt(1 - --x * x);
+    },
+    circularInOut: function(x) {
+      if ((x *= 2) < 1) {
+        return -0.5 * (Math.sqrt(1 - x * x) - 1);
+      }
+      return 0.5 * (Math.sqrt(1 - (x -= 2) * x) + 1);
+    },
+    elasticIn: function(x) {
+      if (x === 0) {
+        return 0;
+      }
+      if (x === 1) {
+        return 1;
+      }
+      return -Math.pow(2, 10 * (x - 1)) * Math.sin((x - 1.1) * 5 * Math.PI);
+    },
+    elasticOut: function(x) {
+      if (x === 0) {
+        return 0;
+      }
+      if (x === 1) {
+        return 1;
+      }
+      return Math.pow(2, -10 * x) * Math.sin((x - 0.1) * 5 * Math.PI) + 1;
+    },
+    elasticInOut: function(x) {
+      if (x === 0) {
+        return 0;
+      }
+      if (x === 1) {
+        return 1;
+      }
+      x *= 2;
+      if (x < 1) {
+        return -0.5 * Math.pow(2, 10 * (x - 1)) * Math.sin((x - 1.1) * 5 * Math.PI);
+      }
+      return 0.5 * Math.pow(2, -10 * (x - 1)) * Math.sin((x - 1.1) * 5 * Math.PI) + 1;
+    },
+    backIn: function(x) {
+      var s = 1.70158;
+      return x === 1 ? 1 : x * x * ((s + 1) * x - s);
+    },
+    backOut: function(x) {
+      var s = 1.70158;
+      return x === 0 ? 0 : --x * x * ((s + 1) * x + s) + 1;
+    },
+    backInOut: function(x) {
+      var s = 1.70158 * 1.525;
+      if ((x *= 2) < 1) {
+        return 0.5 * (x * x * ((s + 1) * x - s));
+      }
+      return 0.5 * ((x -= 2) * x * ((s + 1) * x + s) + 2);
+    },
+    bounceIn: function(x) {
+      return 1 - Easing.bounceOut(1 - x);
+    },
+    bounceOut: function(x) {
+      if (x < 1 / 2.75) {
+        return 7.5625 * x * x;
+      }
+      else if (x < 2 / 2.75) {
+        return 7.5625 * (x -= 1.5 / 2.75) * x + 0.75;
+      }
+      else if (x < 2.5 / 2.75) {
+        return 7.5625 * (x -= 2.25 / 2.75) * x + 0.9375;
+      }
+      else {
+        return 7.5625 * (x -= 2.625 / 2.75) * x + 0.984375;
+      }
+    },
+    bounceInOut: function(x) {
+      if (x < 0.5) {
+        return Easing.bounceIn(x * 2) * 0.5;
+      }
+      return Easing.bounceOut(x * 2 - 1) * 0.5 + 0.5;
     },
   };
 
@@ -1881,6 +2738,470 @@ SOFTWARE.
       return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1
     },
   };
+
+  /**
+   * Component responsible for animations.
+   * 
+   * @template {T}
+   */
+  class Tween {
+    _duration = 0
+    _repeat = false
+    active = false
+    /**
+     * @type {T}
+     */
+    _to = null
+    _from = null
+    _into = null
+    _interpolationFunc = Interpolation.Linear
+    _easingFunction = Easing.linear
+    _timeTaken = 0
+    _updateFunc = NoUpdateThrow
+    _next = null
+    /**
+     *@template {T}
+     *@param {T} to
+     *@param {T} from
+     *@param {number} duration
+     */
+    constructor(into) {
+      this._into = into;
+    }
+    init(entity) {
+      this.play();
+    }
+    /**
+     * @param {T} x
+     */
+    to(x) {
+      this._to = x;
+      return this
+    }
+    /**
+     * @param {T} x
+     */
+    from(x) {
+      this._from = x;
+      return this
+    }
+    /**
+     * @param {T} t
+     */
+    duration(t) {
+      this._duration = t;
+      return this
+    }
+    repeat() {
+      this._repeat = true;
+      return this
+    }
+    play() {
+      this._timeTaken = 0;
+      this.active = true;
+    }
+    stop() {
+      this.active = false;
+    }
+    onUpdate(callback) {
+      this._updateFunc = callback;
+      return this
+    }
+    easing(func) {
+      this._easingFunction = func;
+      return this
+    }
+    interpolant(func) {
+      this._interpolationFunc = func;
+      return this
+    }
+    update(dt) {
+      if (!this.active) return
+
+      this._timeTaken += dt;
+      if (this._timeTaken >= this._duration) {
+        if(this._next !== void 0){
+          this.stop();
+          this._next.play();
+        }
+        if (this._repeat) {
+          this._timeTaken = 0;
+        } else {
+          this._timeTaken = this._duration;
+          this.active = false;
+        }
+      }
+      let t = this._easingFunction(
+        this._timeTaken / this._duration
+      );
+      this._updateFunc(
+        this._interpolationFunc,
+        this._to,
+        this._from,
+        t,
+        this._into
+      );
+    }
+    chain(next) {
+      this._next = next;
+      return this
+    }
+  }
+
+  /**
+   * @type Tween<number>
+   */
+  new Tween();
+
+  /**
+   * @template {T}
+   * @callback TweenUpdate
+   * @param {Function} lerpFunc
+   * @param {T} to
+   * @param {T} from
+   * @param {number} t
+   * @param {T} into
+   * 
+   * @returns {void}
+   */
+
+  /**
+   * @type {TweenUpdate}
+   */
+  function Vector2Update(lerpFunc, to, from, t, into) {
+    into.x = lerpFunc(from.x, to.x, t);
+    into.y = lerpFunc(from.y, to.y, t);
+  }
+  function Vector3Update(lerpFunc, to, from, t, into) {
+    into.x = lerpFunc(from.x, to.x, t);
+    into.y = lerpFunc(from.y, to.y, t);
+    into.z = lerpFunc(from.z, to.z, t);
+  }
+
+  function ColorUpdate(lerpFunc, to, from, t, into) {
+    into.r = lerpFunc(from.r, to.r, t);
+    into.g = lerpFunc(from.g, to.g, t);
+    into.b = lerpFunc(from.b, to.b, t);
+    into.a = lerpFunc(from.a, to.a, t);
+  }
+
+  function AngleUpdate(lerpFunc, to, from, t, into) {
+    into.rad = lerpFunc(from.rad, to.rad, t);
+  }
+
+  function NoUpdateThrow() {
+    throw "The Tween does not have a valid onUpdate callback."
+  }
+
+  /**
+   * This module is used to check if bounds of a body overlap
+   */
+  const Overlaps = {
+    /**
+     * Checks if two AABB overlap
+     * 
+     * @param {BoundingBox} a
+     * @param {BoundingBox} b
+     */
+    AABBColliding(a, b) {
+      return (
+        a.min.x <= b.max.x &&
+        a.max.x >= b.min.x &&
+        a.min.y <= b.max.y &&
+        a.max.y >= b.min.y
+      )
+    },
+    /**
+     * Checks if two BoundingCircles overlap
+     * 
+     * @param {BoundingCircle} a
+     * @param {BoundingCircle} b
+     */
+    boundSpheresColliding(a, b) {
+      const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
+        (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
+      return distance < a.r * a.r + b.r * b.r;
+    },
+      /**
+       * Checks if An AABB and a CircleBound overlap
+       * 
+       * @param {BoundingBox} a
+       * @param {BoundingCircle} b
+       */
+    AABBvsSphere(a, b) {
+      const x = Math.max(a.min.x, Math.min(b.pos.x, a.max.x));
+      const y = Math.max(a.min.y, Math.min(b.pos.y, a.max.y));
+      const distance =
+        (x - b.pos.x) * (x - b.pos.x) +
+        (y - b.pos.y) * (y - b.pos.y);
+
+      return distance < b.r * b.r;
+    }
+  };
+
+  /**
+   * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+   */
+  class BoundingBox extends Component {
+    /**
+     * 
+     * @type Vector_like
+     */
+    pos = null
+    /**
+     * The upper limit of the bounding box
+     * 
+     * @type Vector_like
+     */
+    max = null
+    /**
+     * The lower limit of the bounding box
+     * 
+     * @type Vector_like
+     */
+    min = null
+    /**
+     * @param {number} [minX=0]
+     * @param {number} [minY=0]
+     * @param {number} [maxX=0]
+     * @param {number} [maxY=0]
+     */
+    constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
+      super();
+      this.pos = {
+        x: 0,
+        y: 0
+      };
+      this.max = {
+        x: maxX,
+        y: maxY
+      };
+      this.min = {
+        x: minX,
+        y: minY
+      };
+    }
+    /**
+     * 
+     * Checks to see if this intersects with another bounding box
+     * @param {BoundingCircle | BoundingBox} bound the bound to check  intersection with
+     * @returns boolean
+     **/
+    intersects(bound) {
+      if (bound.r)
+        return Overlaps.AABBvsSphere(this, bound)
+      return Overlaps.AABBColliding(this, bound)
+    }
+    /**
+     * Calculates the bounds of the body
+     * 
+     * @param {Body} body Body to calculate max and min from
+     * @param {Number} padding increases the size of the bounds
+     */
+    calculateBounds(body, padding = 0) {
+      let minX = Number.MAX_SAFE_INTEGER,
+        minY = Number.MAX_SAFE_INTEGER,
+        maxX = -Number.MAX_SAFE_INTEGER,
+        maxY = -Number.MAX_SAFE_INTEGER;
+
+      if (body.shapes.length == 0) {
+        this.min.x = body.position.x;
+        this.max.x = body.position.x;
+        this.min.y = body.position.y;
+        this.max.y = body.position.y;
+        this.pos.x = body.position.x;
+        this.pos.y = body.position.y;
+        return
+      }
+      for (var i = 0; i < body.shapes.length; i++) {
+        let shape = body.shapes[i];
+        if (shape.type == 0) {
+          let idx = body.position.x - shape.radius,
+            idy = body.position.y - shape.radius,
+            mdx = body.position.x + shape.radius,
+            mdy = body.position.y + shape.radius;
+          if (!minX || idx < minX) minX = idx;
+          if (!maxX || mdx > maxX) maxX = mdx;
+          if (!minY || idy < minY) minY = idy;
+          if (!maxY || mdy > maxY) maxY = mdy;
+          continue
+        }
+        for (var j = 0; j < shape.vertices.length; j++) {
+          let vertex = shape.vertices[j];
+          if (vertex.x < minX) minX = vertex.x;
+          if (vertex.x > maxX) maxX = vertex.x;
+          if (vertex.y < minY) minY = vertex.y;
+          if (vertex.y > maxY) maxY = vertex.y;
+        }
+      }
+      this.min.x = minX - padding;
+      this.max.x = maxX + padding;
+      this.min.y = minY - padding;
+      this.max.y = maxY + padding;
+      this.pos.x = body.position.x;
+      this.pos.y = body.position.y;
+    }
+    /**
+     * Translates this bound to the given position.
+     * 
+     * @param { Vector2} pos
+     */
+    update(pos) {
+      let dx = pos.x - this.pos.x;
+      let dy = pos.y - this.pos.y;
+
+      this.pos.x = pos.x;
+      this.pos.y = pos.y;
+      this.min.x += dx;
+      this.max.x += dx;
+      this.min.y += dy;
+      this.max.y += dy;
+    }
+    /**
+     * Deep copies a bounding box to a new one.
+     * 
+     * @returns BoundingBox
+     */
+    clone() {
+      return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
+    }
+    /**
+     * Deep copies another bounding box.
+     * 
+     * @param {BoundingBox} bounds
+     */
+    copy(bounds) {
+      this.pos.x = bounds.pos.x;
+      this.pos.y = bounds.pos.y;
+      this.min.x = bounds.min.x;
+      this.min.y = bounds.min.y;
+      this.max.x = bounds.max.x;
+      this.max.y = bounds.max.y;
+    }
+    toJson() {
+      return {
+        posX: this.pos.x,
+        posY: this.pos.y,
+        minX: this.min.x,
+        minY: this.min.y,
+        maxX: this.max.x,
+        maxY: this.max.y,
+      }
+    }
+    fromJson(obj) {
+      this.pos.x = obj.posX;
+      this.pos.y = obj.posY;
+      this.min.x = obj.minX;
+      this.min.y = obj.minY;
+      this.max.x = obj.maxX;
+      this.max.y = obj.maxY;
+    }
+    /**
+     * Combines two bounds to create a new one that covers the previous two.
+     * 
+     * @param {BoundingBox} bound1 
+     * @param {BoundingBox} bound2 
+     * @param {BoundingBox} target Bound to store results into.
+     * @returns BoundingBox
+     */
+    static union(bound1, bound2, target) {
+      target = target || new BoundingBox();
+
+      target.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x;
+      target.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y;
+      target.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x;
+      target.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y;
+      return target
+    }
+  }
+
+  /**
+   * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+   */
+  class BoundingCircle {
+    /**
+     * 
+     * @type number
+    */
+    r = 0
+    /**
+     * 
+     * @type Vector_like
+    */
+    pos = null
+    /**
+     * @param {number} [r=0]
+     */
+    constructor(r = 0) {
+      this.r = r;
+      this.pos = { x: 0, y: 0 };
+    }
+    /**
+     * 
+     * Checks to see if this intersects with another bounding box
+     * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
+     **/
+    intersects(bound) {
+      if (bound.r)
+        return Overlaps.boundSpheresColliding(this, bound)
+      return Overlaps.AABBvsSphere(bound, this)
+    }
+    /**
+     * Calculates the bounds of the body
+     * 
+     * @param {Body} body Body to calculate max and min from
+     * @@param {Number} padding increases the size of the bounds
+     */
+    calculateBounds(body, padding = 0) {
+      let radsq = 0,
+        shape,
+        vertices,
+        tmp;
+      for (var i = 0; i < body.shapes.length; i++) {
+        shape = body.shapes[i];
+        if (shape.radius) {
+          tmp = shape.radius * shape.radius;
+          if (tmp > radsq) radsq = tmp;
+          continue
+        }
+        for (var j = 0; j < body.shapes[i].vertices.length; j++) {
+          vertices = body.shapes[i].vertices;
+          for (var j = 0; j < vertices.length; j++) {
+            tmp = vertices[j].distanceToSquared(body.position);
+            if (tmp > radsq) radsq = tmp;
+          }
+          
+        }
+      }
+      this.pos.x = body.position.x;
+      this.pos.y = body.position.y;
+      this.r = Math.sqrt(radsq);
+    }
+    /**
+     * Translates this bound to the given position.
+     * 
+     * @param {Vector_like} pos
+     */
+    update(pos) {
+      //let dx = pos.x - this.pos.x
+      //let dy = pos.y - this.pos.y
+
+      this.pos.x = pos.x;
+      this.pos.y = pos.y;
+    }
+    toJson(){
+      return {
+        posX:this.pos.x,
+        posY:this.pos.y,
+        r:this.r
+      }
+    }
+    fromJson(obj){
+      this.pos.x = obj.posX;
+      this.pos.y = obj.posY;
+      this.r = obj.r;
+    }
+  }
 
   class Geometry {
     /**
@@ -2341,66 +3662,158 @@ SOFTWARE.
   }
 
   /**
+   * Component to hold the bounds of an entity.
+   * 
+   */
+  class Bound$1 extends Component {
+    /**
+     * The actual bounds.Used for collision detection.
+     * 
+     * @type BoundingBox | BoundingCircle
+     */
+    bounds = new BoundingBox()
+    toJson(){
+      return {
+        bounds:this.bounds.toJson()
+      }
+    }
+    fromJson(obj){
+      this.bpunds.fromJson(obj.bounds);
+    }
+  }
+
+  /**
+   * Holds transformation info of an entity 
+   * 
+   */
+  class Transform$1 extends Component{
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} a
+     * @returns 
+     */
+    constructor(x,y,a){
+      super();
+      this.position = new Vector2$1(x,y);
+      this.orientation = new Angle(a);
+    }
+    init(){}
+    toJson(){
+      return {
+        position: this.position.toJson(),
+        orientation:this.orientation.toJson()
+      }
+    }
+    fromJson(obj){
+      this.position.fromJson(obj.position);
+      this.orientation.fromJson(obj.orientation);
+    }
+  }
+
+  /**
+   * Component to hold requirements for an entity to move.
+   * 
+   */
+  class Movable$1 extends Component {
+    /**  * 
+     * @param {number} x
+     * @param {number} y
+     * @param {number} a
+     * @returns {Entity}
+     */
+    constructor(x, y, a) {
+      super();
+      this.transform = null;
+      this.velocity = new Vector2$1(x, y);
+      this.rotation = new Angle(a);
+      this.acceleration = new Vector2$1();
+      this.torque = new Angle();
+    }
+    init(entity) {
+      this.requires(entity, "transform");
+      if (!this.transform)
+        this.transform = entity.get("transform");
+    }
+    toJson() {
+      return {
+        velocity: this.velocity.toJson(),
+        rotation: this.rotation.toJson(),
+        acceleration: this.acceleration.toJson()
+      }
+    }
+    fromJson(obj) {
+      this.velocity.fromJson(obj.velocity);
+      this.rotation.fromJson(obj.rptatjon);
+      this.acceleration.fromJson(obj.acceleration);
+    }
+  }
+
+  class Intergrator extends System {
+    active = false
+    solver = EulerSolver.solve
+    objects = []
+    constructor() {
+      super();
+    }
+    init(manager) {
+      const world = manager.getSystem("world");
+      if (world) world.enableIntergrate = false;
+      this.active = true;
+      
+      manager.setComponentList("movable", this.objects);
+    }
+    update(dt) {
+      for (let i = 0; i < this.objects.length; i++) {
+        if (this.objects[i] == void 0) return
+        this.solver(
+          this.objects[i].transform,
+          this.objects[i],
+          dt
+        );
+      }
+    }
+  }
+  const a = new Vector2$1();
+  /**
+   * Semi implicit euler integration.
+   * More stable than explicit euler intergration.
+   */
+  class EulerSolver {
+    /**
+     * @param {number} dt
+     */
+    static solve(transform, movable, dt) {
+      const position = transform.position;
+      const velocity = movable.velocity;
+      const acceleration = movable.acceleration;
+      const orientation = transform.orientation;
+      const rotation = movable.rotation;
+      const torque = movable.torque;
+
+      velocity.add(acceleration.multiply(dt));
+      a.copy(velocity);
+      position.add(a.multiply(dt));
+      rotation.value += torque.value * dt;
+      orientation.value += rotation.value * dt;
+      acceleration.set(0, 0);
+      torque.value = 0;
+    }
+  }
+
+  /**
    * Holds information needed for collision detection and response.
    * 
-   * @implements Component
    */
-  class Body {
+  class Body extends Component {
     /**
      * Unique identification of a body.
      * 
      * @type number
      */
-    id = Utils$1.generateID()
-    /**
-     * World space coordinates of a body
-     * 
-     * @private
-     * @type Vector2
-     */
-    _position = new Vector2$1()
-    /**
-     * velocity of a body.Speed in pixels per second.
-     * 
-     * @private
-     * @type Vector2
-     */
-    _velocity = new Vector2$1()
-    /**
-     * acceleration of a body in pixels per second squared.
-     * 
-     * @private
-     * @type Vector2
-     */
-    _acceleration = new Vector2$1()
-    /**
-     * World space orientation of a body
-     * 
-     * @private
-     * @type Angle
-     */
-    _orientation = new Angle()
-    /**
-     * Rotation of a body
-     * 
-     * @private
-     * @type Angle
-     */
-    _rotation = new Angle()
-    /**
-     * Torque of the body
-     * 
-     * @private
-     * @type Angle
-     */
-    _torque = new Angle()
-    /**
-     * Mass of the body.
-     * 
-     * @private
-     * @type number
-     * @default 1
-     */
+    id = generateID()
+    _transform = new Transform$1()
+    _movable = new Movable$1()
     _mass = 1
     /**
      * Rotational inertia of the body.
@@ -2559,6 +3972,7 @@ SOFTWARE.
      * @param {Shape[]} shapes
      */
     constructor(...shapes) {
+      super();
       this.type = Settings.type;
       this.shapes = shapes;
       this.mass = 1;
@@ -2609,21 +4023,21 @@ SOFTWARE.
      * @type Vector2
      */
     get acceleration() {
-      return this._acceleration
+      return this._movable.acceleration
     }
     set acceleration(x) {
-      this._acceleration.copy(x);
+      this._movable.acceleration.copy(x);
     }
     /**
      * Velocity of a body
-     * 
+
      * @type Vector2
      */
     get velocity() {
-      return this._velocity
+      return this._movable.velocity
     }
     set velocity(x) {
-      this._velocity.copy(x);
+      this._movable.velocity.copy(x);
     }
     /**
      * Rotation of a body
@@ -2631,10 +4045,10 @@ SOFTWARE.
      * @type Angle
      */
     get rotation() {
-      return this._rotation
+      return this._movable.rotation
     }
     set rotation(x) {
-      this._rotation.copy(x);
+      this._movable.rotation.copy(x);
     }
     /**
      * Orientation of a body in degrees.
@@ -2642,10 +4056,10 @@ SOFTWARE.
      * @type number
      */
     set angle(angle) {
-      this.orientation.degree = angle;
+      this.orientation.value = degToRad(angle);
     }
     get angle() {
-      return this.orientation.degree
+      return radToDeg(this.orientation.value)
     }
     /**
      * Mass of a body.
@@ -2697,10 +4111,10 @@ SOFTWARE.
      * @type Vector2
      */
     get position() {
-      return this._position
+      return this._transform.position
     }
     set position(x) {
-      this._position.copy(x);
+      this._transform.position.copy(x);
     }
     /**
      * Orientation of a body
@@ -2708,10 +4122,10 @@ SOFTWARE.
      * @type Angle
      */
     set orientation(r) {
-      this._orientation.copy(r);
+      this._transform.orientation.copy(r);
     }
     get orientation() {
-      return this._orientation
+      return this._transform.orientation
     }
     /**
      * Angular velocity of a body in degrees
@@ -2719,10 +4133,10 @@ SOFTWARE.
      * @type number 
      */
     get angularVelocity() {
-      return this.rotation.degree
+      return radToDeg(this.rotation.value)
     }
     set angularVelocity(x) {
-      this.rotation.degree = x;
+      this.rotation.value = degToRad(x);
     }
     /**
      * Torque of a body in degrees
@@ -2730,10 +4144,10 @@ SOFTWARE.
      * @type number 
      */
     get torque() {
-      return this._torque
+      return this._movable.torque
     }
     set torque(x) {
-      this._torque.degree = x.degree;
+      this._movable.torque.copy(x);
     }
     /**
      * Angular acceleration of a body in degrees
@@ -2741,10 +4155,10 @@ SOFTWARE.
      * @type number 
      */
     get angularAcceleration() {
-      return this._torque.degree
+      return radToDeg(this._movable.torque.value)
     }
     set angularAcceleration(x) {
-      this._torque.degree = x;
+      this._movable.torque.value = degToRad(x);
     }
     /**
      * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -2753,7 +4167,7 @@ SOFTWARE.
      * @returns {number}
      */
     setAnchor(v) {
-      this.anchors.push(new Vector2$1(v.x, v.y).rotate(this.orientation.radian).add(this.position));
+      this.anchors.push(new Vector2$1(v.x, v.y));
       return this._localanchors.push(v) - 1
     }
     /**
@@ -2774,7 +4188,7 @@ SOFTWARE.
      * @returns { Vector2}
      */
     getLocalAnchor(index, target = new Vector2$1()) {
-      return target.copy(this._localanchors[index]).rotate(this.orientation.radian)
+      return target.copy(this._localanchors[index]).rotate(this.orientation.value)
     }
     /**
      * Applies a force to a body affecting its direction of travel and rotation.
@@ -2785,32 +4199,34 @@ SOFTWARE.
      */
     applyForce(force, arm = Vector2$1.ZERO) {
       this.acceleration.add(force.multiply(this.inv_mass));
-      this.rotation.degree += arm.cross(force) * this.inv_inertia;
+      this.rotation.value += arm.cross(force) * this.inv_inertia;
     }
 
     /**
      * Initializes the body to its given.Called by the world or an entity manager.
      * 
-     * @param {Entity | null} entity
+     * @param { Entity } [entity]
      * @param {boolean} [composited=false]
      */
     init(entity, composited = false) {
       this.entity = entity;
-      if (composited) {
+      if (composited || entity == void 0) {
         this.bounds = new BoundingBox();
+        if (entity != void 0) {
+          this._movable.transform = this._transform;
+          entity.manager.addComponent("transform",this._transform);
+          entity.manager.addComponent("movable",this._movable);
+        }
         this.update();
         return
       }
-      this.requires("transform", "movable", "bounds");
+      this.requires(entity, "transform", "movable", "bounds");
 
       let transform = entity.get("transform");
       let bounds = entity.get("bounds").bounds;
       let move = entity.get("movable");
-      this._acceleration = move.acceleration;
-      this._rotation = move.rotation;
-      this._velocity = move.velocity;
-      this._position = transform.position;
-      this._orientation = transform.orientation;
+      this._transform = transform;
+      this._movable = move;
       this.bounds = bounds;
 
       this.update();
@@ -2821,15 +4237,19 @@ SOFTWARE.
      */
     update() {
       for (var i = 0; i < this.shapes.length; i++) {
-        this.shapes[i].update(this.position, this._orientation.radian);
+        this.shapes[i].update(this.position, this.orientation.value);
       }
       for (var i = 0; i < this.anchors.length; i++) {
-        this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.radian); //.add(this.position)
+        this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.value); //.add(this.position)
       }
       if (this.autoUpdateBound)
         this.bounds.calculateBounds(this, this.boundPadding);
       this.bounds.update(this.position);
       //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
+    }
+    
+    destroy(){
+      this.entity.manager.removeComponent("movable",this._movable);
     }
     toJson() {
       let obj = {
@@ -2907,7 +4327,6 @@ SOFTWARE.
      */
     static DYNAMIC = ObjType.DYNAMIC
   }
-  Component.implement(Body);
 
   /**
    * A body with a circle shape on it.
@@ -2968,7 +4387,7 @@ SOFTWARE.
   /**
    * Holds a group of related bodies and constraints.
    */
-  class Composite {
+  class Composite extends Component {
     /**
      * Entity this belongs to.
      * 
@@ -3006,7 +4425,7 @@ SOFTWARE.
       this.bodies.forEach(e => {
         e.init(entity, true);
       });
-      this.requires("transform");
+      this.requires(entity, "transform");
 
     }
     /**
@@ -3093,13 +4512,13 @@ SOFTWARE.
       }
       return mass
     }
-    set type(x){
+    set type(x) {
       for (var i = 0; i < this.bodies.length; i++) {
         this.bodies[i].type = x;
       }
     }
-    get type(){
-      return this.bodies[0]?.type 
+    get type() {
+      return this.bodies[0]?.type
     }
     /**
      * Density of a body.
@@ -3170,8 +4589,12 @@ SOFTWARE.
         this.bodies[i].angularVelocity = x;
       }
     }
+    destroy() {
+      this.bodies.forEach(b => {
+        b.destroy();
+      });
+    }
   }
-  Component.implement(Composite);
 
   class Trigon extends Body {
       /**
@@ -3344,8 +4767,8 @@ SOFTWARE.
       body1.position.add(tmp5$3.copy(force).multiply(-body1.inv_mass));
       body2.position.add(tmp5$3.copy(force).multiply(body2.inv_mass));
 
-      body1.rotation.radian += tmp4$4.cross(arm1) * body1.inv_inertia;
-      body2.rotation.radian += tmp4$4.cross(arm2) * -body2.inv_inertia;
+      body1.rotation.value += tmp4$4.cross(arm1) * body1.inv_inertia;
+      body2.rotation.value += tmp4$4.cross(arm2) * -body2.inv_inertia;
     }
   }
 
@@ -3400,8 +4823,8 @@ SOFTWARE.
         body1.velocity.add(tmp5$2.copy(force).multiply(-body1.inv_mass));
         body2.velocity.add(tmp5$2.copy(force).multiply(body2.inv_mass));
         
-        body1.rotation.radian += force.cross(arm1) * body1.inv_inertia;
-        body2.rotation.radian += force.cross(arm2) * -body2.inv_inertia;
+        body1.rotation.value += force.cross(arm1) * body1.inv_inertia;
+        body2.rotation.value += force.cross(arm2) * -body2.inv_inertia;
     }
   }
 
@@ -3432,6 +4855,7 @@ SOFTWARE.
       body.angularVelocity += body.angularAcceleration * dt * 0.5;
       body.angle += body.angularVelocity * dt;
       body.angularVelocity += body.angularAcceleration * dt * 0.5;
+      body.torque.value = 0;
     }
   }
 
@@ -3450,8 +4874,8 @@ SOFTWARE.
       let { bodyA: a, bodyB: b, ca1, ca2, impulse } = manifold;
       let { axis } = manifold.contactData;
       if (impulse <= 0) return
-      let a$va = tmp1$8.set(ca1.y * -a.rotation._rad, ca1.x * a.rotation._rad);
-      let a$vb = tmp2$6.set(ca2.y * -b.rotation._rad, ca2.x * b.rotation._rad);
+      let a$va = tmp1$8.set(ca1.y * -a.rotation.value, ca1.x * a.rotation.value);
+      let a$vb = tmp2$6.set(ca2.y * -b.rotation.value, ca2.x * b.rotation.value);
       let va = tmp3$2.copy(a.velocity).add(a$va);
       let vb = tmp4$2.copy(b.velocity).add(a$vb);
       let relVel = va.sub(vb);
@@ -3532,8 +4956,8 @@ SOFTWARE.
       let jp = tmp2$5.copy(axis).multiply(a);
       bodyA.velocity.add(tmp1$7.copy(jp).multiply(bodyA.inv_mass * inv_dt));
       bodyB.velocity.add(tmp1$7.copy(jp).multiply(-bodyB.inv_mass * inv_dt));
-      bodyA.rotation.radian += ca1.cross(jp) * bodyA.inv_inertia * inv_dt;
-      bodyB.rotation.radian += ca2.cross(jp) * -bodyB.inv_inertia * inv_dt;
+      bodyA.rotation.value += ca1.cross(jp) * bodyA.inv_inertia * inv_dt;
+      bodyB.rotation.value += ca2.cross(jp) * -bodyB.inv_inertia * inv_dt;
       manifold.contactData.lastOverlap = overlap;
     }
   };
@@ -3550,8 +4974,8 @@ SOFTWARE.
     solve(manifold) {
       let { bodyA, bodyB, ca1, ca2, restitution } = manifold;
       let { axis } = manifold.contactData;
-      let a$va = tmp1$6.set(ca1.y * -bodyA.rotation.radian, ca1.x * bodyA.rotation.radian);
-      let a$vb = tmp2$4.set(ca2.y * -bodyB.rotation.radian, ca2.x * bodyB.rotation.radian);
+      let a$va = tmp1$6.set(ca1.y * -bodyA.rotation.value, ca1.x * bodyA.rotation.value);
+      let a$vb = tmp2$4.set(ca2.y * -bodyB.rotation.value, ca2.x * bodyB.rotation.value);
       let va = tmp3$1.copy(bodyA.velocity).add(a$va);
       let vb = tmp4$1.copy(bodyB.velocity).add(a$vb);
       let vp = va.sub(vb);
@@ -3956,7 +5380,7 @@ SOFTWARE.
         return false
       let t = this.objects.indexOf(obj);
       if (t !== -1) {
-        Utils$1.removeElement(this.objects, t);
+        removeElement(this.objects, t);
         if (
           this.objects.length == 0 &&
           this.childrenHaveObj()
@@ -4004,11 +5428,11 @@ SOFTWARE.
     getCollisionPairs(target, stack) {
       if (!this.hasObjects) return
       if (!this.isLeafNode()) {
-        Utils$1.appendArr(stack, this.objects);
+        appendArr(stack, this.objects);
         for (var i = 0; i < 4; i++) {
           this.children[i].getCollisionPairs(target, stack);
         }
-        Utils$1.popArr(stack, this.objects.length);
+        popArr(stack, this.objects.length);
       }
       let length = stack.length,
         obLength = this.objects.length,
@@ -4052,7 +5476,7 @@ SOFTWARE.
    * 
    * @extends Broadphase
    */
-  class Tree extends Broadphase {
+  class QuadTreeBroadphase extends Broadphase {
     /**
      * @param {Bounds} bounds The region it operates on.
      * @param {number} [maxdepth=3] Maximum number of branches.
@@ -4283,7 +5707,7 @@ SOFTWARE.
     shapesCollided(shape1, shape2, target) {
       let arr = _arr,
         boundary;
-      Utils$1.clearArr(arr);
+      clearArr(arr);
       shape1.getNormals(shape2, arr);
       boundary = arr.length;
       shape2.getNormals(shape1, arr);
@@ -4400,7 +5824,7 @@ SOFTWARE.
         }
         if (point < min) {
           min = point;
-          Utils$1.clearArr(nearVertices);
+          clearArr(nearVertices);
           nearVertices.push(vertices[i]);
           i = -1;
         }
@@ -4649,20 +6073,16 @@ SOFTWARE.
      */
     intergrator = VerletSolver
     /**
-     * @constructor World
-     * 
+     * @type boolean
+     * @default true
      */
+    enableIntergrate = true
+
     constructor() {
       this.broadphase = new NaiveBroadphase(this);
       this.narrowphase = new SATNarrowPhase();
     }
-    set gravity(x) {
-      if (typeof x === "object") {
-        this.gravitationalAcceleration.copy(x);
-      } else {
-        this.gravitationalAcceleration.set(0, x);
-      }
-    }
+
     /**
      * Gravitational pull of the world,will affect all bodies except static bodies.
      * 
@@ -4671,6 +6091,15 @@ SOFTWARE.
     get gravity() {
       return this.gravitationalAcceleration
     }
+
+    set gravity(x) {
+      if (typeof x === "object") {
+        this.gravitationalAcceleration.copy(x);
+      } else {
+        this.gravitationalAcceleration.set(0, x);
+      }
+    }
+
     /**
      * @private
      */
@@ -4714,8 +6143,8 @@ SOFTWARE.
           manifold = this.CLMDs[i];
           manifold.bodyA.velocity.add(manifold.velA);
           manifold.bodyB.velocity.add(manifold.velB);
-          manifold.bodyA.rotation.radian += manifold.rotA;
-          manifold.bodyB.rotation.radian += manifold.rotB;
+          manifold.bodyA.rotation.value += manifold.rotA;
+          manifold.bodyB.rotation.value += manifold.rotB;
         }
       }
 
@@ -4805,7 +6234,8 @@ SOFTWARE.
       this.collisionDetection();
       this.collisionResponse(dt);
       this.updateConstraints(dt);
-      this.intergrate(dt, length);
+      if (this.enableIntergrate)
+        this.intergrate(dt, length);
       this.updateBodies(length);
       this.count += 1;
       this.perf.total = performance.now() - this.perf.lastTimestamp;
@@ -4849,6 +6279,7 @@ SOFTWARE.
      * @param {Body | Composite | Constraint} object
      */
     remove(object) {
+      object.destroy();
       if (object.physicsType == ObjType.BODY) {
         this.removeBody(object);
       } else if (object.physicsType == ObjType.CONSTRAINT) {
@@ -4865,7 +6296,7 @@ SOFTWARE.
      */
     removeBody(body) {
       this.broadphase.remove(body);
-      if (Utils$1.removeElement(this.objects, body.index)) {
+      if (removeElement(this.objects, body.index)) {
         if (body.index === this.objects.length)
           return
         this.objects[body.index].index = body.index;
@@ -4940,44 +6371,12 @@ SOFTWARE.
     }
   }
 
-  //import { Component } from "./component.js"
-
-  /**
-   * Holds transformation info of an entity 
-   * 
-   * @implements Component
-   */
-  class Transform {
-    entity = null
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} a
-     * @returns 
-     */
-    constructor(x,y,a){
-      this.position = new Vector2$1(x,y);
-      this.orientation = new Angle(a);
-    }
-    init(){}
-    toJson(){
-      return {
-        position: this.position.toJson(),
-        orientation:this.orientation.toJson()
-      }
-    }
-    fromJson(obj){
-      this.position.fromJson(obj.position);
-      this.orientation.fromJson(obj.orientation);
-    }
-  }
-
   class Camera {
     /**
      * @readonly
      * @type Transform
      */
-    transform = new Transform()
+    transform = new Transform$1()
 
     constructor() { }
     /**
@@ -5204,7 +6603,7 @@ SOFTWARE.
         this.background.update(this, dt);
       this.ctx.save();
       this.ctx.translate(this.camera.transform.position.x,-this.camera.transform.position.y);
-      this.ctx.rotate(this.camera.transform.orientation.radian);
+      this.ctx.rotate(this.camera.transform.orientation.value);
       for (var i = 0; i < this.objects.length; i++) {
         this.objects[i].render(this.ctx, dt);
       }
@@ -5309,10 +6708,10 @@ SOFTWARE.
      * @type number
      */
     get angle() {
-      return this._orientation.radian * 180 / Math.PI
+      return this._orientation.value * 180 / Math.PI
     }
     set angle(x) {
-      this._orientation.degree = x;
+      this._orientation.value = x * Math.PI/180;
     }
     /**
      * World space position.
@@ -5340,7 +6739,7 @@ SOFTWARE.
       ctx.save();
       ctx.beginPath();
       ctx.translate(...this._position);
-      ctx.rotate(this._orientation.radian);
+      ctx.rotate(this._orientation.value);
       ctx.scale(...this._scale);
       this.material?.render(ctx,dt,this.geometry?.drawable);
       ctx.closePath();
@@ -5357,7 +6756,7 @@ SOFTWARE.
         return
       }
       this.entity = entity;
-      this.requires("transform");
+      this.requires(entity,"transform");
       let transform = entity.get("transform");
       this._position = transform.position;
       this._orientation = transform.orientation;
@@ -5900,8 +7299,11 @@ SOFTWARE.
      * @param {CanvasRenderingContext2D} ctx
      */
     init(ctx) {
-      let path = this.drawable = new Path2D();
-      vertices(path, this.vertices, true);
+      this.updateVertices(this.vertices);
+    }
+    updateVertices(data){
+      const path = this.drawable = new Path2D();
+      vertices(path, data, true);
     }
   }
 
@@ -5955,7 +7357,7 @@ SOFTWARE.
      */
     init(entity) {
       super.init(entity);
-      this.requires("agent");
+      this.requires(entity,"agent");
       this.agent = entity.get("agent");
     }
     /**
@@ -6270,343 +7672,6 @@ SOFTWARE.
     }
   }
 
-  //import { DEVICE } from "../device/index.js"
-  class Loader {
-    constructor(manager) {
-      this._toload = [];
-      this.imgs = {};
-      this.sfx = {};
-      this.json = {};
-      this._progressBytes = 0;
-      this._totalBytes = 0;
-      this._filesErr = 0;
-      this._filesLoaded = 0;
-      this._totalFileNo = 0;
-      const that = this;
-      this.onfinish = null;
-      this._handlers = {
-        onload: function(xhr, e) {
-          let type = that._getType(xhr.responseURL);
-          let name = that._getName(xhr.responseURL);
-          if (e.lengthComputable === false) {
-            that._handlers.onerror(xhr, e);
-            return
-          }
-          if (type === "image") {
-            that.imgs[name] = new Image();
-            that.imgs[name].src = URL.createObjectURL(xhr.response);
-          } else if (type === "audio") {
-            that.sfx[name] = xhr.response;
-            //if using webAudio,just set it to the buffer 
-            //else find a way to put this buffer into an audio tag
-          } else if (type === "json") {
-            that.json[name] = JSON.parse(xhr.response);
-          } else {
-            return Err.warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
-          }
-          that._filesLoaded += 1;
-
-          if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) {
-            that.onfinish();
-          }
-
-        },
-        onheadload: function(e) {
-          if (e.total === 0 || !e.lengthComputable) return
-          that._totalBytes += e.total;
-          let xhr = new XMLHttpRequest();
-          xhr.open('GET', files.images[i], true);
-
-          xhr.onload = e => that._handlers.onload(xhr);
-          xhr.onerror = that._handlers.onerror(xhr);
-          xhr.send();
-        },
-        onerror: function(e) {
-          that._filesErr += 1;
-          Err.warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
-          if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish();
-        }
-      };
-    }
-    _getName(url) {
-      if (url.includes("/")) {
-        let tmp = url.split("/");
-        url = tmp[tmp.length - 1];
-      }
-      return url.split(".")[0]
-    }
-    _getType(url) {
-      let ext;
-      if (url.includes("/")) {
-        let tmp = url.split("/");
-        url = tmp[tmp.length - 1];
-      }
-      ext = url.split(".")[1];
-
-      if (ext === "jpg" || ext === "png" || ext === "jpeg") return "image"
-      if (ext === "mp3" || ext === "ogg") return "audio"
-      if (ext === "json") return "json"
-    }
-    loadAll(files = {}) {
-      this._totalFileNo =
-        (files.images?.length || 0) +
-        (files.audio?.length || 0) +
-        (files.json?.length || 0);
-      if (this._totalFileNo === 0) {
-        this.onfinish();
-        return
-      }
-      if (files.images) {
-        for (var i = 0; i < files.images.length; i++) {
-          let xhr = new XMLHttpRequest();
-          xhr.open('GET', files.images[i], true);
-          xhr.responseType = "blob";
-          xhr.onload = e => {
-            this._handlers.onload(xhr, e);
-
-          };
-          xhr.onerror = e => this._handlers.onerror(xhr);
-          xhr.send();
-
-        }
-      }
-      if (files.audio) {
-        for (var i = 0; i < files.audio.length; i++) {
-          let xhr = new XMLHttpRequest();
-          xhr.responseType = "arraybuffer";
-          xhr.open('GET', files.audio[i], true);
-          xhr.onload = e => this._handlers.onload(xhr, e);
-          xhr.onerror = e => this._handlers.onerror(xhr);
-          xhr.send();
-
-        }
-      }
-      if (files.json) {
-        for (var i = 0; i < files.json.length; i++) {
-          let xhr = new XMLHttpRequest();
-          xhr.responseType = "text";
-          xhr.open('GET', files.json[i], true);
-          xhr.onload = e => this._handlers.onload(xhr, e);
-          xhr.onerror = e => this._handlers.onerror(xhr);
-          xhr.send();
-        }
-
-      }
-    }
-  }
-
-  /**
-   * This class manages all events by a game manager.
-   * When adding a handler to an event with another handler,the latter will not be overriden,rather,the former will be added to complement the latter.
-   */
-  class EventDispatcher {
-    /**
-     * A dictionary of callback functions
-     * 
-     * @private
-     * @type Object<string,function[]>
-     */
-    handlers = {}
-    /**
-     * This fires all event handlers of a certain event.
-     * 
-     * @param {string} n the name of event fired.
-     * @param {any} data The payload of the event.
-     */
-    trigger(n, data) {
-      if (n in this.handlers)
-        this.handlers[n].forEach(h => h(data));
-    }
-    /**
-     * Ignore this,must be here for it to be a system.Might make this class not a system later
-     */
-    init() {}
-    /**
-     * Adds an event handler to an event dispatcher.
-     * 
-     * @param {string} name name of the event.
-     * @param {function} handler Function to be called when the event is triggered.
-     */
-    add(name, handler) {
-      if (name in this.handlers) {
-        this.handlers[name].push(handler);
-        return
-      }
-      this.handlers[name] = [handler];
-    }
-  }
-
-  /**
-   * This handles events created by the DOM.
-   */
-  class DOMEventHandler {
-    /**
-     * A dictionary of callback functions
-     * 
-     * @private
-     * @type Object<string,function[]>
-     */
-    handlers = {}
-    /**
-     * A dictionary of the main callback functions
-     * 
-     * @private
-     * @type Object<string,function>
-     */
-    _evHandlers = {}
-    /**
-     * Adds an eventlistener.
-     * 
-     * @param {string} e Name of the DOMEvent.
-     * @param {function} h The eventlistener.
-     */
-    add(e, h) {
-      if (this.handlers[e])
-        return this.handlers[e].push(h)
-      this.handlers[e] = [h];
-      let listener = (event) => {
-        let handlers = this.handlers[e];
-        for (var i = 0; i < handlers.length; i++) {
-          handlers[i](event);
-        }
-      };
-      document.addEventListener(e, listener);
-      this._evHandlers[e] = listener;
-    }
-    /**
-     * Removes an eventlistener.
-     * 
-     * @param {string} e Name of the DOMEvent.
-     * @param {function} h The eventlistener.
-     */
-    remove(e, h) {
-      this.handlers[e].splice(this.handlers[e].indexOf(h), 1);
-      if (!this.handlers[e].length)
-        this.dispose(e);
-    }
-    /**
-     * Removes all eventlisteners of an event.
-     * 
-     * @param {string} e Name of the DOMEvent.
-     * @param {function} h The eventlistener.
-     */
-    disposeEvent(e) {
-      document.removeEventListener(e, this._evHandlers[e]);
-      delete this.handlers[e];
-      delete this._evHandlers[e];
-    }
-    /**
-     * Clears all eventlisteners of every event registered.
-     */
-    clear() {
-      for (var ev in this.handlers) {
-        this.dispose(ev);
-      }
-    }
-    /* 
-    Donno why this is here,but i do know past me has a reason for this being here.
-    Ill leave it for now.
-    */
-    init() {}
-  }
-
-  /**
-   * This provides a way to fire off an entity's collision event handler registered to it.
-   * 
-   * @param {CollisionPair[]} clmds an array of collision manifolds
-  */
-  function defaultCollisionHandler(clmds) {
-    let a, b;
-    for (let i = 0; i < clmds.length; i++) {
-      a = clmds[i].bodyA.entity.getHandler("collision");
-      b = clmds[i].bodyB.entity.getHandler("collision");
-
-      if (a) a(
-        clmds[i].bodyA.entity,
-        clmds[i].bodyB.entity,
-        clmds[i]
-      );
-      if (b) b(
-        clmds[i].bodyB.entity,
-        clmds[i].bodyA.entity,
-        clmds[i]
-      );
-    }
-  }
-
-  /**
-   * This provides a way to fire off an entity's precollision event handler registered to it
-   * 
-   * @param {Manifold[]} clmds an array of collision manifolds
-  */
-  function defaultPrecollisionHandler(clmds) {
-    let a, b;
-    for (let i = 0; i < clmds.length; i++) {
-      a = clmds[i].a.entity.getHandler("precollision");
-      b = clmds[i].b.entity.getHandler("precollision");
-
-      if (a) a(
-        clmds[i].a.entity,
-        clmds[i].b.entity,
-        clmds[i]
-      );
-      if (b) b(
-        clmds[i].b.entity,
-        clmds[i].a.entity,
-        clmds[i]
-      );
-    }
-  }
-
-  /**@enum {string}*/
-  const Events = {
-    COLLISION : "collision",
-    PRECOLLISION : "precollision",
-    PREUPDATE : "preupdate",
-    POSTUPDATE : "postupdate",
-     UPDATE : "postupdate",  
-     INITIALIZE : "init",
-     ADD : "add",
-     REMOVE : "remove",
-     PAUSE : "pause",
-     PLAY : "play"
-  };
-
-  class Signal {
-    _listeners = []
-    _value = null
-    constructor(value){
-      this._value = value;
-    }
-    set value(x) {
-      this._value = x;
-      for (var i = 0; i < this._listeners.length; i++) {
-        let func = this._listeners[i];
-        func.listener(this);
-        if(func.callOnce)
-        this.removeListener(func.listener);
-      }
-    }
-    get value() {
-      return this._value
-    }
-    addListener(listener,callOnce=false) {
-      this._listeners.push({
-        listener,
-        callOnce
-      });
-    }
-    removeListener(listener) {
-      for (var i = 0; i < this._listeners.length; i++) {
-        if (this._listeners[i].listener == listener)
-          return this._detach(i)
-      }
-    }
-    _detach(bindingIndex){
-      this._listeners.splice(i, 1);
-    }
-  }
-
   /**
    * Handled the keyboard input of an application on a PC.
   */
@@ -6894,7 +7959,7 @@ SOFTWARE.
    * This handles all inputs from the mouse,touch and keyboards.
    * 
    */
-  class Input$1 {
+  class Input {
     /**
      * This attaches callbacks to the DOM.
      * 
@@ -6941,984 +8006,6 @@ SOFTWARE.
       this.keyboard.dispose();
       this.touch.dispose();
     }
-  }
-
-  /**
-   * 
-   */
-  /**
-   * This class is responsible for managing all
-   * entities and ensuring that systems are updated every frame.
-   * 
-   */
-  class Manager$1 {
-    /**
-     * RAF number of current frame.Used for pausing the manager.
-     * 
-     * @private
-     * @type number
-     */
-    _rafID = undefined
-    /**
-     * @private
-     * @type {Object<string, function>}
-     */
-    _classes = {}
-    /**
-     * 
-     * @private
-     * @type Object<string,Component[]>
-     */
-    _componentLists = {}
-    /**
-     * 
-     * @private
-     * @type System[]
-     */
-    _systems = []
-    /**
-     * 
-     * @private
-     * @type {{
-       world:World,
-       renderer:Renderer,
-       input:Input,
-       audio:AudioHandler
-     }}
-     */
-    _coreSystems = {
-      world: null,
-      renderer: null,
-      input: null,
-      audio: null
-    }
-    /**
-     * 
-     * @private
-     * @type boolean
-     */
-    _initialized = false
-    /**
-     * Whether or not the manager is playing.
-     * 
-     * @type boolean
-     */
-    playing = false
-    /**
-     * 
-     * @private
-     * @type Object<string, number>
-     */
-    _systemsMap = {}
-    /**
-     * 
-     * @private
-     * @type Object<string, string>
-     */
-    _compMap = {}
-    /**
-     * Master clock for the game
-     * 
-     * @type Clock
-     */
-    clock = new Clock()
-    /**
-     * 
-     * @private
-     * @type Entity[]
-     */
-    objects = []
-    /**
-     * 
-     * @private
-     * @type number
-     */
-    _accumulator = 0
-    /**
-     * Ideal framerate of the manager.Not implemented corrretly.
-     * TODO correct it
-     * 
-     * @type number
-     */
-    frameRate = 0
-    /**
-     * 
-     * @ignore.
-     * This is an artifact of me debugging this.
-     * TODO - Should implement a better soluton
-     */
-    perf = {
-      lastTimestamp: 0,
-      total: 0
-    }
-    /**
-     * look at Loader for more info.
-     * 
-     * @readonly
-     * @type Loader
-     */
-    loader = new Loader()
-    /**
-     * @readonly
-     * @type EventDispatcher
-     */
-    events = new EventDispatcher()
-    /**
-     * @private
-     */
-    _update = accumulate => {
-      let dt = this.clock.update(accumulate);
-
-      if (this._accumulator < this.frameRate) {
-        this._accumulator += dt;
-        this.RAF();
-        return
-      }
-      this.events.trigger("updateStart");
-      this.update(dt);
-      this.events.trigger("update");
-      this.events.trigger("updateEnd");
-      this._accumulator = 0;
-      this.RAF();
-    }
-    /**
-     * Creates a new instance of Manager class
-     * 
-     * @param {Object} [options] 
-     * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
-     * @param {Object} [options.files={}] This is passed onto the Loader.Please check `Loader.load()` for more information on it.
-     * @param {boolean} [options.physics=true] Adds physics world as a System.
-     * @param {boolean} [options.renderer=true] Adds a renderer as a system.
-     * @param {boolean} [options.input=true] Adds input as a system.
-     * 
-     **/
-    constructor(options = {}) {
-      options = Object.assign({
-        autoPlay: true,
-        physics: true,
-        renderer: true,
-        input: true
-      }, options);
-      if (options.input)
-        this.registerSystem("input", new Input$1());
-      if (options.physics) {
-        this.registerSystem("world", new World());
-        this.events.add("collision", defaultCollisionHandler);
-        this.events.add("precollision", defaultPrecollisionHandler);
-      }
-      if (options.renderer)
-        this.registerSystem("renderer", new Renderer2D());
-      this.loader.onfinish = e => {
-        this.init();
-        this.play();
-      };
-      this.loader.loadAll(options.files);
-    }
-    /**
-     * This initializes the manager.
-     * No need to call this function directly.
-     * This is called after the preloader finishes loading all its files.
-     * 
-     */
-    init() {
-      for (var i = 0; i < this.objects.length; i++) {
-        this.objects[i].init(this);
-      }
-      //this.initSystems()
-      this.events.trigger("init", this);
-      this.update(0);
-      this._initialized = true;
-      if (this.playing) this.play();
-    }
-    /**
-     * Adds an entity to the manager and initializes it.
-     * 
-     * @param {Entity} object The entity to add
-     */
-    add(object) {
-      if (object.manager) {
-        Err.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object);
-        return
-      }
-      this.objects.push(object);
-      object.init(this);
-      this.events.trigger("add", object);
-    }
-    /**
-     * This adds a component to a componentList
-     * if the componentList is there else exits
-     * without an error.
-     * There is no need for you to use this method
-     * as it is for internal use only and may change in the future 
-     * 
-     * @param {string} n name of the component
-     * @param {Component} c An object implementing Component
-     */
-    addComponent(n, c) {
-      if (n === "body") {
-        this._coreSystems.world.add(c);
-        return
-      }
-      if (n === "sprite") {
-        this._coreSystems.renderer.add(c);
-        return
-      }
-      if (n in this._componentLists)
-        this._componentLists[n].push(c);
-    }
-    /**
-     * This removes a component from a componentList
-     * if the componentList is there else exits
-     * without an error.
-     * There is no need for you to use this method
-     * as it is for internal use only and may change in the future 
-     * @param { string } n name of the component *
-     * @param { Component } c An object implementing Component interface
-     */
-    removeComponent(n, c) {
-      if (n === "body") {
-        this._coreSystems.world.remove(c);
-        return
-      }
-      if (n === "sprite") {
-        this._coreSystems.renderer.remove(c);
-        return
-      }
-      if (n in this._componentLists)
-        Utils$1.removeElement(this._componentLists[n], this._componentLists[n].indexOf(c));
-    }
-    /**
-     * Removes an entity from the manager.
-     * Note that this doesn't destroy the entity, only removes it and its components from the manager.
-     * To destroy the entity,use `Entity.destroy()` method.
-     * 
-     * @param {Entity} object The entity to remove
-     */
-    remove(object) {
-      let index = this.objects.indexOf(object);
-      object.removeComponents();
-      object.reset();
-      Utils$1.removeElement(this.objects, index);
-      this.events.trigger("remove", object);
-    }
-    /**
-     * This removes all of the entities and components from the manager
-     */
-    clear() {
-      for (let i = this.objects.length - 1; i >= 0; i--) {
-        this.remove(this.objects[i]);
-      }
-    }
-    /**
-     * This method requests an animation frame from the browser
-     * 
-     * @private
-     */
-    RAF() {
-      this._rafID = requestAnimationFrame(this._update);
-    }
-    /**
-     * This starts up the update loop of the manager
-     */
-    play() {
-      if (!this._initialized) {
-        this.playing = true;
-        return
-      }
-      this.RAF();
-      this.events.trigger("play");
-    }
-    /**
-     * This stops the update loop of the manager
-     */
-    pause() {
-      if (!this._initialized) {
-        this.playing = false;
-        return
-      }
-      cancelAnimationFrame(this._rafID);
-      this.events.trigger("pause");
-    }
-    /**
-     * This method might be useless as systems are initialized on being added
-     * 
-     * @private 
-     */
-    initSystems() {
-      for (var i = 0; i < this._systems.length; i++) {
-        for (var j = 0; j < this._systems[i].length; j++) {
-          this._systems[i][j].init(this);
-        }
-      }
-    }
-
-    /**
-     * Marches the update loop forward,updating
-     * the systems
-     * You shouldn't mess with this/call it or everything will explode with undetectable errors.
-     * 
-     * @private
-     */
-    update(dt = 0.016) {
-      let world = this._coreSystems["world"],
-        renderer = this._coreSystems["renderer"],
-        input = this._coreSystems["input"];
-
-      let totalTS = performance.now();
-
-      //the only reason this is here is that
-      //i need to debug stuff visually - ill remove it later.
-      if (renderer) renderer.clear();
-
-      for (var i = 0; i < this._systems.length; i++) {
-        this._systems[i].update(dt);
-      }
-      if (input) input.update();
-      if (world) world.update(dt);
-      if (renderer) renderer.update(dt);
-      if (world) {
-        this.events.trigger("precollision", world.contactList);
-        this.events.trigger("collision", world.CLMDs);
-      }
-      this.perf.total = performance.now() - totalTS;
-    }
-    /**
-     * This registers a class into the manager so that ot can be used in cloning an entity.
-     * 
-     * @param {function} obj The class or constructor function to register
-     * @param {boolean} override Whether to override an existing class
-     */
-    registerClass(obj, override = false) {
-      let n = obj.name.toLowerCase();
-      if (n in this._classes && !override) return Err.warn(`The class \`${obj.name}\` is already registered.Set the second parameter of \`Manager.registerClass()\` to true if you wish to override the set class`)
-      this._classes[n] = obj;
-    }
-    /**
-     * Used to register a system
-     * 
-     * @param {string} n The name for the system
-     * @param {System} sys The system to be addad
-     * 
-     * @param {string} [cn=n] The componentList name that the system will primarily take care of
-     */
-    registerSystem(n, sys, cn = n) {
-      if (sys.init) sys.init(this);
-      if (this._systemsMap[n] !== undefined) return
-      switch (n) {
-        case "events":
-          this._coreSystems.events = sys;
-          break
-        case "world":
-          this._coreSystems.world = sys;
-          break
-        case "renderer":
-          this._coreSystems.renderer = sys;
-          break
-        case "input":
-          this._coreSystems.input = sys;
-          break
-        default:
-          this._systemsMap[n] = this._systems.length;
-          this._systems.push(sys);
-          this._compMap[cn] = n;
-      }
-    }
-    /**
-     * Gets the named system
-     * 
-     * @param {string} n the name the system was registered with.
-     * 
-     * @return {System}
-     */
-    getSystem(n) {
-      if (n in this._coreSystems)
-        return this._coreSystems[n]
-      return this._systems[this._systemsMap[n]]
-    }
-    /**
-     * Removes a system from the manager.
-     * 
-     * @param {string} n The name of the system
-     * @returns {void}
-     * 
-     */
-    unregisterSystem(n) {
-      if (n in this._coreSystems)
-        return this._systems[this._systemsMap[n]] = null
-      delete this._systems[this._systemsMap[n]];
-      delete this._systemsMap[n];
-    }
-    /**
-     * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
-     * 
-     * @param {string} n The name of the components to store into the created componentlist
-     * @param {Component[]} [arr=[]] A reference to the array to store components in.
-     */
-    setComponentList(n, arr = []) {
-      this._componentLists[n] = arr;
-    }
-    /**
-     * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
-     * 
-     * @param {string} n The name of the components to store into the created componentlist
-     * @returns {Component[]} An array of components
-     */
-    getComponentList(n) {
-      return this._componentList[n]
-    }
-    /**
-     * Finds the first entity with all the components and returns it.
-     * 
-     * @param {Array<String>} comps An array containing the component names to be searched
-     * @returns {Entity} 
-     */
-    getEntityByComponents(comps,entities = this.objects) {
-      for (let i = 0; i < entities.length; i++) {
-        for (let j = 0; j < comps.length; j++) {
-          if (!entities[i].has(comps[j])) continue
-          return entities[i]
-        }
-      }
-    }
-    /**
-     * Finds the first entity with all the tag and returns it.
-     * 
-     * @param {Array<String>} comps An array containing the component names to be searched
-     * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
-     * @param {Entity[]} [target]
-     * 
-     * @returns {Entity[]} 
-     */
-    getEntitiesByComponents(comps, entities = this.objects, target = []) {
-      for (let i = 0; i < entities.length; i++) {
-        for (let j = 0; j < comps.length; j++) {
-          if (!entities[i].has(comps[j])) continue
-          target.push(entities[i]);
-        }
-      }
-      return target
-    }
-    /**
-     * Finds the first entity with all the tag and returns it.
-     * 
-     * @param {Array<String>} tags An array containing the tags to be searched
-     * @returns {Entity} 
-     */
-    getEntityByTags(tags,entities = this.objects) {
-      for (let i = 0; i < entities.length; i++) {
-        for (let j = 0; j < tags.length; j++) {
-          if (!entities[i].hasTag(tags[j])) continue
-          return entities[i]
-        }
-      }
-    }
-    /**
-     * Finds the entities with all the tag and returns them in an array.
-     * 
-     * @param {string[]} tags An array containing the tags to be searched
-     * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
-     * @param {Entity[]} target
-     * @returns {Entity[]} 
-     */
-    getEntitiesByTags(tags, entities = this.objects, target = []) {
-      for (let i = 0; i < entities.length; i++) {
-        for (let j = 0; j < tags.length; j++) {
-          if (!entities[i].hasTag(tags[j])) continue
-          target.push(entities[i]);
-        }
-      }
-      return target
-    }
-    /**
-     * Ignore this,im going to remove it and the rest of cloning utilities.
-     * @private
-     * @deprecated
-     */
-    infertype(obj) {
-      let n = obj.CHOAS_CLASSNAME;
-      if (n) {
-        if (n in this._classes)
-          return new this._classes[n]()
-        Err.throw(`Class \`${n}\` is not registered in the manager thus cannot be used in cloning.Use \`Manager.registerClass\` to register it into this manager.`);
-      }
-      return obj instanceof Array ? [] : {}
-    }
-    /**
-     * Deep copies an entity
-     * 
-     * @deprecated
-     * @private
-     * @returns {Entity}
-     */
-    clone(obj) {
-      if (typeof obj !== "object") return obj
-      let object = this.infertype(obj);
-      for (var key in obj) {
-        object[key] = this.clone(obj[key]);
-      }
-      return object
-    }
-    /**
-     * Creates a system that allows you to use the `Component.update` method for the given componentList whose name is given.
-     * 
-     * @param {string} name The name of componentList this system is taking care of.
-     * 
-     * @returns {System}
-     */
-    static DefaultSystem(name) {
-      let n = name;
-      return {
-        init(manager) {
-          manager.setComponentList(n);
-        },
-        update(dt) {
-          let comp = manager.getComponentList(n);
-          for (let i = 0; i < comp.length; i++) {
-            comp[i].update(dt);
-          }
-        },
-        add(comp) {
-          manager.getComponentList(n).push(comp);
-        },
-        remove(comp) {
-          let list = manager.getComponentList(n),
-            index = list.indexOf(comp);
-          Utils$1.removeElement(list, index);
-        }
-      }
-    }
-    /**
-     * @param {BoundingCircle | BoundingBpx  } bound
-     * @returns Entity[]
-     */
-    query(bound) {
-      ///TODO - What will happen if there is no world?   ...Yes,it will crash.
-      return this._coreSystems.world.query(bound)
-    }
-  }
-
-  /**
-   * Updates components assigned to it.
-   * 
-   * @interface
-   */
-  class System {
-    init() {
-      Err.warnOnce("Please override the init method in the system " + proto.constructor.name);
-    }
-    update() {
-      Err.warnOnce("Please override the update method in the system " + proto.constructor.name);
-
-    }
-    add(component) {
-      this.objects.push(component);
-    }
-    remove(component) {
-      let index = this.objects.indexOf(component);
-      Utils$1.removeElement(this.objects, index);
-    }
-    static implement(system) {
-      mixin(System,system);
-    }
-  }
-
-  /**
-   * 
-   * @function
-   * @name System#add
-   * @param {Component} component
-   */
-  /**
-   * 
-   * @function
-   * @name System#remove
-   * @param {Component} component
-   */
-  /**
-   * 
-   * @function
-   * @name System#init
-   * @param {Manager} manager
-   */
-  /**
-   * 
-   * @function
-   * @name System#update
-   * @param {number} dt
-   */
-
-  /**
-   * Component to hold requirements for an entity to move.
-   * 
-   * @implements Component
-   */
-  class Movable extends Component {
-    entity = null
-    /**  * 
-     * @param {number} x
-     * @param {number} y
-     * @param {number} a
-     * @returns {Entity}
-     */
-    constructor(x, y, a) {
-      super();
-      this.velocity = new Vector2$1(x, y);
-      this.rotation = new Angle(a);
-      this.acceleration = new Vector2$1();
-    }
-    toJson() {
-      return {
-        velocity: this.velocity.toJson(),
-        rotation: this.rotation.toJson(),
-        acceleration: this.acceleration.toJson()
-      }
-    }
-    fromJson(obj) {
-      this.velocity.fromJson(obj.velocity);
-      this.rotation.fromJson(obj.rptatjon);
-      this.acceleration.fromJson(obj.acceleration);
-    }
-  }
-
-  /**
-   * Component to hold the bounds of an entity.
-   * 
-   * @implements Component
-   */
-  class Bound extends Component {
-    /**
-     * The actual bounds.Used for collision detection.
-     * 
-     * @type BoundingBox | BoundingCircle
-     */
-    bounds = new BoundingBox()
-    entity = null
-    toJson(){
-      return {
-        bounds:this.bounds.toJson()
-      }
-    }
-    fromJson(obj){
-      this.bpunds.fromJson(obj.bounds);
-    }
-  }
-
-  /**
-   * This is a container to hold components,tags and event handlers.
-   * 
-   * @class
-   * @public
-   */
-  class Entity {
-    /**
-     * Dictionary of component to manage.
-     * 
-     * @private
-     * @type Object<string,Component>
-     */
-    _components = {}
-    /**
-     * Dictionary of handlers to call during an event.
-     * 
-     * @private
-     * @type Object<string,function>
-     */
-    _handlers = {}
-    /**
-     * A list of tags to identify an entity.
-     * 
-     * @private
-     * @type Set<string>
-     */
-    _tags = new Set()
-    /**
-     * The manager handling this entity.
-     * 
-     * @private
-     * @type Manager
-     */
-    _global = null
-    /**
-     * A flag to show if the entity is added to a manager.
-     * 
-     * @type {boolean}
-     */
-    active = false
-
-    get CHAOS_OBJ_TYPE() {
-      return "entity"
-    }
-    get CHAOS_CLASSNAME() {
-      return this.constructor.name.toLowerCase()
-    }
-    /**
-     * Removes all components and handlers from an entity while removing it from its manager
-     */
-    destroy() {
-      this.removeSelf();
-      for (let k in this._components) {
-        let comp = this._components[k];
-        if (comp.destroy)
-          comp.destroy();
-        delete this._components[k];
-      }
-      for (let k in this._handlers) {
-        delete this._handlers[k];
-      }
-
-    }
-    /**
-     * Removes an entity and its components from its manager whilst retaining its components and handlers
-     */
-    removeSelf() {
-      if (this._global) this._global.remove(this);
-    }
-    /**
-     * This is an internal function,no need to use it.
-     * 
-     * @package
-     */
-    reset() {
-      this.active = false;
-      this._global = null;
-    }
-    /**
-     * Removes all components of an entity from its manager but keeps the entity inside the manager.
-     * This is an internal function so no need on your part to use it.
-     */
-    removeComponents() {
-      if (this._global === void 0) return
-      for (var k in this._components) {
-        this._global.removeComponent(k, this._components[k]);
-      }
-    }
-    /**
-     * Gets the current manager of an entity
-     * 
-     * @returns {Manager}
-     */
-    get manager() {
-      return this._global
-    }
-    /**
-     * Adds a component into an entity
-     * 
-     * @param {String} n Name of the component.
-     * @param {Component} c The component to add.
-     * 
-     * @returns {this}
-     */
-    attach(n, c) {
-      this._components[n] = c;
-      if (this.manager) {
-        c.init(this);
-        this._global.addComponent(n, c);
-      }
-      return this
-    }
-    /**
-     * Removes a component from an entity.
-     * 
-     * @param {String} n Name pf the component
-     * @rerurns {this}
-     */
-    remove(n) {
-      this._global.removeComponent(n, this._components[n]);
-      delete this._components[n];
-      return this
-    }
-    /**
-     * Registers a function to handle a named event.
-     * 
-     * @param {string} n Name of the event
-     * @param {function} h The function to be called when an event is fired.
-     */
-    register(n, h) {
-      this._handlers[n] = h;
-    }
-    /**
-     * Removes an event handler function of the given name
-     * 
-     * @param {string} n Name of the event
-     */
-    unregister(n) {
-      if (!(n in this._handlers)) return
-      delete this._handlers[n];
-    }
-    /**
-     * Returns an event handler which can be fired during an event
-     * 
-     * @param {string} n Name of the event
-     * @returns {function | undefined}
-     */
-    getHandler(n) {
-      return this._handlers[n]
-    }
-    /**
-     * Returns the named component.
-     * 
-     * @param {string} n Name of the component.
-     * @returns {Component | undefined }
-     */
-    get(n) {
-      return this._components[n]
-    }
-    /**
-     * Used to check if the component exists in an entity
-     * 
-     * @param {string} n Name of the component.
-     * @returns {boolean}
-     */
-    has(n) {
-      return n in this._components
-    }
-    /**
-     * Adds a tag into an entity.
-     * 
-     * @param {string} n The tag to be added
-     */
-    addTag(n) {
-      this._tags.add(n);
-    }
-    /**
-     * Removes a tag from an entity.
-     * 
-     * @param {string} n The tag to be added
-     */
-    removeTag(n) {
-      this._tags.delete(n);
-    }
-    /**
-     * Checks if a tag exists in an entity.
-     * 
-     * @param {string} n The tag to be added
-     * @returns {boolean}
-     */
-    hasTag(n) {
-      return this._tags.has(n)
-    }
-    /**
-     * Initializes the components within an entity and marks it as active.
-     * It is called by an instance of a game manager so no need to call it manually
-     * 
-     * @package
-     * @param {Manager} global
-     */
-    init(global) {
-      this._global = global;
-      this.active = true;
-      for (let k in this._components) {
-        this._components[k].init(this);
-        global.addComponent(k, this._components[k]);
-      }
-    }
-    /**
-     * A helper function to create a new Entity with transform,movable and bounds components.
-     * 
-     * @param {number} x
-     * @param {number} y
-     * @param {number} a
-     * @returns {Entity}
-     */
-    static Default(x, y, a) {
-      return new Entity()
-        .attach("transform", new Transform(x, y, a))
-        .attach("movable", new Movable())
-        .attach("bounds", new Bound())
-    }
-    /**
-     * Search an entity's manager for entities in a given bound.
-     * 
-     * @param {Bounds} bound the region to search entitities in.
-     * @param {Entity[]} [target=[]] An array to store results in.
-     * @returns {Entity[]}
-     */
-    query(bound, target = []) {
-      return this._global.query(bound, target)
-    }
-    /**
-     * Todo - type serialization docs correctly
-     * @param {{}} obj
-     * @param {Map<string,function>} compList 
-     */
-    fromJSON(obj, compList) {
-      let entity = this;
-
-      obj.tags.forEach((a) => {
-        entity.addTag(a);
-      });
-      for (var key in obj.comps) {
-        let c = new compList[key]().fromJSON(obj.comps[key]);
-        entity.attach(key, c);
-      }
-      return entity
-    }
-    /**
-     * @returns {{
-       deg: number,
-       type:string
-     }}
-     */
-    toJson() {
-      let obj = {
-        comps: {},
-        tags: []
-      };
-      for (var key in this._components) {
-        obj.comps[key] = this._components[key].toJson();
-      }
-      this._tags.forEach((a) => {
-        obj.tags.push(a);
-      });
-      obj.type = this.CHAOS_OBJ_TYPE;
-      return obj
-    }
-  }
-
-  /**
-   * @param {number} x x-position of entity 
-   * @param {number} y y-position of entity 
-   * @param {number} a angle in degrees
-   */
-
-  function createEntity(x, y, a) {
-    return new Entity()
-      .attach("transform", new Transform(x, y, a))
-      .attach("movable", new Movable())
-      .attach("bounds", new Bound())
-  }
-
-  /**
-   * Creates a new instance of Manager class with given default systems.
-   * 
-   * @param {Object} [options] 
-   * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
-   * @param {Object} [options.files={}] manager is passed onto the Loader.Please check `Loader.load()` for more information on it.
-   * @param {boolean} [options.physics=true] Adds physics world as a System.
-   * @param {boolean} [options.renderer=true] Adds a renderer as a system.
-   * @param {boolean} [options.input=true] Adds input as a system.
-   * 
-   **/
-  function createManager(options) {
-    options = Object.assign({
-      autoPlay: true,
-      physics: true,
-      renderer: true,
-      input: true
-    }, options);
-
-    let manager = new Manager();
-
-    if (options.input)
-      manager.registerSystem("input", new Input());
-    if (options.physics) {
-      manager.registerSystem("world", new World());
-      manager.events.add("collision", defaultCollisionHandler);
-      manager.events.add("precollision", defaultPrecollisionHandler);
-    }
-    if (options.renderer)
-      manager.registerSystem("renderer", new Renderer2D());
-    return manager
   }
 
   /**
@@ -8233,14 +8320,14 @@ SOFTWARE.
       let id = this.playing.indexOf(sfx);
       if (id == -1) return
       sfx.disconnect();
-      Utils$1.removeElement(this.playing, id);
+      removeElement(this.playing, id);
     }
   }
 
   /**
    * A system that manages agent components by updating them.
    */
-  class AgentManager {
+  class AgentManager extends System{
     /**
      * A list of agents to update every frame.
      * 
@@ -8299,7 +8386,7 @@ SOFTWARE.
      * @param {Behaviour} behaviour 
      */
     remove(behaviour) {
-      Utils$1.removeElement(this._behaviours, this._behaviours.indexOf(behaviour));
+      removeElement(this._behaviours, this._behaviours.indexOf(behaviour));
     }
     /**
      * Boots up the behavoiurs of the agent that contains it.
@@ -8325,13 +8412,13 @@ SOFTWARE.
         this._accumulated.add(result);
       }
       this._agent.acceleration.add(this._accumulated);
-      this._agent.orientation.radian = Vector2$1.toRad(this._agent.velocity);
+      this._agent.orientation.value = Vector2$1.toRad(this._agent.velocity);
     }
     /**
      * Removes all behaviours from a manager.
      */
     clear() {
-      Utils$1.clearArr(this._behaviours);
+      clearArr(this._behaviours);
     }
     /**
      * @ignore
@@ -8344,10 +8431,8 @@ SOFTWARE.
 
   /**
    * This is a component class used to add AI behavior to an entity.
-   * 
-   * @implements Component
    */
-  class Agent {
+  class Agent extends Component{
     /**
      * The position of the entity.
      * 
@@ -8400,8 +8485,7 @@ SOFTWARE.
      * @param {Entity} entity
      */
     init(entity) {
-      this.entity = entity;
-      this.requires("transform", "movable");
+      this.requires(entity,"transform", "movable");
       let move = entity.get("movable"),
         transform = entity.get("transform");
       this.velocity = move.velocity;
@@ -8441,7 +8525,6 @@ SOFTWARE.
       this.behaviours.draw(ctx);
     }
   }
-  Component.implement(Agent);
 
   /**
    * Base class for implementing customized behaviours.
@@ -9312,10 +9395,276 @@ SOFTWARE.
     }
   };
 
+  class IndexedList {
+    _keys = new Map()
+    _list = []
+    get(name){
+      return this._list[this._keys.get(name)]
+    }
+    push(name, value) {
+      this._keys.set(name,this._list.length);
+      this._list.push(value);
+    }
+    remove(name) {
+      this._list.splice(
+        this._keys.get(name),
+        1
+      );
+      this._keys.delete(name);
+    }
+    values() {
+      return this._list
+    }
+  }
+
+  /**
+   * @param {number} x x-position of entity 
+   * @param {number} y y-position of entity 
+   * @param {number} a angle in degrees
+   */
+
+  function createEntity(x, y, a) {
+    return new Entity()
+      .attach("transform", new Transform$1(x, y, a))
+      .attach("movable", new Movable$1())
+      .attach("bounds", new Bound$1())
+  }
+
+  /**
+   * Creates a new instance of Manager class with given default systems.
+   * 
+   * @param {Object} [options] 
+   * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
+   * @param {Object} [options.files={}] manager is passed onto the Loader.Please check `Loader.load()` for more information on it.
+   * @param {boolean} [options.physics=true] Adds physics world as a System.
+   * @param {boolean} [options.renderer=true] Adds a renderer as a system.
+   * @param {boolean} [options.input=true] Adds input as a system.
+   * 
+   * @returns {Manager}
+   **/
+  function createManager(options) {
+    options = Object.assign({
+      autoPlay: true,
+      physics: true,
+      renderer: true,
+      input: true
+    }, options);
+
+    let manager = new Manager();
+
+    if (options.input)
+      manager.registerSystem("input", new Input());
+    if (options.physics) {
+      manager.registerSystem("world", new World());
+      manager.events.add("collision", defaultCollisionHandler);
+      manager.events.add("precollision", defaultPrecollisionHandler);
+    }
+    if (options.renderer)
+      manager.registerSystem("renderer", new Renderer2D());
+    return manager
+  }
+
+  //import {System} from "../ecs/index.js"
+
+  function fpsDebugger(manager) {
+    const container = document.body.appendChild(document.createElement("div"));
+    
+    container.id = "fps-container";
+    container.style.position = "absolute";
+    container.style.top = "0px";
+    container.style.right = "0px";
+    container.style.width = "100px";
+    container.style.height = "20px";
+    container.style.background = "black";
+    container.style.textAlign = "center";
+    container.style.color = "white";
+    
+    manager.registerSystem("fps",{
+      updateTime : 0.5,
+      timerDt : 0,
+      init(manager){
+        this.perf = manager.perf;
+      },
+      update(dt){
+        this.timerDt += dt;
+        if(this.timerDt < this.updateTime)return
+        container.innerHTML = this.perf.fps().toFixed(2);
+        this.timerDt = 0;
+      }
+    });
+  }
+
+  /**
+   * @param {Manager} manager
+   */
+  function bodyDebugger(manager) {
+    manager.registerSystem("bodydebugger", {
+      key: new Map(),
+      renderer: null,
+      init(manager) {
+        this.renderer = manager.getSystem('renderer');
+        manager.events.add('add', (entity) => {
+          if (entity.has('body')) {
+            entity.manager.getSystem('bodydebugger').add(entity.get("body"));
+          }
+          manager.events.add('remove', (entity) => {
+            if (entity.has('body')) {
+              entity.manager.getSystem('bodydebugger').remove(entity.get("body"));
+            }
+          });
+        });
+      },
+      add(body) {
+        const sprite = new BodySprite(body);
+        sprite.init(body.entity);
+        this.renderer.add(sprite);
+        this.key.set(body, sprite);
+      },
+      remove(body) {
+        const sprite = this.key.get(body);
+        this.renderer.remove(sprite);
+        this.key.delete(body);
+      },
+      update() {}
+    });
+  }
+
+  class Ray {
+    maxLength = 1000;
+    constructor(origin = new Vector2$1(), direction = new Vector2$1()) {
+      this._origin = origin;
+      this._direction = direction;
+    }
+    get direction() {
+      return this._direction
+    }
+    set direction(x) {
+      this._direction.copy(x);
+    }
+    get origin() {
+      return this._origin
+    }
+    set origin(x) {
+      this._origin.copy(x);
+    }
+    setOrigin(x, y) {
+      this._origin.set(x, y);
+    }
+    setDirection(x, y) {
+      this._direction.set(x, y);
+    }
+  }
+
+  class RaycastResult{
+    ray = null
+    mode = RayCastModes.NONE
+    collisions = []
+  }
+  class RayCollisionResult{
+    distance = 0
+    object = null
+    points = [ ]
+    ray = null
+  }
+
+  /**
+   * @enum {number}
+   * 
+  */
+  const RayCastModes = {
+    NONE : 0,
+    NEAREST:1,
+    FIRST:2,
+    ANY:3
+  };
+
+  class RaycastManager extends System {
+    objects = []
+    bodies = null
+    init(manager) {
+      if (!manager.getSystem("world"))
+        throw "World is required for running Raycast system."
+      
+      let renderer = manager.getSystem("renderer");
+      manager.setComponentList("raycaster",this.objects);
+      this.bodies = manager.getComponentList("body");
+      renderer.add({
+        context:this,
+        render(ctx) {
+          this.context.objects.forEach(e=>{
+            e.draw(ctx);
+          });
+        }
+      });
+    }
+    update(){
+      for (let i = 0; i < this.objects.length; i++) {
+        this.objects[i].update(this.bodies);
+      }
+    }
+  }
+
+  class Raycaster extends Component {
+    rays = []
+    initialDir = []
+    _number = 0
+    _angle = 0
+    _transform = null
+    _lastangle = 0
+    constructor(number = 1, angleSpace = 0) {
+      super();
+      this._angle = angleSpace;
+      this._number = number;
+    }
+    init(entity) {
+      this.requires(entity, "transform");
+      this._transform = entity.get("transform");
+
+      const halfview = this._number * this._angle / 2;
+      for (let a = -halfview; a <= halfview; a += this._angle) {
+        this.rays.push(new Ray(new Vector2$1(), Vector2$1.fromRad(a)));
+        this.initialDir.push(Vector2$1.fromRad(a));
+        if (this._angle == 0) break
+      }
+    }
+    update(bodies) {
+      const angle = this._transform.orientation.value;
+      const rotangle = angle - this._lastangle;
+      
+      for (var i = 0; i < this.rays.length; i++) {
+        const ray = this.rays[i];
+        ray.origin.copy(this._transform.position);
+        ray.direction.rotate(rotangle);
+      }
+      this._lastangle = angle;
+    }
+    /**
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    draw(ctx) {
+      ctx.translate(...this._transform.position);
+
+      this.rays.forEach(r => {
+        ctx.moveTo(0, 0);
+        ctx.lineTo(
+          r.direction.x * r.maxLength,
+          r.direction.y * r.maxLength
+        );
+      });
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(255,255,255,0.5)";
+      ctx.stroke();
+    }
+    add() {
+      throw "noooo"
+    }
+  }
+
   exports.Agent = Agent;
   exports.AgentManager = AgentManager;
   exports.AgentSprite = AgentSprite;
   exports.Angle = Angle;
+  exports.AngleUpdate = AngleUpdate;
   exports.ArriveBehaviour = ArriveBehaviour;
   exports.AudioHandler = AudioHandler;
   exports.Ball = Ball;
@@ -9323,7 +9672,7 @@ SOFTWARE.
   exports.Behaviour = Behaviour;
   exports.Body = Body;
   exports.BodySprite = BodySprite;
-  exports.Bound = Bound;
+  exports.Bound = Bound$1;
   exports.BoundingBox = BoundingBox;
   exports.BoundingCircle = BoundingCircle;
   exports.Box = Box;
@@ -9333,6 +9682,7 @@ SOFTWARE.
   exports.Circle = Circle;
   exports.CircleGeometry = CircleGeometry;
   exports.Clock = Clock;
+  exports.ColorUpdate = ColorUpdate;
   exports.Component = Component;
   exports.Composite = Composite;
   exports.Constraint = Constraint;
@@ -9342,24 +9692,27 @@ SOFTWARE.
   exports.DistanceConstraint = DistanceConstraint;
   exports.Easing = Easing;
   exports.Entity = Entity;
-  exports.Err = Err;
+  exports.Err = error$1;
+  exports.EulerSolver = EulerSolver;
   exports.EvadeBehaviour = EvadeBehaviour;
   exports.EventDispatcher = EventDispatcher;
   exports.Events = Events;
   exports.Flock = Flock;
   exports.Geometry = Geometry;
   exports.Group = Group;
-  exports.Input = Input$1;
+  exports.IndexedList = IndexedList;
+  exports.Input = Input;
+  exports.Intergrator = Intergrator;
   exports.Interpolation = Interpolation;
   exports.Keyboard = Keyboard;
   exports.Line = Line;
   exports.Loader = Loader;
-  exports.Manager = Manager$1;
+  exports.Manager = Manager;
   exports.Material = Material;
   exports.Matrix = Matrix2;
   exports.Matrix2 = Matrix2;
   exports.Mouse = Mouse;
-  exports.Movable = Movable;
+  exports.Movable = Movable$1;
   exports.NaiveBroadphase = NaiveBroadphase;
   exports.NarrowPhase = NarrowPhase;
   exports.Overlaps = Overlaps;
@@ -9369,7 +9722,13 @@ SOFTWARE.
   exports.PathFollowing = PathFollowing;
   exports.Perf = Perf;
   exports.Pursuit = Pursuit;
-  exports.QuadTreeBroadphase = Tree;
+  exports.QuadTreeBroadphase = QuadTreeBroadphase;
+  exports.Ray = Ray;
+  exports.RayCastModes = RayCastModes;
+  exports.RayCollisionResult = RayCollisionResult;
+  exports.RaycastManager = RaycastManager;
+  exports.RaycastResult = RaycastResult;
+  exports.Raycaster = Raycaster;
   exports.Rectangle = Rectangle;
   exports.Renderer = Renderer;
   exports.Renderer2D = Renderer2D;
@@ -9386,18 +9745,23 @@ SOFTWARE.
   exports.Storage = Storage;
   exports.System = System;
   exports.Touch = Touch;
-  exports.Transform = Transform;
+  exports.Transform = Transform$1;
   exports.Triangle = Triangle;
   exports.Trigon = Trigon;
-  exports.Utils = Utils$1;
+  exports.Tween = Tween;
+  exports.TweenManager = TweenManager;
+  exports.Utils = common;
   exports.Vec2 = Vec2;
   exports.Vector = Vector;
   exports.Vector2 = Vector2$1;
+  exports.Vector2Update = Vector2Update;
+  exports.Vector3Update = Vector3Update;
   exports.WanderBehaviour = WanderBehaviour;
   exports.WebGLRenderer = WebGLRenderer;
   exports.WebGPURenderer = WebGPURenderer;
   exports.World = World;
   exports.arc = arc;
+  exports.bodyDebugger = bodyDebugger;
   exports.circle = circle;
   exports.clamp = clamp;
   exports.createEntity = createEntity;
@@ -9409,6 +9773,7 @@ SOFTWARE.
   exports.exp = exp;
   exports.fill = fill;
   exports.fillText = fillText;
+  exports.fpsDebugger = fpsDebugger;
   exports.lerp = lerp;
   exports.line = line;
   exports.map = map;

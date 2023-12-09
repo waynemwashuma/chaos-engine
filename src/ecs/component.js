@@ -1,4 +1,4 @@
-import { Utils, Err, mixin } from "../utils/index.js"
+import { Utils, Err } from "../utils/index.js"
 
 
 /**
@@ -11,7 +11,7 @@ import { Utils, Err, mixin } from "../utils/index.js"
  * @interface
  * 
  */
-class Component {
+export class Component {
 
   destroy() {}
   /**
@@ -45,10 +45,10 @@ class Component {
   /**
    * @param {...string} names
    */
-  requires(...names) {
+  requires(entity,...names) {
     for (var i = 0; i < names.length; i++)
-      if (!this.entity.has(names[i]))
-        Err.throw(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${this.entity.id}`)
+      if (!entity.has(names[i]))
+        Err.throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
   }
   /**
    * @param {CircleBounding | BoxBounding} bound
@@ -66,7 +66,4 @@ class Component {
   static implement(component) {
     Utils.inheritComponent(component)
   }
-}
-export {
-  Component
 }

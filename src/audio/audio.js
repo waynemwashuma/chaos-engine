@@ -1,7 +1,7 @@
 /**
  * This class is responsible for playing a singular sound.
  */
-class Sfx {
+export class Sfx {
   /**
    * @private
    * @type {AudioBuffer}
@@ -114,7 +114,4 @@ class Sfx {
     this._source.disconnect()
     this._source.connect(this._destination)
   }
-}
-export {
-  Sfx
 }

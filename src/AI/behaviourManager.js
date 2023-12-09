@@ -6,7 +6,7 @@ import { Vector2 } from "../math/index.js"
  * 
  * @package
  */
-class BehaviourManager {
+export class BehaviourManager {
   /**
    * A list of behaviors
    * 
@@ -58,7 +58,7 @@ class BehaviourManager {
       this._accumulated.add(result)
     }
     this._agent.acceleration.add(this._accumulated)
-    this._agent.orientation.radian = Vector2.toRad(this._agent.velocity)
+    this._agent.orientation.value = Vector2.toRad(this._agent.velocity)
   }
   /**
    * Removes all behaviours from a manager.
@@ -73,7 +73,4 @@ class BehaviourManager {
   draw(renderer) {
     this._behaviours.forEach(b => b.draw(renderer))
   }
-}
-export {
-  BehaviourManager
 }
