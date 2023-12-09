@@ -7,7 +7,7 @@ demos.setup("raycaster")
 
 let optionTab = document.querySelector("#options-checkbox")
 let demoOption = document.querySelector("#demos")
-for (var n in demos.examples) {
+for (let n of demos.examples.keys()) {
   let option = document.createElement("option")
   option.value = n
   option.innerHTML = n

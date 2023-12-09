@@ -32,7 +32,8 @@ import {
   fpsDebugger,
   bodyDebugger,
   Entity,
-  Intergrator
+  Intergrator,
+  IndexedList
 } from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
@@ -87,7 +88,7 @@ export const demos = {
   renderer: new Renderer2D(),
   world: new World(),
   tweenManager:new TweenManager(),
-  examples: {},
+  examples: new IndexedList,
   init: function(selector) {
     this.manager.registerSystem("agent", new AgentManager())
     this.manager.registerSystem("renderer", this.renderer)
@@ -96,7 +97,7 @@ export const demos = {
     this.manager.registerSystem("movable",new Intergrator())
     let renderer = this.renderer
     renderer.bindTo(selector)
-    renderer.setViewport(innerWidth, innerHeight / 1.5)
+    renderer.setViewport(innerWidth, innerHeight * 0.5)
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
@@ -109,13 +110,13 @@ export const demos = {
   setup: function(name) {
     this.manager.clear()
     createCanvasBounds(this.manager)
-    this.examples[name](this.manager)
+    this.examples.get(name)(this.manager)
   },
   play(n) {
     this.setup(n)
   },
   register(n, f) {
-    this.examples[n] = f
+    this.examples.set(n,f)
   }
 }
 //Physics
