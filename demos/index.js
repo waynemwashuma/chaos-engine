@@ -17,7 +17,7 @@ import { seeker } from "./seeker.js"
 import { restitution } from "./restitution.js"
 import { friction } from "./friction.js"
 import { animation } from "./animation.js"
-
+import { raycaster } from "./raycaster.js"
 
 import {
   Manager,
@@ -30,6 +30,7 @@ import {
   Body,
   TweenManager,
   fpsDebugger,
+  bodyDebugger,
   Entity,
   Intergrator
 } from "/src/index.js"
@@ -69,13 +70,8 @@ function createBoundingBox(x, y, w, h, t = 20) {
   }
   return [l1, l2, l3, l4]
 }
-class CanvasBounds extends Entity {
-  constructor() {
-    super()
-  }
-  init(global) {
-    super.init(global)
-    let renderer = global.getSystem("renderer")
+function  createCanvasBounds(manager) {
+    let renderer = manager.getSystem("renderer")
     let walls = createBoundingBox(30, 30, renderer.width - 60, renderer.height - 80, 1000)
     walls.forEach(w => {
       let bound = createEntity(w.pos.x, w.pos.y)
@@ -83,12 +79,9 @@ class CanvasBounds extends Entity {
       bound.attach("body", body)
         .attach("sprite", new BodySprite())
       body.type = Body.STATIC
-      this.manager.add(bound)
+      manager.add(bound)
     })
-    this.removeSelf()
   }
-}
-
 export const demos = {
   manager: new Manager(),
   renderer: new Renderer2D(),
@@ -100,18 +93,22 @@ export const demos = {
     this.manager.registerSystem("renderer", this.renderer)
     this.manager.registerSystem("world", this.world)
     this.manager.registerSystem("tween", this.tweenManager)
-    this.manager.registerSystem("obj",new Intergrator())
+    this.manager.registerSystem("movable",new Intergrator())
     let renderer = this.renderer
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight / 1.5)
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
+    window.onorientationchange = ()=>{
+      renderer.setViewport(innerWidth,innerHeight)
+    }
     fpsDebugger(this.manager)
+    bodyDebugger(this.manager)
   },
   setup: function(name) {
     this.manager.clear()
-    this.manager.add(new CanvasBounds())
+    createCanvasBounds(this.manager)
     this.examples[name](this.manager)
   },
   play(n) {
@@ -123,17 +120,21 @@ export const demos = {
 }
 //Physics
 demos.register("box", box)
-demos.register("restitution", restitution)
-demos.register("stack", stacking)
 demos.register("circle", circle)
-demos.register("circlestacking", circlestacking)
 demos.register("triangle", triangle)
+demos.register("stack", stacking)
+demos.register("circlestacking", circlestacking)
+
+demos.register("restitution", restitution)
 demos.register("pyramid", pyramid)
+demos.register("friction", friction)
 demos.register("random", random)
+
 demos.register("constraints", constraint)
 demos.register("bridge", bridge)
 demos.register("car", car)
-demos.register("friction", friction)
+
+demos.register("raycaster", raycaster)
 
 //Renderer
 demos.register("materials", materials)
