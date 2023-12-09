@@ -58,7 +58,7 @@ export class BehaviourManager {
       this._accumulated.add(result)
     }
     this._agent.acceleration.add(this._accumulated)
-    this._agent.orientation.radian = Vector2.toRad(this._agent.velocity)
+    this._agent.orientation.value = Vector2.toRad(this._agent.velocity)
   }
   /**
    * Removes all behaviours from a manager.

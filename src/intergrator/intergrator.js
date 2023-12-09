@@ -47,9 +47,9 @@ export class EulerSolver {
     velocity.add(acceleration.multiply(dt))
     a.copy(velocity)
     position.add(a.multiply(dt))
-    rotation.radian += torque.radian * dt
-    orientation.radian += rotation.radian * dt
+    rotation.value += torque.value * dt
+    orientation.value += rotation.value * dt
     acceleration.set(0, 0)
-    torque.radian = 0
+    torque.value = 0
   }
 }

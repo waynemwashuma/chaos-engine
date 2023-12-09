@@ -17,8 +17,8 @@ export const PenetrationSolver = {
     let jp = tmp2.copy(axis).multiply(a)
     bodyA.velocity.add(tmp1.copy(jp).multiply(bodyA.inv_mass * inv_dt))
     bodyB.velocity.add(tmp1.copy(jp).multiply(-bodyB.inv_mass * inv_dt))
-    bodyA.rotation.radian += ca1.cross(jp) * bodyA.inv_inertia * inv_dt
-    bodyB.rotation.radian += ca2.cross(jp) * -bodyB.inv_inertia * inv_dt
+    bodyA.rotation.value += ca1.cross(jp) * bodyA.inv_inertia * inv_dt
+    bodyB.rotation.value += ca2.cross(jp) * -bodyB.inv_inertia * inv_dt
     manifold.contactData.lastOverlap = overlap
   }
 }
