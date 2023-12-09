@@ -1,3 +1,4 @@
+export type TweenUpdate = (lerpFunc: Function, to: T, from: T, t: number, into: T) => void;
 export type Traverser = (node: Node) => boolean;
 export type Bounds = {
     max: Vector_like;
@@ -41,7 +42,7 @@ export type Vector_like = {
     x: number;
     y: number;
 };
-export class Agent implements Component {
+export class Agent extends Component {
     position: Vector2;
     velocity: Vector2;
     acceleration: Vector2;
@@ -50,14 +51,11 @@ export class Agent implements Component {
     maxSpeed: number;
     maxTurnRate: number;
     private behaviours;
-    init(entity: Entity): void;
-    entity: Entity;
     add(behaviour: Behaviour): void;
     remove(behaviour: Behaviour): void;
-    update(inv_dt: number): void;
     draw(ctx: CanvasRenderingContext2D): void;
 }
-export class AgentManager {
+export class AgentManager extends System {
     objects: Agent[];
     init(manager: Manager): void;
     update(dt: number): void;
@@ -70,14 +68,23 @@ export class AgentSprite extends Sprite {
 }
 export class Angle {
     constructor(deg?: number);
-    private _deg;
-    private _rad;
+    private _value;
+    private _cos;
+    private _sin;
+    set value(arg: number);
+    get value(): number;
     get CHOAS_CLASSNAME(): string;
     get CHAOS_OBJ_TYPE(): string;
     set degree(arg: number);
     get degree(): number;
+    set _rad(arg: number);
+    get _rad(): number;
+    set _deg(arg: number);
+    get _deg(): number;
     set radian(arg: number);
     get radian(): number;
+    get cos(): number;
+    get sin(): number;
     copy(angle: Angle): void;
     fromJSON(obj: any): void;
     toJson(): {
@@ -85,6 +92,7 @@ export class Angle {
         type: string | number;
     };
 }
+export function AngleUpdate(lerpFunc: any, to: any, from: any, t: any, into: any): void;
 export class ArriveBehaviour extends Behaviour {
     constructor(target: Vector2);
     radius: number;
@@ -130,19 +138,15 @@ export class Behaviour {
     calc(target: Vector2, inv_dt: number): void;
     draw(renderer: Renderer): void;
 }
-export class Body implements Component {
+export class Body extends Component {
     static STATIC: number;
     static KINEMATIC: number;
     static DYNAMIC: number;
     constructor(...shapes: Shape[]);
     id: number;
-    private _position;
-    private _velocity;
-    private _acceleration;
-    private _orientation;
-    private _rotation;
-    private _torque;
-    private _mass;
+    _transform: Transform$1;
+    _movable: Movable$1;
+    _mass: number;
     private _inertia;
     private _type;
     private _localanchors;
@@ -175,8 +179,6 @@ export class Body implements Component {
     set inertia(arg: number);
     get inertia(): number;
     get physicsType(): number;
-    get CHOAS_CLASSNAME(): string;
-    get CHAOS_OBJ_TYPE(): string;
     set acceleration(arg: Vector2);
     get acceleration(): Vector2;
     set velocity(arg: Vector2);
@@ -201,7 +203,7 @@ export class Body implements Component {
     getAnchor(index: number): Vector2;
     getLocalAnchor(index: number, target?: Vector2): Vector2;
     applyForce(force: Vector2, arm?: Vector2): void;
-    init(entity: Entity | null, composited?: boolean): void;
+    init(entity?: Entity, composited?: boolean): void;
     update(): void;
     toJson(): {
         id: number;
@@ -247,21 +249,20 @@ export class BodySprite extends Sprite {
     private _drawShapes;
     init(parent: Entity): void;
 }
-export class Bound extends Component implements Component {
+declare class Bound$1 extends Component {
     bounds: BoundingBox | BoundingCircle;
-    entity: any;
     toJson(): {
         bounds: {
+            posX: number;
+            posY: number;
+            r: number;
+        } | {
             posX: number;
             posY: number;
             minX: number;
             minY: number;
             maxX: number;
             maxY: number;
-        } | {
-            posX: number;
-            posY: number;
-            r: number;
         };
     };
     fromJson(obj: any): void;
@@ -309,6 +310,7 @@ export class BufferGeometry {
     readonly vertices: Vector2[];
     drawable: Path2D | WebGLVertexArrayObject;
     init(ctx: CanvasRenderingContext2D): void;
+    updateVertices(data: any): void;
 }
 export class CamController {
     constructor(camera: Camera);
@@ -356,6 +358,7 @@ export class Clock {
     dt: number;
     update(accumulate: number): number;
 }
+export function ColorUpdate(lerpFunc: any, to: any, from: any, t: any, into: any): void;
 export class Component {
     static fromJson(): void;
     static toJson(): void;
@@ -366,15 +369,14 @@ export class Component {
     init(entity: Entity): void;
     update(dt: number): void;
     get(entity: any, n: string): any;
-    requires(...names: string[]): void;
+    requires(entity: any, ...names: string[]): void;
     query(entity: any, bound: CircleBounding | BoxBounding, target?: Entity): any;
 }
-export class Composite {
+export class Composite extends Component {
     entity: Entity | null;
     bodies: Body[];
     constraints: Constraint[];
     get physicsType(): number;
-    init(entity: Entity | null): void;
     add(object: Constraint | Body): number;
     update(): void;
     set acceleration(arg: Vector2);
@@ -446,96 +448,37 @@ export class DistanceConstraint extends Constraint {
     maxDistance: number;
 }
 export namespace Easing {
-    namespace Linear {
-        function In(x: any): any;
-        function Out(x: any): any;
-        function InOut(x: any): any;
-    }
-    namespace Quadratic {
-        export function In_1(x: any): number;
-        export { In_1 as In };
-        export function Out_1(x: any): number;
-        export { Out_1 as Out };
-        export function InOut_1(x: any): number;
-        export { InOut_1 as InOut };
-    }
-    namespace Cubic {
-        export function In_2(x: any): number;
-        export { In_2 as In };
-        export function Out_2(x: any): number;
-        export { Out_2 as Out };
-        export function InOut_2(x: any): number;
-        export { InOut_2 as InOut };
-    }
-    namespace Quartic {
-        export function In_3(x: any): number;
-        export { In_3 as In };
-        export function Out_3(x: any): number;
-        export { Out_3 as Out };
-        export function InOut_3(x: any): number;
-        export { InOut_3 as InOut };
-    }
-    namespace Quintic {
-        export function In_4(x: any): number;
-        export { In_4 as In };
-        export function Out_4(x: any): number;
-        export { Out_4 as Out };
-        export function InOut_4(x: any): number;
-        export { InOut_4 as InOut };
-    }
-    namespace Sinusoidal {
-        export function In_5(x: any): number;
-        export { In_5 as In };
-        export function Out_5(x: any): number;
-        export { Out_5 as Out };
-        export function InOut_5(x: any): number;
-        export { InOut_5 as InOut };
-    }
-    namespace Exponential {
-        export function In_6(x: any): number;
-        export { In_6 as In };
-        export function Out_6(x: any): number;
-        export { Out_6 as Out };
-        export function InOut_6(x: any): number;
-        export { InOut_6 as InOut };
-    }
-    namespace Circular {
-        export function In_7(x: any): number;
-        export { In_7 as In };
-        export function Out_7(x: any): number;
-        export { Out_7 as Out };
-        export function InOut_7(x: any): number;
-        export { InOut_7 as InOut };
-    }
-    namespace Elastic {
-        export function In_8(x: any): number;
-        export { In_8 as In };
-        export function Out_8(x: any): number;
-        export { Out_8 as Out };
-        export function InOut_8(x: any): number;
-        export { InOut_8 as InOut };
-    }
-    namespace Back {
-        export function In_9(x: any): number;
-        export { In_9 as In };
-        export function Out_9(x: any): number;
-        export { Out_9 as Out };
-        export function InOut_9(x: any): number;
-        export { InOut_9 as InOut };
-    }
-    namespace Bounce {
-        export function In_10(x: any): number;
-        export { In_10 as In };
-        export function Out_10(x: any): number;
-        export { Out_10 as Out };
-        export function InOut_10(x: any): number;
-        export { InOut_10 as InOut };
-    }
-    function generatePow(power: any): {
-        In: (x: any) => number;
-        Out: (x: any) => number;
-        InOut: (x: any) => number;
-    };
+    function linear(x: any): any;
+    function quadraticIn(x: any): number;
+    function quadraticOut(x: any): number;
+    function quadraticInOut(x: any): number;
+    function cubicIn(x: any): number;
+    function cubicOut(x: any): number;
+    function cubicInOut(x: any): number;
+    function quarticIn(x: any): number;
+    function quarticOut(x: any): number;
+    function quarticInOut(x: any): number;
+    function quinticIn(x: any): number;
+    function quinticOut(x: any): number;
+    function quinticInOut(x: any): number;
+    function sinusoidalIn(x: any): number;
+    function sinusoidalOut(x: any): number;
+    function sinusoidalInOut(x: any): number;
+    function exponentialIn(x: any): number;
+    function exponentialOut(x: any): number;
+    function exponentialInOut(x: any): number;
+    function circularIn(x: any): number;
+    function circularOut(x: any): number;
+    function circularInOut(x: any): number;
+    function elasticIn(x: any): number;
+    function elasticOut(x: any): number;
+    function elasticInOut(x: any): number;
+    function backIn(x: any): number;
+    function backOut(x: any): number;
+    function backInOut(x: any): number;
+    function bounceIn(x: any): number;
+    function bounceOut(x: any): number;
+    function bounceInOut(x: any): number;
 }
 export class Entity {
     static Default(x: number, y: number, a: number): Entity;
@@ -569,15 +512,18 @@ export class Entity {
         type: string;
     };
 }
-export namespace Err {
-    export function warn(message: string): void;
-    function _throw(message: string): never;
-    export { _throw as throw };
-    export function error(message: string): void;
-    export function log(message: string): void;
-    export function warnOnce(message: string): void;
-    export function assert(test: boolean, errfunc: Function, message: string): boolean;
-    export function deprecate(message: string): void;
+declare var error$1: Readonly<{
+    __proto__: any;
+    warn: typeof warn;
+    throws: typeof throws;
+    error: typeof error;
+    log: typeof log;
+    warnOnce: typeof warnOnce;
+    assert: typeof assert;
+    deprecate: typeof deprecate;
+}>;
+export class EulerSolver {
+    static solve(transform: any, movable: any, dt: number): void;
 }
 export class EvadeBehaviour extends Behaviour {
     constructor(pursuer: Vector2);
@@ -630,7 +576,15 @@ export class Group extends Sprite {
     remove(sprite: Sprite | Group, recursive?: boolean, index?: number): boolean;
     render(ctx: CanvasRenderingContext2D, dt: number): void;
 }
-declare class Input$1 {
+export class IndexedList {
+    _keys: any;
+    _list: any[];
+    get(name: any): any;
+    push(name: any, value: any): void;
+    remove(name: any): void;
+    values(): any[];
+}
+export class Input {
     constructor(eventHandler: DOMEventHandler);
     DOMEventHandler: DOMEventHandler;
     mouse: Mouse;
@@ -639,12 +593,18 @@ declare class Input$1 {
     update(): void;
     dispose(): void;
 }
+export class Intergrator extends System {
+    active: boolean;
+    solver: typeof EulerSolver.solve;
+    objects: any[];
+    init(manager: any): void;
+    update(dt: any): void;
+}
 export namespace Interpolation {
-    export function Linear_1(p0: any, p1: any, t: any): any;
-    export { Linear_1 as Linear };
-    export function Bernstein(n: any, i: any): any;
-    export function Factorial(n: any): number;
-    export function CatmullRom(p0: any, p1: any, p2: any, p3: any, t: any): any;
+    function Linear(p0: any, p1: any, t: any): any;
+    function Bernstein(n: any, i: any): any;
+    function Factorial(n: any): number;
+    function CatmullRom(p0: any, p1: any, p2: any, p3: any, t: any): any;
 }
 export class Keyboard {
     constructor(eh: DOMEventHandler);
@@ -681,15 +641,9 @@ export class Loader {
     _getType(url: any): "audio" | "image" | "json";
     loadAll(files?: {}): void;
 }
-declare class Manager$1 {
-    static DefaultSystem(name: string): System;
-    constructor(options?: {
-        autoPlay?: boolean;
-        files?: any;
-        physics?: boolean;
-        renderer?: boolean;
-        input?: boolean;
-    });
+export class Manager {
+    private static DefaultSystem;
+    constructor(options?: {});
     private _rafID;
     private _classes;
     private _componentLists;
@@ -703,10 +657,7 @@ declare class Manager$1 {
     private objects;
     private _accumulator;
     frameRate: number;
-    perf: {
-        lastTimestamp: number;
-        total: number;
-    };
+    perf: Perf;
     readonly loader: Loader;
     readonly events: EventDispatcher;
     private _update;
@@ -721,7 +672,6 @@ declare class Manager$1 {
     pause(): void;
     private initSystems;
     private update;
-    registerClass(obj: Function, override?: boolean): void;
     registerSystem(n: string, sys: System, cn?: string): void;
     getSystem(n: string): System;
     unregisterSystem(n: string): void;
@@ -731,8 +681,6 @@ declare class Manager$1 {
     getEntitiesByComponents(comps: Array<string>, entities?: Entity[], target?: Entity[]): Entity[];
     getEntityByTags(tags: Array<string>, entities?: Entity[]): Entity;
     getEntitiesByTags(tags: string[], entities?: Entity[], target?: Entity[]): Entity[];
-    private infertype;
-    private clone;
     query(bound: BoundingCircle | BoundingBpx): Body[];
 }
 export class Material {
@@ -779,12 +727,14 @@ export class Mouse {
     private _onContextMenu;
     update(): void;
 }
-export class Movable extends Component implements Component {
+declare class Movable$1 extends Component {
     constructor(x: number, y: number, a: number);
-    entity: any;
+    transform: any;
     velocity: Vector2$1;
     rotation: Angle;
     acceleration: Vector2$1;
+    torque: Angle;
+    init(entity: any): void;
     toJson(): {
         velocity: Vector2$1;
         rotation: {
@@ -879,7 +829,7 @@ export class Pursuit extends Behaviour {
     init(): void;
     calc(target: Vector2): void;
 }
-declare class Tree extends Broadphase {
+export class QuadTreeBroadphase extends Broadphase {
     constructor(bounds: Bounds, maxdepth?: number);
     _root: Node;
     maxDepth: number;
@@ -890,6 +840,54 @@ declare class Tree extends Broadphase {
     traverse(func: Function): any[];
     draw(ctx: CanvasRenderingContext2D): void;
     recalculateBounds(bounds: any): void;
+}
+export class Ray {
+    constructor(origin?: Vector2$1, direction?: Vector2$1);
+    maxLength: number;
+    _origin: Vector2$1;
+    _direction: Vector2$1;
+    set direction(arg: Vector2$1);
+    get direction(): Vector2$1;
+    set origin(arg: Vector2$1);
+    get origin(): Vector2$1;
+    setOrigin(x: any, y: any): void;
+    setDirection(x: any, y: any): void;
+}
+export type RayCastModes = number;
+export namespace RayCastModes {
+    let NONE: number;
+    let NEAREST: number;
+    let FIRST: number;
+    let ANY: number;
+}
+export class RayCollisionResult {
+    distance: number;
+    object: any;
+    points: any[];
+    ray: any;
+}
+export class RaycastManager extends System {
+    objects: any[];
+    bodies: any;
+    init(manager: any): void;
+}
+export class RaycastResult {
+    ray: any;
+    mode: number;
+    collisions: any[];
+}
+export class Raycaster extends Component {
+    constructor(number?: number, angleSpace?: number);
+    rays: any[];
+    initialDir: any[];
+    _number: number;
+    _angle: number;
+    _transform: any;
+    _lastangle: number;
+    init(entity: any): void;
+    update(bodies: any): void;
+    draw(ctx: CanvasRenderingContext2D): void;
+    add(): void;
 }
 export class Rectangle extends Shape {
     static calcInertia(mass: number, width: number, height: number): number;
@@ -1088,9 +1086,8 @@ export class Touch {
     private _onUp;
     update(): void;
 }
-export class Transform implements Component {
+declare class Transform$1 extends Component {
     constructor(x: number, y: number, a: number);
-    entity: any;
     position: Vector2$1;
     orientation: Angle;
     init(): void;
@@ -1113,14 +1110,47 @@ export class Trigon extends Body {
     height: number;
     bangle: number;
 }
-declare namespace Utils$1 {
-    function appendArr<T>(arr1: T[], arr2: T[]): void;
-    function clearArr<T>(arr: T[]): void;
-    function popArr<T>(arr: T[], number: number): void;
-    function removeElement<T>(arr: T[], index: number): T;
-    function generateID(): number;
-    function inheritComponent(component: Function, overrideInit?: boolean, overrideUpdate?: boolean): void;
+export class Tween {
+    constructor(into: any);
+    _duration: number;
+    _repeat: boolean;
+    active: boolean;
+    _to: T;
+    _from: any;
+    _into: any;
+    _interpolationFunc: (p0: any, p1: any, t: any) => any;
+    _easingFunction: (x: any) => any;
+    _timeTaken: number;
+    _updateFunc: typeof NoUpdateThrow;
+    _next: any;
+    init(entity: any): void;
+    to(x: T): this;
+    from(x: T): this;
+    duration(t: T): this;
+    repeat(): this;
+    play(): void;
+    stop(): void;
+    onUpdate(callback: any): this;
+    easing(func: any): this;
+    interpolant(func: any): this;
+    update(dt: any): void;
+    chain(next: any): this;
 }
+export class TweenManager extends System {
+    objects: any[];
+    init(manager: any): void;
+    update(dt: any): void;
+}
+declare var common: Readonly<{
+    __proto__: any;
+    appendArr: typeof appendArr;
+    clearArr: typeof clearArr;
+    popArr: typeof popArr;
+    removeElement: typeof removeElement;
+    generateID: typeof generateID;
+    inheritComponent: typeof inheritComponent;
+    mixin: typeof mixin;
+}>;
 export class Vec2 extends Vector2$1 {
     constructor(x: any, y: any);
 }
@@ -1174,6 +1204,8 @@ declare class Vector2$1 {
     toJson(): this;
     fromJson(obj: any): void;
 }
+export function Vector2Update(lerpFunc: Function, to: T, from: T, t: number, into: T): void;
+export function Vector3Update(lerpFunc: any, to: any, from: any, t: any, into: any): void;
 export class WanderBehaviour extends Behaviour {
     _theta: number;
     dtheta: number;
@@ -1205,6 +1237,7 @@ export class World {
     broadphase: Broadphase;
     narrowphase: NarrowPhase;
     intergrator: Intergrator;
+    enableIntergrate: boolean;
     set gravity(arg: Vector2);
     get gravity(): Vector2;
     private narrowPhase;
@@ -1228,6 +1261,7 @@ export class World {
     query(bound: Bounds, target?: Array<Body>): Body[];
 }
 export function arc(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, start: number, end: number): void;
+export function bodyDebugger(manager: Manager): void;
 export function circle(ctx: CanvasRenderingContext2D, x: number, y: number, r: number): void;
 export function clamp(value: number, min: number, max: number): number;
 export function createEntity(x: number, y: number, a: number): Entity;
@@ -1237,7 +1271,7 @@ export function createManager(options?: {
     physics?: boolean;
     renderer?: boolean;
     input?: boolean;
-}): any;
+}): Manager;
 export function defaultCollisionHandler(clmds: CollisionPair[]): void;
 export function defaultPrecollisionHandler(clmds: Manifold[]): void;
 export function degToRad(deg: number): number;
@@ -1245,6 +1279,7 @@ export function drawImage(ctx: CanvasRenderingContext2D, img: HTMLImageElement, 
 export function exp(x: number, e?: number): number;
 export function fill(ctx: CanvasRenderingContext2D, color?: string, fillRule?: string): void;
 export function fillText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void;
+export function fpsDebugger(manager: any): void;
 export function lerp(a: number, b: number, t: number): number;
 export function line(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): void;
 export function map(v: number, x1: number, y1: number, x2: number, y2: number): number;
@@ -1294,6 +1329,13 @@ declare class Node {
     traverse<T>(func: Traverser, target: T[]): T[];
     getCollisionPairs(target: CollisionPair[], stack: CollisionPair[]): void;
 }
+declare function warn(message: string): void;
+declare function throws(message: string): void;
+declare function error(message: string): void;
+declare function log(message: string): void;
+declare function warnOnce(message: string): void;
+declare function assert(test: boolean, errfunc: Function, message: string): boolean;
+declare function deprecate(original: any, replacement?: string): void;
 declare class Broadphase {
     canCollide(a: Body, b: Body): boolean;
     insert(obj: Body): void;
@@ -1304,4 +1346,12 @@ declare class Broadphase {
     query(bounds: Bounds, target: Body[]): Body[];
 }
 declare let r: Vector2$1;
-export { Input$1 as Input, Manager$1 as Manager, Matrix2 as Matrix, Tree as QuadTreeBroadphase, Utils$1 as Utils, Vector2$1 as Vector2 };
+declare const a: Vector2$1;
+declare function NoUpdateThrow(): void;
+declare function appendArr<T>(arr1: T[], arr2: T[]): void;
+declare function clearArr<T>(arr: T[]): void;
+declare function popArr<T>(arr: T[], number: number): void;
+declare function removeElement<T>(arr: T[], index: number): T;
+declare function generateID(): number;
+declare function inheritComponent(component: Function, overrideInit?: boolean, overrideUpdate?: boolean): void;
+export { Bound$1 as Bound, error$1 as Err, Matrix2 as Matrix, Movable$1 as Movable, Transform$1 as Transform, common as Utils, Vector2$1 as Vector2 };
