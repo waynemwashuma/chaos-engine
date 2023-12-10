@@ -1,7 +1,7 @@
 import { Vector2, Angle,degToRad,radToDeg } from "../../math/index.js"
 import { Component } from "../../ecs/index.js"
 import { Utils } from "../../utils/index.js"
-import { BoundingBox } from "../AABB/index.js"
+import { BoundingBox } from "../../math/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
 import { Movable, Transform } from "../../intergrator/index.js"

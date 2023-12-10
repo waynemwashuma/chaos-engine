@@ -1,4 +1,4 @@
-import { Overlaps } from "../AABB/index.js"
+import { Overlaps } from "../../math/index.js"
 import { Broadphase } from "./broadphase.js"
 import { Utils } from "../../utils/index.js"
 
