@@ -1,4 +1,4 @@
-import { BoundingBox } from "../physics/index.js"
+import { BoundingBox } from "../math/index.js"
 import { Component } from "../ecs/index.js"
 
 
