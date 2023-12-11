@@ -108,7 +108,7 @@ export class SpriteMaterial {
    * @param {number} max
    */
   setMaxFrames(action, max) {
-    this._maxFrames = max
+    this._maxFrames[action] = max
   }
   /**
    * Sets a given action to be rendered
