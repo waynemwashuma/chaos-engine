@@ -95,8 +95,8 @@ export class SpriteMaterial {
     this._maxFrame = frames - 1
     this.frameWidth = this.img.width / (frames || 1)
     this.frameHeight = this.img.height / actions
-    this.width |= this.frameWidth
-    this.height |= this.frameHeight
+    this.width ||= this.frameWidth
+    this.height ||= this.frameHeight
     for (var i = 0; i < actions; i++) {
       this._maxFrames.push(frames)
     }
@@ -128,8 +128,8 @@ export class SpriteMaterial {
     drawImage(
       ctx,
       this.img,
-      -this.frameWidth / 2,
-      -this.frameHeight / 2,
+      -this.width / 2,
+      -this.width / 2,
       this.frameWidth,
       this.frameHeight,
       this._frame,
