@@ -8,7 +8,7 @@ import {
   createEntity
 } from "/src/index.js"
 const assets = {
-  static: "./assets/static2.jpeg"
+  static: "./assets/warrior.png"
 }
 
 
@@ -32,16 +32,17 @@ export function materials(manager) {
   let material2 = new StaticImageMaterial(img)
   let sprite2 = createsprite(170, 60, geometry, material2)
   manager.add(sprite2)
-
+  material2.offset.x = -material2.width / 2
+  material2.offset.y = -material2.height / 2
   //Sprite material
   let img2 = new Image()
   img2.src = assets.static
 
   let material3 = new SpriteMaterial(img)
-  let sprite3 = createsprite(290, 60,geometry, material3)
+  let sprite3 = createsprite(290, 60, geometry, material3)
   manager.add(sprite3)
   img2.onload = () => {
-    material3.setup(9, 6)
+    material3.setup(6, 16)
     material3.frameRate = 1 / 10
   }
 }
