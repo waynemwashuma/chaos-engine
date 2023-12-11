@@ -5,74 +5,76 @@ import { drawImage } from "../utils/canvasfunc.js"
  */
 export class SpriteMaterial {
   /**
-   * @type HTMLImageElement
+   * @type {HTMLImageElement}
    */
   img = null
   /**
    * The index of the current action.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _index = 0
   /**
    * The current action's max frame index.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _maxFrame = 0
   /**
    * The current frame of an action.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _frame = 0
   /**
    * Used with ImageSprite#frameRate to throttle the fps of the sprite.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _accumulator = 0
   /**
    * The maximum frames for each given action.
    * 
-   * @type number
+   * @type {number}
    */
   frameRate = 1 / 60
   /**
    * The current action.
    * 
    * @private
-   * @type number[]
+   * @type {number[]}
    */
   _maxFrames = null
   /**
+   * @type {Vector}
+  /**
    * The width of the sprite.
    * 
-   * @type number
+   * @type {number}
    */
   width = 0
   /**
    * The height of the sprite..
    * 
-   * @type number
+   * @type {number}
    */
   height = 0
   /**
    * The width of a frame.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   frameWidth = 0
   /**
    * The height of a frame..
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   frameHeight = 0
   /**
@@ -91,10 +93,11 @@ export class SpriteMaterial {
    */
   setup(frames, actions) {
     this._maxFrame = frames - 1
-    this.width = this.img.width
-    this.height = this.img.height
     this.frameWidth = this.img.width / (frames || 1)
     this.frameHeight = this.img.height / actions
+    this.width |= this.frameWidth
+    this.height |= this.frameHeight
+    console.log(this.width);
   }
   /**
    * Sets max number of frames for a given action
@@ -128,7 +131,9 @@ export class SpriteMaterial {
       this.frameWidth,
       this.frameHeight,
       this._frame,
-      this._index
+      this._index,
+      this.width,
+      this.height
     )
     this._accumulator += dt
     if (this._accumulator < this.frameRate) return
