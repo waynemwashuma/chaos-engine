@@ -48,7 +48,7 @@ export class SpriteMaterial {
    * @private
    * @type {number[]}
    */
-  _maxFrames = null
+  _maxFrames = []
   /**
    * @type {Vector}
   /**
@@ -97,7 +97,9 @@ export class SpriteMaterial {
     this.frameHeight = this.img.height / actions
     this.width |= this.frameWidth
     this.height |= this.frameHeight
-    console.log(this.width);
+    for (var i = 0; i < actions; i++) {
+      this._maxFrames.push(frames)
+    }
   }
   /**
    * Sets max number of frames for a given action
