@@ -24,4 +24,11 @@ export class Ray {
   setDirection(x, y) {
     this._direction.set(x, y)
   }
+  lookAt(x, y) {
+    this._direction.set(
+      x - this._origin.x,
+      y - this._origin.y
+    )
+    this._direction.normalize()
+  }
 }
