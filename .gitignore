@@ -5,7 +5,6 @@ node_modules
 debug.js
 *.jpg
 *.jpeg
-*.png
 res.json
 *.mp3
 tests
