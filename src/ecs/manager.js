@@ -245,6 +245,7 @@ export class Manager {
     for (let i = this.objects.length - 1; i >= 0; i--) {
       this.remove(this.objects[i])
     }
+    this.events.trigger("clear")
   }
   /**
    * This method requests an animation frame from the browser
