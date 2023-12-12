@@ -1,4 +1,5 @@
 import { Component } from "../ecs/index.js"
+import { Shape } from "../physics/index.js"
 import { Ray } from "./ray.js"
 import { Vector2 } from "../math/index.js"
 import { RayCastModes, RayCollisionResult, RayPoint, RaycastResult } from "./raycastresult.js"
@@ -30,8 +31,6 @@ export class Raycaster extends Component {
     this.collisionResults = []
     const angle = this._transform.orientation.value
     const rotangle = angle - this._lastangle
-
-    this._transform.orientation.value += 0.01
     for (var i = 0; i < this.rays.length; i++) {
       const ray = this.rays[i]
       ray.origin.copy(this._transform.position)
@@ -41,12 +40,23 @@ export class Raycaster extends Component {
     for (let i = 0; i < bodies.length; i++) {
       const shapes = bodies[i].shapes
 
-      for (let i = 0; i < shapes.length; i++) {
-        const shape = shapes[i];
-
-        this.testVertices(shape.vertices, bodies[i])
+      for (let j = 0; j < shapes.length; j++) {
+        const shape = shapes[j];
+        if (shape.type === Shape.POLYGON)
+          this.testVertices(shape.vertices, bodies[i])
+        if (shape.type === Shape.CIRCLE)
+          this.testCircle(shape.position, shape.radius, bodies[i])
       }
     }
+  }
+  testCircle(position, radius, body) {
+    let results = new RaycastResult()
+    for (let i = 0; i < this.rays.length; i++) {
+      const ray = this.rays[i];
+
+      results.collisions.push(testraycircle(ray, position, radius, body))
+    }
+    this.collisionResults.push(results)
   }
   testVertices(vertices, body) {
     let results = new RaycastResult()
@@ -89,31 +99,41 @@ export class Raycaster extends Component {
     })
   }
 }
+
 function testray(ray, vertices, body) {
   const origin = ray.origin
   const direction = ray.direction
   const results = new RayCollisionResult(ray, body)
 
-  let res = testSingleEdge(vertices[vertices.length - 1], vertices[0], origin, direction)
+  let res = testSingleEdge(
+    vertices[vertices.length - 1],
+    vertices[0], origin, direction
+  )
   if (res != void 0)
     results.points.push(
       new RayPoint(
         res,
-        res.clone().sub(origin).magnitude()
+        res.clone().sub(origin)
+        .magnitudeSquared()
       )
     )
   for (let i = 0; i < vertices.length - 1; i++) {
-    let res = testSingleEdge(vertices[i], vertices[i + 1], origin, direction)
+    let res = testSingleEdge(
+      vertices[i], vertices[i + 1],
+      origin, direction
+    )
     if (res != void 0)
       results.points.push(
         new RayPoint(
           res,
-          res.clone().sub(origin).magnitude()
+          res.clone().sub(origin)
+          .magnitudeSquared()
         )
       )
-    return results
   }
+  return results
 }
+
 function testSingleEdge(v1, v2, or, dir) {
   const x1 = v1.x
   const y1 = v1.y
@@ -139,4 +159,42 @@ function testSingleEdge(v1, v2, or, dir) {
     y1 + t * (y2 - y1)
   )
   return null
+}
+
+function testraycircle(ray, center, radius, body) {
+  const results = new RayCollisionResult(ray, body)
+
+  const x1 = ray.origin.x
+  const y1 = ray.origin.y
+  const x2 = ray.direction.x
+  const y2 = ray.direction.y
+
+  const x3 = center.x
+  const y3 = center.y
+  const x4 = x3 - x1
+  const y4 = y3 - y1
+  const r = radius
+  
+  const proj = x2 * x4 + y2 * y4
+  const delta = proj * proj - ((x4 * x4 + y4 * y4) - r * r)
+  const sqrtDelta = Math.sqrt(delta)
+  const distance1 = proj + sqrtDelta
+  const distance2 = proj - sqrtDelta
+
+  if (delta < 0 || distance1 < 0) return results
+  results.points.push(new RayPoint(
+    new Vector2(
+      x1 + distance1 * x2,
+      y1 + distance1 * y2
+    ), distance1 * distance1
+  ))
+  if (delta === 0 || (distance2 < 0)) return results
+  results.points.push(new RayPoint(
+    new Vector2(
+      x1 + distance2 * x2,
+      y1 + distance2 * y2
+    ),
+    distance2 * distance2
+  ))
+  return results
 }
