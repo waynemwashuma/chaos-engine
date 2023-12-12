@@ -67,37 +67,6 @@ export class Raycaster extends Component {
     }
     this.collisionResults.push(results)
   }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
-    ctx.save()
-    ctx.beginPath()
-    ctx.translate(...this._transform.position)
-    this.rays.forEach(r => {
-      ctx.moveTo(0, 0)
-      ctx.lineTo(
-        r.direction.x * r.maxLength,
-        r.direction.y * r.maxLength
-      )
-      ctx.lineWidth = 2
-    })
-    ctx.strokeStyle = "rgba(255,255,255,0.5)"
-    ctx.stroke()
-    ctx.closePath()
-    ctx.restore()
-    this.collisionResults.forEach(r => {
-      r.collisions.forEach(c => {
-        c.points.forEach(p => {
-          ctx.beginPath()
-          ctx.arc(...p.point, 3, 0, Math.PI * 2)
-          ctx.strokeStyle = "white"
-          ctx.stroke()
-          ctx.closePath()
-        })
-      })
-    })
-  }
 }
 
 function testray(ray, vertices, body) {
