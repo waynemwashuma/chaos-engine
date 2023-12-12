@@ -11,3 +11,4 @@ tests
 *.res.js
 *.txt
 demos
+ecs
