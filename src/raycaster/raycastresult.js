@@ -9,7 +9,6 @@ export class RaycastResult{
 }
 export class RayCollisionResult{
   /**
-   * @readonly
    * @type {Body}
    */
   object = null
@@ -19,7 +18,6 @@ export class RayCollisionResult{
    */
   points = [ ]
   /**
-   * @readonly
    * @type {Ray}
    */
   ray = null
