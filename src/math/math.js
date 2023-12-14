@@ -1,5 +1,4 @@
-const RHI = Math.PI / 180,
-  RHI_INV = 1 / RHI
+import {DEG2RAD,RAD2DEG} from "./constants.js"
 
 /**
  * Creates a random number between the parameters
@@ -112,7 +111,7 @@ export function naturalizePair(a, b) {
  *  @returns {number}
 */
 export function degToRad(deg) {
-  return deg * RHI
+  return deg * DEG2RAD
 }
 
 /**
@@ -122,7 +121,7 @@ export function degToRad(deg) {
  *  @returns {number}
 */
 export function radToDeg(rad) {
-  return rad * RHI_INV
+  return rad * RAD2DEG
 }
 /**
  * @param {number} x
