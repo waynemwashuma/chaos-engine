@@ -484,7 +484,12 @@ export class Body extends Component {
     })
     return obj
   }
-  //TODO  - Add way to add shapes to body
+  /**
+   * @@param {Shape} shape
+  */
+  addShape(shape){
+    this.shapes.push(shape)
+  }
   fromJson(obj) {
     let shapes = []
     obj.shapes.forEach((shape) => {
