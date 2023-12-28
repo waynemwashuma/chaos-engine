@@ -6,11 +6,11 @@ import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { SATNarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
-
+import { System } from "../../ecs/index.js"
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-export class World {
+export class World extends System{
   /**
    * Used to check if a manifold is persistent.
    * 
@@ -125,6 +125,7 @@ export class World {
   enableIntergrate = true
 
   constructor() {
+    super()
     this.broadphase = new NaiveBroadphase(this)
     this.narrowphase = new SATNarrowPhase()
   }
