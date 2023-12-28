@@ -5,10 +5,9 @@ import { Component } from "../../ecs/index.js"
  * This is the base class used to render images and paths onto the renderer.
  * Extend it to create your custom behaviour.
  * 
- * @implements Component
  * TODO - ADD id property to this class and Group class.
  */
-export class Sprite {
+export class Sprite extends Component{
   /**
    * @private
    */
@@ -38,6 +37,7 @@ export class Sprite {
    * @param {Material} material
    */
   constructor(geometry, material) {
+    super()
     this.geometry = geometry
     this.material = material
   }
