@@ -2,32 +2,70 @@ import { Interpolation, Easing } from "../math/index.js"
 /**
  * Component responsible for animations.
  * 
- * @template {T}
+ * @template T
  */
-export class Tween {
+export class Tween{
+  /**
+   * @type {number}
+   */
   _duration = 0
+  /**
+   * @type {boolean}
+   */
   _repeat = false
+  /**
+   * @type {boolean}
+   */
   active = false
   /**
    * @type {T}
+   * @private
    */
   _to = null
+  /**
+   * @type {T}
+   * @private
+   */
   _from = null
+  /**
+   * @type {T}
+   * @private
+   */
   _into = null
+  /**
+   * @type {LerpFunc}
+   * @private
+   */
   _interpolationFunc = Interpolation.Linear
+  /**
+   * @type {EasingFunc}
+   * @private
+   */
   _easingFunction = Easing.linear
+  /**
+   * @type {number}
+   * @private
+   */
   _timeTaken = 0
+  /**
+   * @type {TweenUpdate}
+   * @private
+   */
   _updateFunc = NoUpdateThrow
+  /**
+   * @type {Tween}
+   * @private
+   */
   _next = null
   /**
-   *@template {T}
-   *@param {T} to
-   *@param {T} from
-   *@param {number} duration
+   *@param {T} into
    */
   constructor(into) {
     this._into = into
   }
+  /**
+   * @param {Entity} entity
+   */
   init(entity) {
     this.play()
   }
@@ -63,24 +101,36 @@ export class Tween {
   stop() {
     this.active = false
   }
+  /**
+   * @param {TweenUpdate} callback
+   */
   onUpdate(callback) {
     this._updateFunc = callback
     return this
   }
+  /**
+   * @param {EasingFunc} callback
+   */
   easing(func) {
     this._easingFunction = func
     return this
   }
+  /**
+   * @param {LerpFunc} callback
+   */
   interpolant(func) {
     this._interpolationFunc = func
     return this
   }
+  /**
+   * @param {number} dt
+   */
   update(dt) {
     if (!this.active) return
 
     this._timeTaken += dt
     if (this._timeTaken >= this._duration) {
-      if(this._next !== void 0){
+      if (this._next !== void 0) {
         this.stop()
         this._next.play()
       }
@@ -102,6 +152,9 @@ export class Tween {
       this._into
     )
   }
+  /**
+   * @param {Tween} next
+   */
   chain(next) {
     this._next = next
     return this
@@ -110,6 +163,7 @@ export class Tween {
 
 /**
  * @type Tween<number>
+ * Todo - remove this
  */
 let t = new Tween()
 
@@ -124,7 +178,18 @@ let t = new Tween()
  * 
  * @returns {void}
  */
-
+/**
+ * @callback LerpFunc
+ * @param {number} p0
+ * @param {number} p1
+ * @param {number} t
+ * @returns {number}
+ */
+/**
+ * @callback EasingFunc
+ * @param {number} t
+ * @returns {number}
+ */
 /**
  * @type {TweenUpdate}
  */
