@@ -402,13 +402,12 @@ export class Body extends Component {
    */
   applyForce(force, arm = Vector2.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
-    //Todo - correct this to torque.
-    this.rotation.value += arm.cross(force) * this.inv_inertia
+    this.torque.value += arm.cross(force) * this.inv_inertia
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
-   * @param { Vector2} force The force to be applied.
+   * @param { Vector2} impulse The force to be applied.
    * @param { Vector2} [arm = Vector2] The collision arm.
    */
   applyImpulse(impulse, arm = Vector2.ZERO) {
