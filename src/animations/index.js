@@ -1,2 +1,1 @@
-export * from "./tweenManager.js"
-export * from "./tween.js"
+export * from "./tween/index.js"

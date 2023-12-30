@@ -1,4 +1,4 @@
-import {System} from "../ecs/index.js"
+import {System} from "../../ecs/index.js"
 
 export class TweenManager extends System {
   /**
