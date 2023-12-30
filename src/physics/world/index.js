@@ -234,6 +234,8 @@ export class World extends System{
       let a = this.objects[i]
       if (a.mass)
         a.acceleration.add(this.gravitationalAcceleration)
+        a.velocity.add(a.acceleration.multiply(dt))
+        a.acceleration.set(0,0)
     }
   }
   /**
