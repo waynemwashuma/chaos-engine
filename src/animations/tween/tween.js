@@ -1,4 +1,4 @@
-import { Interpolation, Easing } from "../math/index.js"
+import { Interpolation, Easing } from "../../math/index.js"
 /**
  * Component responsible for animations.
  * 
