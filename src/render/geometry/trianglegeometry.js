@@ -1,4 +1,5 @@
 import {BufferGeometry} from "./geometry.js"
+import {Vector2} from "../../math/index.js"
 
 export class TriangleGeometry extends BufferGeometry{
   constructor(base, height, angle) {
