@@ -368,6 +368,9 @@ export class QuadTreeBroadphase extends Broadphase {
 
     if (maxdepth) this._root.split(maxdepth)
   }
+    /**
+     * @private
+     */
   _insert(client) {
     client.bounds.copy(client.body.bounds)
     if (!this._root.contains(obj.bounds))
@@ -385,6 +388,9 @@ export class QuadTreeBroadphase extends Broadphase {
     }
     this._insert(client)
   }
+  /**
+   * @private
+   */
   _remove(client) {
     return this._root.removeObject(obj)
   }
@@ -420,7 +426,7 @@ export class QuadTreeBroadphase extends Broadphase {
   /**
    * A depth first search of the quadtree that applies the given function to its nodes.
    * 
-   * @param {Function} func The function that checks every node unless it returns true.
+   * @param {Traverser} func The function that checks every node unless it returns true.
    * 
    */
   traverse(func) {
@@ -442,7 +448,7 @@ export class QuadTreeBroadphase extends Broadphase {
    * Resizes a quadtree to a new bound size.
    * This method should not be used without care.
    * 
-   * @param {Bounds} bounds.
+   * @param {Bounds} bounds
    * 
    */
   recalculateBounds(bounds) {
@@ -473,4 +479,4 @@ export class QuadTreeBroadphase extends Broadphase {
  * @callback Traverser
  * @param {Node} node
  * @returns {boolean}
-*/
+ */

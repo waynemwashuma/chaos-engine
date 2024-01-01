@@ -243,7 +243,7 @@ export class BodySprite extends Sprite {
     drawBounds: boolean;
     drawPosition: boolean;
     render(ctx: CanvasRenderingContext2D, dt: number): void;
-    _drawCenter(body: any, ctx: any): void;
+      _drawCenter(body: any, ctx: any): void;
     private _drawVelocity;
     private _drawBound;
     private _drawShapes;

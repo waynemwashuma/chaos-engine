@@ -1,21 +1,36 @@
 import { System } from "../ecs/index.js"
 import { Vector2 } from "../math/index.js"
-import {Utils} from "../utils/index.js"
+import { Utils } from "../utils/index.js"
 
 export class Intergrator extends System {
+  /**
+   * @type {boolean}
+   */
   active = false
+  /**
+   * @type {typeof EulerSolver.solve}
+   */
   solver = EulerSolver.solve
+  /**
+   * @type {Movable}
+   */
   objects = []
   constructor() {
     super()
   }
+  /**
+   * @inheritdoc
+   */
   init(manager) {
     const world = manager.getSystem("world")
     if (world) world.enableIntergrate = false
     this.active = true
-    
+
     manager.setComponentList("movable", this.objects)
   }
+  /**
+   * @inheritdoc
+   */
   update(dt) {
     for (let i = 0; i < this.objects.length; i++) {
       if (this.objects[i] == void 0) return
@@ -34,6 +49,8 @@ const a = new Vector2()
  */
 export class EulerSolver {
   /**
+   * @param {Transform} transform
+   * @param {Movable} movable
    * @param {number} dt
    */
   static solve(transform, movable, dt) {

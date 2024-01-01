@@ -7,7 +7,7 @@ export class Pool {
   /**
    * List of objects
    * 
-   * @type any[]
+   * @type T[]
   */
   _pool = []
   /**
@@ -20,6 +20,8 @@ export class Pool {
   }
   /**
    * The number of objects available in the pool.
+   * 
+   * @type {number}
   */
   get size() {
     return this._pool.length
@@ -42,7 +44,7 @@ export class Pool {
   /**
    * Gives an object ownership.
    * 
-   * @returns Object
+   * @returns {T}
    */
   give() {
     if (this._pool.length) {
@@ -54,7 +56,7 @@ export class Pool {
    * Takes an object's ownership.
    * Do not use the taken object and remove all references of it outside otherwise you will get some wierd behaviour.
    * 
-   * @param {Object} obj
+   * @param {T} obj
    */
   take(obj) {
     this._pool.push(this.destroy(obj))
@@ -63,7 +65,7 @@ export class Pool {
    * Does some cleanup on a taken object.
    * 
    * @protected
-   * @param {Object} obj
+   * @param {T} obj
    */
   destroy(obj) {
     for (var prop in obj) {
@@ -75,7 +77,7 @@ export class Pool {
    * Creates a new object.
    * 
    * @protected
-   * @returns object
+   * @returns T
   */
   create() {
     return {}
