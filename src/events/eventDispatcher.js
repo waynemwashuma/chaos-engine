@@ -28,7 +28,7 @@ export class EventDispatcher {
    * Adds an event handler to an event dispatcher.
    * 
    * @param {string} name name of the event.
-   * @param {function} handler Function to be called when the event is triggered.
+   * @param {EventHandlerFunc} handler Function to be called when the event is triggered.
    */
   add(name, handler) {
     if (name in this.handlers) {
@@ -38,3 +38,10 @@ export class EventDispatcher {
     this.handlers[name] = [handler]
   }
 }
+
+/**
+ * @callback EventHandlerFunc
+ * @param {any} data 
+ * 
+ * @returns {void}
+*/

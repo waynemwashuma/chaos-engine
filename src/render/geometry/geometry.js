@@ -25,6 +25,9 @@ export class BufferGeometry {
   init(ctx) {
     this.updateVertices(this.vertices)
   }
+  /**
+   * @param {Vector2[]} data
+  */
   updateVertices(data){
     const path = this.drawable = new Path2D()
     vertices(path, data, true)

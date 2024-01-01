@@ -5,7 +5,7 @@
 */
 
 /**
- * @typedef Manifold
+ * @typedef transform = null
  * @property {Body} bodyA 
  * @property {Body} bodyB
  * @property {ContactManifold} contactData

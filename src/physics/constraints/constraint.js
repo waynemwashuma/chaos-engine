@@ -10,6 +10,30 @@ import { Vector2 } from "../../math/index.js"
  */
 export class Constraint {
   /**
+   * @type {Vector2}
+   */
+  localA = null
+  /**
+   * @type {Vector2}
+   */
+  localB = null
+  /**
+   * @type {Body}
+   */
+  body1 = null
+  /**
+   * @type {Body}
+   */
+  body2 = null
+  /**:
+   * @type {number}
+   */
+  stiffness = 50
+  /**
+   * @type {number}
+   */
+  dampening = 0.03
+  /**
    * @param {Body} body1
    * @param {Body} body2
    * @param { Vector2} localA
@@ -20,8 +44,6 @@ export class Constraint {
     this.body2 = body2
     this.localA = localA || new Vector2()
     this.localB = localB || new Vector2()
-    this.stiffness = 50
-    this.dampening = 0.03
   }
   /**
    * Determine type of object this is in the world.
@@ -71,7 +93,7 @@ export class Constraint {
       localB: this.localB.toJson(),
       stiffness: this.stiffness,
       dampening: this.dampening,
-      type:this.CHAOS_OBJ_TYPE
+      type: this.CHAOS_OBJ_TYPE
     }
   }
   fromJson(obj, world) {

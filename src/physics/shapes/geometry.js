@@ -33,7 +33,7 @@ export class Geometry {
   }
   /**
    * @param {number} rad
-   * @param { Vector2[]} target
+   * @param {Vector2[]} target
    */
   getNormals(rad, target) {
     target = target || []
@@ -68,7 +68,7 @@ export class Geometry {
    * @param {number} n
    * @param { Vector2[]} vertices
    * @param { Vector2} pos
-   * @patam {number} rad
+   * @param {number} rad
    */
   transform(vertices, pos, rad, n) {
     for (let i = 0; i < this.vertices.length; i++) {

@@ -5,11 +5,33 @@ import { Vector2 } from "../math/index.js"
 import { RayCastModes, RayCollisionResult, RayPoint, RaycastResult } from "./raycastresult.js"
 
 export class Raycaster extends Component {
+  /**
+   * @type {Ray[]}
+   */
   rays = []
+  /**
+   * @type {Ray[]}
+   */
   collisionResults = []
+  /**
+   * @private
+   * @type {Ray[]}
+   */
   _number = 0
+  /**
+   * @private
+   * @type {Ray[]}
+   */
   _angle = 0
+  /**
+   * @private
+   * @type {Ray[]}
+   */
   _transform = null
+  /**
+   * @private
+   * @type {number}
+   */
   _lastangle = 0
   mode = RayCastModes.ANY
   constructor(number = 1, angleSpace = 0) {
@@ -27,6 +49,9 @@ export class Raycaster extends Component {
       if (this._angle == 0) break
     }
   }
+  /**
+   * 
+  */
   update(bodies) {
     this.collisionResults = []
     const angle = this._transform.orientation.value
@@ -49,6 +74,9 @@ export class Raycaster extends Component {
       }
     }
   }
+  /**
+   * @private
+  */
   testCircle(position, radius, body) {
     let results = new RaycastResult()
     for (let i = 0; i < this.rays.length; i++) {
@@ -58,6 +86,9 @@ export class Raycaster extends Component {
     }
     this.collisionResults.push(results)
   }
+    /**
+     * @private
+     */
   testVertices(vertices, body) {
     let results = new RaycastResult()
     for (let i = 0; i < this.rays.length; i++) {
@@ -68,7 +99,9 @@ export class Raycaster extends Component {
     this.collisionResults.push(results)
   }
 }
-
+/**
+ * @private
+ */
 function testray(ray, vertices, body) {
   const origin = ray.origin
   const direction = ray.direction
@@ -103,6 +136,9 @@ function testray(ray, vertices, body) {
   return results
 }
 
+/**
+ * @private
+ */
 function testSingleEdge(v1, v2, or, dir) {
   const x1 = v1.x
   const y1 = v1.y
@@ -130,6 +166,9 @@ function testSingleEdge(v1, v2, or, dir) {
   return null
 }
 
+/**
+ * @private
+ */
 function testraycircle(ray, center, radius, body) {
   const results = new RayCollisionResult(ray, body)
 
@@ -143,7 +182,7 @@ function testraycircle(ray, center, radius, body) {
   const x4 = x3 - x1
   const y4 = y3 - y1
   const r = radius
-  
+
   const proj = x2 * x4 + y2 * y4
   const delta = proj * proj - ((x4 * x4 + y4 * y4) - r * r)
   const sqrtDelta = Math.sqrt(delta)
