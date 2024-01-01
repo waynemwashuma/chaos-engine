@@ -68,7 +68,7 @@ export class Path {
     return this
   }
   /**
-   * private
+   * @private
    */
   advance() {
     if (this._points.length < 2) return false
@@ -108,15 +108,24 @@ export class Path {
     )
     return this._lerpedPoint
   }
+  /**
+   * @returns {Vector2[]}
+   */
   current() {
     return [
       this._points[this._way[0]],
       this._points[this._way[1]]
       ]
   }
+  /**
+   * @returns {Vector2}
+   */
   point() {
     return this._lerpedPoint
   }
+  /**
+   * @type {Vector2[]}
+   */
   get path() {
     return this._points
   }

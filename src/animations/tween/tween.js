@@ -4,7 +4,7 @@ import { Interpolation, Easing } from "../../math/index.js"
  * 
  * @template T
  */
-export class Tween{
+export class Tween {
   /**
    * @type {number}
    */
@@ -160,17 +160,53 @@ export class Tween{
     return this
   }
 }
+/**
+ * @template T
+ * @type {TweenUpdate}
+ */
+export function Vector2Update(lerpFunc, to, from, t, into) {
+  into.x = lerpFunc(from.x, to.x, t)
+  into.y = lerpFunc(from.y, to.y, t)
+}
+/**
+ * @template T
+ * @type {TweenUpdate}
+ */
+export function Vector3Update(lerpFunc, to, from, t, into) {
+  into.x = lerpFunc(from.x, to.x, t)
+  into.y = lerpFunc(from.y, to.y, t)
+  into.z = lerpFunc(from.z, to.z, t)
+}
 
 /**
- * @type Tween<number>
- * Todo - remove this
+ * @template T
+ * @type {TweenUpdate}
  */
-let t = new Tween()
+export function ColorUpdate(lerpFunc, to, from, t, into) {
+  into.r = lerpFunc(from.r, to.r, t)
+  into.g = lerpFunc(from.g, to.g, t)
+  into.b = lerpFunc(from.b, to.b, t)
+  into.a = lerpFunc(from.a, to.a, t)
+}
+/**
+ * @template T
+ * @type {TweenUpdate}
+ */
+export function AngleUpdate(lerpFunc, to, from, t, into) {
+  into.rad = lerpFunc(from.rad, to.rad, t)
+}
+/**
+ * @template T
+ * @type {TweenUpdate}
+ */
+function NoUpdateThrow(lerpFunc, to, from, t, into) {
+  throw "The Tween does not have a valid onUpdate callback."
+}
 
 /**
  * @template {T}
  * @callback TweenUpdate
- * @param {Function} lerpFunc
+ * @param {LerpFunc} lerpFunc
  * @param {T} to
  * @param {T} from
  * @param {number} t
@@ -178,6 +214,7 @@ let t = new Tween()
  * 
  * @returns {void}
  */
+ 
 /**
  * @callback LerpFunc
  * @param {number} p0
@@ -185,35 +222,4 @@ let t = new Tween()
  * @param {number} t
  * @returns {number}
  */
-/**
- * @callback EasingFunc
- * @param {number} t
- * @returns {number}
- */
-/**
- * @type {TweenUpdate}
- */
-export function Vector2Update(lerpFunc, to, from, t, into) {
-  into.x = lerpFunc(from.x, to.x, t)
-  into.y = lerpFunc(from.y, to.y, t)
-}
-export function Vector3Update(lerpFunc, to, from, t, into) {
-  into.x = lerpFunc(from.x, to.x, t)
-  into.y = lerpFunc(from.y, to.y, t)
-  into.z = lerpFunc(from.z, to.z, t)
-}
-
-export function ColorUpdate(lerpFunc, to, from, t, into) {
-  into.r = lerpFunc(from.r, to.r, t)
-  into.g = lerpFunc(from.g, to.g, t)
-  into.b = lerpFunc(from.b, to.b, t)
-  into.a = lerpFunc(from.a, to.a, t)
-}
-
-export function AngleUpdate(lerpFunc, to, from, t, into) {
-  into.rad = lerpFunc(from.rad, to.rad, t)
-}
-
-function NoUpdateThrow() {
-  throw "The Tween does not have a valid onUpdate callback."
-}
+ 
