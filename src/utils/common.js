@@ -109,7 +109,7 @@ export function inheritComponent(component, overrideInit = true, overrideUpdate 
   proto.get = function(n) {
     return this.entity.getComponent(n);
   }
-  proto.requires = function(entity,...names) {
+  proto.requires = function(entity, ...names) {
     for (var i = 0; i < names.length; i++)
       if (!entity.has(names[i]))
         throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
@@ -140,21 +140,15 @@ export function inheritComponent(component, overrideInit = true, overrideUpdate 
   })
 }
 /**
- * Mixes the functions required by an object  into another object.
+ * Todo - Fix this function to add all props if no props param is given
+ * Mixes the properties and methods required by an object from another object.
  * 
- *  @param {Object} from the object constructor function to add methods from.
- * @param {Object} to the object constructor function to add methods to.
+ *  @param {*} from the object constructor function to add methods from.
+ * @param {*} to the object constructor function to add methods to.
+ * @param {string[]} [props]
  */
-export function mixin(from, to,props = []) {
-  let proto = from.prototype
-  let proto2 = to.prototype
-  console.log(proto2);
-  Object.assign(proto,from)
+export function mixin(from, to, props = []) {
   for (let name of props) {
-    //if(!(methodName in proto))continue
-    //if (methodName in proto2) continue
-    
-    proto2[name] = proto[name]
+    to[name] = from[name]
   }
-  //console.log(new to());
 }
