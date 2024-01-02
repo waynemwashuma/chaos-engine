@@ -10,7 +10,7 @@ import { System } from "../../ecs/index.js"
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-export class World extends System{
+export class World extends System {
   /**
    * Used to check if a manifold is persistent.
    * 
@@ -234,8 +234,8 @@ export class World extends System{
       let a = this.objects[i]
       if (a.mass)
         a.acceleration.add(this.gravitationalAcceleration)
-        a.velocity.add(a.acceleration.multiply(dt))
-        a.acceleration.set(0,0)
+      a.velocity.add(a.acceleration.multiply(dt))
+      a.acceleration.set(0, 0)
     }
   }
   /**
