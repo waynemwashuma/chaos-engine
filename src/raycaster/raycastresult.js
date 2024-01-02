@@ -1,13 +1,17 @@
 import { Vector2 } from "../math/index.js"
 
-export class RaycastResult{
+export class RaycastResult {
+  //TODO - Make this property work
   /**
    * @type {RayCastModes}
    */
   mode = RayCastModes.NONE
+  /**
+   * @type {RayCollisionResult[]}
+   */
   collisions = []
 }
-export class RayCollisionResult{
+export class RayCollisionResult {
   /**
    * @type {Body}
    */
@@ -16,7 +20,7 @@ export class RayCollisionResult{
    * @readonly
    * @type {RayPoint[]}
    */
-  points = [ ]
+  points = []
   /**
    * @type {Ray}
    */
@@ -25,37 +29,36 @@ export class RayCollisionResult{
    * @param {Ray} ray 
    * @param {Body} object
    */
-  constructor(ray,object){
+  constructor(ray, object) {
     this.ray = ray
     this.object = object
   }
 }
-export class RayPoint{
+export class RayPoint {
   /**
-   * @readonly
    * @type {Vector2}
    */
   point = null
   /**
-   * @readonly
    * @type {number}
    */
   distance = 0
-  constructor(point,distance){
+  /**
+   * @param {Vector2} point
+   * @param {number} distance
+  */
+  constructor(point, distance) {
     this.point = point
     this.distance = distance
   }
 }
 /**
+ * @readonly
  * @enum {number}
- * @property NONE
- * @property NEAREST
- * @property ANY
- * @property FIRST
-*/
+ */
 export const RayCastModes = {
-  NONE : 0,
-  NEAREST:1,
-  FIRST:2,
-  ANY:3
+  NONE: 0,
+  NEAREST: 1,
+  FIRST: 2,
+  ANY: 3
 }

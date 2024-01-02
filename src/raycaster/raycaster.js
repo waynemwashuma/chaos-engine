@@ -39,6 +39,9 @@ export class Raycaster extends Component {
     this._angle = angleSpace
     this._number = number
   }
+  /**
+   * @inheritdoc
+  */
   init(entity) {
     this.requires(entity, "transform")
     this._transform = entity.get("transform")
@@ -50,7 +53,7 @@ export class Raycaster extends Component {
     }
   }
   /**
-   * 
+   * @param {Body[]} bodies
   */
   update(bodies) {
     this.collisionResults = []

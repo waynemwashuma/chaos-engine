@@ -59,7 +59,7 @@ export class Vector2 {
   distanceTo(v) {
     obj.x = this.x - v.x
     obj.y = this.y - v.y
-    return Math.sqrt( Vector2.prototype.magnitudeSquared.call(obj))
+    return Math.sqrt(Vector2.prototype.magnitudeSquared.call(obj))
   }
   /**
    *Calculates length squared of this vector to another vector
@@ -331,7 +331,7 @@ export class Vector2 {
       return this.multiply(min / length)
     return this
   }
-  
+
   toJson() {
     return this
   }
@@ -470,15 +470,24 @@ export class Vector2 {
   static ZERO = Object.freeze(new Vector2())
 
 }
-export class Vector extends Vector2{
-  constructor(x,y){
-    super(x,y)
+export class Vector extends Vector2 {
+  /**
+   * @param {number} x the x coordinate of the vector
+   * @param {number} y the y coordinate of the vector
+   */
+  constructor(x, y) {
+    super(x, y)
     console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }
-export class Vec2 extends Vector2{
-  constructor(x,y){
-    super(x,y)
+
+export class Vec2 extends Vector2 {
+  /**
+   * @param {number} x the x coordinate of the vector
+   * @param {number} y the y coordinate of the vector
+   */
+  constructor(x, y) {
+    super(x, y)
     console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }
