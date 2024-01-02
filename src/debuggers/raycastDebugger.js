@@ -1,3 +1,6 @@
+/**
+ * @param {Manager} manager
+ */
 export function raycastDebugger(manager) {
   manager.registerSystem("raycastDebugger", {
     renderer: null,

@@ -1,5 +1,7 @@
 //import {System} from "../ecs/index.js"
-
+/**
+ * @param {Manager} manager
+ */
 export function fpsDebugger(manager) {
   const container = document.body.appendChild(document.createElement("div"))
   

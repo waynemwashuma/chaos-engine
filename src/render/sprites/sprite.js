@@ -74,6 +74,10 @@ export class Sprite extends Component{
   set orientation(x) {
     this._orientation.copy(x)
   }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+  */
   render(ctx, dt) {
     ctx.save()
     ctx.beginPath()
@@ -103,6 +107,10 @@ export class Sprite extends Component{
     this._scale = new Vector2(1,1)
     return this
   }
+  /**
+   * @inheritdoc
+   * @returns {*}
+  */
   toJson(){
     let obj = {
       pos:this._position.toJson(),
@@ -113,11 +121,17 @@ export class Sprite extends Component{
     }
     return obj
   }
+  /**
+   * @inheritdoc
+   * 
+   * @param {Renderer} renderer
+  */
   fromJson(obj,renderer){
     this.geometry?.fromJson(obj.geometry)
     this.material?.fromJson(obj.material)
     this.position.fromJson(obj.pos)
     this._orientation.fromJson(obj.angle)
+    //Todo - implement this renderer function
     this.parent = renderer.getById(obj.parent)
   }
 }
