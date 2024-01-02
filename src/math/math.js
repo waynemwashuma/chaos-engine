@@ -1,4 +1,4 @@
-import {DEG2RAD,RAD2DEG} from "./constants.js"
+import { DEG2RAD, RAD2DEG } from "./constants.js"
 
 /**
  * Creates a random number between the parameters
@@ -16,7 +16,7 @@ export function rand(min = 0, max = 1) {
  * 
  * @param {number} x The number to square
  *  @returns {number}
-*/
+ */
 export function sq(x) {
   return x * x
 }
@@ -26,7 +26,7 @@ export function sq(x) {
  *  @param {number} x the number to power.
  *  @param {number} [e=2] The number to power by.
  *  @returns {number}
-*/
+ */
 export function exp(x, e = 2) {
   return x ** e
 }
@@ -35,7 +35,7 @@ export function exp(x, e = 2) {
  * 
  * @param {number} x The number to root 
  * @returns {number}
-*/
+ */
 export function sqrt(x) {
   return Math.sqrt(x)
 }
@@ -48,7 +48,7 @@ export function sqrt(x) {
  *  @param {number} b The maximum bound of the interpolation.
  *  @param {number} t A number between 0 and 1 to interpopate by.Any other number greater than 1 or less than 0 will extapolate beyond b or a respectively.
  *  @returns {number}
-*/
+ */
 export function lerp(a, b, t) {
   return a + t * (b - a)
 }
@@ -59,7 +59,7 @@ export function lerp(a, b, t) {
  *  @param {number} number The number to round.
  *  @param {number} [precision=4] How many decimal places there should be.
  *  @returns {number}
-*/
+ */
 export function round(number, precision = 4) {
   precision = 10 ** precision
   return Math.round(number * precision) / precision
@@ -72,7 +72,7 @@ export function round(number, precision = 4) {
  *  @param {number} min The minimal bound of the clamped number.
  *  @param {number} max The maximum bound of the clamped number.
  *  @returns {number}
-*/
+ */
 export function clamp(value, min, max) {
   if (value < min) return min
   if (value > max) return max
@@ -88,7 +88,7 @@ export function clamp(value, min, max) {
  *  @param {number} x2
  *  @param {number} y2
  *  @returns {number}
-*/
+ */
 export function map(v, x1, y1, x2, y2) {
   return x2 + v * (y2 - x2) / (y1 - x1)
 }
@@ -97,7 +97,7 @@ export function map(v, x1, y1, x2, y2) {
  *  @param {number} a
  *  @param {number} b
  *  @returns {number}
-*/
+ */
 export function naturalizePair(a, b) {
   if (a > b)
     return (a + b) * (a + b + 1) / 2 + a;
@@ -109,7 +109,7 @@ export function naturalizePair(a, b) {
  * 
  * @param {number} deg number to convert.
  *  @returns {number}
-*/
+ */
 export function degToRad(deg) {
   return deg * DEG2RAD
 }
@@ -119,13 +119,13 @@ export function degToRad(deg) {
  * 
  * @param {number} rad number to convert.
  *  @returns {number}
-*/
+ */
 export function radToDeg(rad) {
   return rad * RAD2DEG
 }
 /**
  * @param {number} x
-*/
+ */
 export function wrapAngle(x) {
   let a = x
   while (a > Math.PI * 2) {

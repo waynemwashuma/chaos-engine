@@ -15,7 +15,6 @@ export class Triangle extends Shape {
    * @param {number} angle The angle between the two sides.
    * @param { Vector2} offset Positional offset from the body center.
    * @param {number} offsetAngle Angular offset from the body center.
-   * 
    */
   constructor(base, height, angle, offset, offsetAngle) {
     let l1 = new Vector2().set(1, 0).multiply(base)
@@ -27,6 +26,12 @@ export class Triangle extends Shape {
       l2.sub(center)
     ], offset, offsetAngle)
   }
+  /**
+   * @param {number} mass
+   * @param {number} base
+   * @param {number} height
+   * @param {number} angle
+  */
   static calcInertia(mass,base,height,angle){
     return 0.5 * mass * base * height * (1 - 2/3 * (1 - (Math.cos(2 * angle * 180/Math.PI))/2))
   }

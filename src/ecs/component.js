@@ -62,12 +62,24 @@ export class Component {
   query(entity, bound, target = []) {
     return entity.query(bound, target)
   }
-  static fromJson() {
+  /**
+   * @template {System} T
+   * @param {*} obj
+   * @param {T} system
+  */
+  fromJson(obj, system) {
     throw "Implement static method fromJson() in your component " + this.CHOAS_CLASSNAME
+   
   }
-  static toJson() {
+  /**
+   * @returns {*}
+  */
+  toJson() {
     throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
   }
+  /**
+   * @param {*} component
+  */
   static implement(component) {
     Utils.inheritComponent(component)
   }
