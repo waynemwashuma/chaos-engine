@@ -11,4 +11,3 @@ tests
 *.res.js
 *.txt
 demos
-common.js
