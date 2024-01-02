@@ -58,7 +58,7 @@ Import it into your project like this:
 ```javascript
 import * as CHAOS from "chaos-studio"
 ```
-#### OR:
+#### OR
 
 Get the [umd file](https://github.com/waynemwashuma/chaos-engine/dist/chaos.umd.js)
 from the dist folder of the [repository](https://github.com/waynemwashuma/chaos-engine),
@@ -66,12 +66,22 @@ put it in your root directory and add it to
 your html page like so:
 
 ```html
-<html>
+<head>
   <title>Load Example</title>
   <script src="./chaos.umd.js"></script>
-</html>
+</head>
 ```
 This way,the "CHAOS" module name will be available on the window object.
+
+### OR
+import the library from unpkg.com like this:
+
+```html
+<head>
+  <script src="https://unpkg.com/chaos-studio@latest/dist/chaos.umd.js"></script>
+</head>
+
+```
 
 ### Creating an example
 #### Setup game
