@@ -106,7 +106,7 @@ function parseMessage(raw) {
             element.includes('Author') ||
             element.includes("Merge")
         )continue
-        message = message.concat(element).replace('\n', '')
+        message = message.concat(element.trim()).replace('\n', ' ')
     }
     return message
 }
@@ -151,7 +151,9 @@ function getchangelog(log) {
         const scope = commit.message.scope
         const tags = commit.message.tags
         if (
-            scope == 'documentation' ||
+            scope === '' ||
+            scope === 'documentation' ||
+            scope === 'demos' ||
             tags.includes("#ignore") ||
             tags.includes("#internal") ||
             tags.includes("#refactor")
