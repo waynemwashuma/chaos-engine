@@ -1,8 +1,9 @@
-let obj = {
+import { TWO_PI } from "./constants.js";
+
+const obj = {
   x: 0,
   y: 0
 }
-let TWO_PI = Math.PI * 2
 /**
  * This is a 2D vector class.
  * 
