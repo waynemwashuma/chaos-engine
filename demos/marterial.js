@@ -40,11 +40,20 @@ export function materials(manager) {
 
   let material3 = new SpriteMaterial(img)
   let sprite3 = createsprite(290, 60, geometry, material3)
+  material3.width = 150
+  material3.height = 100
   manager.add(sprite3)
   img2.onload = () => {
-    material3.setup(6, 16)
+    material3.setup(7, 11)
     material3.frameRate = 1 / 10
+    material3.setAction(1)
+
   }
+  let r = 0
+  setInterval(() => {
+    material3.setAction(r)
+    r += r < 9?1:-9
+  },10000)
 }
 
 function createsprite(x, y, geometry, material) {
