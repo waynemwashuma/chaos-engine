@@ -31,9 +31,10 @@ import {
   TweenManager,
   fpsDebugger,
   bodyDebugger,
-  Entity,
+  raycastDebugger,
   Intergrator,
-  IndexedList
+  IndexedList,
+  RaycastManager,
 } from "/src/index.js"
 
 function createBoundingBox(x, y, w, h, t = 20) {
@@ -71,41 +72,44 @@ function createBoundingBox(x, y, w, h, t = 20) {
   }
   return [l1, l2, l3, l4]
 }
-function  createCanvasBounds(manager) {
-    let renderer = manager.getSystem("renderer")
-    let walls = createBoundingBox(30, 30, renderer.width - 60, renderer.height - 80, 1000)
-    walls.forEach(w => {
-      let bound = createEntity(w.pos.x, w.pos.y)
-      let body = new Box(w.w, w.h)
-      bound.attach("body", body)
-        .attach("sprite", new BodySprite())
-      body.type = Body.STATIC
-      manager.add(bound)
-    })
-  }
+
+function createCanvasBounds(manager) {
+  let renderer = manager.getSystem("renderer")
+  let walls = createBoundingBox(30, 30, renderer.width - 60, renderer.height - 80, 1000)
+  walls.forEach(w => {
+    let bound = createEntity(w.pos.x, w.pos.y)
+    let body = new Box(w.w, w.h)
+    bound.attach("body", body)
+      .attach("sprite", new BodySprite())
+    body.type = Body.STATIC
+    manager.add(bound)
+  })
+}
 export const demos = {
   manager: new Manager(),
   renderer: new Renderer2D(),
   world: new World(),
-  tweenManager:new TweenManager(),
+  tweenManager: new TweenManager(),
   examples: new IndexedList,
   init: function(selector) {
     this.manager.registerSystem("agent", new AgentManager())
     this.manager.registerSystem("renderer", this.renderer)
     this.manager.registerSystem("world", this.world)
     this.manager.registerSystem("tween", this.tweenManager)
-    this.manager.registerSystem("movable",new Intergrator())
+    this.manager.registerSystem("movable", new Intergrator())
+    this.manager.registerSystem("raycaster", new RaycastManager())
     let renderer = this.renderer
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight * 0.5)
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
-    window.onorientationchange = ()=>{
-      renderer.setViewport(innerWidth,innerHeight)
+    window.onorientationchange = () => {
+      renderer.setViewport(innerWidth, innerHeight)
     }
     fpsDebugger(this.manager)
     bodyDebugger(this.manager)
+    raycastDebugger(this.manager)
   },
   setup: function(name) {
     this.manager.clear()
@@ -116,7 +120,7 @@ export const demos = {
     this.setup(n)
   },
   register(n, f) {
-    this.examples.set(n,f)
+    this.examples.set(n, f)
   }
 }
 //Physics
