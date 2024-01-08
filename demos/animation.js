@@ -1,7 +1,6 @@
 import {
   Vector2,
   Sprite,
-  BufferGeometry,
   BasicMaterial,
   Tween,
   createEntity,
@@ -10,12 +9,6 @@ import {
   TextMaterial,
   BoxGeometry
 } from "/src/index.js"
-let path = [
-  new Vector2(-25, -25),
-  new Vector2(-25, 25),
-  new Vector2(25, 25),
-  new Vector2(25, -25)
-  ]
 let geometry = new BoxGeometry(25,25)
 let material = new BasicMaterial()
 
@@ -50,7 +43,7 @@ export function animation(manager) {
   }
 }
 
-function createAnimation(easing, width, height, tweener, renderer) {
+function createAnimation(easing, width, height, tweener) {
   let box = createEntity(width, 100)
   let tween = new Tween(
     box.get("transform").position
