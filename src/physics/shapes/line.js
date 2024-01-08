@@ -9,7 +9,7 @@ export class Line extends Shape {
   /**
    * @param {number} length
    * @param { Vector2} offset
-   * @param {number} pffsetAngle
+   * @param {number} offsetAngle
   */
   constructor(length,offset,offsetAngle) {
     let start = new Vector2(1).multiply(length / 2),

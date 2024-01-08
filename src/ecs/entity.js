@@ -39,10 +39,15 @@ export class Entity {
    * @type {boolean}
    */
   active = false
-
+  /**
+   * @type {string}
+   */
   get CHAOS_OBJ_TYPE() {
     return "entity"
   }
+  /**
+   * @type {string}
+   */
   get CHAOS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
@@ -249,12 +254,6 @@ export class Entity {
     }
     return entity
   }
-  /**
-   * @returns {{
-     deg: number,
-     type:string
-   }}
-   */
   toJson() {
     let obj = {
       comps: {},

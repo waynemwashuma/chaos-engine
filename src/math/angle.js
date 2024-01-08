@@ -32,7 +32,7 @@ class Angle {
 
   //TODO - Change this to radians instead
   constructor(deg = 0) {
-    this.value = deg * Math.PI/2
+    this.value = deg * Math.PI/180
   }
   /**
    * @type string

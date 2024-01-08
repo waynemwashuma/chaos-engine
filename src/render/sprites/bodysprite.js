@@ -33,7 +33,7 @@ class BodySprite extends Sprite {
    * @type {boolean}
    */
   drawBounds = false
-    /**
+  /**
    * Determine whether to draw the position of the body.
    * 
    * @type {boolean}
@@ -53,7 +53,7 @@ class BodySprite extends Sprite {
    * @inheritdoc
    *  @param {CanvasRenderingContext2D} ctx
    * @param {number} dt
-  */
+   */
   render(ctx, dt) {
 
     if (this.body.physicsType == ObjType.COMPOSITE) {
@@ -71,6 +71,11 @@ class BodySprite extends Sprite {
     if (this.drawPosition)
       this._drawCenter(this.body, ctx)
   }
+  /**
+   * @private
+   * @param {Body} body
+   * @param {CanvasRenderingContext2D} renderer
+   */
   _drawCenter(body, ctx) {
     ctx.beginPath()
     circle(

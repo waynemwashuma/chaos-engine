@@ -2,16 +2,42 @@
 import { Err } from "../utils/index.js"
 
 export class Loader {
+  /**
+   * @private
+   */
+  _toload = []
+  imgs = {}
+  sfx = {}
+  json = {}
+  /**
+   * @type {number}
+   * @private
+   */
+  _progressBytes = 0
+  /**
+   * @private
+   * @type {number}
+   */
+  _totalBytes = 0
+  /**
+   * @peivatw
+   * @type {number}
+   */
+  _filesErr = 0
+  /**
+   * @private
+   * @type {number}
+   */
+  _filesLoaded = 0
+  /**
+   * @private
+   * @type {number}
+   */
+  _totalFileNo = 0
+  /**
+   * @param {Manager} manager
+   */
   constructor(manager) {
-    this._toload = []
-    this.imgs = {}
-    this.sfx = {}
-    this.json = {}
-    this._progressBytes = 0
-    this._totalBytes = 0
-    this._filesErr = 0
-    this._filesLoaded = 0
-    this._totalFileNo = 0
     const that = this
     this.onfinish = null
     this._handlers = {
@@ -58,6 +84,9 @@ export class Loader {
       }
     }
   }
+  /**
+   * @private
+   */
   _getName(url) {
     if (url.includes("/")) {
       let tmp = url.split("/")
@@ -65,6 +94,9 @@ export class Loader {
     }
     return url.split(".")[0]
   }
+  /**
+   * @private
+   */
   _getType(url) {
     let ext
     if (url.includes("/")) {

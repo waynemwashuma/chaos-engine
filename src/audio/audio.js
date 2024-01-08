@@ -12,9 +12,10 @@ export class Sfx {
    * @type {AudioBufferSourceNode}
    */
   _source = null
+  //Todo - Check to see if this one works
   /**
    * @private
-   * @type {function}
+   * @type {Function}
    */
   _onended = null
   /**
@@ -66,6 +67,8 @@ export class Sfx {
   }
   /**
    * Set callback when the sound finishes playing.
+   * 
+   * @type {Function}
   */
   set onended(x) {
     this._onended = x

@@ -3,11 +3,11 @@ import { demos } from "./index.js"
 
 demos.init("#can")
 
-demos.setup("raycaster")
+demos.setup("box")
 
 let optionTab = document.querySelector("#options-checkbox")
 let demoOption = document.querySelector("#demos")
-for (var n in demos.examples) {
+for (let n of demos.examples.keys()) {
   let option = document.createElement("option")
   option.value = n
   option.innerHTML = n

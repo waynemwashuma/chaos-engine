@@ -1,5 +1,6 @@
 import { Clock } from '../../utils/clock.js'
 import { Camera } from "../camera.js"
+import { System } from "../../ecs/index.js"
 
 /**
  * This is an abstract class from which different types of renderers are implemented.
@@ -9,10 +10,10 @@ import { Camera } from "../camera.js"
  * @see WebGLRenderer
  * @see WebGPURenderer
  */
-export class Renderer {
+export class Renderer extends System {
   /**
    * @type number
-  */
+   */
   _rafID = 0
   /**
    * Used to throttle the frame rate.
@@ -51,6 +52,7 @@ export class Renderer {
    * @param {HTMLCanvasElement} canvas element to draw on
    */
   constructor(canvas, context) {
+    super()
     this.domElement = canvas
     this.ctx = context
     this.camera = new Camera(this)

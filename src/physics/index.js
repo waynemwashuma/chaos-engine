@@ -1,5 +1,3 @@
-//export * from "./SAT/index.js"
-export * from "./AABB/index.js"
 export * from "./shapes/index.js"
 export * from "./bodies/index.js"
 export * from "./constraints/index.js"

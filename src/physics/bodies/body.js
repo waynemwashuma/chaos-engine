@@ -1,7 +1,7 @@
-import { Vector2, Angle,degToRad,radToDeg } from "../../math/index.js"
+import { Vector2, degToRad, radToDeg } from "../../math/index.js"
 import { Component } from "../../ecs/index.js"
 import { Utils } from "../../utils/index.js"
-import { BoundingBox } from "../AABB/index.js"
+import { BoundingBox } from "../../math/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
 import { Movable, Transform } from "../../intergrator/index.js"
@@ -397,15 +397,23 @@ export class Body extends Component {
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
    * 
-   * 
    * @param { Vector2} force The force to be applied.
-   * @param { Vector2} [arm= Vector2] The collision arm.
+   * @param { Vector2} [arm = Vector2] The collision arm.
    */
   applyForce(force, arm = Vector2.ZERO) {
     this.acceleration.add(force.multiply(this.inv_mass))
-    this.rotation.value += arm.cross(force) * this.inv_inertia
+    this.torque.value += arm.cross(force) * this.inv_inertia
   }
-
+  /**
+   * Applies a force to a body affecting its direction of travel and rotation.
+   * 
+   * @param { Vector2} impulse The force to be applied.
+   * @param { Vector2} [arm = Vector2] The collision arm.
+   */
+  applyImpulse(impulse, arm = Vector2.ZERO) {
+    this.velocity.add(impulse.multiply(this.inv_mass))
+    this.rotation.value += arm.cross(impulse) * this.inv_inertia
+  }
   /**
    * Initializes the body to its given.Called by the world or an entity manager.
    * 
@@ -418,8 +426,8 @@ export class Body extends Component {
       this.bounds = new BoundingBox()
       if (entity != void 0) {
         this._movable.transform = this._transform
-        entity.manager.addComponent("transform",this._transform)
-        entity.manager.addComponent("movable",this._movable)
+        entity.manager.addComponent("transform", this._transform)
+        entity.manager.addComponent("movable", this._movable)
       }
       this.update()
       return
@@ -451,9 +459,9 @@ export class Body extends Component {
     this.bounds.update(this.position)
     //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
   }
-  
-  destroy(){
-    this.entity.manager.removeComponent("movable",this._movable)
+
+  destroy() {
+    this.entity.manager.removeComponent("movable", this._movable)
   }
   toJson() {
     let obj = {
@@ -484,7 +492,12 @@ export class Body extends Component {
     })
     return obj
   }
-  //TODO  - Add way to add shapes to body
+  /**
+   * @@param {Shape} shape
+   */
+  addShape(shape) {
+    this.shapes.push(shape)
+  }
   fromJson(obj) {
     let shapes = []
     obj.shapes.forEach((shape) => {

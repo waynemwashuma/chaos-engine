@@ -1,15 +1,514 @@
-## Changes made since v0.4.13
-
-
-### v0.4.13
-
- - Added a changelog.
- - Fixed path behaviour where agent doesn't advance to the next path.
- - Manager is now created though `createManager()`.
- - `Entity.Default()` has been moved to `createEntity()`
- 
-### v0.5.1
-
- - Added signals to the events through `Sigbal()` class.
+ - 
+ - Modified demos
+ - Refactored the `mixin()` function
+ - Fixed the method `Body.applyForce()`
+ - Added `Body.applyImpulse()` method
+ - Added `LineGeometry()` , `BoxGeometry()` and `TriangleGeometru()`
+ - Constants have been added
+ - New class `Color()` for color management
+ - Added `Body.addShape()` method to add shapes to a body
+ - Added new material `TextMaterial()` for text rendering
+ - Added new event `clear` onto manager
+ - Fixed an error in `Angle()` constructor
+ - Fixed issues with raycasting
+ - Fixed unwanted stretching of `SpriteMaterial()`
+ - Fixed `SpriteMaterial.setMaxFrames()` to set up max frames correctly
+ - Fixed an error on `SpriteMaterial.setAction()`
+ - 
+ - Modified raycaster to have basic working
+ - vscode config added
+ - Fixed material example
+ - 
+ - refactored
+ - 0.6.0
+ - [Build} 0.6.0
+ - New methods `IndexedList.get()` and `IndexedList.set()`
+ - New demo showcasing raycasting added
+ - Changed demo scene
+ - New module for raycasting into world
+ - Deprecated `Angle.radian` and `Angle.degree` in favor of `Angle.value` , Added `Angle.cos` and `Angle.sin`
+ - Fixed undefined reference to `Err` module
+ - Fixed `Manager.getComponentList()`
+ - New`BufferGeometry.updateVertices()` to update vertices dynamically
+ - Fixed error in `System()`
+ - Fixed `bodyDebugger()`
+ - Fixed working of `IndexedList()`
+ - Added `IndexedList.get()` to fetch a stored value by its key
+ - Refactored `manager.addComponent()` and `manager.removeComponent()`
+ - Fixed movable of composited bodies not removed from manager componentList
+ - Fixed bug on `Composite()` where it doesn't move when added to `World()`
+ - Cleared up some unwanted code
+ - Fixed `Intergrator.update()`
+ - Added `World.enableIntergrate` to enable/disable intergration of a world
+ - Fixed crashing errors in `Manager.addComponent()` and `Manager.removeComponent()`
+ - Fixed `Manager.unregisterSystem()` to properly remove core systems
+ - `Movable.torque` added to store torque
+ - Added new class `Intergrator()` for inergrating movement into transforms
+ - Moved out `Bound()` , `Movable()` and `Transform()` components to intergrator folder
+ - `Err.deprecate()` parameters and functionality
+ - Removed a duplicate export of `Rectangle()`
+ - `Component.requires()` parameters
+ - Refactored demos to current version
+ - `bodyDebugger()` added to debug
+ - Intergrators now clear torque every update
+ - Fixed a prototype implementation error on `Body()` by inheriting from `Component()`
+ - Fixed  `Perf()` and added it to manager
+ - Added `fpsDebugger()` to display fps
+ - Added new animation demo
+ - New class `Tween()` for animating objects
+ - Added `TweenManager()` for animations
+ - Depreciated `Entity.Default()` in favour of
+ - 
+ - 0.5.1
+ - build 0.5.1
+ - 0.5.0
+ - build for next release
+ - 
+ - fixed `Manager.getEntityByTags()` and `Manager.getEntityByComponents()`
+ - Signal value doesnt change
+ - 
+ - `Component.implement()` to replace `Utils.inheritComponent()`
+ - Removed `Utils.inheritSystem()`.Use `System.implement()` instead
+ - New function `mixin()` for prototype injection
  - Renamed `Vec2()` to `Vector2()`
- - Fixed `Overlap.AABBvsSphere()` to return the correct value.
+ - Added `Signal()` class
+ - `Overlaps.AABBvsSphere` returned incorrect results
+ - 0.4.13
+ - Fixed renderer to scale on multiple devices
+ - Added a perf manager
+ - Added World.imtergrator property.
+ - depreciated to Err module.
+ - Created a boilerplate function for generating a manager with default systems.
+ - added a new function createEntity() to reduce boilerplate.
+ - 
+ - (demos)Added a new demo to show friction
+ - (demo)Added restitution demo
+ - (physics)Fixed an error when getting position from a composite
+ - (demos)New demo for seek and evade behavior added
+ - (AI)Fixed up parh following
+ - (demos)Updated parhfollowing demo
+ - (demos)Added new demo
+ - Updated package homepage
+ - new build
+ - 0.4.12
+ - Removed a useless badge
+ - Changed up the Readme
+ - 
+ - Added new jsdoc template
+ - Signed-off-by: waynemwashuma <mwashumawayne@gmail.com>
+ - bump patch version
+ - 0.4.1
+ - removing some stuff,same as the last
+ - fixed triangle example to work with new changes
+ - Fixed  a collision response of trigon    due to rad/deg conversion error
+ - Added a feature to body sprite
+ - Update demos
+ - fixing the stuff i broke        i forced a merge without thinking,i regret that for the past 4 hours
+ - Upgrade: Bump postcss from 8.4.24 to 8.4.31
+ - from 8.4.24 to 8.4.31.    - [Release notes](https://github.com/postcss/postcss/releases)    - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)    - [Commits](https://github.com/postcss/postcss/compare/8.4.24...8.4.31)        ---    updated-dependencies:    - dependency-name: postcss      dependency-type: indirect    ...        Signed-off-by: dependabot[bot] <support@github.com>
+ - 
+ - Added new demo
+ - Demos start with box
+ - Rebase,donno what im doin??
+ - Added an new body for singular triangle shape
+ - Fixed triangle
+ - Fixed up traingle shape
+ - fixed a minor error on keyboard
+ - cleanup on the imports
+ - Created Narrowphase module
+ - Fixed verlet intergrator
+ - Updated verlet and euler intergrators to use torque
+ - Added torque to body
+ - Refactor:Removed server.js
+ - Refactor:Cleanup
+ - Refactor:Remove unnecessary code
+ - Fix: Potentially undefined behaviour in static Vector.lerp()
+ - Fix:Manager.getEntitiesByTags() not returning the expected results
+ - Fix:When an entity is removed from a manager using Manager.remove(),it cannot be added to another manager due to warning
+ - New:Added StaticImageMaterial.offset
+ - Update:Removed ImageMaterial as it is a dublicate of StaticImageMaterial
+ - Fix:Getter error on composite
+ - New:ImageMaterial added to render
+ - Documentation:Fixed on body
+ - Update:Added Composite.type setter and getter
+ - Dev:v  0.4.0
+ - update:new build for production
+ - Fix:Circular dependency
+ - New:Added easing and interpolation functions
+ - None:Updated Readme
+ - Update: Serialization method for Sprite
+ - Fix:Geometry.toJson() throwing error
+ - Update: Serialization methods for BoundingBox and BoundingCircle
+ - Fix: Serialization of movable component
+ - Update: Serialization method for Vector
+ - Fix: Serialization not working as intended in Angle class
+ - Update: Serialization method for transform,movable and bounds components
+ - Fix: Serialization method set to instance instead of static
+ - Update: Serialization method for Constriant
+ - Update: Serialization method for Circle
+ - Update: Deserialization method for Shape and Geometry
+ - Update: Serialization method for shape and geometry
+ - Update: Serialization method for body
+ - Update:Added serialization to component class
+ - Update:Added methods ro Component for docs
+ - New: Implemented serialization of entities.
+ - New:Added new function to math lib
+ - Update:New methods of Angle for serialization
+ - Fix:deg2rad conversion in Angle constructor
+ - New:Added indexedlist data structure
+ - Refactor:moved pools to dataStructure folder
+ - Update:Added Manager.query() to search for entities through the physics
+ - Update:Added Manager.query() to search for entities using the physics system
+ - Fix:collision Event handler not working
+ - Update:Fixed camera and added a basic camera controller
+ - Update:Intergrated bounds component into main namespace
+ - Documentation:Fix Agent.draw() doc
+ - Fix:Error due to Sprite.draw() not there
+ - Demos: Fixed bridge demo
+ - Documentation:Fixed some docs
+ - Build 0.3.0
+ - None:update pkg.json
+ - None:Build for the. ex
+ - Documentation:Correcting quadtree docs
+ - Documentation:Even mote corrections
+ - Documentation: uodated Material docs
+ - Update:Include Group class into main namespace
+ - Documentation:correct shape docs
+ - Documentation:correcting sprite docs
+ - Documentation:Correction of materials
+ - None:update ts config
+ - Update:Removed unnecessary stuff from the Camera class
+ - Documentation:Documented Camera class
+ - None:Updated and added new demos
+ - Fix:Renderer throws error on material init
+ - Update:Init material in can as renderer
+ - Documentation:materials to implement Material
+ - Update:Optimized particleSystem
+ - Documentation: Updated particleSystem docs
+ - Fix;ParticleSystem
+ - Fix:Particle system and path resolution to sprites
+ - Documentation:Particle systems update
+ - Update:Removed redundant sprite derivatives
+ - Update:Bodysprite and AgentSprite optimized for debugging
+ - Fix:Path2D is rendering in alternating fill style through it of different sprite geometry
+ - Update:minor detail
+ - None:
+ - Refactor:Removed BufferGeometry.render
+ - Update:Intergrated path2D to canvas2d renderer
+ - Update:Using path2D to maybe optimize performance in canvas
+ - Update:Passed dt to Sprite.material during rendering
+ - New:Sprite material added
+ - None:Readme fix and update
+ - None: pretty format
+ - New:static image material added
+ - Fix:Sprite not rendering as scale is 0,0
+ - Fix:Sprite.scale null after initialization - temp fix
+ - Fix:Basic material path2d render error
+ - Refactor:Sprite stop creating unused variables
+ - Documentation:Materials and geometry of render
+ - Refactor:minor adjustment to Sprite class and its documentation
+ - Refactor:cleanup
+ - Removed legacy items,will be in another repository
+ - Renamed "mesh" to "sprite"
+ - 
+ - Dev
+ - Sprite.render to use context & more Documentation on  sprites
+ - Somehow dev is behind with 0 changes
+ - Update:Removed renderer2D methods and changed Sprite.update() first param to take ctx instead of renderer
+ - Documentation:Added templates to Utils methods
+ - Documentation:Fixing some typos
+ - Refactor:Constraint.dampen => Constraint.dampening
+ - Refactor:Removing dead methods on input classes
+ - Refactor:Fixing documentation,typos and removing uneccessary stuff
+ - Fix:reverting the types in pkg.json
+ - none
+ - None:types field in pkg updated
+ - None:ts config update
+ - Refactor:Typos and cleanup
+ - Dev
+ - Fixes
+ - Testing
+ - Fix:Path res in gh
+ - Gh-pages workflow        Gh-pages workflow
+ - None:Gh-pages workflow
+ - Update package-lock
+ - Update package-lock
+ - Version 0.2.1
+ - None:Patch version update
+ - None:added types to pkg.json
+ - None:new build and docs
+ - Fix:Bug where removed constraint in world ends up in body list
+ - Refactor:cleanup of logs
+ - Fix:typo in CollisionPair Typedef
+ - Fix:fatal placement of a property
+ - Fix:Renderer.clear() not working
+ - Documentation
+ - Refactor: cleanup
+ - None:Updated path resolution of typedef script
+ - None:Modified paths of tsconfig
+ - None:Fixing rollup script
+ - Refactor:Cleanedup typedefs
+ - None:Added script to bundle typedefs to builds
+ - None:Moved configs & updated pkg.json
+ - None:Updating pkg scripts
+ - Documentation:Components and Systems
+ - Documentation
+ - Documentation:interfaces
+ - Fix:Migrate Component.parent => Component.entity
+ - Fix:Pathfollower demo not working after switching to another demo and back
+ - Documentation: Updated even more
+ - Update: Documentation fixes and generate d.ts
+ - None:Added tsc for ts definitions.
+ - Intergrate:More typedefs!
+ - New:Manifold typedefs applied
+ - New:Manifold typedefs
+ - Update:made box demo
+ - New & update:box demo and docs fixed in body
+ - New:Pathfollower demo added
+ - Update: pyramid demo
+ - Fix:typo on distanceConstraint
+ - Fix:BoxEntity was removed from stacking as it doesn't exist
+ - Update:Preping to add settings to demos
+ - Update:Added a new demo
+ - Documentation:Added docs generated by jsdoc
+ - None:Preping to make ts types
+ - Fix:Car demo constraint ignores rotation
+ - Refactor:Updated demos
+ - Refactor:removed redundant methods in Renderer2D
+ - Documentation:Renderers
+ - None:readme update.
+ - Documentation:Correcting docs
+ - None:Workflow update
+ - None:Workflow update
+ - None:preping for document generation
+ - None:preping for document generation
+ - None:Workflows update
+ - Signed-off-by: waynemwashuma <94756970+waynemwashuma@users.noreply.github.com>
+ - None:Create npm workflow
+ - Create npm-publish.yml
+ - Create npm-publish.yml        Signed-off-by: waynemwashuma <94756970+waynemwashuma@users.noreply.github.com>
+ - Update:New build
+ - Update: Constraints use body anchors now
+ - Refactor:Constraints
+ - Update:Pachage and readme
+ - Update: Version
+ - Update:Created new builds before publishing
+ - Fix:Body not responding to collision
+ - None:Updated readme
+ - Documentation:Utils done and documented
+ - Documentation:Relevant classes documented in physics
+ - Refactor:Renamed AABB.js to overlap.js
+ - documentation: Maths fully done
+ - Documentation: Manager folder fully documented
+ - Documentation:Fully done inputs except touch
+ - Refactor:Duplicate file removed
+ - Documentation: Events fully documented
+ - Documentation:Audio fully documented
+ - None
+ - Documentation:AI fully documented
+ - Documentation:Extended AI behaviour
+ - efactor:Cleanup unused variables in AI behaviors
+ - Documentation:Documented the AI behaviours.
+ - none
+ - Refactor: cleanup logs
+ - Refactor: Renderer2D extends Renderer
+ - Fix:Sprites stretching while drawing
+ - New: Added new renderers,not implemented yet.
+ - Refactor:Reworked Matrix and renamed to Matrix2
+ - Refactor: Cleanup for build
+ - None:Fix banner for build
+ - Fix: Device info wrong
+ - None:Packade.json fix
+ - Refactor:moved canvas renderer
+ - 
+ - None:Formatting text
+ - Update:Not important
+ - Update:Group to extend sprite
+ - New:Group added to sprites
+ - Refactor:Mesh.update -> Mesh.render. Did this as i might add other renderers in the future.
+ - New:Circle geometry to render
+ - Update:Collision events replace 'this' with entity firing it.
+ - Refactor:Moving Math out of utils
+ - Refactor:Moving maths out of utils
+ - New:Testing new implementation of sprites
+ - Refactor:Cleanup
+ - Refactor: Cleanup
+ - Refactor: Cleanup
+ - New:Added sprite to debug agents
+ - Fix: DEVICE.m4a not correct
+ - Refactor:Cleanup
+ - Refactor: cleanup
+ - Update:Added tolerance to pathfollowing AI
+ - Fix:Circle shape glitching when colliding with another
+ - Refactor:Remove uneccessary  stuff
+ - Documentation:Boundings updated
+ - Documentation: Shapes
+ - Documentation:Properties of shape class
+ - Update:Added more documentation if world
+ - Fix: World.remove()
+ - New:typedefs
+ - None:Build config to include when created
+ - None: Update banner to have license
+ - Refactor:Changed internals of some AI behaviours
+ - Refactor:Followpath to arrive instead of seek
+ - Refactor: Arrive behaviour internals changed
+ - Refactor: Adjusting path following behaviour
+ - Update:Pathfollowing complete.
+ - Fix: Parhfollowing extends Behavior
+ - Intergration:Path following to the main namespace for testing
+ - Update:Pathfollowing behaviour
+ - Update:New method ro path
+ - New:Pathfollowing behaviour
+ - Update:Finished basic model of path
+ - Update: Added more functionality to Path
+ - Integration: Paths to main namespace for testing
+ - Update:setting groundwork for path
+ - New:Preping for path following AI
+ - Refactor:Default settings
+ - Refactor:reset default values of sprites
+ - Fix:Bounding circle not working
+ - Intergration:Bounds component to the entity
+ - New:Bounds component
+ - Fix:Camera.follow.
+ - Refactor:Adjust default of evade
+ - Refactor:removing cyclic references
+ - None:Rollup config update
+ - None:Update package.json
+ - None:Updated rollup config options
+ - None:rollup config for build
+ - Update:package.json
+ - Fix:Agent init not working
+ - Fix: Init throwing error in agent
+ - Update:Quadtree uses a proxy for body
+ - None:Readme update
+ - Refactor:Use client instead of body in grid broadphase
+ - Add:Clone method to BoundingBox
+ - New:Add client to body for broadphase
+ - Fix:Patched some methods on gridbroadphase
+ - Fix:RemoveComposite in World
+ - Add:Basic implementation of the Grid broadphase
+ - New:Implementing Gridbroadphase
+ - Ignore txt
+ - Refactor
+ - Refactor
+ - New:Solvers documented
+ - Refactor
+ - Cleanup:more useless draw methods
+ - New:Bounds documented
+ - Refactor: Renaming bounds
+ - New:AABB documented
+ - New : Naive broadphase documented
+ - Update:Broadphase documentation
+ - Documentation to DEVICE
+ - Add:new properties to DEVICE
+ - Fix: Background music not looping
+ - Fix:Sfx.connect()
+ - Cleanup
+ - Cleanup
+ - Update:Modified Vector.clamp
+ - new: behavior class documented
+ - New:Documentation of behaviourManager
+ - New:Documented Agent
+ - Refactor: Remove unnecessary files
+ - Integration:sfx to audiohandler.
+ - Refactor:Audio manager in a different place.
+ - New:Documentation of Audio
+ - Fix:Major issues of Audio implement fixed
+ - Cleanup:removing useless draw methods
+ - Add:Updated vector documentation
+ - Add:new method to vector
+ - New:Documentation to Broadphases
+ - New: Documentation of Broadphase class
+ - Remove:SpatialHashBroadphase removed temporarily
+ - Remove:Aabbbroadphase suspended due to issues
+ - New:Partial documentation to Input
+ - New : Documentation of Sessions
+ - New:Documentation of LocalStorage
+ - New:Documented cookies.
+ - Refactor:Events now fully part of the manager
+ - Add:new options to Manager constructor
+ - Remove:Manager.Default
+ - In case you were wondering,i gave up on the server
+ - New: Documented the sprites
+ - Add:Entity documentation
+ - crashed,again
+ - servers!!
+ - None:Just forcing server to boot
+ - Hope you dont crash!!
+ - config for server
+ - Create server for demos
+ - I meant from 0.1.1 to 0.5.0
+ - Jump from 0.1.1 to 0.7.0
+ - Cleanup & Refactor
+ - Remove:assets are not required for demos to work
+ - Refactor & Cleanup:demos
+ - Remove:workflows was a waste of time
+ - dist folder added
+ - New:Vite config file for build
+ - Update:workflow
+ - Add:new methods to Composite,needs more work.
+ - 
+ - 
+ - New:Static HTML added to demo
+ - Fix;Demo resizing
+ - Removed AABBbroadphase
+ - Add & Fix:basic Cookies abstraction complete
+ - cleanup on aisle 4
+ - Add:new methods to cookies
+ - Refactor & Intergrate:Storage intergrated to main namespace
+ - Refactor:Car demo use composite body
+ - Create static.yml
+ - Add: Extended functionality to Utils.inheritComponent
+ - Fix:Composite partially fixed
+ - Intergrate:Car demo to composite body
+ - Fix:trying to make composites work
+ - Fix:traingle shape
+ - Fix: minor
+ - Refactor & Cleanup : Shapes
+ - Cleanup
+ - Fix:Friction works fine now
+ - cleanup:console.logs
+ - Fix:Friction still
+ - Fix: trying to fix friction
+ - Cleanup
+ - New: Partial documentation to shapes
+ - New:Documentation partially added to bodies
+ - Add:Mouse documentation
+ - New:added documentation to event folder
+ - Cleanup:on AI systems
+ - New: Added documentation to math
+ - Cleanup
+ - Refactor
+ - Cleanup:Removed intantiation of an entity
+ - Update:Entity documentation completed
+ - Refactor:Component.parent to component.entity
+ - New:Added documentation to the Entity class
+ - Refactor: Component class
+ - Fix: Debugmesh drawn twice in demo
+ - New: Added inheritSystem to utils
+ - New:Documentation added to the Manager class
+ - Refactor: Moved from `class Ext extends Component to Utils.inheritComponent(Ext)
+ - Utils.iheritComponent fixed to work with Classes
+ - integrating physics settings to world
+ - added new methods to the math lib
+ - Fixed removing entity from manager
+ - updated the demos
+ - ignore list update
+ - remove mp3
+ - fixed init in manager
+ - remove lpgs
+ - none
+ - Fixed bugs on loader
+ - integrate loader to manager
+ - refactor
+ - preping Loader
+ - Indexed Events dictionary
+ - Added Events dictionary
+ - matrix added methods
+ - Update the renderer and meshes
+ - Update Component.parent to Component.entity && Added particlesystem
+ - Readme update
+ - Update to entity component system
+ - Major Update to entity component system
+ - initial
+ - Initial

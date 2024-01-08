@@ -5,10 +5,9 @@ import { Component } from "../../ecs/index.js"
  * This is the base class used to render images and paths onto the renderer.
  * Extend it to create your custom behaviour.
  * 
- * @implements Component
  * TODO - ADD id property to this class and Group class.
  */
-export class Sprite {
+export class Sprite extends Component{
   /**
    * @private
    */
@@ -38,6 +37,7 @@ export class Sprite {
    * @param {Material} material
    */
   constructor(geometry, material) {
+    super()
     this.geometry = geometry
     this.material = material
   }
@@ -74,6 +74,10 @@ export class Sprite {
   set orientation(x) {
     this._orientation.copy(x)
   }
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+  */
   render(ctx, dt) {
     ctx.save()
     ctx.beginPath()
@@ -103,6 +107,10 @@ export class Sprite {
     this._scale = new Vector2(1,1)
     return this
   }
+  /**
+   * @inheritdoc
+   * @returns {*}
+  */
   toJson(){
     let obj = {
       pos:this._position.toJson(),
@@ -113,11 +121,17 @@ export class Sprite {
     }
     return obj
   }
+  /**
+   * @inheritdoc
+   * 
+   * @param {Renderer} renderer
+  */
   fromJson(obj,renderer){
     this.geometry?.fromJson(obj.geometry)
     this.material?.fromJson(obj.material)
     this.position.fromJson(obj.pos)
     this._orientation.fromJson(obj.angle)
+    //Todo - implement this renderer function
     this.parent = renderer.getById(obj.parent)
   }
 }

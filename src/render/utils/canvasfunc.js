@@ -99,10 +99,12 @@ export function drawImage(
   w = img.width,
   h = img.height,
   ix = 0,
-  iy = 0
+  iy = 0,
+  dw = w,
+  dh = h
 ) {
   ctx.drawImage(img, w * ix, h * iy, w, h,
     x,
     y,
-    w, h)
+    dw, dh)
 }

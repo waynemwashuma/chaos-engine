@@ -1,14 +1,18 @@
-export type TweenUpdate = (lerpFunc: Function, to: T, from: T, t: number, into: T) => void;
+export type EventHandlerFunc = (data: any) => void;
+export type signalListener = (value: Signal<any>) => void;
+export type TweenUpdate = (lerpFunc: LerpFunc, to: T, from: T, t: number, into: T) => void;
+export type LerpFunc = (p0: number, p1: number, t: number) => number;
 export type Traverser = (node: Node) => boolean;
 export type Bounds = {
     max: Vector_like;
     min: Vector_like;
 };
+export type EasingFunc = (t: number) => number;
 export type CollisionPair = {
     a: Body;
     b: Body;
 };
-export type Manifold = {
+export type transform = {
     bodyA: Body;
     bodyB: Body;
     contactData: ContactManifold;
@@ -57,8 +61,6 @@ export class Agent extends Component {
 }
 export class AgentManager extends System {
     objects: Agent[];
-    init(manager: Manager): void;
-    update(dt: number): void;
 }
 export class AgentSprite extends Sprite {
     constructor();
@@ -92,7 +94,7 @@ export class Angle {
         type: string | number;
     };
 }
-export function AngleUpdate(lerpFunc: any, to: any, from: any, t: any, into: any): void;
+export function AngleUpdate(lerpFunc: LerpFunc, to: T, from: T, t: number, into: T): void;
 export class ArriveBehaviour extends Behaviour {
     constructor(target: Vector2);
     radius: number;
@@ -203,6 +205,7 @@ export class Body extends Component {
     getAnchor(index: number): Vector2;
     getLocalAnchor(index: number, target?: Vector2): Vector2;
     applyForce(force: Vector2, arm?: Vector2): void;
+    applyImpulse(impulse: Vector2, arm?: Vector2): void;
     init(entity?: Entity, composited?: boolean): void;
     update(): void;
     toJson(): {
@@ -234,6 +237,7 @@ export class Body extends Component {
             group: number;
         };
     };
+    addShape(shape: Shape): void;
     fromJson(obj: any): void;
 }
 export class BodySprite extends Sprite {
@@ -242,8 +246,7 @@ export class BodySprite extends Sprite {
     drawVelocity: boolean;
     drawBounds: boolean;
     drawPosition: boolean;
-    render(ctx: CanvasRenderingContext2D, dt: number): void;
-    _drawCenter(body: any, ctx: any): void;
+    private _drawCenter;
     private _drawVelocity;
     private _drawBound;
     private _drawShapes;
@@ -305,19 +308,22 @@ export class BoundingCircle {
 export class Box extends Body {
     constructor(w: number, h: number);
 }
+export class BoxGeometry extends BufferGeometry {
+    constructor(width: any, height: any);
+}
 export class BufferGeometry {
     constructor(vertices: Vector2[]);
     readonly vertices: Vector2[];
     drawable: Path2D | WebGLVertexArrayObject;
     init(ctx: CanvasRenderingContext2D): void;
-    updateVertices(data: any): void;
+    updateVertices(data: Vector2[]): void;
 }
 export class CamController {
     constructor(camera: Camera);
-    readonly offset: Vector2;
+    offset: Vector2;
     transform: Transform;
-    targetPosition: any;
-    targetOrientation: Angle;
+    targetPosition: Vector2 | null;
+    targetOrientation: Angle | null;
     follow(position: Vector2, orientation?: Angle): void;
     followEntity(entity: Entity): void;
     setOffset(x: number, y: number): void;
@@ -358,19 +364,35 @@ export class Clock {
     dt: number;
     update(accumulate: number): number;
 }
-export function ColorUpdate(lerpFunc: any, to: any, from: any, t: any, into: any): void;
+export class Color {
+    constructor(r?: number, g?: number, b?: number, alpha?: number);
+    set(r: number, g: number, b: number, alpha?: number): Color;
+    r: any;
+    g: any;
+    b: any;
+    a: any;
+    clone(): Color;
+    copy(color: Color | string): Color;
+    add(color: Color): Color;
+    darken(scale: number): Color;
+    lerp(color: Color, alpha: number): Color;
+    lighten(scale: number): Color;
+    random(min?: number, max?: number): Color;
+    toArray(array: any, offset?: number): any;
+}
+export function ColorUpdate(lerpFunc: LerpFunc, to: T, from: T, t: number, into: T): void;
 export class Component {
-    static fromJson(): void;
-    static toJson(): void;
     static implement(component: any): void;
     destroy(): void;
     get CHOAS_CLASSNAME(): string;
     get CHAOS_OBJ_TYPE(): string;
     init(entity: Entity): void;
     update(dt: number): void;
-    get(entity: any, n: string): any;
-    requires(entity: any, ...names: string[]): void;
-    query(entity: any, bound: CircleBounding | BoxBounding, target?: Entity): any;
+    get(entity: Entity, n: string): any;
+    requires(entity: Entity, ...names: string[]): void;
+    query(entity: Entity, bound: CircleBounding | BoxBounding, target?: Entity[]): Entity[];
+    fromJson<T extends System>(obj: any, system: T): void;
+    toJson(): any;
 }
 export class Composite extends Component {
     entity: Entity | null;
@@ -400,10 +422,10 @@ export class Composite extends Component {
 }
 export class Constraint {
     constructor(body1: Body, body2: Body, localA: Vector2, localB: Vector2);
+    localA: Vector2;
+    localB: Vector2;
     body1: Body;
     body2: Body;
-    localA: any;
-    localB: any;
     stiffness: number;
     dampening: number;
     get physicsType(): number;
@@ -429,6 +451,7 @@ export namespace Cookies {
     export { _delete as delete };
     export function clear(): void;
 }
+export const DEG2RAD: number;
 export namespace DEVICE {
     let audio: boolean;
     let canvas: boolean;
@@ -448,37 +471,37 @@ export class DistanceConstraint extends Constraint {
     maxDistance: number;
 }
 export namespace Easing {
-    function linear(x: any): any;
-    function quadraticIn(x: any): number;
-    function quadraticOut(x: any): number;
-    function quadraticInOut(x: any): number;
-    function cubicIn(x: any): number;
-    function cubicOut(x: any): number;
-    function cubicInOut(x: any): number;
-    function quarticIn(x: any): number;
-    function quarticOut(x: any): number;
-    function quarticInOut(x: any): number;
-    function quinticIn(x: any): number;
-    function quinticOut(x: any): number;
-    function quinticInOut(x: any): number;
-    function sinusoidalIn(x: any): number;
-    function sinusoidalOut(x: any): number;
-    function sinusoidalInOut(x: any): number;
-    function exponentialIn(x: any): number;
-    function exponentialOut(x: any): number;
-    function exponentialInOut(x: any): number;
-    function circularIn(x: any): number;
-    function circularOut(x: any): number;
-    function circularInOut(x: any): number;
-    function elasticIn(x: any): number;
-    function elasticOut(x: any): number;
-    function elasticInOut(x: any): number;
-    function backIn(x: any): number;
-    function backOut(x: any): number;
-    function backInOut(x: any): number;
-    function bounceIn(x: any): number;
-    function bounceOut(x: any): number;
-    function bounceInOut(x: any): number;
+    let linear: EasingFunc;
+    let quadraticIn: EasingFunc;
+    let quadraticOut: EasingFunc;
+    let quadraticInOut: EasingFunc;
+    let cubicIn: EasingFunc;
+    let cubicOut: EasingFunc;
+    let cubicInOut: EasingFunc;
+    let quarticIn: EasingFunc;
+    let quarticOut: EasingFunc;
+    let quarticInOut: EasingFunc;
+    let quinticIn: EasingFunc;
+    let quinticOut: EasingFunc;
+    let quinticInOut: EasingFunc;
+    let sinusoidalIn: EasingFunc;
+    let sinusoidalOut: EasingFunc;
+    let sinusoidalInOut: EasingFunc;
+    let exponentialIn: EasingFunc;
+    let exponentialOut: EasingFunc;
+    let exponentialInOut: EasingFunc;
+    let circularIn: EasingFunc;
+    let circularOut: EasingFunc;
+    let circularInOut: EasingFunc;
+    let elasticIn: EasingFunc;
+    let elasticOut: EasingFunc;
+    let elasticInOut: EasingFunc;
+    let backIn: EasingFunc;
+    let backOut: EasingFunc;
+    let backInOut: EasingFunc;
+    let bounceIn: EasingFunc;
+    let bounceOut: EasingFunc;
+    let bounceInOut: EasingFunc;
 }
 export class Entity {
     static Default(x: number, y: number, a: number): Entity;
@@ -488,7 +511,7 @@ export class Entity {
     private _global;
     active: boolean;
     get CHAOS_OBJ_TYPE(): string;
-    get CHAOS_CLASSNAME(): any;
+    get CHAOS_CLASSNAME(): string;
     destroy(): void;
     removeSelf(): void;
     reset(): void;
@@ -508,8 +531,8 @@ export class Entity {
     query(bound: Bounds, target?: Entity[]): Entity[];
     fromJSON(obj: {}, compList: Map<string, Function>): this;
     toJson(): {
-        deg: number;
-        type: string;
+        comps: {};
+        tags: any[];
     };
 }
 declare var error$1: Readonly<{
@@ -523,7 +546,7 @@ declare var error$1: Readonly<{
     deprecate: typeof deprecate;
 }>;
 export class EulerSolver {
-    static solve(transform: any, movable: any, dt: number): void;
+    static solve(transform: Transform, movable: Movable, dt: number): void;
 }
 export class EvadeBehaviour extends Behaviour {
     constructor(pursuer: Vector2);
@@ -534,7 +557,7 @@ export class EventDispatcher {
     private handlers;
     trigger(n: string, data: any): void;
     init(): void;
-    add(name: string, handler: Function): void;
+    add(name: string, handler: EventHandlerFunc): void;
 }
 export type Events = string;
 export namespace Events {
@@ -561,7 +584,7 @@ export class Geometry {
     get CHAOS_OBJ_TYPE(): string;
     getNormals(rad: number, target: Vector2[]): Vector2[];
     private calcFaceNormals;
-    transform(vertices: Vector2[], pos: Vector2, rad: any, n: number): void;
+    transform(vertices: Vector2[], pos: Vector2, rad: number, n: number): void;
     toJson(): {
         vertices: any[];
     };
@@ -570,19 +593,18 @@ export class Geometry {
 export class Group extends Sprite {
     constructor(sprites?: Sprite[]);
     private _children;
-    get CHOAS_CLASSNAME(): string;
-    get CHAOS_OBJ_TYPE(): string;
     add(sprite: Sprite | Group): void;
     remove(sprite: Sprite | Group, recursive?: boolean, index?: number): boolean;
-    render(ctx: CanvasRenderingContext2D, dt: number): void;
 }
-export class IndexedList {
-    _keys: any;
-    _list: any[];
-    get(name: any): any;
-    push(name: any, value: any): void;
-    remove(name: any): void;
-    values(): any[];
+export const HALF_PI: number;
+export class IndexedList<T> {
+    private _keys;
+    private _list;
+    get(name: string): T;
+    set(name: string, value: T): void;
+    remove(name: string): void;
+    keys(): string[];
+    values(): T[];
 }
 export class Input {
     constructor(eventHandler: DOMEventHandler);
@@ -596,15 +618,15 @@ export class Input {
 export class Intergrator extends System {
     active: boolean;
     solver: typeof EulerSolver.solve;
-    objects: any[];
+    objects: Movable;
     init(manager: any): void;
     update(dt: any): void;
 }
 export namespace Interpolation {
-    function Linear(p0: any, p1: any, t: any): any;
+    function Linear(p0: number, p1: number, t: number): number;
     function Bernstein(n: any, i: any): any;
     function Factorial(n: any): number;
-    function CatmullRom(p0: any, p1: any, p2: any, p3: any, t: any): any;
+    function CatmullRom(p0: number, p1: number, p2: number, p3: number, t: number): number;
 }
 export class Keyboard {
     constructor(eh: DOMEventHandler);
@@ -617,28 +639,31 @@ export class Keyboard {
     private _onUp;
 }
 export class Line extends Shape {
-    constructor(length: number, offset: Vector2, offsetAngle: any);
+    constructor(length: number, offset: Vector2, offsetAngle: number);
     length: number;
 }
+export class LineGeometry extends BufferGeometry {
+    constructor(length: any);
+}
 export class Loader {
-    constructor(manager: any);
-    _toload: any[];
+    constructor(manager: Manager);
+    private _toload;
     imgs: {};
     sfx: {};
     json: {};
-    _progressBytes: number;
-    _totalBytes: number;
+    private _progressBytes;
+    private _totalBytes;
     _filesErr: number;
-    _filesLoaded: number;
-    _totalFileNo: number;
+    private _filesLoaded;
+    private _totalFileNo;
     onfinish: any;
     _handlers: {
         onload: (xhr: any, e: any) => void;
         onheadload: (e: any) => void;
         onerror: (e: any) => void;
     };
-    _getName(url: any): any;
-    _getType(url: any): "audio" | "image" | "json";
+    private _getName;
+    private _getType;
     loadAll(files?: {}): void;
 }
 export class Manager {
@@ -729,7 +754,7 @@ export class Mouse {
 }
 declare class Movable$1 extends Component {
     constructor(x: number, y: number, a: number);
-    transform: any;
+    transform: Transform;
     velocity: Vector2$1;
     rotation: Angle;
     acceleration: Vector2$1;
@@ -750,14 +775,15 @@ export class NaiveBroadphase extends Broadphase {
     private bodies;
 }
 export class NarrowPhase {
-    records: any;
-    getCollisionPairs(contactList: any, clmds: any): void;
+    records: Map<number, Manifold>;
+    getCollisionPairs(contactList: CollisionPair[], clmds: Manifold[]): Manifold[];
 }
 export namespace Overlaps {
     function AABBColliding(a: BoundingBox, b: BoundingBox): boolean;
     function boundSpheresColliding(a: BoundingCircle, b: BoundingCircle): boolean;
     function AABBvsSphere(a: BoundingBox, b: BoundingCircle): boolean;
 }
+export const PI: number;
 export class Particle {
     constructor(pos: Vector2, radius: number, lifespan?: number);
     readonly position: Vector2;
@@ -785,7 +811,6 @@ export class ParticleSystemSprite extends Sprite {
     protected create(): Particle;
     init(entity: Entity): void;
     protected behavior(p: Particle, dt: number): void;
-    render(ctx: CanvasRenderingContext2D, dt: number): void;
 }
 export class Path {
     private _points;
@@ -800,11 +825,11 @@ export class Path {
     loop: boolean;
     add(point: Vector2): this;
     clear(): this;
-    advance(): boolean;
+    private advance;
     update(lerpdist?: number): Vector2$1;
-    current(): any[];
-    point(): Vector2$1;
-    get path(): any[];
+    current(): Vector2[];
+    point(): Vector2;
+    get path(): Vector2[];
     draw(ctx: CanvasRenderingContext2D): void;
 }
 export class PathFollowing extends Behaviour {
@@ -834,24 +859,26 @@ export class QuadTreeBroadphase extends Broadphase {
     _root: Node;
     maxDepth: number;
     bounds: Bounds;
-    _insert(client: any): void;
-    _remove(client: any): boolean;
+    private _insert;
+    private _remove;
     remove(obj: Body): boolean;
-    traverse(func: Function): any[];
+    traverse(func: Traverser): any[];
     draw(ctx: CanvasRenderingContext2D): void;
-    recalculateBounds(bounds: any): void;
+    recalculateBounds(bounds: Bounds): void;
 }
+export const RAD2DEG: number;
 export class Ray {
-    constructor(origin?: Vector2$1, direction?: Vector2$1);
+    constructor(origin?: Vector2, direction?: Vector2);
     maxLength: number;
-    _origin: Vector2$1;
-    _direction: Vector2$1;
-    set direction(arg: Vector2$1);
-    get direction(): Vector2$1;
-    set origin(arg: Vector2$1);
-    get origin(): Vector2$1;
-    setOrigin(x: any, y: any): void;
-    setDirection(x: any, y: any): void;
+    private _origin;
+    private _direction;
+    set direction(arg: Vector2);
+    get direction(): Vector2;
+    set origin(arg: Vector2);
+    get origin(): Vector2;
+    setOrigin(x: number, y: number): void;
+    setDirection(x: number, y: number): void;
+    lookAt(x: number, y: number): void;
 }
 export type RayCastModes = number;
 export namespace RayCastModes {
@@ -861,33 +888,38 @@ export namespace RayCastModes {
     let ANY: number;
 }
 export class RayCollisionResult {
+    constructor(ray: Ray, object: Body);
+    object: Body;
+    readonly points: RayPoint[];
+    ray: Ray;
+}
+export class RayPoint {
+    constructor(point: Vector2, distance: number);
+    point: Vector2;
     distance: number;
-    object: any;
-    points: any[];
-    ray: any;
 }
 export class RaycastManager extends System {
-    objects: any[];
-    bodies: any;
-    init(manager: any): void;
+    private objects;
+    private bodies;
+    update(dt: any): void;
 }
 export class RaycastResult {
-    ray: any;
-    mode: number;
-    collisions: any[];
+    mode: RayCastModes;
+    collisions: RayCollisionResult[];
 }
 export class Raycaster extends Component {
     constructor(number?: number, angleSpace?: number);
-    rays: any[];
-    initialDir: any[];
-    _number: number;
-    _angle: number;
-    _transform: any;
-    _lastangle: number;
+    rays: Ray[];
+    collisionResults: Ray[];
+    private _number;
+    private _angle;
+    private _transform;
+    private _lastangle;
+    mode: number;
     init(entity: any): void;
-    update(bodies: any): void;
-    draw(ctx: CanvasRenderingContext2D): void;
-    add(): void;
+    update(bodies: Body[]): void;
+    private testCircle;
+    private testVertices;
 }
 export class Rectangle extends Shape {
     static calcInertia(mass: number, width: number, height: number): number;
@@ -895,7 +927,7 @@ export class Rectangle extends Shape {
     height: number;
     width: number;
 }
-export class Renderer {
+export class Renderer extends System {
     constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext);
     _rafID: number;
     private _accumulator;
@@ -908,9 +940,7 @@ export class Renderer {
     ctx: CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext;
     camera: Camera;
     clock: Clock;
-    init(manager: Manager): void;
     clear(): void;
-    update(dt: number): void;
     protected RAF(): void;
     play(): void;
     pause(): void;
@@ -934,6 +964,7 @@ export class Renderer2D extends Renderer {
 export class SATNarrowPhase extends NarrowPhase {
     getCollisionPairs(contactList: CollisionPair[], clmds?: Manifold[]): Manifold[];
 }
+export const SQRT2: number;
 export class SeekBehaviour extends Behaviour {
     constructor(target: Vector2);
     radius: number;
@@ -995,15 +1026,15 @@ export class Shape {
     };
     fromJson(obj: any): void;
 }
-export class Signal {
-    constructor(value: any);
+export class Signal<T> {
+    constructor(value: T);
     _listeners: any[];
-    _value: any;
-    set value(arg: any);
-    get value(): any;
-    addListener(listener: any, callOnce?: boolean): void;
-    removeListener(listener: any): void;
-    _detach(bindingIndex: any): void;
+    _value: T;
+    set value(arg: T);
+    get value(): T;
+    addListener(listener: signalListener, callOnce?: boolean): void;
+    removeListener(listener: signalListener): void;
+    private _detach;
 }
 export class SpringConstraint extends Constraint {
     localA: Vector2$1;
@@ -1011,7 +1042,7 @@ export class SpringConstraint extends Constraint {
     fixed: boolean;
     maxDistance: number;
 }
-export class Sprite implements Component {
+export class Sprite extends Component {
     constructor(geometry: BufferGeometry, material: Material);
     private _position;
     private _orientation;
@@ -1025,17 +1056,10 @@ export class Sprite implements Component {
     get position(): Vector2;
     set orientation(arg: Angle);
     get orientation(): Angle;
-    render(ctx: any, dt: any): void;
+    render(ctx: CanvasRenderingContext2D, dt: number): void;
     init(entity: Entity): this;
     entity: Entity;
-    toJson(): {
-        pos: any;
-        angle: any;
-        geometry: any;
-        material: any;
-        parent: any;
-    };
-    fromJson(obj: any, renderer: any): void;
+    fromJson(obj: any, renderer: Renderer): void;
 }
 export class SpriteMaterial implements Material {
     constructor(img: HTMLImageElement, frames?: number, actions?: number);
@@ -1046,7 +1070,7 @@ export class SpriteMaterial implements Material {
     private _accumulator;
     frameRate: number;
     private _maxFrames;
-    width: number;
+    width: Vector;
     height: number;
     private frameWidth;
     private frameHeight;
@@ -1070,10 +1094,20 @@ export namespace Storage {
 }
 export class System {
     static implement(system: any): void;
-    init(): void;
-    update(): void;
-    add(component: any): void;
-    remove(component: any): void;
+    init(manager: Manager): void;
+    update(dt: number): void;
+    add(component: Component): void;
+    remove(component: Component): void;
+}
+export const TWO_PI: number;
+export class TextMaterial extends Material {
+    constructor(text: string);
+    text: string;
+    center: boolean;
+    color: string;
+    fill: boolean;
+    font: string;
+    render(ctx: CanvasRenderingContext2D): void;
 }
 export class Touch {
     constructor(eh: DOMEventHandler);
@@ -1101,8 +1135,11 @@ declare class Transform$1 extends Component {
     fromJson(obj: any): void;
 }
 export class Triangle extends Shape {
-    static calcInertia(mass: any, base: any, height: any, angle: any): number;
+    static calcInertia(mass: number, base: number, height: number, angle: number): number;
     constructor(base: number, height: number, angle: number, offset: Vector2, offsetAngle: number);
+}
+export class TriangleGeometry extends BufferGeometry {
+    constructor(base: any, height: any, angle: any);
 }
 export class Trigon extends Body {
     constructor(base: number, height: number, angle?: number);
@@ -1110,35 +1147,34 @@ export class Trigon extends Body {
     height: number;
     bangle: number;
 }
-export class Tween {
-    constructor(into: any);
+export class Tween<T> {
+    constructor(into: T);
     _duration: number;
     _repeat: boolean;
     active: boolean;
-    _to: T;
-    _from: any;
-    _into: any;
-    _interpolationFunc: (p0: any, p1: any, t: any) => any;
-    _easingFunction: (x: any) => any;
-    _timeTaken: number;
-    _updateFunc: typeof NoUpdateThrow;
-    _next: any;
-    init(entity: any): void;
+    private _to;
+    private _from;
+    private _into;
+    private _interpolationFunc;
+    private _easingFunction;
+    private _timeTaken;
+    private _updateFunc;
+    private _next;
+    init(entity: Entity): void;
     to(x: T): this;
     from(x: T): this;
     duration(t: T): this;
     repeat(): this;
     play(): void;
     stop(): void;
-    onUpdate(callback: any): this;
+    onUpdate(callback: TweenUpdate): this;
     easing(func: any): this;
     interpolant(func: any): this;
-    update(dt: any): void;
-    chain(next: any): this;
+    update(dt: number): void;
+    chain(next: Tween<any>): this;
 }
 export class TweenManager extends System {
-    objects: any[];
-    init(manager: any): void;
+    objects: Tween<any>[];
     update(dt: any): void;
 }
 declare var common: Readonly<{
@@ -1152,10 +1188,8 @@ declare var common: Readonly<{
     mixin: typeof mixin;
 }>;
 export class Vec2 extends Vector2$1 {
-    constructor(x: any, y: any);
 }
 export class Vector extends Vector2$1 {
-    constructor(x: any, y: any);
 }
 declare class Vector2$1 {
     static getAbsDegBtwn(v1: Vector2, v2: Vector2): number;
@@ -1204,8 +1238,8 @@ declare class Vector2$1 {
     toJson(): this;
     fromJson(obj: any): void;
 }
-export function Vector2Update(lerpFunc: Function, to: T, from: T, t: number, into: T): void;
-export function Vector3Update(lerpFunc: any, to: any, from: any, t: any, into: any): void;
+export function Vector2Update(lerpFunc: LerpFunc, to: T, from: T, t: number, into: T): void;
+export function Vector3Update(lerpFunc: LerpFunc, to: T, from: T, t: number, into: T): void;
 export class WanderBehaviour extends Behaviour {
     _theta: number;
     dtheta: number;
@@ -1217,7 +1251,7 @@ export class WebGLRenderer extends Renderer {
 export class WebGPURenderer extends Renderer {
     constructor();
 }
-export class World {
+export class World extends System {
     private count;
     protected records: Map<number, Manifold>;
     private objects;
@@ -1248,8 +1282,6 @@ export class World {
     private applyGravity;
     private updateConstraints;
     private updateBodies;
-    update(delta: number): void;
-    init(manager: Manager): void;
     add(object: Body | Composite | Constraint): void;
     addBody(body: Body): void;
     remove(object: Body | Composite | Constraint): void;
@@ -1275,25 +1307,27 @@ export function createManager(options?: {
 export function defaultCollisionHandler(clmds: CollisionPair[]): void;
 export function defaultPrecollisionHandler(clmds: Manifold[]): void;
 export function degToRad(deg: number): number;
-export function drawImage(ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, y: number, w?: number, h?: number, ix?: number, iy?: number): void;
+export function drawImage(ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, y: number, w?: number, h?: number, ix?: number, iy?: number, dw?: number, dh?: number): void;
+export const epilson: number;
 export function exp(x: number, e?: number): number;
 export function fill(ctx: CanvasRenderingContext2D, color?: string, fillRule?: string): void;
 export function fillText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void;
-export function fpsDebugger(manager: any): void;
+export function fpsDebugger(manager: Manager): void;
 export function lerp(a: number, b: number, t: number): number;
 export function line(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number): void;
 export function map(v: number, x1: number, y1: number, x2: number, y2: number): number;
-export function mixin(from: any, to: any, props?: any[]): void;
+export function mixin(from: any, to: any, props?: string[]): void;
 export function naturalizePair(a: number, b: number): number;
 export function radToDeg(rad: number): number;
 export function rand(min?: number, max?: number): number;
+export function raycastDebugger(manager: Manager): void;
 export function rect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void;
 export function round(number: number, precision?: number): number;
 export function sq(x: number): number;
 export function sqrt(x: number): number;
 export function stroke(ctx: CanvasRenderingContext2D, color?: string, width?: number): void;
 export function vertices(ctx: CanvasRenderingContext2D, vertices: Vector2[], close?: boolean): void;
-export function wrapAngle(x: any): any;
+export function wrapAngle(x: number): number;
 declare class Node {
     constructor(bounds: {
         max: Vector_like;
@@ -1347,7 +1381,6 @@ declare class Broadphase {
 }
 declare let r: Vector2$1;
 declare const a: Vector2$1;
-declare function NoUpdateThrow(): void;
 declare function appendArr<T>(arr1: T[], arr2: T[]): void;
 declare function clearArr<T>(arr: T[]): void;
 declare function popArr<T>(arr: T[], number: number): void;
