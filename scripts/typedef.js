@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
-let inputDir1 = path.resolve(process.cwd(),"../src","typedef")
-let inputDir2 = path.resolve(process.cwd(),"../dist")
+let inputDir1 = path.resolve(process.cwd(),"src","typedef")
+let inputDir2 = path.resolve(process.cwd(),"dist")
 let files = fs.readdirSync(inputDir1)
 let outputfiles = fs.readdirSync(inputDir2)
 
