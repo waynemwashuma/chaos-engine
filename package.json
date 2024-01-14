@@ -22,7 +22,7 @@
     "url": "https://github.com/waynemwashuma/chaos-engine.git"
   },
   "scripts": {
-    "changelog":"nodemon scripts/changelog.js",
+    "changelog":"node scripts/changelog.js",
     "types": "tsc -p configs/tsconfig.json",
     "test": "echo test done",
     "rollup": "rollup --config configs/rollup.config.js",
