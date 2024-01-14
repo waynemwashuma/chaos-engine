@@ -159,7 +159,7 @@ function getchangelog(log) {
             tags.includes("#refactor")
         ) continue
         if (scope === "build")
-            changelog = changelog.concat("###" + commit.message.value + "\n")
+            changelog = changelog.concat("\n ## " + commit.message.value + "\n\n")
         else
             changelog = changelog.concat(" - " + commit.message.value + "\n")
     }
