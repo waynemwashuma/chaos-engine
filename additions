@@ -8,3 +8,4 @@ use your own conventional commit style to generate changelog.
 The format of the commit style will be:
  [SCOPE]message(#issue_fixed:optional) #tags
  
+ move err to logger scope(create a logger )

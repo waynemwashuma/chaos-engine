@@ -10,3 +10,7 @@ res.json
 tests
 *.res.js
 *.txt
+device
+# ecs
+boilerplate
+loader
