@@ -105,13 +105,6 @@ export class Manager {
    */
   perf = new Perf()
   /**
-   * look at Loader for more info.
-   * 
-   * @readonly
-   * @type Loader
-   */
-  loader = new Loader()
-  /**
    * @readonly
    * @type EventDispatcher
    */
@@ -140,11 +133,8 @@ export class Manager {
    * Creates a new instance of Manager class
    **/
   constructor(options = {}) {
-    this.loader.onfinish = e => {
-      this.init()
-      this.play()
-    }
-    this.loader.loadAll(options.files)
+    this.init()
+    this.play()
   }
   /**
    * This initializes the manager.
