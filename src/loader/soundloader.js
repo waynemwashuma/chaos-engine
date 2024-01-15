@@ -24,7 +24,7 @@ export class SoundLoader {
         continue
       }
 
-      const raw = request.arrayBuffer()
+      const raw = await request.arrayBuffer()
 
       this.resources[name] = {
         buffer: raw
