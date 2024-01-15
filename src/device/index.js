@@ -40,12 +40,13 @@ export const DEVICE = {
    * @type array<string>
    */
   supportedAudio: [],
+  //Todo - Get the supported images correctly
   /**
    * A list of image extensions this device supports.
    * 
    * @type array<string>
    */
-  supportedImages: [],
+  supportedImages: ["png","jpeg","svg","jpg"],
 
   /**
    * Whether this device uses windows
