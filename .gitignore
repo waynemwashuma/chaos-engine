@@ -16,5 +16,5 @@ boilerplate
 
 #loader
 textureloader.js
-soundloader.js
+#soundloader.js
 utils.js

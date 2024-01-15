@@ -1,2 +1,2 @@
-//export * from "./soundloader.js
+export * from "./soundloader.js"
 //export * from "./textureloader.js"
