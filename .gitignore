@@ -10,11 +10,4 @@ res.json
 tests
 *.res.js
 *.txt
-#device
-# ecs
 boilerplate
-
-#loader
-textureloader.js
-#soundloader.js
-utils.js
