@@ -13,4 +13,8 @@ tests
 #device
 # ecs
 boilerplate
-loader
+
+#loader
+textureloader.js
+soundloader.js
+utils.js
