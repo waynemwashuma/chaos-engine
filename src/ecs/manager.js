@@ -1,4 +1,3 @@
-import { Loader } from "../loader/index.js"
 import { Clock, Utils, Err, Perf } from "../utils/index.js"
 import { EventDispatcher } from "../events/index.js"
 
