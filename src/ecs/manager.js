@@ -374,7 +374,7 @@ export class Manager {
   /**
    * Finds the first entity with all the components and returns it.
    * 
-   * @param {Array<String>} comps An array containing the component names to be searched
+   * @param {String[]} comps An array containing the component names to be searched
    * @returns {Entity} 
    */
   getEntityByComponents(comps, entities = this.objects) {
@@ -388,7 +388,7 @@ export class Manager {
   /**
    * Finds the first entity with all the tag and returns it.
    * 
-   * @param {Array<String>} comps An array containing the component names to be searched
+   * @param {string[]} comps An array containing the component names to be searched
    * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
    * @param {Entity[]} [target]
    * 
@@ -406,7 +406,7 @@ export class Manager {
   /**
    * Finds the first entity with all the tag and returns it.
    * 
-   * @param {Array<String>} tags An array containing the tags to be searched
+   * @param {String[]} tags An array containing the tags to be searched
    * @returns {Entity} 
    */
   getEntityByTags(tags, entities = this.objects) {

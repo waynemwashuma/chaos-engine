@@ -57,7 +57,7 @@ export class Circle extends Shape {
    * 
    * @param {Shape} shape 
    * @param { Vector2[]} [target=[]] target
-   * @returns Array< Vector2>
+   * @returns {Vector2[]}
    */
   getNormals(shape, target = []) {
     let min = null,

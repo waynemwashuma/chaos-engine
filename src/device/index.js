@@ -37,14 +37,14 @@ export const DEVICE = {
   /**
    * A list of audio extensions this device supports.
    * 
-   * @type array<string>
+   * @type {string[]}
    */
   supportedAudio: [],
   //Todo - Get the supported images correctly
   /**
    * A list of image extensions this device supports.
    * 
-   * @type array<string>
+   * @type {string[]}
    */
   supportedImages: ["png","jpeg","svg","jpg"],
 
