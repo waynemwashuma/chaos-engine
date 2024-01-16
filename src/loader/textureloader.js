@@ -1,5 +1,5 @@
 import { DEVICE } from "../device/index.js"
-import { Err } from "../utils/index.js"
+import { Logger } from "../logger/index.js"
 import { getURLName, getURLExtension } from "./utils.js"
 
 export class TextureLoader {
@@ -13,14 +13,14 @@ export class TextureLoader {
       const extension = getURLExtension(url)
 
       if (!DEVICE.supportedImages.includes(extension)) {
-        Err.error("`ImageLoader()` could not load in \"" + url + "\" : Unsupported extension name.")
+        Logger.error("`ImageLoader()` could not load in \"" + url + "\" : Unsupported extension name.")
         continue
       }
 
       const request = await fetch(url)
 
       if (!request.ok) {
-        Err.error("`ImageLoader()` could not load in \"" + url + "\" : Resource not found.")
+        Logger.error("`ImageLoader()` could not load in \"" + url + "\" : Resource not found.")
         continue
       }
 

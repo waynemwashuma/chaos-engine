@@ -1,4 +1,4 @@
-import { throws } from "./error.js"
+import { Logger } from "../logger/index.js"
 
 let tmpID = 0
 
@@ -102,7 +102,7 @@ export function inheritComponent(component, overrideInit = true, overrideUpdate 
   }
   if (!proto.update && overrideUpdate) {
     proto.update = function() {
-      Err.warnOnce("Please override the update function in the component " + proto.constructor.name)
+      Logger.warnOnce("Please override the update function in the component " + proto.constructor.name)
 
     }
   }
