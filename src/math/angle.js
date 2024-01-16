@@ -1,4 +1,5 @@
-import { Err } from "../utils/index.js"
+import { Logger } from "../logger/index.js"
+
 /**
  * Wrapper class since JavaScript doesn't support references to numbers explicitly.
  * Keeps record of the orientation of an entity.
@@ -51,7 +52,7 @@ class Angle {
    * @deprecated
    */
   set degree(x) {
-    Err.deprecate("Angle.degree")
+    Logger.deprecate("Angle.degree")
     this.value = x * Math.PI / 180
   }
   get _rad(){
@@ -72,15 +73,15 @@ class Angle {
    * @deprecated
    */
   set radian(x) {
-    Err.deprecate("Angle.radian", "Angle.value")
+    Logger.deprecate("Angle.radian", "Angle.value")
     this.value = x
   }
   get radian() {
-    Err.deprecate("Angle.radian", "Angle.value")
+    Logger.deprecate("Angle.radian", "Angle.value")
     return this.value
   }
   get degree() {
-    Err.deprecate("Angle.degree")
+    Logger.deprecate("Angle.degree")
     return this.value * 180/Math.PI
   }
   /**

@@ -1,4 +1,5 @@
-import { mixin, Err, Utils } from "../utils/index.js"
+import { mixin, Utils } from "../utils/index.js"
+import { Logger } from "../logger/index.js"
 
 /**
  * Updates components assigned to it.
@@ -8,13 +9,13 @@ export class System {
    * @param {Manager} manager
    */
   init(manager) {
-    Err.warnOnce("Please override the init method in the system " + this.constructor.name)
+    Logger.warnOnce("Please ovLoggeride the init method in the system " + this.constructor.name)
   }
   /**
    * @param {number} dt
    */
   update(dt) {
-    Err.warnOnce("Please override the update method in the system " + this.constructor.name)
+    Logger.warnOnce("Please ovLoggeride the update method in the system " + this.constructor.name)
   }
   /**
    * @param {Component} component

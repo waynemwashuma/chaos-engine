@@ -1,4 +1,5 @@
-import { Clock, Utils, Err, Perf } from "../utils/index.js"
+import { Clock, Utils, Perf } from "../utils/index.js"
+import { Logger } from "../logger/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { IndexedList } from "../dataStructures/index.js"
 
@@ -153,7 +154,7 @@ export class Manager {
    */
   add(object) {
     if (object.manager) {
-      Err.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object)
+      Logger.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object)
       return
     }
     this.objects.push(object)
@@ -313,7 +314,7 @@ export class Manager {
    */
   registerSystem(n, sys, cn = n) {
     if (sys.init) sys.init(this)
-    if (this._systems.has(n)) return Err.warn(`The system ${n} has already been registered`)
+    if (this._systems.has(n)) return Logger.warn(`The system ${n} has already been registered`)
     switch (n) {
       case "world":
         this._coreSystems.world = sys
