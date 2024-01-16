@@ -1,3 +1,16 @@
 import { generateChangeLog } from "./git/index.js";
 
-generateChangeLog({})
+generateChangeLog({
+  ignoreTags: [
+    "#ignore",
+    "#internal",
+    "#refactor"
+    ],
+  ignoreScopes: [
+    "",
+    "documentation",
+    "demos",
+    "config",
+    "scripts"
+    ]
+})
