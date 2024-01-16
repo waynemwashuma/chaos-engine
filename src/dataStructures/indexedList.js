@@ -48,4 +48,10 @@ export class IndexedList {
   values() {
     return this._list
   }
+  /**
+   * @param {string} name
+   */
+  has(name) {
+    return this._keys.has(name)
+  }
 }
