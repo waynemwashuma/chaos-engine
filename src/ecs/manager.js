@@ -1,5 +1,6 @@
 import { Clock, Utils, Err, Perf } from "../utils/index.js"
 import { EventDispatcher } from "../events/index.js"
+import { IndexedList } from "../dataStructures/index.js"
 
 /**
  * This class is responsible for managing all
@@ -28,9 +29,9 @@ export class Manager {
   /**
    * 
    * @private
-   * @type System[]
+   * @type IndexedList<System>
    */
-  _systems = []
+  _systems = new IndexedList()
   /**
    * 
    * @private
@@ -59,12 +60,6 @@ export class Manager {
    * @type boolean
    */
   playing = false
-  /**
-   * 
-   * @private
-   * @type Object<string, number>
-   */
-  _systemsMap = {}
   /**
    * 
    * @private
@@ -186,7 +181,7 @@ export class Manager {
     }
     if (n in this._compMap) {
       const name = this._compMap[n]
-      this._systems[this._systemsMap[name]].add(c)
+      this._systems.get(name).add(c)
     }
   }
   /**
@@ -209,7 +204,7 @@ export class Manager {
     }
     if (n in this._compMap) {
       const name = this._compMap[n]
-      this._systems[this._systemsMap[name]].remove(c)
+      this._systems.get(name).remove(c)
     }
 
   }
@@ -272,9 +267,10 @@ export class Manager {
    * @private 
    */
   initSystems() {
-    for (var i = 0; i < this._systems.length; i++) {
-      for (var j = 0; j < this._systems[i].length; j++) {
-        this._systems[i][j].init(this)
+    let systems = this._systems.values()
+    for (let i = 0; i < systems.length; i++) {
+      for (let j = 0; j < system[i].length; j++) {
+        systems[i][j].init(this)
       }
     }
   }
@@ -287,16 +283,17 @@ export class Manager {
    * @private
    */
   update(dt = 0.016) {
-    let world = this._coreSystems["world"],
+    const world = this._coreSystems["world"],
       renderer = this._coreSystems["renderer"],
-      input = this._coreSystems["input"]
+      input = this._coreSystems["input"],
+      systems = this._systems.values()
 
-    //the only reason this is here is that
+    //Todo - The only reason this is here is that
     //i need to debug stuff visually - ill remove it later.
     if (renderer) renderer.clear()
 
-    for (var i = 0; i < this._systems.length; i++) {
-      this._systems[i].update(dt)
+    for (var i = 0; i < systems.length; i++) {
+      systems[i].update(dt)
     }
     if (input) input.update()
     if (world) world.update(dt)
@@ -305,7 +302,6 @@ export class Manager {
       this.events.trigger("precollision", world.contactList)
       this.events.trigger("collision", world.CLMDs)
     }
-
   }
   /**
    * Used to register a system
@@ -317,7 +313,7 @@ export class Manager {
    */
   registerSystem(n, sys, cn = n) {
     if (sys.init) sys.init(this)
-    if (this._systemsMap[n] !== undefined) return
+    if (this._systems.has(n)) return Err.warn(`The system ${n} has already been registered`)
     switch (n) {
       case "world":
         this._coreSystems.world = sys
@@ -329,8 +325,7 @@ export class Manager {
         this._coreSystems.input = sys
         break
       default:
-        this._systemsMap[n] = this._systems.length
-        this._systems.push(sys)
+        this._systems.set(n, sys)
         this._compMap[cn] = n
     }
   }
@@ -344,7 +339,7 @@ export class Manager {
   getSystem(n) {
     if (n in this._coreSystems)
       return this._coreSystems[n]
-    return this._systems[this._systemsMap[n]]
+    return this._systems.get(n)
   }
   /**
    * Removes a system from the manager.
@@ -356,8 +351,7 @@ export class Manager {
   unregisterSystem(n) {
     if (n in this._coreSystems)
       return this._coreSystems[n] = null
-    delete this._systems[this._systemsMap[n]]
-    delete this._systemsMap[n]
+    this._systems.remove(n)
   }
   /**
    * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.

@@ -11,7 +11,6 @@ import {
  * 
  * @param {Object} [options] 
  * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
- * @param {Object} [options.files={}] manager is passed onto the Loader.Please check `Loader.load()` for more information on it.
  * @param {boolean} [options.physics=true] Adds physics world as a System.
  * @param {boolean} [options.renderer=true] Adds a renderer as a system.
  * @param {boolean} [options.input=true] Adds input as a system.
