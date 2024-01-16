@@ -10,5 +10,3 @@ res.json
 tests
 *.res.js
 *.txt
-boilerplate
-ecs

@@ -35,14 +35,14 @@ export class World extends System {
   /**
    * A list of constraints fixed to a static object.
    * 
-   * @type Constraint[]
+   * @type {Constraint[]}
    * @private
    */
   fixedConstraits = []
   /**
    * A list of constraints fixed to two dynamic bodies.
    * 
-   * @type Array<Constraint>
+   * @type {Constraint[]}
    * @private
    */
   constraints = []
@@ -102,14 +102,14 @@ export class World extends System {
   /**
    * This is a cheap way of determining which pairs of bodies could be colliding.
    * 
-   * @type Broadphase
+   * @type {Broadphase}
    */
   broadphase = null
   /**
    * This accurately tests body pairs to check 
    * for collision and outputs a manifold for each body pair.
    * 
-   * @type NarrowPhase
+   * @type {NarrowPhase}
    */
   narrowphase = null
   /**
@@ -153,7 +153,7 @@ export class World extends System {
   narrowPhase() {
     this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, [])
   }
-  /*
+  /**
    * @private
    */
   broadPhase() {
@@ -266,8 +266,6 @@ export class World extends System {
     }
   }
   /**
-   * 
-   * 
    * @param {Number} delta the time passed between the last call and this call.
    */
   update(delta) {
@@ -314,6 +312,7 @@ export class World extends System {
   }
   /**
    * Adds a body to the physics world
+   * 
    * @param {Body} body Body to insert to world
    */
   addBody(body) {
@@ -325,6 +324,7 @@ export class World extends System {
   }
   /**
    * Removes an object from the world
+   * 
    * @param {Body | Composite | Constraint} object
    */
   remove(object) {
@@ -339,6 +339,7 @@ export class World extends System {
   }
   /**
    * Removes a body from the physics world
+   * 
    * @param {Body} body Body to remove from world
    * 
    * @returns Body
@@ -354,6 +355,7 @@ export class World extends System {
   }
   /**
    * Adds a constraint to the physics world
+   * 
    * @param {Constraint} constraint constaint to add to world
    */
   addConstraint(constraint) {
@@ -367,6 +369,7 @@ export class World extends System {
   }
   /**
    * Removes a constraint from the physics world
+   * 
    * @param {Constraint} constraint constaint to add to world
    * 
    * @returns Constraint
@@ -411,8 +414,8 @@ export class World extends System {
    * Searches for objects in a given bounds and returns them.
    * 
    * @param {Bounds} bound the region to search in
-   * @param {Array<Body>} [target = []] an array to store results in
-   * @returns Array<Body>
+   * @param {Body[]} [target = []] an array to store results in
+   * @returns {Body[]}
    */
   query(bound, target = []) {
     this.broadphase.query(bound, target)
