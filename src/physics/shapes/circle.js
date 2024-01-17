@@ -12,8 +12,6 @@ let _arr = []
  * @augments Shape
  */
 export class Circle extends Shape {
-  angle = 0
-  radius = 0
   /**
    * @param {number} radius 
    * @param { Vector2} offset Positional offset from the body center.
@@ -29,6 +27,18 @@ export class Circle extends Shape {
   }
   get position() {
     return this.vertices[0]
+  }
+  get angle(){
+    return this.vertices[1].x
+  }
+  set angle(x) {
+    this.vertices[1].x = x
+  }
+  get radius(){
+    return this.vertices[1].y
+  }
+  set radius(x){
+    this.vertices[1].y = x
   }
   /**
    * @inheritdoc
