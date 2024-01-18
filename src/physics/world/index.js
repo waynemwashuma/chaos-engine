@@ -7,10 +7,12 @@ import { NaiveBroadphase } from "../broadphases/index.js"
 import { SATNarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
 import { System } from "../../ecs/index.js"
+import {Logger} from "../../logger/index.js"
+
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-export class World extends System {
+export class World2D extends System {
   /**
    * Used to check if a manifold is persistent.
    * 
@@ -420,5 +422,19 @@ export class World extends System {
   query(bound, target = []) {
     this.broadphase.query(bound, target)
     return target
+  }
+}
+
+/**
+ * Todo - Remove in version 1.0.0
+ * @deprecated
+*/
+export class World extends World2D{
+  /**
+   * @inheritdoc
+  */
+  constructor(){
+    Logger.deprecate("World()","World2D()")
+    super(...arguments)
   }
 }
