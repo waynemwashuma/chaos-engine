@@ -120,6 +120,15 @@ export class BoundingBox extends Component {
     this.max.y += dy
   }
   /**
+   * @param {Vector2} translation
+  */
+  translate(translation){
+    this.min.x += translation.x
+    this.max.x += translation.x
+    this.min.y += translation.y
+    this.max.y += translation.y
+  }
+  /**
    * Deep copies a bounding box to a new one.
    * 
    * @returns BoundingBox
