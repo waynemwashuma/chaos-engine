@@ -48,7 +48,7 @@ export class Pool {
    */
   give() {
     if (this._pool.length) {
-      return this.pool.pop()
+      return this._pool.pop()
     }
     return this.create()
   }
