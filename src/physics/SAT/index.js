@@ -29,8 +29,8 @@ const _arr = [],
  */
 export const SAT = {
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {Manifold} manifold
    */
   shapesInBodyCollided(body1, body2, manifold) {

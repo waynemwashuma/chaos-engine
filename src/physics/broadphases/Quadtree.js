@@ -13,7 +13,7 @@ class Client {
 class Node {
   /**@type Node[]*/
   children = []
-  /**@type Body[]*/
+  /**@type Body2D[]*/
   objects = []
   /**@type Node*/
   root = null
@@ -170,7 +170,7 @@ class Node {
   /**
    * @inheritdoc
    * @param {Bounds} bounds
-   * @param {Body[]} [target]
+   * @param {Body2D[]} [target]
    * @returns boolean
    */
   query(bounds, target = []) {
@@ -189,7 +189,7 @@ class Node {
     return target
   }
   /**
-   * @param {Body} obj
+   * @param {Body2D} obj
    * @returns boolean
    */
   insertObject(obj) {
@@ -230,7 +230,7 @@ class Node {
     return !this.parent
   }
   /**
-   * @param {Body} obj
+   * @param {Body2D} obj
    */
   updateObject(obj) {
     this.removeObject(obj)
@@ -238,7 +238,7 @@ class Node {
     return true
   }
   /**
-   * @param {Body} obj
+   * @param {Body2D} obj
    * @returns boolean
    */
   removeObject(obj) {
@@ -379,7 +379,7 @@ export class QuadTreeBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body} obj
+   * @param {Body2D} obj
    */
   insert(obj) {
     let client = body.client
@@ -396,7 +396,7 @@ export class QuadTreeBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body} obj
+   * @param {Body2D} obj
    */
   remove(obj) {
     if (obj.client == null) return false
@@ -404,7 +404,7 @@ export class QuadTreeBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body[]} bodies
+   * @param {Body2D[]} bodies
    */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {
@@ -416,8 +416,8 @@ export class QuadTreeBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @param {Bounds} bounds Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
+   * @param {Body2D[]} target Empty array to store results.
+   * @returns {Body2D[]}
    */
   query(bounds, target) {
     this._root.query(bounds, target)

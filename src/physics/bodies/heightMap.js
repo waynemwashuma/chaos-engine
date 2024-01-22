@@ -1,8 +1,8 @@
 import { Vector2} from"../../math/index.js"
-import {Body} from"./body.js"
+import {Body2D} from"./body.js"
 import {Line} from "../shapes/index.js"
 
-class HeightMap extends Body {
+class HeightMap extends Body2D {
   constructor(step, heights) {
     let l = [],
       j = []

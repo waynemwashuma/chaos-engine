@@ -2,7 +2,7 @@ import {
   createEntity,
   Box,
   BodySprite,
-  Body
+  Body2D
 } from "/src/index.js"
 
 export function restitution(manager) {
@@ -21,7 +21,7 @@ export function restitution(manager) {
   body2.restitution = 0.6
   body3.restitution = 0.2
   body4.restitution = 1
-  body4.type = Body.STATIC
+  body4.type = Body2D.STATIC
 
   box.attach("body", body)
     .attach("sprite", new BodySprite())

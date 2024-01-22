@@ -9,7 +9,7 @@ let velocity = new Vector2()
  */
 export class VerletSolver {
   /**
-   * @param {Body} body
+   * @param {Body2D} body
    * @param {number} dt
    */
   static solve(body, dt) {

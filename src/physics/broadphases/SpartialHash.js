@@ -67,7 +67,7 @@ export class GridBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body} body
+   * @param {Body2D} body
    */
   insert(body) {
     let client = body.client
@@ -99,7 +99,7 @@ export class GridBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body} body
+   * @param {Body2D} body
    */
   remove(body) {
     if (body.client === null) return
@@ -108,7 +108,7 @@ export class GridBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @private
-   * @param {Body} body
+   * @param {Body2D} body
    */
   _update(body) {
     this._remove(body.client)
@@ -116,7 +116,7 @@ export class GridBroadphase extends Broadphase {
   }
   /**
    * @inheritdoc
-   * @param {Body[]} bodies
+   * @param {Body2D[]} bodies
    */
   update(bodies) {
     for (var i = 0; i < bodies.length; i++) {

@@ -1,7 +1,7 @@
-import { Body } from "./body.js"
+import { Body2D } from "./body.js"
 import { Triangle } from "../shapes/index.js"
 
-export class Trigon extends Body {
+export class Trigon extends Body2D {
     /**
      * @param {number} base
      * @param {number} height

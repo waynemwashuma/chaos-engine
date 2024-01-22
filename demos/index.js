@@ -22,12 +22,12 @@ import { raycaster } from "./raycaster.js"
 import {
   Manager,
   Renderer2D,
-  World,
+  World2D,
   AgentManager,
   createEntity,
   Box,
   BodySprite,
-  Body,
+  Body2D,
   TweenManager,
   fpsDebugger,
   bodyDebugger,
@@ -81,14 +81,14 @@ function createCanvasBounds(manager) {
     let body = new Box(w.w, w.h)
     bound.attach("body", body)
       .attach("sprite", new BodySprite())
-    body.type = Body.STATIC
+    body.type = Body2D.STATIC
     manager.add(bound)
   })
 }
 export const demos = {
   manager: new Manager(),
   renderer: new Renderer2D(),
-  world: new World(),
+  world: new World2D(),
   tweenManager: new TweenManager(),
   examples: new IndexedList,
   init: function(selector) {

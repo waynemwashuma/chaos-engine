@@ -1,4 +1,4 @@
-import { World } from "../physics/index.js"
+import { World2D } from "../physics/index.js"
 import { Renderer2D } from "../render/index.js"
 import { Input } from "../inputs/index.js"
 import { Manager } from "../ecs/index.js"
@@ -30,7 +30,7 @@ export function createManager(options) {
   if (options.input)
     manager.registerSystem("input", new Input())
   if (options.physics) {
-    manager.registerSystem("world", new World())
+    manager.registerSystem("world", new World2D())
     manager.events.add("collision", defaultCollisionHandler)
     manager.events.add("precollision", defaultPrecollisionHandler)
   }
