@@ -6,11 +6,11 @@ import { Broadphase } from "./broadphase.js"
 export class NaiveBroadphase extends Broadphase {
   /**
    * @private
-   * @type Body[]
+   * @type Body2Dy[]}
   */
   bodies = null
   /**
-   * @param {World} world
+   * @param {World2D} world
   */
   constructor(world) {
     super()
@@ -19,8 +19,8 @@ export class NaiveBroadphase extends Broadphase {
   /**
    * @inheritdoc
    * @param {Bounds} bound Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
+   * @param {Body2D[]} target Empty array to store results.
+   * @returns {Body2D[]}
   */
   query(bound, target) {
     closeObjects = target || []

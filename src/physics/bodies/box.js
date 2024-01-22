@@ -1,12 +1,12 @@
-import{Body} from "./body.js"
+import{Body2D} from "./body.js"
 import {Rectangle} from "../shapes/index.js"
 
 /**
  * A body with a rectangle shape on it.
  * 
- * @augments Body
+ * @augments Body2D
 */
-export class Box extends Body {
+export class Box extends Body2D {
   /**
    * @param {number} w
    * @param {number} h

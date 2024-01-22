@@ -57,7 +57,7 @@ export class BoundingBox extends Component {
   /**
    * Calculates the bounds of the body
    * 
-   * @param {Body} body Body to calculate max and min from
+   * @param {Body2D} body Body2D to calculate max and min from
    * @param {Number} padding increases the size of the bounds
    */
   calculateBounds(body, padding = 0) {

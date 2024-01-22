@@ -100,7 +100,7 @@ let game = new CHAOS.Manager()
 let renderer = new CHAOS.Renderer2D()
 
 //this will keep track of physics.
-let world = new CHAOS.World()
+let world = new CHAOS.World2D()
 
 //this adds the world and renderer to the game so that they can be updated every frame.
 game.registerSystem("renderer", renderer)

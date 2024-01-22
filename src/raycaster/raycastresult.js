@@ -13,7 +13,7 @@ export class RaycastResult {
 }
 export class RayCollisionResult {
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   object = null
   /**
@@ -27,7 +27,7 @@ export class RayCollisionResult {
   ray = null
   /**
    * @param {Ray} ray 
-   * @param {Body} object
+   * @param {Body2D} object
    */
   constructor(ray, object) {
     this.ray = ray

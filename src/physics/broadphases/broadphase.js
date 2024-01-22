@@ -10,8 +10,8 @@ export class Broadphase {
   /**
    * Checks to see if two bodies can proceed to have their bounding boxes checked 
    * 
-   * @param {Body} a
-   * @param {Body} b
+   * @param {Body2D} a
+   * @param {Body2D} b
    */
   canCollide(a, b) {
     if (a.mass == 0 && b.mass == 0)
@@ -29,13 +29,13 @@ export class Broadphase {
   /**
    * Adds a body to the broadphase
    * 
-   * @param {Body} obj
+   * @param {Body2D} obj
    */
   insert(obj) {}
   /**
    * Removes a body from the broadphase
    * 
-   * @param {Body} obj
+   * @param {Body2D} obj
    */
   remove(obj) {}
 
@@ -46,7 +46,7 @@ export class Broadphase {
   /**
    * Updates the internals of the broadphase if needed.
    * 
-   * @param {Body[]} bodies
+   * @param {Body2D[]} bodies
    */
   update(bodies) {}
   /**
@@ -61,8 +61,8 @@ export class Broadphase {
    * Returns bodies that are within the given bound.
    * 
    * @param {Bounds} bounds Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
+   * @param {Body2D[]} target Empty array to store results.
+   * @returns {Body2D[]}
    */
   query(bounds, target) {}
 }

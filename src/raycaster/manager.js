@@ -8,7 +8,7 @@ export class RaycastManager extends System {
   objects = []
   /**
    * @private
-   * @type {Body[]}
+   * @type {Body2D[]}
    */
   bodies = null
   /**
@@ -17,7 +17,7 @@ export class RaycastManager extends System {
    */
   init(manager) {
     if (!manager.getSystem("world"))
-      throw "World is required for running Raycast system."
+      throw "World2D is required for running Raycast system."
     manager.setComponentList("raycaster", this.objects)
     this.bodies = manager.getComponentList("body")
 

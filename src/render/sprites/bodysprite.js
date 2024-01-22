@@ -18,7 +18,7 @@ material.wireframe = true
 class BodySprite extends Sprite {
   /**
    * @private
-   * @type Body
+   * @type Body2Dy}
    */
   body = null
   /**
@@ -73,7 +73,7 @@ class BodySprite extends Sprite {
   }
   /**
    * @private
-   * @param {Body} body
+   * @param {Body2D} body
    * @param {CanvasRenderingContext2D} renderer
    */
   _drawCenter(body, ctx) {
@@ -89,7 +89,7 @@ class BodySprite extends Sprite {
   }
   /**
    * @private
-   * @param {Body} body
+   * @param {Body2D} body
    * @param {CanvasRenderingContext2D} renderer
    */
   _drawVelocity(body, ctx) {
@@ -106,7 +106,7 @@ class BodySprite extends Sprite {
   }
   /**
    * @private
-   * @param {Body} body
+   * @param {Body2D} body
    * @param {CanvasRenderingContext2D} renderer
    */
   _drawBound(body, ctx) {
@@ -127,7 +127,7 @@ class BodySprite extends Sprite {
   }
   /**
    * @private
-   * @param {Body} body
+   * @param {Body2D} body
    * @param {CanvasRenderingContext2D} renderer
    */
   _drawShapes(body, ctx) {

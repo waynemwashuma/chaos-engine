@@ -9,26 +9,26 @@ export class Composite extends Component {
   /**
    * Entity this belongs to.
    * 
-   * @type Entity | null
+   * @type {Entity | null}
    */
   entity = null
   /**
    * List of bodies contained.
    *
-   * @type Body[]
+   * @type Body2Dy[]}
    */
   bodies = []
   /**
    * List of bodies contained.
    *
-   * @type Constraint[]
+   * @type {Constraint[]}
    */
   constraints = []
   /**
    * Used to determine what it is in a world.
    * 
    * @package
-   * @type number 
+   * @type {number} 
    */
   get physicsType() {
     return ObjType.COMPOSITE
@@ -47,7 +47,7 @@ export class Composite extends Component {
 
   }
   /**
-   * @param {Constraint | Body} object
+   * @param {Constraint | Body2D} object
    */
   add(object) {
     if (object.physicsType === ObjType.CONSTRAINT)
@@ -64,7 +64,7 @@ export class Composite extends Component {
   /**
    * Acceleration of a body
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   get acceleration() {
     let acceleration = new Vector2()
@@ -81,7 +81,7 @@ export class Composite extends Component {
   /**
    * Velocity of a body
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   get velocity() {
     let velocity = new Vector2()
@@ -99,7 +99,7 @@ export class Composite extends Component {
   /**
    * Orientation of a body in degrees.
    * 
-   * @type number
+   * @type {number}
    */
   get angle() {
     let angle = 0
@@ -116,7 +116,7 @@ export class Composite extends Component {
   /**
    * Mass of a body.
    * 
-   * @type number
+   * @type {number}
    */
   set mass(x) {
     for (var i = 0; i < this.bodies.length; i++) {
@@ -141,7 +141,7 @@ export class Composite extends Component {
   /**
    * Density of a body.
    * 
-   * @type number
+   * @type {number}
    */
   set density(x) {
     let area = 0
@@ -159,7 +159,7 @@ export class Composite extends Component {
   /**
    * Position of a body
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   get position() {
     let position = new Vector2()
@@ -177,7 +177,7 @@ export class Composite extends Component {
   /**
    * Orientation of a body
    * 
-   * @type Angle
+   * @type {Angle}
    */
   set orientation(r) {
     for (var i = 0; i < this.bodies.length; i++) {
@@ -194,7 +194,7 @@ export class Composite extends Component {
   /**
    * Angular velocity of a body.
    * 
-   * @type number
+   * @type {number}
    */
   get angularVelocity() {
     let ang = 0

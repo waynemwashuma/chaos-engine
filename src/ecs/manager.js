@@ -37,7 +37,7 @@ export class Manager {
    * 
    * @private
    * @type {{
-     world:World,
+     world:World2D,
      renderer:Renderer,
      input:Input,
      audio:AudioHandler

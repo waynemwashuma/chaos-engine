@@ -3,7 +3,7 @@ import {
   Box,
   Ball,
   BodySprite,
-  Body
+  Body2D
 } from  "/src/index.js"
 export function friction(manager) {
   let world = manager.getSystem("world")
@@ -17,8 +17,8 @@ export function friction(manager) {
   let entity2 = createEntity(100,100,20)
   let body4 = new Box(50,30)
   
-  body1.type = Body.STATIC
-  body3.type = Body.STATIC
+  body1.type = Body2D.STATIC
+  body3.type = Body2D.STATIC
   
   floor1.attach("body",body1)
   .attach("sprite",new BodySprite())

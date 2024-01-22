@@ -18,11 +18,11 @@ export class Constraint {
    */
   localB = null
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   body1 = null
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   body2 = null
   /**:
@@ -34,8 +34,8 @@ export class Constraint {
    */
   dampening = 0.03
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param { Vector2} localA
    * @param { Vector2} localB
    */
@@ -70,8 +70,8 @@ export class Constraint {
    * Will refactor this out later.
    * 
    * @protected
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {number} dt
    */
   behavior(body1, body2, dt) {

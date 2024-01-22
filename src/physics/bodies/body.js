@@ -191,12 +191,12 @@ export class Body2D extends Component {
    * Kinematic bodies move but do not respond to collisions.
    * 
    * @example
-   * let body = new Body()
-   * body.type = Body.STATIC
+   * let body = new Body2D()
+   * body.type = Body2D.STATIC
    * 
    */
   set type(x) {
-    if (x === Body.STATIC || x === Body.KINEMATIC) this.mass = 0
+    if (x === Body2D.STATIC || x === Body2D.KINEMATIC) this.mass = 0
     this._type = x
   }
   get type() {
@@ -526,20 +526,20 @@ export class Body2D extends Component {
     })
   }
   /**
-   *Body type that dictates a body cannot move nor respond to collisions.
+   *Body2D type that dictates a body cannot move nor respond to collisions.
    * 
    * @static
    * @type number*/
   static STATIC = ObjType.STATIC
   /**
-   * Body type that dictates a body can move but not respond to collisions.
+   * Body2D type that dictates a body can move but not respond to collisions.
    * 
    * @static
    * @type number
    */
   static KINEMATIC = ObjType.KINEMATIC
   /**
-   * Body type that dictates a body can move and respond to collisions.
+   * Body2D type that dictates a body can move and respond to collisions.
    * 
    * @static
    * @type number
@@ -556,7 +556,7 @@ export class Body extends Body2D{
    * @inheritdoc
   */
   constructor(){
-    Logger.deprecate("Body()","Body2D()")
+    Logger.deprecate("Body2D()","Body2D()")
     super(...arguments)
   }
 }

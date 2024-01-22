@@ -53,7 +53,7 @@ export class Raycaster extends Component {
     }
   }
   /**
-   * @param {Body[]} bodies
+   * @param {Body2D[]} bodies
   */
   update(bodies) {
     this.collisionResults = []

@@ -12,8 +12,8 @@ let tmp1 = new Vector2(),
  */
 export class DistanceConstraint extends Constraint {
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param { Vector2} localA
    * @param { Vector2} localB
    */
@@ -27,8 +27,8 @@ export class DistanceConstraint extends Constraint {
   /**
    * @inheritdoc
    * 
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {number} dt
   */
   behavior(body1, body2,dt) {

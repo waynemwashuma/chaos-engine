@@ -16,21 +16,21 @@ export class World2D extends System {
   /**
    * Used to check if a manifold is persistent.
    * 
-   * @type number
+   * @type {number}
    * @private
    */
   count = 0
   /**
    * A record of collision manifolds.
    * 
-   * @type Map<number,Manifold>
+   * @type {Map<number,Manifold>}
    * @protected
    */
   records = new Map()
   /**
    * A list of bodies.
    * 
-   * @type Body[]
+   * @type Body2Dy[]}
    * @private
    */
   objects = []
@@ -51,45 +51,45 @@ export class World2D extends System {
   /**
    * A value between 0 and 1 used to dampen linear velocity of bodies.
    * 
-   * @type number
+   * @type {number}
    */
   linearDamping = Settings.linearDamping
   /**
    * A value between 0 and 1 used to dampen angular velocity of bodies.
    * 
-   * @type number
+   * @type {number}
    */
   angularDamping = Settings.angularDamping
 
   /**
    * The number of times to solve for velocity.A high number results in much more stable stacking.
    * 
-   * @type number
+   * @type {number}
    */
   velocitySolverIterations = Settings.velocitySolverIterations
   /**
    * The collision manifolds that have passed narrowphase and verified to be colliding.
    * 
-   * @type Manifold[]
+   * @type {Manifold[]}
    */
   CLMDs = []
   /**
    * The collision manifolds that have passed broadphase and could be colliding
    * 
    * 
-   * @type CollisionPair[]
+   * @type {CollisionPair[]}
    */
   contactList = []
   /**
    * The gravitational pull of the world.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   gravitationalAcceleration = new Vector2(0, 0)
   /**
-   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
+   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World2D.update(),set to this to zero if you want to use the latter as the delta time.
    * 
-   * @type number
+   * @type {number}
    */
   fixedFrameRate = Settings.fixedFrameRate
   /**
@@ -121,7 +121,7 @@ export class World2D extends System {
    */
   intergrator = VerletSolver
   /**
-   * @type boolean
+   * @type {boolean}
    * @default true
    */
   enableIntergrate = true
@@ -301,7 +301,7 @@ export class World2D extends System {
   /**
    * Adds an object to the world.
    * 
-   * @param {Body | Composite | Constraint} object
+   * @param {Body2D | Composite | Constraint} object
    */
   add(object) {
     if (object.physicsType == ObjType.BODY) {
@@ -315,7 +315,7 @@ export class World2D extends System {
   /**
    * Adds a body to the physics world
    * 
-   * @param {Body} body Body to insert to world
+   * @param {Body2D} body Body2D to insert to world
    */
   addBody(body) {
     //must update vertices and bounds so that Broadphase works properly
@@ -327,7 +327,7 @@ export class World2D extends System {
   /**
    * Removes an object from the world
    * 
-   * @param {Body | Composite | Constraint} object
+   * @param {Body2D | Composite | Constraint} object
    */
   remove(object) {
     object.destroy()
@@ -342,9 +342,9 @@ export class World2D extends System {
   /**
    * Removes a body from the physics world
    * 
-   * @param {Body} body Body to remove from world
+   * @param {Body2D} body Body2D to remove from world
    * 
-   * @returns Body
+   * @returns Body2Dy}
    */
   removeBody(body) {
     this.broadphase.remove(body)
@@ -374,7 +374,7 @@ export class World2D extends System {
    * 
    * @param {Constraint} constraint constaint to add to world
    * 
-   * @returns Constraint
+   * @returns {Constraint}
    */
   removeContraint(constraint) {
     let arr = constraint.fixed ? this.fixedConstraits : this.constraints
@@ -416,8 +416,8 @@ export class World2D extends System {
    * Searches for objects in a given bounds and returns them.
    * 
    * @param {Bounds} bound the region to search in
-   * @param {Body[]} [target = []] an array to store results in
-   * @returns {Body[]}
+   * @param {Body2D[]} [target = []] an array to store results in
+   * @returns {Body2D[]}
    */
   query(bound, target = []) {
     this.broadphase.query(bound, target)
@@ -434,7 +434,7 @@ export class World extends World2D{
    * @inheritdoc
   */
   constructor(){
-    Logger.deprecate("World()","World2D()")
+    Logger.deprecate("World2D()","World2D()")
     super(...arguments)
   }
 }
