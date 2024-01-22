@@ -294,7 +294,7 @@ export class Manager {
     if (renderer) renderer.clear()
 
     for (var i = 0; i < systems.length; i++) {
-      systems[i].update(dt)
+      systems[i].update(dt,this)
     }
     if (input) input.update()
     if (world) world.update(dt)
