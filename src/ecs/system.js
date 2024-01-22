@@ -9,13 +9,14 @@ export class System {
    * @param {Manager} manager
    */
   init(manager) {
-    Logger.warnOnce("Please ovLoggeride the init method in the system " + this.constructor.name)
+    Logger.warnOnce("Please override the init method in the system " + this.constructor.name)
   }
   /**
    * @param {number} dt
+   * @param {Manager} manager
    */
-  update(dt) {
-    Logger.warnOnce("Please ovLoggeride the update method in the system " + this.constructor.name)
+  update(dt,manager) {
+    Logger.warnOnce("Please override the update method in the system " + this.constructor.name)
   }
   /**
    * @param {Component} component
