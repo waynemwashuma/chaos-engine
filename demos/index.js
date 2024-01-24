@@ -101,6 +101,7 @@ export const demos = {
     let renderer = this.renderer
     renderer.bindTo(selector)
     renderer.setViewport(innerWidth, innerHeight * 0.5)
+    renderer.domElement.style.backgroundColor = "black"
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight)
     }
