@@ -11,9 +11,3 @@ tests
 *.res.js
 *.txt
 noise
-demos
-bounds
-boilerplate
-debuggers
-intergrator
-index.js
