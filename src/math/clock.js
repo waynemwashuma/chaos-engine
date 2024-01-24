@@ -27,7 +27,6 @@ export class Clock {
    * @param {number} [accumulate]
   */
   update(accumulate = performance.now()){
-    console.log(this.dt)
     this.dt = accumulate - this.lastcall || 0
     this.lastcall = accumulate
     
