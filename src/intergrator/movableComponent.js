@@ -7,7 +7,7 @@ import { Vector2, Angle } from "../math/index.js"
 export class Movable extends Component {
   /**
    * @type {Transform}
-  */
+   */
   transform = null
   /**  * 
    * @param {number} x
@@ -24,11 +24,10 @@ export class Movable extends Component {
   }
   /**
    * @inheritdoc
-  */
+   */
   init(entity) {
     this.requires(entity, "transform")
-    if (!this.transform)
-      this.transform = entity.get("transform")
+    this.transform = entity.get("transform")
   }
   toJson() {
     return {
