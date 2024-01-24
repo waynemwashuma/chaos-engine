@@ -6,6 +6,10 @@
  */
 export class Entity {
   /**
+   * @type {number}
+  */
+  id = -1
+  /**
    * Dictionary of component to manage.
    * 
    * @private
