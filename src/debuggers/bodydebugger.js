@@ -2,8 +2,14 @@ import { BodySprite } from "../render/index.js"
 
 /**
  * @param {Manager} manager
+ * @param {BodyDebbuggerOptions} options
  */
-export function bodyDebugger(manager) {
+export function bodyDebugger(manager, options = {}) {
+  Object.assign(options, {
+    drawBounds: true,
+    drawPosition: false,
+    drawVelocity: false
+  })
   manager.registerSystem("bodydebugger", {
     key: new Map(),
     renderer: null,
@@ -22,6 +28,9 @@ export function bodyDebugger(manager) {
     },
     add(body) {
       const sprite = new BodySprite(body)
+      sprite.drawBounds = options.drawBounds
+      sprite.drawPosition = options.drawPosition
+      sprite.drawVelocity = options.drawVelocity
       sprite.init(body.entity)
       this.renderer.add(sprite)
       this.key.set(body, sprite)
@@ -34,3 +43,10 @@ export function bodyDebugger(manager) {
     update() {}
   })
 }
+
+/**
+ * @typedef BodyDebbuggerOptions
+ * @property {boolean} drawBounds
+ * @property {boolean} drawPosition
+ * @property {boolean} drawVelocity
+ */
