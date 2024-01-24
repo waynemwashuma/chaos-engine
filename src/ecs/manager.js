@@ -1,4 +1,5 @@
-import { Clock, Utils, Perf } from "../utils/index.js"
+import { Utils, Perf } from "../utils/index.js"
+import { Clock } from "../math/index.js"
 import { Logger } from "../logger/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { IndexedList } from "../dataStructures/index.js"
@@ -294,7 +295,7 @@ export class Manager {
     if (renderer) renderer.clear()
 
     for (var i = 0; i < systems.length; i++) {
-      systems[i].update(dt,this)
+      systems[i].update(dt, this)
     }
     if (input) input.update()
     if (world) world.update(dt)
