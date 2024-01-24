@@ -17,12 +17,6 @@ export class BufferGeometry {
    */
   constructor(vertices) {
     this.vertices = vertices || []
-  }
-  /**
-   * @package
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  init(ctx) {
     this.updateVertices(this.vertices)
   }
   /**
