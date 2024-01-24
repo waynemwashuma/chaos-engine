@@ -3,11 +3,6 @@ import { vertices } from "../utils/index.js"
 
 export class BufferGeometry {
   /**
-   * @readonly
-   * @type Vector2[]
-   */
-  vertices = null
-  /**
    * @package
    * @type Path2D | WebGLVertexArrayObject
    */
@@ -16,8 +11,7 @@ export class BufferGeometry {
    * @param { Vector2[]} vertices
    */
   constructor(vertices) {
-    this.vertices = vertices || []
-    this.updateVertices(this.vertices)
+    this.updateVertices(vertices)
   }
   /**
    * @param {Vector2[]} data
