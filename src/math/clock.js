@@ -24,11 +24,11 @@ export class Clock {
   /**
    * Updates the clock
    * 
-   * @param {number} accumulate
+   * @param {number} [accumulate]
   */
-  update(accumulate){
+  update(accumulate = performance.now()){
     this.dt = accumulate - this.lastcall || 0
-    this.lastcall = accumulate 
+    this.lastcall = accumulate
     
     return this.dt/1000
   }
