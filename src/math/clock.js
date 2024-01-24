@@ -1,7 +1,7 @@
 /**
  * Handles time management for the game.
 */
-class Clock {
+export class Clock {
   /**
    * Last time the clock was updated
    * 
@@ -28,12 +28,8 @@ class Clock {
   */
   update(accumulate){
     this.dt = accumulate - this.lastcall || 0
-    //this.framerate = this.getFrameRate()
     this.lastcall = accumulate 
     
     return this.dt/1000
   }
-}
-export{
-  Clock
 }
