@@ -33,12 +33,10 @@ export class Intergrator extends System {
    */
   update(dt) {
     for (let i = 0; i < this.objects.length; i++) {
-      if (this.objects[i] == void 0) return
-      this.solver(
-        this.objects[i].transform,
-        this.objects[i],
-        dt
-      )
+      const movable = this.objects[i]
+      const transform = this.objects[i].transform
+      transform.lastPosition.copy(transform.position)
+      this.solver(transform, movable, dt)
     }
   }
 }
