@@ -55,7 +55,12 @@ class BodySprite extends Sprite {
    * @param {number} dt
    */
   render(ctx, dt) {
-
+    if (this.drawVelocity == true)
+      this._drawVelocity(this.body, ctx)
+    if (this.drawBounds == true)
+      this._drawBound(this.body, ctx)
+    if (this.drawPosition)
+      this._drawCenter(this.body, ctx)
     if (this.body.physicsType == ObjType.COMPOSITE) {
       for (var i = 0; i < this.body.bodies.length; i++) {
         this._drawShapes(this.body.bodies[i], ctx)
@@ -64,12 +69,6 @@ class BodySprite extends Sprite {
     } else {
       this._drawShapes(this.body, ctx)
     }
-    if (this.drawVelocity == true)
-      this._drawVelocity(this.body, ctx)
-    if (this.drawBounds == true)
-      this._drawBound(this.body, ctx)
-    if (this.drawPosition)
-      this._drawCenter(this.body, ctx)
   }
   /**
    * @private
@@ -84,7 +83,7 @@ class BodySprite extends Sprite {
       body.position.y,
       2
     )
-    fill(ctx, "black")
+    fill(ctx, "yellow")
     ctx.closePath()
   }
   /**
@@ -148,7 +147,7 @@ class BodySprite extends Sprite {
         vertices(ctx, shape.vertices, true)
       }
     }
-    stroke(ctx)
+    stroke(ctx, "white")
     ctx.closePath()
   }
   /**
