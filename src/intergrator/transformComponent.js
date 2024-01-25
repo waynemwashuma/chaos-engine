@@ -17,6 +17,7 @@ export class Transform extends Component{
     this.lastPosition = new Vector2()
     this.position = new Vector2(x,y)
     this.orientation = new Angle(a)
+    this.scale = new Vector2(1,1)
   }
   init(){}
   toJson(){
