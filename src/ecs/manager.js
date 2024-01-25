@@ -129,8 +129,11 @@ export class Manager {
    * Creates a new instance of Manager class
    **/
   constructor(options = {}) {
+    options = Object.assign({
+      autoplay: true,
+    }, options)
     this.init()
-    this.play()
+    if (options.autoplay) this.play()
   }
   /**
    * This initializes the manager.
