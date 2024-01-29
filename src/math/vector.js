@@ -225,6 +225,19 @@ export class Vector2 {
     return this
   };
   /**
+   * Rotates this vector by a given angle in radians.
+   * 
+   * @param {number} cos
+   * @param {number} sin 
+   * @returns {this}
+   */
+  rotateFast(cos, sin) {
+    const x = this.x
+    this.x = x * cos - this.y * sin;
+    this.y = x * sin + this.y * cos;
+    return this
+  };
+  /**
    * Returns an array with x and y values of
    * this vector pushed into the array in
    * that order.
