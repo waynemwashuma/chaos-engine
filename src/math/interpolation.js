@@ -305,4 +305,8 @@ export const Interpolation = {
 
     return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1
   },
+  cosine(p0, p1, t) {
+    const c = (1 - Math.cos(t * 3.1415927)) * .5
+    return (1 - c) * p0 + c * p1
+  }
 }
