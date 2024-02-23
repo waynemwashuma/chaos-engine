@@ -1,4 +1,4 @@
-import { Overlaps } from "./overlap.js"
+import { BoundsType, Overlaps } from "./overlap.js"
 import { Component } from "../../ecs/component.js"
 
 /**
@@ -22,6 +22,10 @@ export class BoundingBox extends Component {
    * @type Vector_like
    */
   min = null
+  /**
+   * @type {number}
+   */
+  type = BoundsType.BOX
   /**
    * @param {number} [minX=0]
    * @param {number} [minY=0]
@@ -122,7 +126,7 @@ export class BoundingBox extends Component {
   /**
    * @param {Vector2} translation
   */
-  translate(translation){
+  translate(translation) {
     this.min.x += translation.x
     this.max.x += translation.x
     this.min.y += translation.y

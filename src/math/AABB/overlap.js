@@ -49,12 +49,16 @@ export const Overlaps = {
    * @param {BoundingCircle | BoundingBox} bound2
    */
   colliding(bound1, bound2) {
-    if (bound1.max && bound2.max)
+    if (bound1.type === BoundsType.BOX &&bound2.type === BoundsType.BOX)
       return Overlaps.AABBColliding(bound1, bound2)
-    if (bound1.r && bound2.r)
+    if (bound1.type === BoundsType.CIRCLE && bound1.type === BoundsType.CIRCLE)
       return Overlaps.boundSpheresColliding(bound1, bound2)
-    if (bound1.r)
+    if (bound1.type === BoundsType.CIRCLE)
       return Overlaps.AABBvsSphere(bound2, bound1)
     return Overlaps.AABBvsSphere(bound1, bound2)
   }
+}
+export const BoundsType = {
+  BOX: 0,
+  CIRCLE: 1
 }

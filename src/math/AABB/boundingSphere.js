@@ -1,4 +1,4 @@
-import { Overlaps } from "./overlap.js"
+import { BoundsType, Overlaps } from "./overlap.js"
 
 /**
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -15,8 +15,13 @@ export class BoundingCircle {
   */
   pos = null
   /**
+   * @type {number}
+   */
+  type = BoundsType.Box
+  /**
    * @param {number} [r=0]
    */
+  
   constructor(r = 0) {
     this.r = r
     this.pos = { x: 0, y: 0 }
