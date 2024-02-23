@@ -11,20 +11,20 @@ export class Pursuit extends Behaviour {
   constructor() {
     super()
   }
-    /**
-     * @inheritdoc
-     * @param {Agent} agent
-     */
-  init(){
-    
+  /**
+   * @inheritdoc
+   * @param {Agent} agent
+   */
+  init(agent) {
+
   }
-    /**
-     * @inheritdoc
-     * @param { Vector2} target
-     * @param {number} inv_dt
-     * @returns Vector2 the first parameter
-     */
-  calc(target){
-    
+  /**
+   * @inheritdoc
+   * @param { Vector2} target
+   * @param {number} inv_dt
+   * @returns Vector2 the first parameter
+   */
+  calc(target,inv_dt) {
+
   }
 }
