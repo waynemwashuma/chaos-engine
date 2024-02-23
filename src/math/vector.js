@@ -1,25 +1,28 @@
 import { TWO_PI } from "./constants.js";
 
-const obj = {
-  x: 0,
-  y: 0
-}
 /**
  * This is a 2D vector class.
  * 
- * @license MIT
  */
 export class Vector2 {
-  /**
-   * @param {number} x the x coordinate of the vector
-   * @param {number} y the y coordinate of the vector
+  /**F
+   * @type {number}
    */
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
+  x = 0
+  /**
+ * @type {number}
+ */
+  y = 0
+  /**
+   * @param {number} [x] the x coordinate of the vector
+   * @param {number} [y] the y coordinate of the vector
+   */
+  constructor(x = 0, y = 0) {
+    this.x = x
+    this.y = y
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
@@ -58,6 +61,7 @@ export class Vector2 {
    * @param { Vector2} v the other vector
    */
   distanceTo(v) {
+    const obj = new Vector2()
     obj.x = this.x - v.x
     obj.y = this.y - v.y
     return Math.sqrt(Vector2.prototype.magnitudeSquared.call(obj))
@@ -69,6 +73,7 @@ export class Vector2 {
    * @returns {number}
    */
   distanceToSquared(v) {
+    const obj = new Vector2()
     obj.x = this.x - v.x
     obj.y = this.y - v.y
     return Vector2.prototype.magnitudeSquared.call(obj)
@@ -195,8 +200,7 @@ export class Vector2 {
    * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
    * @returns { Vector2}
    */
-  normal(l = 1, target) {
-    target = target || new Vector2()
+  normal(l = 1, target = new Vector2()) {
     target.copy(this).normalize()
     return target.set(-target.y * l, target.x * l);
   };
@@ -307,7 +311,7 @@ export class Vector2 {
   /**
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
-   * @param {number} normal the unit vector perpendicular to reflection surface
+   * @param {Vector2} normal the unit vector perpendicular to reflection surface
    * @param { Vector2} [target]
    * @return { Vector2}
    */
@@ -341,7 +345,7 @@ export class Vector2 {
     this.y = obj.y
   }
 
-  [Symbol.iterator] = function*() {
+  [Symbol.iterator] = function* () {
     yield this.x
     yield this.y
   }
@@ -473,8 +477,8 @@ export class Vector2 {
 }
 export class Vector extends Vector2 {
   /**
-   * @param {number} x the x coordinate of the vector
-   * @param {number} y the y coordinate of the vector
+   * @param {number} [x] the x coordinate of the vector
+   * @param {number} [y] the y coordinate of the vector
    */
   constructor(x, y) {
     super(x, y)
@@ -484,8 +488,8 @@ export class Vector extends Vector2 {
 
 export class Vec2 extends Vector2 {
   /**
-   * @param {number} x the x coordinate of the vector
-   * @param {number} y the y coordinate of the vector
+   * @param {number} [x] the x coordinate of the vector
+   * @param {number} [y] the y coordinate of the vector
    */
   constructor(x, y) {
     super(x, y)
