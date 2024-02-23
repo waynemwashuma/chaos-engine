@@ -120,12 +120,6 @@ class Angle {
   fromJSON(obj) {
     this.value = obj.val
   }
-  /**
-   * @returns {{
-     deg: number,
-     type:string | number
-   }}
-   */
   toJson() {
     return {
       val: this.value,
