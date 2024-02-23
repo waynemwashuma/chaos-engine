@@ -1,13 +1,13 @@
-import fs from "fs"
+import { readFileSync } from "fs"
 import { resolve } from "path";
 import { cwd } from "process";
-const pkg = JSON.parse(fs.readFileSync(resolve(cwd(), "./package.json")))
+const pkg = JSON.parse(readFileSync(resolve(cwd(), "./package.json")).toString())
 
 pkg.name = "chaos"
 const input = "src/index.js";
 const created = `2023-${new Date().getFullYear()}`
 
-const license = fs.readFileSync('LICENSE', 'utf8');
+const license = readFileSync('LICENSE', 'utf8');
 const banner = `/*
  * @author ${pkg.author}
  * {@link ${pkg.repository.url}}
