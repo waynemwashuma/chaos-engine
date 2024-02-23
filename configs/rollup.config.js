@@ -1,6 +1,9 @@
-const pkg = require("../package.json")
+import fs from "fs"
+import { resolve } from "path";
+import { cwd } from "process";
+const pkg = JSON.parse(fs.readFileSync(resolve(cwd(), "./package.json")))
+
 pkg.name = "chaos"
-const fs = require("fs")
 const input = "src/index.js";
 const created = `2023-${new Date().getFullYear()}`
 
@@ -17,31 +20,30 @@ const banner = `/*
  ${license}
  */
  `
- 
-module.exports = [{
-    // UMD
-    input,
-    plugins: [],
-    output: {
-      file: `dist/${pkg.name}.umd.js`,
-      format: "umd",
-      name: pkg.name.toUpperCase(),
-      esModule: false,
-      exports: "named",
-      sourcemap: false,
-      banner
-    },
+export default [{
+  // UMD
+  input,
+  plugins: [],
+  output: {
+    file: `dist/${pkg.name}.umd.js`,
+    format: "umd",
+    name: pkg.name.toUpperCase(),
+    esModule: false,
+    exports: "named",
+    sourcemap: false,
+    banner
   },
-  {
-    // ESM
-    input,
-    plugins: [],
-    output: {
-      file: `dist/${pkg.name}.module.js`,
-      format: "esm",
-      exports: "named",
-      sourcemap: false,
-      banner
-    },
+},
+{
+  // ESM
+  input,
+  plugins: [],
+  output: {
+    file: `dist/${pkg.name}.module.js`,
+    format: "esm",
+    exports: "named",
+    sourcemap: false,
+    banner
   },
+},
 ];
