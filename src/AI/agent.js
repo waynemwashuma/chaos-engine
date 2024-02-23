@@ -8,37 +8,37 @@ export class Agent extends Component{
   /**
    * The position of the entity.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   position = null
   /**
    * The velocity of the entity.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   velocity = null
   /**
    * The acceleration of the entity.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   acceleration = null
   /**
    * The orientation of the entity.
    * 
-   * @type Angle
+   * @type {Angle}
    */
   orientation = null
   /**
    * The rotation of the entity.
    * 
-   * @type Angle
+   * @type {Angle}
    */
   rotation = null
   /**
    * The maximum speed of the agent in pixels per second.
    * 
-   * @type number
+   * @type {number}
    */
   maxSpeed = 20
   /**
@@ -49,7 +49,7 @@ export class Agent extends Component{
   /**
    * 
    * @private
-   * @type BehaviourManager
+   * @type {BehaviourManager}
    */
   behaviours = new BehaviourManager()
   /**
