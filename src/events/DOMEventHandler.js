@@ -50,7 +50,6 @@ export class DOMEventHandler {
    * Removes all eventlisteners of an event.
    * 
    * @param {string} e Name of the DOMEvent.
-   * @param {function} h The eventlistener.
    */
   disposeEvent(e) {
     document.removeEventListener(e, this._evHandlers[e])

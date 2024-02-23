@@ -45,8 +45,8 @@ export const Overlaps = {
   /**
    * Checks if any AABB or/and a BoundingCircle overlap
    * 
-   * @param {BoundingBox | BoundingCircle} a
-   * @param {BoundingCircle | BoundingBox} b
+   * @param {BoundingBox | BoundingCircle} bound1
+   * @param {BoundingCircle | BoundingBox} bound2
    */
   colliding(bound1, bound2) {
     if (bound1.max && bound2.max)

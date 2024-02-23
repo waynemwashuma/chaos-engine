@@ -109,14 +109,14 @@ export class Tween {
     return this
   }
   /**
-   * @param {EasingFunc} callback
+   * @param {EasingFunc} func
    */
   easing(func) {
     this._easingFunction = func
     return this
   }
   /**
-   * @param {LerpFunc} callback
+   * @param {LerpFunc} func
    */
   interpolant(func) {
     this._interpolationFunc = func
@@ -161,7 +161,6 @@ export class Tween {
   }
 }
 /**
- * @template T
  * @type {TweenUpdate}
  */
 export function Vector2Update(lerpFunc, to, from, t, into) {
@@ -169,7 +168,6 @@ export function Vector2Update(lerpFunc, to, from, t, into) {
   into.y = lerpFunc(from.y, to.y, t)
 }
 /**
- * @template T
  * @type {TweenUpdate}
  */
 export function Vector3Update(lerpFunc, to, from, t, into) {
@@ -179,7 +177,6 @@ export function Vector3Update(lerpFunc, to, from, t, into) {
 }
 
 /**
- * @template T
  * @type {TweenUpdate}
  */
 export function ColorUpdate(lerpFunc, to, from, t, into) {
@@ -189,14 +186,12 @@ export function ColorUpdate(lerpFunc, to, from, t, into) {
   into.a = lerpFunc(from.a, to.a, t)
 }
 /**
- * @template T
  * @type {TweenUpdate}
  */
 export function AngleUpdate(lerpFunc, to, from, t, into) {
   into.rad = lerpFunc(from.rad, to.rad, t)
 }
 /**
- * @template T
  * @type {TweenUpdate}
  */
 function NoUpdateThrow(lerpFunc, to, from, t, into) {

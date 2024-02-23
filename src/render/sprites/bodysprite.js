@@ -73,7 +73,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body2D} body
-   * @param {CanvasRenderingContext2D} renderer
+   * @param {CanvasRenderingContext2D} ctx 
    */
   _drawCenter(body, ctx) {
     ctx.beginPath()
@@ -89,7 +89,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body2D} body
-   * @param {CanvasRenderingContext2D} renderer
+   * @param {CanvasRenderingContext2D} ctx 
    */
   _drawVelocity(body, ctx) {
     ctx.beginPath()
@@ -106,7 +106,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body2D} body
-   * @param {CanvasRenderingContext2D} renderer
+   * @param {CanvasRenderingContext2D} ctx 
    */
   _drawBound(body, ctx) {
     ctx.beginPath()
@@ -127,7 +127,7 @@ class BodySprite extends Sprite {
   /**
    * @private
    * @param {Body2D} body
-   * @param {CanvasRenderingContext2D} renderer
+   * @param {CanvasRenderingContext2D} ctx 
    */
   _drawShapes(body, ctx) {
     ctx.beginPath()

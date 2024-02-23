@@ -37,14 +37,12 @@ export class Composite extends Component {
    * Initializes the body to its given.Called by the world or an entity manager.
    * 
    * @param {Entity | null} entity
-   * @param {boolean} composited
    */
   init(entity) {
     this.bodies.forEach(e => {
       e.init(entity, true)
     })
     this.requires(entity, "transform")
-
   }
   /**
    * @param {Constraint | Body2D} object
