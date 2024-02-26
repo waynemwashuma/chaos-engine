@@ -52,7 +52,7 @@ export class Signal {
    * @param {number} bindingIndex
    */
   _detach(bindingIndex) {
-    this._listeners.splice(i, 1)
+    this._listeners.splice(bindingIndex, 1)
   }
 }
 

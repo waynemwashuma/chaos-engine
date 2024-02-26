@@ -6,7 +6,7 @@ import { Broadphase } from "./broadphase.js"
 export class NaiveBroadphase extends Broadphase {
   /**
    * @private
-   * @type Body2Dy[]}
+   * @type {Body2D[]}
   */
   bodies = null
   /**

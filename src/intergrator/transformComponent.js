@@ -7,9 +7,9 @@ import { Vector2, Angle } from "../math/index.js"
  */
 export class Transform extends Component{
   /**
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
    * @returns 
    */
   constructor(x,y,a){

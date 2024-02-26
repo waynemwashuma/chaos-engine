@@ -20,7 +20,6 @@ export class Color {
    * @param {number} g - green component [0 .. 255]
    * @param {number} b - blue component [0 .. 255]
    * @param {number} [alpha=1.0] - alpha value [0.0 .. 1.0]
-   * @returns {Color} Reference to this object for method chaining
    */
   set(r, g, b, alpha = 1.0) {
     this.r = r;
@@ -40,11 +39,11 @@ export class Color {
 
   /**
    * Copy a color object or CSS color into this one.
-   * @param {Color|string} color
+   * @param {Color} color
    * @returns {Color} Reference to this object for method chaining
    */
   copy(color) {
-    this.set(color.r, color.g, color.b, color.a)
+    return this.set(color.r, color.g, color.b, color.a)
   }
 
   /**

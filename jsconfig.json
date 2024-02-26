@@ -3,5 +3,7 @@
     "allowJs":true,
     "checkJs": true
   },
-  "exclude": ["node_modules", "**/node_modules/*"]
+  //"exclude": ["node_modules", "**/node_modules/*"],
+  "include": ["dist","demos"],
+  "lib":["es2017","DOM"]
 }

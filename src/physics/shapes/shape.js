@@ -1,8 +1,8 @@
-import { Vector2 } from "../../math/index.js"
+import { Vector2 } from "../../math/vector.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
 
-let tmp1 = new Vector2()
+const tmp1 = new Vector2()
 
 /**
  * This class makes a body tangible
@@ -19,25 +19,25 @@ class Shape {
   /**
    * The offset angle of this shape from this body's angle.
    * 
-   * @type number
+   * @type {number}
    */
   offAngle = 0
   /**
    * The offset position of this shape from this body's position.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   offPosition = null
   /**
    * The vertices describing the shape.
    * 
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   vertices = null
   /**
    * Keeps the original normals and vertices of this shape
    * 
-   * @type Geometry
+   * @type {Geometry}
    */
   geometry = null
 
@@ -53,20 +53,20 @@ class Shape {
     this.geometry = new Geometry(vertices)
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHAOS_OBJ_TYPE() {
     return "shape"
   }
   /**
    * The area occupied by a shape.
-   * @type number
+   * @type {number}
    */
   get area() {
     return 0
@@ -90,7 +90,7 @@ class Shape {
    */
   update(position, angle, scale) {
     this.angle = this.offAngle + angle
-    this.geometry.transform(this.vertices, tmp1.copy(position).add(this.offPosition), this.angle, 1 || scale, position)
+    this.geometry.transform(this.vertices, tmp1.copy(position).add(this.offPosition), this.angle, 1 || scale)
   }
 
   /**

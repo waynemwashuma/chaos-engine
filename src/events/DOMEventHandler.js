@@ -6,20 +6,20 @@ export class DOMEventHandler {
    * A dictionary of callback functions
    * 
    * @private
-   * @type Object<string,function[]>
+   * @type Object<DomEventString,function[]>
    */
   handlers = {}
   /**
    * A dictionary of the main callback functions
    * 
    * @private
-   * @type Object<string,function>
+   * @type Object<DomEventString,EventListenerOrEventListenerObject>
    */
   _evHandlers = {}
   /**
    * Adds an eventlistener.
    * 
-   * @param {string} e Name of the DOMEvent.
+   * @param {DomEventString} e Name of the DOMEvent.
    * @param {function} h The eventlistener.
    */
   add(e, h) {
@@ -38,18 +38,18 @@ export class DOMEventHandler {
   /**
    * Removes an eventlistener.
    * 
-   * @param {string} e Name of the DOMEvent.
+   * @param {DomEventString} e Name of the DOMEvent.
    * @param {function} h The eventlistener.
    */
   remove(e, h) {
     this.handlers[e].splice(this.handlers[e].indexOf(h), 1)
     if (!this.handlers[e].length)
-      this.dispose(e)
+      this.disposeEvent(e)
   }
   /**
    * Removes all eventlisteners of an event.
    * 
-   * @param {string} e Name of the DOMEvent.
+   * @param {DomEventString} e Name of the DOMEvent.
    */
   disposeEvent(e) {
     document.removeEventListener(e, this._evHandlers[e])
@@ -61,7 +61,7 @@ export class DOMEventHandler {
    */
   clear() {
     for (var ev in this.handlers) {
-      this.dispose(ev)
+      this.disposeEvent(ev)
     }
   }
   /* 
@@ -70,3 +70,7 @@ export class DOMEventHandler {
   */
   init() {}
 }
+/**
+ * @typedef DomEventString
+ * @type {keyof DocumentEventMap}
+ */

@@ -1,14 +1,15 @@
+import { Vector2 } from "../../math/index.js";
 export class Geometry {
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   vertices = null
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   normals = null
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   _dynNormals = null
   /**
@@ -20,13 +21,13 @@ export class Geometry {
     this._dynNormals = this.normals.map(e => e.clone())
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHAOS_OBJ_TYPE() {
     return "geometry"
@@ -44,7 +45,7 @@ export class Geometry {
   }
   /**
    * @private
-   * @returns Vector2[]
+   * @returns {Vector2[]}
    */
   calcFaceNormals() {
     const axes = [],

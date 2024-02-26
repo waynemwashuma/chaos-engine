@@ -10,9 +10,9 @@ export class Movable extends Component {
    */
   transform = null
   /**  * 
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
    * @returns {Entity}
    */
   constructor(x, y, a) {

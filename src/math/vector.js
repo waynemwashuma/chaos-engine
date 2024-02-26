@@ -1,23 +1,21 @@
 import { TWO_PI } from "./constants.js";
-
 /**
  * This is a 2D vector class.
- * 
  */
 export class Vector2 {
-  /**F
+  /**
    * @type {number}
    */
   x = 0
   /**
- * @type {number}
- */
+   * @type {number}
+   */
   y = 0
   /**
    * @param {number} [x] the x coordinate of the vector
    * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x = 0, y = 0) {
+  constructor(x = 0,y = 0) {
     this.x = x
     this.y = y
   }
@@ -28,7 +26,7 @@ export class Vector2 {
     return this.constructor.name.toLowerCase()
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHAOS_OBJ_TYPE() {
     return "vector"
@@ -200,9 +198,9 @@ export class Vector2 {
    * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
    * @returns { Vector2}
    */
-  normal(l = 1, target = new Vector2()) {
+  normal(l = 1,target = new Vector2()) {
     target.copy(this).normalize()
-    return target.set(-target.y * l, target.x * l);
+    return target.set(-target.y * l,target.x * l);
   };
   /**
    * Returns the normal to a vector, the normal has the same length as the vector.
@@ -211,7 +209,7 @@ export class Vector2 {
    *  @returns { Vector2}
    */
   normalFast(target = new Vector2()) {
-    return target.set(-this.y, this.x)
+    return target.set(-this.y,this.x)
   }
   /**
    * Rotates this vector by a given angle in radians.
@@ -238,7 +236,7 @@ export class Vector2 {
    * array if not provided one
    * @returns number[]
    */
-  toArray(target = [], offset = 0) {
+  toArray(target = [],offset = 0) {
     target[offset] = this.x
     target[offset + 1] = this.y
     return target;
@@ -250,13 +248,13 @@ export class Vector2 {
    * @return Vector2
    */
   clone() {
-    return new Vector2(this.x, this.y)
+    return new Vector2(this.x,this.y)
   }
   /**
    * Copies x and y values of another vector
    * to this vector.
    * 
-   * @@param { Vector2} v 
+   * @param { Vector2} v 
    * @return this
    */
   copy(v) {
@@ -271,7 +269,7 @@ export class Vector2 {
    * @param {Number} y
    * @returns {this}
    */
-  set(x, y) {
+  set(x,y) {
     this.x = x
     this.y = y
     return this
@@ -289,10 +287,10 @@ export class Vector2 {
    * lengthens or shortens the length of the vector
    * @returns {this}
    */
-  draw(ctx, x = 0, y = 0, color = "red", scale = 1) {
+  draw(ctx,x = 0,y = 0,color = "red",scale = 1) {
     ctx.beginPath()
-    ctx.moveTo(x, y)
-    ctx.lineTo(this.x * scale + x, this.y * scale + y)
+    ctx.moveTo(x,y)
+    ctx.lineTo(this.x * scale + x,this.y * scale + y)
     //ctx.arc(this.x * scale + x, this.y * scale + y, 2, 0, Math.PI * 2)
     ctx.strokeStyle = color
     ctx.stroke()
@@ -302,8 +300,6 @@ export class Vector2 {
   }
   /**
    * Negates the values of this vector.
-   * 
-   * @returns {this}
    */
   reverse() {
     return this.multiply(-1)
@@ -315,7 +311,7 @@ export class Vector2 {
    * @param { Vector2} [target]
    * @return { Vector2}
    */
-  reflect(normal, target = new Vector2()) {
+  reflect(normal,target = new Vector2()) {
     return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
   }
   /**
@@ -325,9 +321,8 @@ export class Vector2 {
    * @param {number} [min = 0] The smallest value 
    * the length of this vector is allowed to have.
    * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
-   * @returns {this}
    */
-  clamp(min = 0, max = 1) {
+  clamp(min = 0,max = 1) {
     let length = this.magnitude()
     if (length == 0) return this
     if (length > max)
@@ -357,9 +352,9 @@ export class Vector2 {
    * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
-  static getAbsDegBtwn(v1, v2) {
+  static getAbsDegBtwn(v1,v2) {
     let a = v1.cross(v2)
-    let deg = Vector2.getDegBtwn(v1, v2)
+    let deg = Vector2.getDegBtwn(v1,v2)
     return a < 0 ? deg : 360 - deg
   }
   /**
@@ -369,9 +364,9 @@ export class Vector2 {
    * @param { Vector2 } v2 end of the angle
    * @returns {number}
    **/
-  static getAbsRadBtwn(v1, v2) {
+  static getAbsRadBtwn(v1,v2) {
     let a = v1.cross(v2)
-    let deg = Vector2.getDegBtwn(v1, v2)
+    let deg = Vector2.getDegBtwn(v1,v2)
     return a < 0 ? deg : 360 - deg
   }
   /**
@@ -382,7 +377,7 @@ export class Vector2 {
    * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
-  static getRadBtwn(v1, v2) {
+  static getRadBtwn(v1,v2) {
     return Math.acos(v1.dot(v2) / (v1.magnitude() * v2.magnitude()))
   }
   /**
@@ -393,8 +388,8 @@ export class Vector2 {
    * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
-  static getDegBtwn(v1, v2) {
-    return Vector2.getRadBtwn(v1, v2) * 180 / Math.PI
+  static getDegBtwn(v1,v2) {
+    return Vector2.getRadBtwn(v1,v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
@@ -404,8 +399,8 @@ export class Vector2 {
    * @param { Vector2} [target] Vector2 to store results in.
    * @returns { Vector2}
    */
-  static fromRad(radian, target = new Vector2()) {
-    return target.set(Math.cos(radian), Math.sin(radian))
+  static fromRad(radian,target = new Vector2()) {
+    return target.set(Math.cos(radian),Math.sin(radian))
   }
   /**
    * Returns a unit vector pointing in the
@@ -415,8 +410,8 @@ export class Vector2 {
    * @param { Vector2} [target] Vector2 to store results in.
    * @returns { Vector2}
    */
-  static fromDeg(degree, target) {
-    return Vector2.fromRad(degree * Math.PI / 180, target)
+  static fromDeg(degree,target) {
+    return Vector2.fromRad(degree * Math.PI / 180,target)
   }
   /**
    * Generates a new unit Vector2 in a random direction
@@ -425,7 +420,7 @@ export class Vector2 {
    * @returns { Vector2}
    */
   static random(target) {
-    return Vector2.fromRad(Math.random() * TWO_PI, target)
+    return Vector2.fromRad(Math.random() * TWO_PI,target)
   }
   /**
    * Returns a Vector2 that has been lerped between v1 and v2
@@ -436,7 +431,7 @@ export class Vector2 {
    * 
    * @returns { Vector2}
    */
-  static lerp(v1, v2, t, target = new Vector2()) {
+  static lerp(v1,v2,t,target = new Vector2()) {
     target = target || new Vector2()
     return target.set(
       (v2.x - v1.x) * t + v1.x,
@@ -461,7 +456,7 @@ export class Vector2 {
    * @returns {number}
    */
   static toRad(v) {
-    let a = Math.atan2(v.y, v.x)
+    let a = Math.atan2(v.y,v.x)
     return a < 0 ? TWO_PI + a : a
   }
 
@@ -480,8 +475,8 @@ export class Vector extends Vector2 {
    * @param {number} [x] the x coordinate of the vector
    * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x, y) {
-    super(x, y)
+  constructor(x,y) {
+    super(x,y)
     console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }
@@ -491,8 +486,8 @@ export class Vec2 extends Vector2 {
    * @param {number} [x] the x coordinate of the vector
    * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x, y) {
-    super(x, y)
+  constructor(x,y) {
+    super(x,y)
     console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }

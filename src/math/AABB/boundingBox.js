@@ -4,7 +4,7 @@ import { Component } from "../../ecs/component.js"
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
-export class BoundingBox extends Component {
+export class BoundingBox{
   /**
    * 
    * @type Vector_like
@@ -54,7 +54,7 @@ export class BoundingBox extends Component {
    * @returns boolean
    **/
   intersects(bound) {
-    if (bound.r)
+    if (bound.type === BoundsType.CIRCLE)
       return Overlaps.AABBvsSphere(this, bound)
     return Overlaps.AABBColliding(this, bound)
   }
@@ -65,10 +65,10 @@ export class BoundingBox extends Component {
    * @param {Number} padding increases the size of the bounds
    */
   calculateBounds(body, padding = 0) {
-    let minX = Number.MAX_SAFE_INTEGER,
-      minY = Number.MAX_SAFE_INTEGER,
-      maxX = -Number.MAX_SAFE_INTEGER,
-      maxY = -Number.MAX_SAFE_INTEGER
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity
 
     if (body.shapes.length == 0) {
       this.min.x = body.position.x

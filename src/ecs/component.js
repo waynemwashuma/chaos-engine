@@ -38,11 +38,13 @@ export class Component {
     Logger.warnOnce("Please ovLoggeride the update function in the component " + proto.constructor.name)
   }
   /**
+   * @deprecated
    * @param {Entity} entity
    * @param {string} n
    */
   get(entity, n) {
-    return entity.getComponent(n);
+    Logger.deprecate("Component.get()","Entity.get()")
+    return entity.get(n);
   }
   /**
    * @param {Entity} entity
@@ -55,12 +57,14 @@ export class Component {
         Logger.throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
   }
   /**
+   * @deprecated
    * @param {Entity} entity
-   * @param {CircleBounding | BoxBounding} bound
+   * @param {BoundingBox | BoundingCircle} bound
    * @param {Entity[]} [target=[]]
    * @returns {Entity[]}
    */
   query(entity, bound, target = []) {
+    Logger.deprecate("Component.query()","Entity.query()")
     return entity.query(bound, target)
   }
   /**

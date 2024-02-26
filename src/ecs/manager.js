@@ -3,6 +3,7 @@ import { Clock } from "../math/index.js"
 import { Logger } from "../logger/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { IndexedList } from "../dataStructures/index.js"
+import { Component } from "./component.js"
 
 /**
  * This class is responsible for managing all
@@ -14,7 +15,7 @@ export class Manager {
    * RAF number of current frame.Used for pausing the manager.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _rafID = undefined
   /**
@@ -25,24 +26,19 @@ export class Manager {
   /**
    * 
    * @private
-   * @type Object<string,Component[]>
+   * @type {Object<string,Component[]>}
    */
   _componentLists = {}
   /**
    * 
    * @private
-   * @type IndexedList<System>
+   * @type {IndexedList<System>}
    */
   _systems = new IndexedList()
   /**
    * 
    * @private
-   * @type {{
-     world:World2D,
-     renderer:Renderer,
-     input:Input,
-     audio:AudioHandler
-   }}
+   * @type {{world:World2D,renderer:Renderer,input:Input,audio:AudioHandler}}
    */
   _coreSystems = {
     world: null,
@@ -59,38 +55,38 @@ export class Manager {
   /**
    * Whether or not the manager is playing.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   playing = false
   /**
    * 
    * @private
-   * @type Object<string, string>
+   * @type {Object<string, string>}
    */
   _compMap = {}
   /**
    * Master clock for the game
    * 
-   * @type Clock
+   * @type {Clock}
    */
   clock = new Clock()
   /**
    * 
    * @private
-   * @type Entity[]
+   * @type {Entity[]}
    */
   objects = []
   /**
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _accumulator = 0
   /**
    * Ideal framerate of the manager.Not implemented corrretly.
    * TODO correct it
    * 
-   * @type number
+   * @type {number}
    */
   frameRate = 0
   /**
@@ -102,7 +98,7 @@ export class Manager {
   perf = new Perf()
   /**
    * @readonly
-   * @type EventDispatcher
+   * @type {EventDispatcher}
    */
   events = new EventDispatcher()
   /**
@@ -158,7 +154,7 @@ export class Manager {
    */
   add(object) {
     if (object.manager) {
-      Logger.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`, object)
+      Logger.warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`)
       return
     }
     this.objects.push(object)
@@ -171,9 +167,9 @@ export class Manager {
    * without an error.
    * There is no need for you to use this method
    * as it is for internal use only and may change in the future 
-   * 
+   * @template {Component} T
    * @param {string} n name of the component
-   * @param {Component} c An object implementing Component
+   * @param {T} c An object implementing Component
    */
   addComponent(n, c) {
     if (n === "body" && this._coreSystems.world != void 0) {
@@ -194,9 +190,10 @@ export class Manager {
    * if the componentList is there else exits
    * without an error.
    * There is no need for you to use this method
-   * as it is for internal use only and may change in the future 
+   * as it is for internal use only and may change in the future
+   * @template {Component} T
    * @param { string } n name of the component *
-   * @param { Component } c An object implementing Component interface
+   * @param { T } c An object implementing Component interface
    */
   removeComponent(n, c) {
     if (n === "body" && this._coreSystems.world != void 0) {
@@ -274,7 +271,7 @@ export class Manager {
   initSystems() {
     let systems = this._systems.values()
     for (let i = 0; i < systems.length; i++) {
-      for (let j = 0; j < system[i].length; j++) {
+      for (let j = 0; j < systems[i].length; j++) {
         systems[i][j].init(this)
       }
     }
@@ -310,9 +307,9 @@ export class Manager {
   }
   /**
    * Used to register a system
-   * 
+   * @template {System} T
    * @param {string} n The name for the system
-   * @param {System} sys The system to be addad
+   * @param {T} sys The system to be addad
    * 
    * @param {string} [cn=n] The componentList name that the system will primarily take care of
    */
@@ -336,10 +333,10 @@ export class Manager {
   }
   /**
    * Gets the named system
-   * 
+   * @template {System} T
    * @param {string} n the name the system was registered with.
    * 
-   * @return {System}
+   * @return {T}
    */
   getSystem(n) {
     if (n in this._coreSystems)
@@ -361,8 +358,9 @@ export class Manager {
   /**
    * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
    * 
+   * @template {Component} T
    * @param {string} n The name of the components to store into the created componentlist
-   * @param {Component[]} [arr=[]] A reference to the array to store components in.
+   * @param {T[]} [arr=[]] A reference to the array to store components in.
    */
   setComponentList(n, arr = []) {
     this._componentLists[n] = arr
@@ -370,6 +368,7 @@ export class Manager {
   /**
    * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
    * 
+   * @template {Component} T
    * @param {string} n The name of the components to store into the created componentlist
    * @returns {Component[]} An array of components
    */
@@ -394,7 +393,7 @@ export class Manager {
    * Finds the first entity with all the tag and returns it.
    * 
    * @param {string[]} comps An array containing the component names to be searched
-   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
+  * @param {Entity[]} [entities = Manager.objects] The array of entities to search in.Defaults to the manager's entity list
    * @param {Entity[]} [target]
    * 
    * @returns {Entity[]} 
@@ -440,34 +439,7 @@ export class Manager {
     return target
   }
   /**
-   * Ignore this,im going to remove it and the rest of cloning utilities.
-   * @private
-   * @deprecated
-   */
-  static DefaultSystem(name) {
-    let n = name
-    return {
-      init(manager) {
-        manager.setComponentList(n)
-      },
-      update(dt) {
-        let comp = manager.getComponentList(n)
-        for (let i = 0; i < comp.length; i++) {
-          comp[i].update(dt)
-        }
-      },
-      add(comp) {
-        manager.getComponentList(n).push(comp)
-      },
-      remove(comp) {
-        let list = manager.getComponentList(n),
-          index = list.indexOf(comp)
-        Utils.removeElement(list, index)
-      }
-    }
-  }
-  /**
-   * @param {BoundingCircle | BoundingBpx  } bound
+   * @param {BoundingCircle | BoundingBox  } bound
    * @returns Entity[]
    */
   query(bound) {

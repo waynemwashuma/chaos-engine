@@ -1,4 +1,4 @@
-import { Clock } from '../../math/clock.js'
+import { Clock } from '../../math/index.js'
 import { Camera } from "../camera.js"
 import { System } from "../../ecs/index.js"
 

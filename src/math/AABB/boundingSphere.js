@@ -32,7 +32,7 @@ export class BoundingCircle {
    * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {
-    if (bound.r)
+    if (bound.type === BoundsType.CIRCLE)
       return Overlaps.boundSpheresColliding(this, bound)
     return Overlaps.AABBvsSphere(bound, this)
   }

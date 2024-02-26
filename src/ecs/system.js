@@ -5,6 +5,7 @@ import { Logger } from "../logger/index.js"
  * Updates components assigned to it.
  */
 export class System {
+  objects = []
   /**
    * @param {Manager} manager
    */

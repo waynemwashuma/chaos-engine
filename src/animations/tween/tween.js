@@ -199,7 +199,7 @@ function NoUpdateThrow(lerpFunc, to, from, t, into) {
 }
 
 /**
- * @template {T}
+ * @template T
  * @callback TweenUpdate
  * @param {LerpFunc} lerpFunc
  * @param {T} to
