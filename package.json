@@ -25,7 +25,7 @@
     "changelog": "node scripts/changelog.js",
     "types": "tsc -p configs/tsconfig.json",
     "test": "echo test done",
-    "rollup": "rollup --config configs/rollup.config.js",
+    "rollup": "rollup --config configs/rollup.config.js --failAfterWarnings",
     "docs": "jsdoc -c configs/jsdoc.json",
     "dev": "npm run build:alfa",
     "typedef": "node scripts/typedef.js",

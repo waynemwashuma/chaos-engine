@@ -1,7 +1,6 @@
 import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
 import { Vector2 } from "../math/index.js"
-import { Movable } from "./movableComponent.js"
 export class Intergrator {
   /**
    * @param {IntergratorFunc} intergrator
