@@ -29,9 +29,13 @@ export class StaticImageMaterial {
    * @param {Image} img
    */
 
-  constructor(img) {
+  constructor(img, width = 100, height = 100) {
     //TODO - Find a way to load images synchronously.
     this.image = img
+    this.width = width
+    this.height = height
+    this.offset.x = -width/2
+    this.offset.y = -height/2
   }
   /**
    * @param {CanvasRenderingContext2D} ctx
