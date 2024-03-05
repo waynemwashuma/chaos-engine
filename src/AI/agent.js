@@ -1,79 +1,33 @@
 import { Component } from "../ecs/index.js"
-import { BehaviourManager } from "./behaviourManager.js"
-
+import { Vector2, Angle } from "../math/index.js"
 /**
  * This is a component class used to add AI behavior to an entity.
  */
-export class Agent extends Component{
-  /**
-   * The position of the entity.
-   * 
-   * @type Vector2
-   */
-  position = null
-  /**
-   * The velocity of the entity.
-   * 
-   * @type Vector2
-   */
-  velocity = null
-  /**
-   * The acceleration of the entity.
-   * 
-   * @type Vector2
-   */
-  acceleration = null
-  /**
-   * The orientation of the entity.
-   * 
-   * @type Angle
-   */
-  orientation = null
-  /**
-   * The rotation of the entity.
-   * 
-   * @type Angle
-   */
-  rotation = null
+export class Agent extends Component {
   /**
    * The maximum speed of the agent in pixels per second.
    * 
-   * @type number
+   * @type {number}
    */
   maxSpeed = 20
   /**
    * Maximum rotation of the agent in radians per second
    * Not yet implemented.
+   * @type {number}
    */
   maxTurnRate = 5
   /**
    * 
-   * @private
-   * @type BehaviourManager
+   * @type {Behaviour[]}
    */
-  behaviours = new BehaviourManager()
-  /**
-   * @inheritdoc
-   * @param {Entity} entity
-   */
-  init(entity) {
-    this.requires(entity,"transform", "movable")
-    let move = entity.get("movable"),
-      transform = entity.get("transform")
-    this.velocity = move.velocity
-    this.rotation = move.rotation
-    this.position = transform.position
-    this.orientation = transform.orientation
-    this.acceleration = move.acceleration
-    this.behaviours.init(this)
-  }
+  behaviours = []
   /**
    * Adds a behavior to the agent.
    * 
    * @param {Behaviour} behaviour
    */
   add(behaviour) {
-    this.behaviours.add(behaviour)
+    this.behaviours.push(behaviour)
   }
   /**
    * Removes a behavior to the agent.
@@ -81,19 +35,36 @@ export class Agent extends Component{
    * @param {Behaviour} behaviour
    */
   remove(behaviour) {
-    this.behaviours.remove(behaviour)
+    this.behaviours.splice(
+      this.behaviours.indexOf(behaviour),
+      1
+    )
   }
-  /**
-   * @inheritdoc
+  /**:
    * @param {number} inv_dt Inverse of delta time i.e frameRate.
    */
-  update(inv_dt) {
-    this.behaviours.update(inv_dt)
+  static update(agent, transform, movable, inv_dt) {
+    Agent.updateBehaviours(agent.behaviours, transform, movable, inv_dt)
   }
   /**
-   * @param {CanvasRenderingContext2D} ctx
+   * Updates the behaviours of the agent and applies changes to agent.
+   * 
+   * @param {number} inv_dt
    */
-  draw(ctx) {
-    this.behaviours.draw(ctx)
+  static updateBehaviours(behaviours, transform, movable, inv_dt) {
+    const accumulate = new Vector2()
+    const angular = new Angle()
+    for (let i = 0; i < behaviours.length; i++) {
+      behaviours[i].calc(
+        transform,
+        movable,
+        result,
+        angular,
+        inv_dt
+      )
+      accumulate.add(result)
+    }
+    movable.acceleration.add(accumulate)
+    movable.torque += angular.value
   }
 }

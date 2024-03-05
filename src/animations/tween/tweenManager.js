@@ -1,25 +1,24 @@
-import {System} from "../../ecs/index.js"
+import { Tween } from "./tween.js"
 
-export class TweenManager extends System {
+/**
+ * @template T
+ */
+export class TweenManager {
   /**
-   * @type {Tween[]}
-  */
+   * @type {Tween<T>[]}
+   */
   objects = []
   /**
-   * @inheritdoc
-   * @param {Manager} manager
-  */
-  init(manager) {
-    manager.setComponentList("tween", this.objects)
-  }
-  /**
-   * @inheritdoc
-  */
-  update(dt) {
-    for (var i = 0; i < this.objects.length; i++) {
-      let tween = this.objects[i]
-
-      tween.update(dt)
+   * @template U
+   * @param {TweenManager<U>} manager
+   * @param {number} dt
+   */
+  static update(manager,dt) {
+    for (var i = 0; i < manager.objects.length; i++) {
+      Tween.update(manager.objects[i],dt)
     }
+  }
+  add(tween){
+    this.objects.push(tween)
   }
 }

@@ -11,29 +11,29 @@ let tmp1 = new Vector2(),
 */
 export const FrictionSolver = {
   /***/
-  solve(manifold) {
-    let { bodyA: a, bodyB: b, ca1, ca2, impulse } = manifold
+  solve(movableA,movableB,bodyA,bodyB,manifold) {
+    let { ca1, ca2, impulse } = manifold
     let { axis } = manifold.contactData
     if (impulse <= 0) return
-    let a$va = tmp1.set(ca1.y * -a.rotation.value, ca1.x * a.rotation.value)
-    let a$vb = tmp2.set(ca2.y * -b.rotation.value, ca2.x * b.rotation.value)
-    let va = tmp3.copy(a.velocity).add(a$va)
-    let vb = tmp4.copy(b.velocity).add(a$vb)
-    let relVel = va.sub(vb)
+    let a$va = tmp1.set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
+    const a$vb = tmp2.set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
+    const va = tmp3.copy(movableA.velocity).add(a$va)
+    const vb = tmp4.copy(movableB.velocity).add(a$vb)
+    const relVel = va.sub(vb)
     if (relVel.magnitudeSquared() === 0)
       return
-    let tangent = axis.normal(1, tmp4)
+    const tangent = axis.normal(1,tmp4)
     tangent = tangent.multiply(tangent.dot(relVel))
     if (tangent.magnitudeSquared() === 0) return
     tangent.normalize()
 
     let relV = tangent.dot(relVel)
 
-    let sf = Math.min(a.staticFriction, b.staticFriction)
-    let kf = Math.min(a.kineticFriction, b.kineticFriction)
+    let sf = Math.min(bodyA.staticFriction, bodyB.staticFriction)
+    let kf = Math.min(bodyA.kineticFriction, bodyB.kineticFriction)
     let j = -relV / (
-      (a.inv_mass + b.inv_mass) +
-      sq((ca1.dot(tangent)) * a.inv_inertia + sq(ca2.dot(tangent)) * b.inv_inertia)
+      (bodyA.inv_mass + bodyB.inv_mass) +
+      sq((ca1.dot(tangent)) * bodyA.inv_inertia + sq(ca2.dot(tangent)) * bodyB.inv_inertia)
     )
 
     let jt
@@ -44,9 +44,9 @@ export const FrictionSolver = {
       jt = tangent.multiply(j * kf)
     }
 
-    manifold.velA.add(tmp5.copy(jt).multiply(a.inv_mass))
-    manifold.velB.add(tmp5.copy(jt).multiply(-b.inv_mass))
-    manifold.rotA += ca1.cross(jt) * a.inv_inertia
-    manifold.rotB += ca2.cross(jt) * -b.inv_inertia
+    manifold.velA.add(tmp5.copy(jt).multiply(bodyA.inv_mass))
+    manifold.velB.add(tmp5.copy(jt).multiply(-bodyB.inv_mass))
+    manifold.rotA += ca1.cross(jt) * bodyA.inv_inertia
+    manifold.rotB += ca2.cross(jt) * -bodyB.inv_inertia
   }
 }

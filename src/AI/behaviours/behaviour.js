@@ -1,58 +1,36 @@
 /**
  * Base class for implementing customized behaviours.
  * 
- * @abstract
  */
 
 export class Behaviour {
   /**
-   * The position of the agent.
-   * 
-   * @type Vector2
-   */
-  position = null
-  /**
-   * The velocity of the agent.
-   * 
-   * @type Vector2
-   */
-  velocity = null
-  /**
    * The maximum speed a behaviour will reach when active.
    * 
-   * @type number
+   * @type {number}
    */
-
   maxSpeed = 1000
   /**
    * Maximum force a behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
    * 
-   * @type number
+   * @type {number}
    */
   maxForce = 1000
   /**
    * Whether to exert a behaviour's calculated force onto its agent
+   * 
+   * @type {boolean}
    */
   active = true
-
-  /**
-   * Sets up a behavior to work on an agent.
-   * 
-   * @param {Agent} agent
-   */
-  init(agent) {}
   /**
    * Calculates the amount of force required to satisfy a behavior.
    * 
-   * @param { Vector2} target
-   * @param {number} inv_dt
-   * @returns Vector2 the first parameter
+   * @param {Transform} _transform
+   * @param {Movable} _movable
+   * @param {Vector2} _linear
+   * @param {Angle} _angular
+   * @param {number} _inv_dt
+   * @returns {void}
    */
-  calc(target, inv_dt) {}
-  /**
-   * Used to debug a behavior visually.
-   * 
-   * @param {Renderer} renderer
-   */
-  draw(renderer) {}
+  calc(_transform, _movable, _linear, _angular, _inv_dt) {}
 }

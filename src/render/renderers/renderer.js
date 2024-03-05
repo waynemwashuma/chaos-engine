@@ -10,7 +10,7 @@ import { System } from "../../ecs/index.js"
  * @see WebGLRenderer
  * @see WebGPURenderer
  */
-export class Renderer extends System {
+export class Renderer {
   /**
    * @type number
    */
@@ -29,14 +29,6 @@ export class Renderer extends System {
    */
   objects = []
   /**
-   * Used for monitoring perfomance of the renderer
-   * 
-   */
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
-  /**
    * @private
    * @type {HTMLCanvasElement}
    */
@@ -52,7 +44,6 @@ export class Renderer extends System {
    * @param {HTMLCanvasElement} canvas element to draw on
    */
   constructor(canvas, context) {
-    super()
     this.domElement = canvas
     this.ctx = context
     this.camera = new Camera(this)

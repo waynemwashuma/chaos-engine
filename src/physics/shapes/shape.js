@@ -12,32 +12,24 @@ class Shape {
   /**
    * Used to determine what type of shape this is.
    * 
-   * @type number
+   * @type {number}
    * @readonly
    */
   type = ShapeType.POLYGON
   /**
-   * The offset angle of this shape from this body's angle.
-   * 
-   * @type number
-   */
-  offAngle = 0
-  /**
-   * The offset position of this shape from this body's position.
-   * 
-   * @type Vector2
-   */
-  offPosition = null
+   * @type {number}
+  */
+  angle = 0
   /**
    * The vertices describing the shape.
    * 
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   vertices = null
   /**
    * Keeps the original normals and vertices of this shape
    * 
-   * @type Geometry
+   * @type {Geometry}
    */
   geometry = null
 
@@ -53,20 +45,20 @@ class Shape {
     this.geometry = new Geometry(vertices)
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHAOS_OBJ_TYPE() {
     return "shape"
   }
   /**
    * The area occupied by a shape.
-   * @type number
+   * @type {number}
    */
   get area() {
     return 0
@@ -84,21 +76,33 @@ class Shape {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param { Vector2} position the world position of the body
+   * @template {Shape} T
+   * @param {T} shape
+   * @param {Vector2} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {number} scale the scale of the body
    */
-  update(position, angle, scale) {
-    this.angle = this.offAngle + angle
-    this.geometry.transform(this.vertices, tmp1.copy(position).add(this.offPosition), this.angle, 1 || scale, position)
+  static update(shape, position, angle, scale) {
+    shape.angle = angle
+    if (shape.type === ShapeType.CIRCLE) {
+      shape.position.copy(position)
+      return
+    }
+    Geometry.transform(
+      shape.geometry,
+      shape.vertices,
+      position,
+      angle,
+      scale
+    )
   }
 
   /**
    * Returns the world coordinates of the vertices.
    * 
-   * @param { Vector2} axis
-   * @param { Vector2[]} target 
-   * @returns { Vector2[]}
+   * @param { Vector2 } axis
+   * @param { Vector2[] } target 
+   * @returns { Vector2[] }
    */
   getVertices(axis, target) {
     return this.vertices
@@ -117,7 +121,7 @@ class Shape {
     let obj = {
       type: this.CHAOS_OBJ_TYPE,
       geometry: this.geometry.toJson(),
-      shapwType: this.type,
+      shapeType: this.type,
       offset: this.offPosition.toJson(),
       offAngle: this.offAngle
     }
