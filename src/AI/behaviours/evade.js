@@ -11,11 +11,11 @@ export class EvadeBehaviour extends Behaviour {
   /**
    * Distance in which to begin evading.
    * 
-   * @type number
+   * @type {number}
   */
   radius = 200
   /**
-   * @param { Vector2} pursuer
+   * @param { Vector2 } pursuer
   */
   constructor(pursuer) {
     super()

@@ -6,20 +6,19 @@ import { Overlaps } from "./overlap.js"
 export class BoundingCircle {
   /**
    * 
-   * @type number
-  */
+   * @type {number}
+   */
   r = 0
   /**
    * 
-   * @type Vector_like
-  */
-  pos = null
+   * @type {Vector_like}
+   */
+  pos = { x: 0, y: 0 }
   /**
    * @param {number} [r=0]
    */
   constructor(r = 0) {
     this.r = r
-    this.pos = { x: 0, y: 0 }
   }
   /**
    * 
@@ -32,56 +31,21 @@ export class BoundingCircle {
     return Overlaps.AABBvsSphere(bound, this)
   }
   /**
-   * Calculates the bounds of the body
-   * 
-   * @param {Body2D} body Body2D to calculate max and min from
-   * @@param {Number} padding increases the size of the bounds
+   * @param {number} x
+   * @param {number} y
    */
-  calculateBounds(body, padding = 0) {
-    let radsq = 0,
-      shape,
-      vertices,
-      tmp
-    for (var i = 0; i < body.shapes.length; i++) {
-      shape = body.shapes[i]
-      if (shape.radius) {
-        tmp = shape.radius * shape.radius
-        if (tmp > radsq) radsq = tmp
-        continue
-      }
-      for (var j = 0; j < body.shapes[i].vertices.length; j++) {
-        vertices = body.shapes[i].vertices
-        for (var j = 0; j < vertices.length; j++) {
-          tmp = vertices[j].distanceToSquared(body.position)
-          if (tmp > radsq) radsq = tmp
-        }
-        
-      }
-    }
-    this.pos.x = body.position.x
-    this.pos.y = body.position.y
-    this.r = Math.sqrt(radsq)
+  translate(x, y) {
+    this.pos.x += x
+    this.pos.y += y
   }
-  /**
-   * Translates this bound to the given position.
-   * 
-   * @param {Vector_like} pos
-   */
-  update(pos) {
-    //let dx = pos.x - this.pos.x
-    //let dy = pos.y - this.pos.y
-
-    this.pos.x = pos.x
-    this.pos.y = pos.y
-  }
-  toJson(){
-    return{
-      posX:this.pos.x,
-      posY:this.pos.y,
-      r:this.r
+  toJson() {
+    return {
+      posX: this.pos.x,
+      posY: this.pos.y,
+      r: this.r
     }
   }
-  fromJson(obj){
+  fromJson(obj) {
     this.pos.x = obj.posX
     this.pos.y = obj.posY
     this.r = obj.r

@@ -7,19 +7,7 @@ import { Component } from "../../ecs/index.js"
  * 
  * TODO - ADD id property to this class and Group class.
  */
-export class Sprite extends Component{
-  /**
-   * @private
-   */
-  _position = null
-  /**
-   * @private
-   */
-  _orientation = null
-  /**
-   * @private
-   */
-  _scale = null
+export class Sprite {
   /**
    * @private
    */
@@ -29,110 +17,56 @@ export class Sprite extends Component{
    */
   material = null
   /**
-   * @type Group | null
-   */
-  parent = null
-  /**
-   * @param {BufferGeometry} geometry
-   * @param {Material} material
+   * @template {BufferGeometry} T
+   * @template {Material} U
+   * @param {T} geometry
+   * @param {U} material
    */
   constructor(geometry, material) {
-    super()
     this.geometry = geometry
     this.material = material
   }
   /**
-   * Angle in degrees
-   * 
-   * @type number
-   */
-  get angle() {
-    return this._orientation.value * 180 / Math.PI
-  }
-  set angle(x) {
-    this._orientation.value = x * Math.PI/180
-  }
-  /**
-   * World space position.
-   * 
-   * @type Vector2
-   */
-  get position() {
-    return this._position
-  }
-  set position(x) {
-    this._position.copy(x)
-  }
-  /**
-   * Orientation of the sprite
-   * 
-   * @type Angle
-   */
-  get orientation() {
-    return this._orientation
-  }
-  set orientation(x) {
-    this._orientation.copy(x)
-  }
-  /**
    * @param {CanvasRenderingContext2D} ctx
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {Sprite} sprite
    * @param {number} dt
-  */
-  render(ctx, dt) {
+   */
+  static render(
+    ctx,
+    sprite,
+    position,
+    orientation,
+    scale,
+    dt
+  ) {
     ctx.save()
     ctx.beginPath()
-    ctx.translate(...this._position)
-    ctx.rotate(this._orientation.value)
-    ctx.scale(...this._scale)
-    this.material?.render(ctx,dt,this.geometry?.drawable)
+    ctx.translate(position.x, position.y)
+    ctx.rotate(orientation)
+    ctx.scale(scale.x, scale.y)
+    //console.log(sprite)
+    sprite.material.render(ctx, dt, sprite.geometry.drawable)
     ctx.closePath()
     ctx.restore()
   }
   /**
-   * @param {Entity} entity
+   * 
    */
-  init(entity) {
-    if(!entity){
-      this._position = new Vector2()
-      this._orientation = new Angle()
-      this._scale = new Vector2(1,1)
-      return
-    }
-    this.entity = entity
-    this.requires(entity,"transform")
-    let transform = entity.get("transform")
-    this._position = transform.position
-    this._orientation = transform.orientation
-    //TODO - Correct this later
-    this._scale = new Vector2(1,1)
-    return this
-  }
-  /**
-   * @inheritdoc
-   * @returns {*}
-  */
-  toJson(){
+  toJson() {
     let obj = {
-      pos:this._position.toJson(),
-      angle:this._orientation.toJson(),
-      geometry:this.geometry?.toJson(),
-      material:this.material?.toJson(),
-      parent:this.parent?.id
+      geometry: this.geometry.toJson(),
+      material: this.material.toJson(),
     }
     return obj
   }
   /**
-   * @inheritdoc
    * 
-   * @param {Renderer} renderer
-  */
-  fromJson(obj,renderer){
+   */
+  fromJson(obj) {
     this.geometry?.fromJson(obj.geometry)
     this.material?.fromJson(obj.material)
-    this.position.fromJson(obj.pos)
-    this._orientation.fromJson(obj.angle)
-    //Todo - implement this renderer function
-    this.parent = renderer.getById(obj.parent)
   }
 }
-Component.implement(Sprite)

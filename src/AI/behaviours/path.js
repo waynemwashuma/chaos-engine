@@ -12,7 +12,7 @@ export class PathFollowing extends Behaviour {
   /**
    * The path taken by a pathfollowing behaviour.
    * 
-   * @type Path
+   * @type {Path}
    */
   path = null
   /**
@@ -25,9 +25,9 @@ export class PathFollowing extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param { Vector2} target
+   * @param { Vector2 } target
    * @param {number} inv_dt
-   * @returns Vector2 the first parameter
+   * @returns {Vector2} the first parameter
    */
   calc(target, inv_dt) {
     tmp1.copy(this.position)

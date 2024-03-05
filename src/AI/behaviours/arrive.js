@@ -23,25 +23,16 @@ export class ArriveBehaviour extends Behaviour {
     super()
     this.target = target
   }
-
-  /**
-   * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position
-    this.velocity = agent.velocity
-  }
   /**
    * @inheritdoc
    * @param { Vector2} target
    * @param {number} inv_dt
    * @returns Vector2 the first parameter
    */
-  calc(target, inv_dt) {
-    let difference = tmp1.copy(this.target).sub(this.position)
-    let velocity = tmp2.copy(this.velocity)
-    let length = difference.magnitude()
+  calc(position,velocity,target, inv_dt) {
+    const difference = tmp1.copy(this.target).sub(position)
+    //const velocity = tmp2.copy(velocity1)
+    const length = difference.magnitude()
 
     if (length < this.radius) {
       difference.setMagnitude(map(length, 0, this.radius, 0, this.maxSpeed))
@@ -49,10 +40,9 @@ export class ArriveBehaviour extends Behaviour {
       difference.setMagnitude(this.maxSpeed)
     }
 
-    let steering = difference.sub(velocity).multiply(inv_dt)
+    const steering = difference.sub(velocity).multiply(inv_dt)
 
     steering.clamp(0, this.maxForce)
-    steering.draw(ctx, ...this.position)
     target.add(steering)
   }
 }

@@ -48,7 +48,7 @@ export class Tween {
    */
   _timeTaken = 0
   /**
-   * @type {TweenUpdate}
+   * @type {TweenUpdate<T>}
    * @private
    */
   _updateFunc = NoUpdateThrow
@@ -62,12 +62,6 @@ export class Tween {
    */
   constructor(into) {
     this._into = into
-  }
-  /**
-   * @param {Entity} entity
-   */
-  init(entity) {
-    this.play()
   }
   /**
    * @param {T} x
@@ -102,7 +96,7 @@ export class Tween {
     this.active = false
   }
   /**
-   * @param {TweenUpdate} callback
+   * @param {TweenUpdate<T>} callback
    */
   onUpdate(callback) {
     this._updateFunc = callback
@@ -123,33 +117,35 @@ export class Tween {
     return this
   }
   /**
+   * @template U
+   * @param {Tween<U>} tween
    * @param {number} dt
    */
-  update(dt) {
-    if (!this.active) return
+  static update(tween,dt) {
+    if (!tween.active) return
 
-    this._timeTaken += dt
-    if (this._timeTaken >= this._duration) {
-      if (this._next !== void 0) {
-        this.stop()
-        this._next.play()
+    tween._timeTaken += dt
+    if (tween._timeTaken >= this._duration) {
+      if (tween._next !== void 0) {
+        tween.stop()
+        tween._next.play()
       }
-      if (this._repeat) {
-        this._timeTaken = 0
+      if (tween._repeat) {
+        tween._timeTaken = 0
       } else {
-        this._timeTaken = this._duration
-        this.active = false
+        tween._timeTaken = this._duration
+        tween.active = false
       }
     }
-    let t = this._easingFunction(
-      this._timeTaken / this._duration
+    let t = tween._easingFunction(
+      tween._timeTaken / this._duration
     )
-    this._updateFunc(
-      this._interpolationFunc,
-      this._to,
-      this._from,
+    tween._updateFunc(
+      tween._interpolationFunc,
+      tween._to,
+      tween._from,
       t,
-      this._into
+      tween._into
     )
   }
   /**
@@ -161,10 +157,10 @@ export class Tween {
   }
 }
 /**
- * @template T
- * @type {TweenUpdate}
+ * @type {TweenUpdate<Vector2>}
  */
 export function Vector2Update(lerpFunc, to, from, t, into) {
+  console.log(t)
   into.x = lerpFunc(from.x, to.x, t)
   into.y = lerpFunc(from.y, to.y, t)
 }
@@ -180,7 +176,7 @@ export function Vector3Update(lerpFunc, to, from, t, into) {
 
 /**
  * @template T
- * @type {TweenUpdate}
+ * @type {TweenUpdate<Color>}
  */
 export function ColorUpdate(lerpFunc, to, from, t, into) {
   into.r = lerpFunc(from.r, to.r, t)
@@ -189,11 +185,11 @@ export function ColorUpdate(lerpFunc, to, from, t, into) {
   into.a = lerpFunc(from.a, to.a, t)
 }
 /**
- * @template T
- * @type {TweenUpdate}
+ *
+ * @type {TweenUpdate<Angle>}
  */
 export function AngleUpdate(lerpFunc, to, from, t, into) {
-  into.rad = lerpFunc(from.rad, to.rad, t)
+  into.value = lerpFunc(from.value, to.value, t)
 }
 /**
  * @template T
