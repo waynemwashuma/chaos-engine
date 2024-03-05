@@ -2,26 +2,24 @@ import { Broadphase } from "./broadphase.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
-*/
+ */
 export class NaiveBroadphase extends Broadphase {
   /**
    * @private
-   * @type Body2Dy[]}
-  */
-  bodies = null
+   * @type {Entity[]}
+   */
+  entities = []
   /**
-   * @param {World2D} world
-  */
-  constructor(world) {
-    super()
-    this.bodies = world.objects
-  }
+   * @private
+   * @type {BoundingBox[]}
+   */
+  bounds = []
   /**
    * @inheritdoc
    * @param {Bounds} bound Region to check in.
    * @param {Body2D[]} target Empty array to store results.
    * @returns {Body2D[]}
-  */
+   */
   query(bound, target) {
     closeObjects = target || []
     for (var i = 0; i < this.objects.length; i++) {
@@ -32,31 +30,30 @@ export class NaiveBroadphase extends Broadphase {
     return closeObjects
   }
   /**
+   * @param {Entity[][]} entities 
+   * @param {BoundingBox[][]} bounds
+   */
+  update(entities, bounds) {
+    this.entities = entities.reduce((a, b) => a.concat(b), [])
+    this.bounds = bounds.reduce((a, b) => a.concat(b), [])
+  }
+  /**
    * @inheritdoc
    * @param {CollisionPair[]} target Empty array to store results.
    * @returns {CollisionPair[]}
-  */
-  getCollisionPairs(target) {
-    target = target || []
-    let bodies = this.bodies,
-      length = bodies.length
-    for (let i = 0; i < length; i++) {
-      let a = bodies[i]
-      for (let j = i + 1; j < length; j++) {
-        let b = bodies[j]
-        if(!this.canCollide(a,b))continue
-        if (!a.bounds.intersects(b.bounds))
+   */
+  getCollisionPairs(target = []) {
+    const { entities, bounds } = this
+    for (let i = 0; i < entities.length; i++) {
+      for (let j = i + 1; j < entities.length; j++) {
+        if (!bounds[i].intersects(bounds[j]))
           continue
-        let list = {
-          a,
-          b
-        }
-        if (a.aabbDetectionOnly || b.aabbDetectionOnly) continue
-        if (!a.shapes.length || !b.shapes.length) continue
-        target.push(list)
+        target.push({
+          a: entities[i],
+          b: entities[j]
+        })
       }
     }
     return target
   }
-
 }

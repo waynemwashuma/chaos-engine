@@ -5,30 +5,24 @@ import { Vector2, Angle } from "../math/index.js"
  * Holds transformation info of an entity 
  * 
  */
-export class Transform extends Component{
+export class Transform{
   /**
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
-   * @returns 
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
    */
-  constructor(x,y,a){
-    super()
-    this.lastPosition = new Vector2()
+  constructor(x = 0,y = 0,a = 0){
     this.position = new Vector2(x,y)
-    this.orientation = new Angle(a)
+    this.orientation = a
     this.scale = new Vector2(1,1)
   }
-  init(){}
   toJson(){
     return {
-      lastPosition: this.lastPosition.toJson(),
       position: this.position.toJson(),
-      orientation:this.orientation.toJson()
+      orientation:this.orientation
     }
   }
   fromJson(obj){
-    this.lastPosition.fromJson(obj.lastPosition)
     this.position.fromJson(obj.position)
     this.orientation.fromJson(obj.orientation)
   }

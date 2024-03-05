@@ -1,19 +1,11 @@
 import { Vector2 } from "../math/index.js"
 
-export class RaycastResult {
-  //TODO - Make this property work
-  /**
-   * @type {RayCastModes}
-   */
-  mode = RayCastModes.NONE
-  /**
-   * @type {RayCollisionResult[]}
-   */
-  collisions = []
-}
+/**
+ * @template T
+*/
 export class RayCollisionResult {
   /**
-   * @type {Body2D}
+   * @type {T}
    */
   object = null
   /**
@@ -22,15 +14,9 @@ export class RayCollisionResult {
    */
   points = []
   /**
-   * @type {Ray}
+   * @param {T} object
    */
-  ray = null
-  /**
-   * @param {Ray} ray 
-   * @param {Body2D} object
-   */
-  constructor(ray, object) {
-    this.ray = ray
+  constructor(object) {
     this.object = object
   }
 }

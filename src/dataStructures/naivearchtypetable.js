@@ -1,27 +1,30 @@
-import { Utils, Err } from "./chaos.module.js"
+import { Logger } from "../logger/index.js"
+import { Utils } from "../utils/index.js"
+
+
 class Archetype {
   entities = []
   components = new Map()
   keys = []
-  constructor(){
-    this.components.set("entity",this.entities)
+  constructor() {
+    this.components.set("entity", this.entities)
   }
   /**
    * @param {Entity} entity
    * @param {number} index
    */
-  insert(entity, index) {
-    if (entity.id !== -1)
-      return Err.warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
+  insert(entity, components) {
+    if (entity.index !== -1)
+      return Logger.warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
     for (let i = 0; i < this.keys.length; i++) {
-      this.components.get(this.keys[i]).push(entity.get(this.keys[i]))
+      this.components.get(this.keys[i]).push(components[this.keys[i]])
     }
     this.entities.push(entity)
-    entity.id = [index, this.entities.length - 1]
+    entity.index = this.entities.length - 1
   }
   remove(entity) {
-    const index = entity.id[1]
-    for (let name in entity._components) {
+    const index = entity.index
+    for (let name in this.keys) {
       Utils.removeElement(
         this.components.get(name),
         index
@@ -32,11 +35,22 @@ class Archetype {
       index
     )
     if (index !== this.entities.length)
-      this.entities[index].id[1] = index
-    entity.id = [-1, -1]
+      this.entities[index].index = index
+    entity.index = -1
   }
-  get(entity) {
-    return this.entities[entity.id[1]]
+  get(entity, compnames) {
+    const comp = []
+    for (let i = 0; i < compnames.length; i++) {
+      const list = this.getComponentLists(compnames[i])
+      if(list == void 0){
+        comp.push(null)
+        continue
+      }
+      comp.push(
+        list[entity.index]
+      )
+    }
+    return comp
   }
   setComponentList(name, list) {
     this.components.set(name, list)
@@ -89,15 +103,16 @@ export class NaiveArchTypeTable {
     }
     return filtered
   }
-  insert(entity) {
+  insert(entity, components) {
     const keys = []
-    for (let name in entity._components) {
+    for (let name in components) {
       keys.push(name)
     }
     let index =
       this._getArchetype(keys)
     index = index === -1 ? this._createArchetype(keys) : index
-    this.list[index].insert(entity, index)
+    this.list[index].insert(entity, components)
+    entity.archIndex = index
   }
   remove(entity) {
     const keys = []
@@ -107,26 +122,29 @@ export class NaiveArchTypeTable {
     const t = this._getArchetype(keys)
     t.remove(entity)
   }
-  get(entity) {
-    if (entity.id === -1) return
-    return this.list[entity.id[0]].get(entity)
+  get(entity, compnames) {
+    if (entity.index === -1) return
+    return this.list[entity.archIndex].get(entity,compnames)
   }
   query(compnames) {
     let archetypes = this._getArchetypes(compnames)
-    let out = {}
+    let out = []
     for (let i = 0; i < compnames.length; i++) {
-      out[compnames[i]] = []
+      out[i] = []
     }
     for (let i = 0; i < compnames.length; i++) {
       for (let j = 0; j < archetypes.length; j++) {
         const bin = archetypes[j].getComponentLists(compnames[i])
-        out[compnames[i]].push(bin)
+        out[i].push(bin)
         /*for (let k = 0; k < bin.length; k++) {
-          out[compnames[i]].push(bin[k])
+          out[i].push(bin[k])
         }*/
       }
     }
     return out
   }
+  clear() {
+    this.list = []
+  }
 }
-export {NaiveArchTypeTable as ArchetypeType}
+export { NaiveArchTypeTable as ArchetypeTable }

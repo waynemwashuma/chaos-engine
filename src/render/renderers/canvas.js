@@ -1,5 +1,5 @@
 import { Renderer } from "./renderer.js"
-
+import { Sprite } from "../sprites/index.js"
 
 /**
  * Renders images and paths to the 2D context of a canvas.
@@ -17,14 +17,6 @@ export class Renderer2D extends Renderer {
     super(canvas, canvas.getContext("2d"))
 
   }
-  /**
-   * @inheritdoc
-   * 
-   * @param {Sprite | Group} sprite
-   */
-  add(sprite) {
-    super.add(sprite)
-  }
   clear() {
     this.ctx.setTransform()
     let h = this.height,
@@ -33,44 +25,38 @@ export class Renderer2D extends Renderer {
   }
   /**
    * @param {number} dt
+   * @param {Tranform} transforms
+   * @param {Sprite} sprites
+   * @param {Renderer2D} renderer
    */
-  update(dt) {
-    this.camera.update()
-    this.perf.lastTimestamp = performance.now()
-    this.clear()
-    if (this.background != void 0)
-      this.background.update(this, dt)
-    this.ctx.save()
-    this.ctx.translate(this.camera.transform.position.x,-this.camera.transform.position.y)
-    this.ctx.rotate(this.camera.transform.orientation.value)
-    for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].render(this.ctx, dt)
+  static update(renderer, transforms, sprites, dt) {
+    renderer.camera.update()
+    renderer.clear()
+    renderer.ctx.save()
+    renderer.ctx.rotate(
+      renderer.camera.transform.orientation
+    )
+    renderer.ctx.scale(
+      renderer.camera.transform.scale.x,
+      renderer.camera.transform.scale.y
+    )
+    renderer.ctx.translate(
+      renderer.camera.transform.position.x,
+      -renderer.camera.transform.position.y
+    )
+    for (let i = 0; i < sprites.length; i++) {
+      for (let j = 0; j < sprites[i].length; j++) {
+        Sprite.render(
+          renderer.ctx,
+          sprites[i][j],
+          transforms[i][j].position,
+          transforms[i][j].orientation,
+          transforms[i][j].scale,
+          dt
+        )
+      }
     }
-    this.ctx.restore()
-    for (var i = 0; i < this.renderLast.length; i++) {
-      this.renderLast[i].update(this, dt, this.camera.transform)
-    }
-    this.perf.total = performance.now() - this.perf.lastTimestamp
-  }
-  /**
-   * @private
-   */
-  _update = (accumulate) => {
-    let dt = this.clock.update(accumulate)
-    if (this._accumulator < this.frameRate) {
-      this._accumulator += dt
-      this.RAF()
-      return
-    }
-    this.update(dt || this._accumulator)
-    this.RAF()
-    this._accumulator = 0
-  }
-  /**
-   * @param {Sprite} sprite
-  */
-  addUI(sprite) {
-    this.renderLast.push(sprite)
+    renderer.ctx.restore()
   }
   requestFullScreen() {
     this.domElement.parentElement.requestFullscreen()

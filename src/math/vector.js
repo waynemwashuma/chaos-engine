@@ -413,19 +413,8 @@ export class Vector2 {
    * @param { Vector2} [target] Vector2 to store results in.
    * @returns { Vector2}
    */
-  static fromRad(radian, target = new Vector2()) {
+  static fromAngle(radian, target = new Vector2()) {
     return target.set(Math.cos(radian), Math.sin(radian))
-  }
-  /**
-   * Returns a unit vector pointing in the
-   * given angle from the positive x axis
-   * 
-   * @param {number} degree angle in radians from `0°` to `360°`
-   * @param { Vector2} [target] Vector2 to store results in.
-   * @returns { Vector2}
-   */
-  static fromDeg(degree, target) {
-    return Vector2.fromRad(degree * Math.PI / 180, target)
   }
   /**
    * Generates a new unit Vector2 in a random direction
@@ -434,7 +423,7 @@ export class Vector2 {
    * @returns { Vector2}
    */
   static random(target) {
-    return Vector2.fromRad(Math.random() * TWO_PI, target)
+    return Vector2.fromAngle(Math.random() * TWO_PI, target)
   }
   /**
    * Returns a Vector2 that has been lerped between v1 and v2
@@ -454,22 +443,12 @@ export class Vector2 {
   }
 
   /**
-   * Returns the angle in degrees between the positive x-axis and the vector.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  static toDeg(v) {
-    return Vector2.toRad(v) / Math.PI * 180
-  }
-
-  /**
    * Returns the angle in radians between the positive x-axis and the vector.
    * 
    * @param { Vector2} v
    * @returns {number}
    */
-  static toRad(v) {
+  static toAngle(v) {
     let a = Math.atan2(v.y, v.x)
     return a < 0 ? TWO_PI + a : a
   }

@@ -5,7 +5,7 @@ import { BoundingBox } from "../../math/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
 import { Movable, Transform } from "../../intergrator/index.js"
-import {Logger} from "../../logger/index.js"
+import { Logger } from "../../logger/index.js"
 
 /**
  * Holds information needed for collision detection and response.
@@ -15,94 +15,70 @@ export class Body2D extends Component {
   /**
    * Unique identification of a body.
    * 
-   * @type number
+   * @type {number}
    */
   id = Utils.generateID()
-  _transform = new Transform()
-  _movable = new Movable()
-  _mass = 1
-  /**
-   * Rotational inertia of the body.
-   * 
-   * @private
-   * @type number
-   */
-  _inertia = 1
   /**
    * Type of the body e.g Dynamic, Kinematic or Static.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _type = 0
   /**
    * Anchors of the body in local space.
    * 
    * @private
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   _localanchors = []
   /**
    * The original anchors of the body in local space.
    * 
    * @private
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   anchors = []
   /**
-   * Position of a body in the last frame..
-   * 
-   * @type Vector2
-   */
-  lastPosition = new Vector2()
-  /**
    * Inverse mass of the body.
    * 
-   * @type number
+   * @type {number}
    */
   inv_mass = 0
   /**
    * Inverse inertia of the body.
    * 
-   * @type number
+   * @type {number}
    */
   inv_inertia = 0
   /**
    * The bounciness of the body between 0 and 1.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.restitution
    */
   restitution = Settings.restitution
   /**
    * The friction of the body between 0 and 1 that affects it before it moves.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.staticFriction
    */
   staticFriction = Settings.staticFriction
   /**
    * The friction of the body between 0 and 1that affects it after it moves.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.kineticFriction
    */
   kineticFriction = Settings.kineticFriction
   /**
    * The padding of the body's bounds.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.boundPadding
    */
   boundPadding = Settings.boundPadding
-  /**
-   * The index of the body in its manager.
-   * 
-   * @package
-   * @type number
-   * @default -1
-   */
-  index = -1
   /**
    * Used to describe how bodies will collide with each other.
    * Bodies in the same layer or layer 0 will always collide with each other unless they are in different groups.
@@ -116,61 +92,42 @@ export class Body2D extends Component {
     group: 0
   }
   /**
-   * Object containing the body
-   * 
-   * @type Entity | null
-   */
-  entity = null
-  /**
-   * World space bounds of a body.
-   * 
-   * @type BoundingBox | BoundingCircle | null
-   */
-  bounds = null
-  /**
    * Shapes a body is comprised of.
    * 
-   * @type Shape[]
+   * @type {Shape[]}
    */
-  shapes = null
-  /**
-   * Client of the body inside a broadphase.
-   * 
-   * @package
-   * @type Object | null
-   */
-  client = null
+  shapes
   /**
    * Whether the body should sleep when at rest or not.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.allowSleep
    */
-  allowSleep = Settings.allowSleep
+  allowSleep = false//Settings.allowSleep
   /**
    * If the body is asleep or not.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   sleeping = false
   /**
    * Whether the body should detect collisions with bounds only.If true,no collision response will occur.Precollision event only will be fired.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.aabbDetectionOnly
    */
   aabbDetectionOnly = Settings.aabbDetectionOnly
   /**
    * Whether the body should respond to collisions.If false,no collision response will occur but collision events will still be fired.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.collisionResponse
    */
   collisionResponse = Settings.collisionResponse
   /**
    * Whether or not the bounds should be automatically updated.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.autoUpdateBound
    */
   autoUpdateBound = Settings.autoUpdateBound
@@ -203,15 +160,6 @@ export class Body2D extends Component {
     return this._type
   }
   /**
-   * Used to determine what it is in a world.
-   * 
-   * @package
-   * @type number 
-   */
-  get physicsType() {
-    return ObjType.BODY
-  }
-  /**
    * @type string
    */
   get CHOAS_CLASSNAME() {
@@ -224,61 +172,16 @@ export class Body2D extends Component {
     return "body"
   }
   /**
-   * Acceleration of a body
-   * 
-   * @type Vector2
-   */
-  get acceleration() {
-    return this._movable.acceleration
-  }
-  set acceleration(x) {
-    this._movable.acceleration.copy(x)
-  }
-  /**
-   * Velocity of a body
-
-   * @type Vector2
-   */
-  get velocity() {
-    return this._movable.velocity
-  }
-  set velocity(x) {
-    this._movable.velocity.copy(x)
-  }
-  /**
-   * Rotation of a body
-   * 
-   * @type Angle
-   */
-  get rotation() {
-    return this._movable.rotation
-  }
-  set rotation(x) {
-    this._movable.rotation.copy(x)
-  }
-  /**
-   * Orientation of a body in degrees.
-   * 
-   * @type number
-   */
-  set angle(angle) {
-    this.orientation.value = degToRad(angle)
-  }
-  get angle() {
-    return radToDeg(this.orientation.value)
-  }
-  /**
    * Mass of a body.
    * 
    * @type number
    */
   set mass(x) {
-    this._mass = x
     this.inv_mass = x === 0 ? 0 : 1 / x
     if (x == 0) this.inertia = 0
   }
   get mass() {
-    return this._mass
+    return 1/this.inv_mass
   }
   /**
    * Density of a body.
@@ -305,66 +208,10 @@ export class Body2D extends Component {
    * @type number
    */
   set inertia(x) {
-    this._inertia = x
     this.inv_inertia = x == 0 ? 0 : 1 / x
   }
   get inertia() {
-    return this._inertia
-  }
-  /**
-   * World space position of a body
-   * 
-   * @type Vector2
-   */
-  get position() {
-    return this._transform.position
-  }
-  set position(x) {
-    this._transform.position.copy(x)
-  }
-  /**
-   * Orientation of a body
-   * 
-   * @type Angle
-   */
-  set orientation(r) {
-    this._transform.orientation.copy(r)
-  }
-  get orientation() {
-    return this._transform.orientation
-  }
-  /**
-   * Angular velocity of a body in degrees
-   * 
-   * @type number 
-   */
-  get angularVelocity() {
-    return radToDeg(this.rotation.value)
-  }
-  set angularVelocity(x) {
-    this.rotation.value = degToRad(x)
-  }
-  /**
-   * Torque of a body in degrees
-   * 
-   * @type number 
-   */
-  get torque() {
-    return this._movable.torque
-  }
-  set torque(x) {
-    this._movable.torque.copy(x)
-  }
-  /**
-   * Angular acceleration of a body in degrees
-   * 
-   * @type number 
-   */
-  get angularAcceleration() {
-    return radToDeg(this._movable.torque.value)
-  }
-  set angularAcceleration(x) {
-    this._movable.torque.value = degToRad(x)
+    return 1/this.inv_inertia
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -396,75 +243,7 @@ export class Body2D extends Component {
   getLocalAnchor(index, target = new Vector2()) {
     return target.copy(this._localanchors[index]).rotate(this.orientation.value)
   }
-  /**
-   * Applies a force to a body affecting its direction of travel and rotation.
-   * 
-   * @param { Vector2} force The force to be applied.
-   * @param { Vector2} [arm = Vector2] The collision arm.
-   */
-  applyForce(force, arm = Vector2.ZERO) {
-    this.acceleration.add(force.multiply(this.inv_mass))
-    this.torque.value += arm.cross(force) * this.inv_inertia
-  }
-  /**
-   * Applies a force to a body affecting its direction of travel and rotation.
-   * 
-   * @param { Vector2} impulse The force to be applied.
-   * @param { Vector2} [arm = Vector2] The collision arm.
-   */
-  applyImpulse(impulse, arm = Vector2.ZERO) {
-    this.velocity.add(impulse.multiply(this.inv_mass))
-    this.rotation.value += arm.cross(impulse) * this.inv_inertia
-  }
-  /**
-   * Initializes the body to its given.Called by the world or an entity manager.
-   * 
-   * @param { Entity } [entity]
-   * @param {boolean} [composited=false]
-   */
-  init(entity, composited = false) {
-    this.entity = entity
-    if (composited || entity == void 0) {
-      this.bounds = new BoundingBox()
-      if (entity != void 0) {
-        this._movable.transform = this._transform
-        entity.manager.addComponent("transform", this._transform)
-        entity.manager.addComponent("movable", this._movable)
-      }
-      this.update()
-      return
-    }
-    this.requires(entity, "transform", "movable", "bounds")
 
-    let transform = entity.get("transform")
-    let bounds = entity.get("bounds").bounds
-    let move = entity.get("movable")
-    this._transform = transform
-    this._movable = move
-    this.bounds = bounds
-
-    this.update()
-  }
-
-  /**
-   * This updates the world coordinates of shapes, anchors and bounds.
-   */
-  update() {
-    for (var i = 0; i < this.shapes.length; i++) {
-      this.shapes[i].update(this.position, this.orientation.value)
-    }
-    for (var i = 0; i < this.anchors.length; i++) {
-      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.value) //.add(this.position)
-    }
-    if (this.autoUpdateBound)
-      this.bounds.calculateBounds(this, this.boundPadding)
-    this.bounds.update(this.position)
-    //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
-  }
-
-  destroy() {
-    this.entity.manager.removeComponent("movable", this._movable)
-  }
   toJson() {
     let obj = {
       id: this.id,
@@ -526,6 +305,60 @@ export class Body2D extends Component {
     })
   }
   /**
+   * Calculates the bounds of the body
+   * 
+   * @param {BoundingBox} bound
+   * @param {Body2D} body Body2D to calculate max and min from
+   * @param {Number} padding increases the size of the bounds
+   */
+  static calculateBounds(body, bound, padding = 0) {
+    let minX = Number.MAX_SAFE_INTEGER,
+      minY = Number.MAX_SAFE_INTEGER,
+      maxX = -Number.MAX_SAFE_INTEGER,
+      maxY = -Number.MAX_SAFE_INTEGER
+
+    for (let i = 0; i < body.shapes.length; i++) {
+      const shape = body.shapes[i]
+      if (shape.type == 0) {
+        const idx = shape.position.x - shape.radius,
+          idy = shape.position.y - shape.radius,
+          mdx = shape.position.x + shape.radius,
+          mdy = shape.position.y + shape.radius
+        if (!minX || idx < minX) minX = idx
+        if (!maxX || mdx > maxX) maxX = mdx
+        if (!minY || idy < minY) minY = idy
+        if (!maxY || mdy > maxY) maxY = mdy
+        continue
+      }
+      for (let j = 0; j < shape.vertices.length; j++) {
+        let vertex = shape.vertices[j]
+        if (vertex.x < minX) minX = vertex.x
+        if (vertex.x > maxX) maxX = vertex.x
+        if (vertex.y < minY) minY = vertex.y
+        if (vertex.y > maxY) maxY = vertex.y
+      }
+    }
+    bound.min.x = minX - padding
+    bound.max.x = maxX + padding
+    bound.min.y = minY - padding
+    bound.max.y = maxY + padding
+  }
+  /**
+   * This updates the world coordinates of shapes, anchors and bounds.
+   */
+  static update(body, position, orientation, scale, bounds) {
+    for (let i = 0; i < body.shapes.length; i++) {
+      Shape.update(body.shapes[i], position, orientation, scale)
+    }
+    for (let i = 0; i < body.anchors.length; i++) {
+      body.anchors[i].copy(body._localanchors[i]).rotate(orientation)
+    }
+    if (body.autoUpdateBound)
+      Body2D.calculateBounds(body, bounds)
+    //else
+    //  bounds.update(position)
+  }
+  /**
    *Body2D type that dictates a body cannot move nor respond to collisions.
    * 
    * @static
@@ -550,13 +383,13 @@ export class Body2D extends Component {
 /**
  * Todo - Remove in version 1.0.0
  * @deprecated
-*/
-export class Body extends Body2D{
+ */
+export class Body extends Body2D {
   /**
    * @inheritdoc
-  */
-  constructor(){
-    Logger.deprecate("Body2D()","Body2D()")
+   */
+  constructor() {
+    Logger.deprecate("Body()", "Body2D()")
     super(...arguments)
   }
 }

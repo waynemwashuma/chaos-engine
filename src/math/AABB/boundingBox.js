@@ -1,15 +1,9 @@
 import { Overlaps } from "./overlap.js"
-import { Component } from "../../ecs/component.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
-export class BoundingBox extends Component {
-  /**
-   * 
-   * @type Vector_like
-   */
-  pos = null
+export class BoundingBox {
   /**
    * The upper limit of the bounding box
    * 
@@ -29,11 +23,6 @@ export class BoundingBox extends Component {
    * @param {number} [maxY=0]
    */
   constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
-    super()
-    this.pos = {
-      x: 0,
-      y: 0
-    }
     this.max = {
       x: maxX,
       y: maxY
@@ -55,78 +44,14 @@ export class BoundingBox extends Component {
     return Overlaps.AABBColliding(this, bound)
   }
   /**
-   * Calculates the bounds of the body
-   * 
-   * @param {Body2D} body Body2D to calculate max and min from
-   * @param {Number} padding increases the size of the bounds
+   * @param {number} x
+   * @param {number} y
    */
-  calculateBounds(body, padding = 0) {
-    let minX = Number.MAX_SAFE_INTEGER,
-      minY = Number.MAX_SAFE_INTEGER,
-      maxX = -Number.MAX_SAFE_INTEGER,
-      maxY = -Number.MAX_SAFE_INTEGER
-
-    if (body.shapes.length == 0) {
-      this.min.x = body.position.x
-      this.max.x = body.position.x
-      this.min.y = body.position.y
-      this.max.y = body.position.y
-      this.pos.x = body.position.x
-      this.pos.y = body.position.y
-      return
-    }
-    for (var i = 0; i < body.shapes.length; i++) {
-      let shape = body.shapes[i]
-      if (shape.type == 0) {
-        let idx = body.position.x - shape.radius,
-          idy = body.position.y - shape.radius,
-          mdx = body.position.x + shape.radius,
-          mdy = body.position.y + shape.radius
-        if (!minX || idx < minX) minX = idx
-        if (!maxX || mdx > maxX) maxX = mdx
-        if (!minY || idy < minY) minY = idy
-        if (!maxY || mdy > maxY) maxY = mdy
-        continue
-      }
-      for (var j = 0; j < shape.vertices.length; j++) {
-        let vertex = shape.vertices[j]
-        if (vertex.x < minX) minX = vertex.x
-        if (vertex.x > maxX) maxX = vertex.x
-        if (vertex.y < minY) minY = vertex.y
-        if (vertex.y > maxY) maxY = vertex.y
-      }
-    }
-    this.min.x = minX - padding
-    this.max.x = maxX + padding
-    this.min.y = minY - padding
-    this.max.y = maxY + padding
-    this.pos.x = body.position.x
-    this.pos.y = body.position.y
-  }
-  /**
-   * Translates this bound to the given position.
-   * 
-   * @param { Vector2} pos
-   */
-  update(pos) {
-    let dx = pos.x - this.pos.x
-    let dy = pos.y - this.pos.y
-
-    this.pos.x = pos.x
-    this.pos.y = pos.y
-    this.min.x += dx
-    this.max.x += dx
-    this.min.y += dy
-    this.max.y += dy
-  }
-  /**
-   * @param {Vector2} translation
-  */
-  translate(translation){
-    this.min.x += translation.x
-    this.max.x += translation.x
-    this.min.y += translation.y
-    this.max.y += translation.y
+  translate(x, y) {
+    this.min.x += x
+    this.min.y += y
+    this.max.x += x
+    this.max.y += y
   }
   /**
    * Deep copies a bounding box to a new one.
