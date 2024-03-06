@@ -1,11 +1,10 @@
 import { Vector2 } from "../../math/index.js"
-import { Component } from "../../ecs/index.js"
 import { ObjType } from "../settings.js"
 
 /**
  * Holds a group of related bodies and constraints.
  */
-export class Composite extends Component {
+export class Composite {
   /**
    * Entity this belongs to.
    * 
