@@ -1,5 +1,5 @@
 import { VerletSolver } from "../integrators/index.js";
-import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
+import { PenetrationSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
 import { Vector2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { ObjType } from "../settings.js"
@@ -113,10 +113,6 @@ export class World2D {
         const manifold = CLMDs[i]
         const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
         const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
-        manifold.velA.set(0, 0)
-        manifold.velB.set(0, 0)
-        manifold.rotA = 0
-        manifold.rotB = 0
         ImpulseSolver.solveWithFriction(
           movableA,
           movableB,
@@ -124,13 +120,6 @@ export class World2D {
           bodyB,
           manifold
         )
-        /*FrictionSolver.solve(
-          movableA,
-          movableB,
-          bodyA,
-          bodyB,
-          manifold
-        )*/
       }
     }
     for (let i = 0; i < CLMDs.length; i++) {
