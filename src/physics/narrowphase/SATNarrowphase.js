@@ -1,7 +1,7 @@
 import { Vector2, naturalizePair } from "../../math/index.js"
 import { SAT } from "../SAT/index.js";
 import { NarrowPhase } from "./Narrowphase.js"
-
+import {CollisionManifold} from "./collisionManifold.js"
 
 /**
  * Uses the Separation Axis Theorem.
@@ -24,35 +24,7 @@ export class SATNarrowPhase {
       bodyA.sleeping = false
       bodyB.sleeping = false
 
-      const manifold = {
-        entityA: a,
-        entityB: b,
-        contactData: {
-          lastOverlap: 0,
-          overlap: -Infinity,
-          done: false,
-          axis: new Vector2(),
-          tangent:new Vector2(),
-          verticesA: [],
-          verticesB: [],
-          vertShapeA: null,
-          vertShapeB: null,
-          contactNo: 0,
-          shapes: [],
-          indexA: 0,
-          indexB: 0
-        },
-        impulse: 0,
-        ca1: new Vector2(),
-        ca2: new Vector2(),
-        restitution: 0,
-        staticFriction: 0,
-        kineticFriction: 0,
-        velA: new Vector2(),
-        velB: new Vector2(),
-        rotA: 0,
-        rotB: 0
-      }
+      const manifold = new CollisionManifold(a,b)
       
       const collisionData = manifold.contactData
       collisionData.overlap = -Infinity
