@@ -1,12 +1,9 @@
 import { VerletSolver } from "../integrators/index.js";
 import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
 import { Vector2 } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
-import { ObjType } from "../settings.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { SATNarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
-import { System } from "../../ecs/index.js"
 import { Logger } from "../../logger/index.js"
 import { Body2D } from "../bodies/index.js"
 
