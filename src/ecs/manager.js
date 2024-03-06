@@ -1,6 +1,4 @@
 import { ArchetypeTable } from "../dataStructures/index.js"
-import { Logger } from "../logger/index.js"
-import { Perf } from "../utils/index.js"
 import { Clock } from "../math/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { Entity } from "./entity.js"
@@ -66,6 +64,7 @@ export class Manager {
   events = new EventDispatcher()
   /**
    * @private
+   * @param {number} accumulate
    */
   _update = accumulate => {
     const dt = this.clock.update(accumulate);
@@ -150,7 +149,7 @@ export class Manager {
   /**
    * @template T
    * @param { string[]  } compNames
-   * @returns {T}
+   * @returns {T[][]}
    */
   query(...compNames) {
     return this._table.query(compNames)
@@ -181,7 +180,7 @@ export class Manager {
    * This removes all of the entities and components from the manager
    */
   clear() {
-    this.events.trigger("clear")
+    this.events.trigger("clear",this)
     this._table.clear()
   }
   /**
@@ -201,7 +200,7 @@ export class Manager {
       return
     }
     this.RAF();
-    this.events.trigger("play");
+    this.events.trigger("play",this);
   }
   /**
    * This stops the update loop of the manager
@@ -212,7 +211,7 @@ export class Manager {
       return
     }
     cancelAnimationFrame(this._rafID);
-    this.events.trigger("pause");
+    this.events.trigger("pause",this);
   }
   /**
    * Marches the update loop forward,updating
