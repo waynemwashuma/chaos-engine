@@ -1,9 +1,4 @@
-import { System } from '../ecs/index.js';
-
-export class BoundsUpdater extends System {
-  constructor() {
-    super()
-  }
+export class BoundsUpdater {
   init(manager) {
     manager.setComponentList("bounds", [])
     
