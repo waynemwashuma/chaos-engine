@@ -1,4 +1,3 @@
-import { Component } from "../ecs/index.js"
 import { Shape } from "../physics/index.js"
 import { Ray } from "./ray.js"
 import { Vector2 } from "../math/index.js"

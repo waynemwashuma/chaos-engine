@@ -1,12 +1,10 @@
 import { BoundingBox } from "../math/index.js"
-import { Component } from "../ecs/index.js"
-
 
 /**
  * Component to hold the bounds of an entity.
  * 
  */
-export class Bound extends Component {
+export class Bound {
   /**
    * The actual bounds.Used for collision detection.
    * 
