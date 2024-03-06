@@ -1,6 +1,5 @@
 import { Clock } from '../../math/clock.js'
 import { Camera } from "../camera.js"
-import { System } from "../../ecs/index.js"
 
 /**
  * This is an abstract class from which different types of renderers are implemented.
