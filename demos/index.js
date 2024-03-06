@@ -7,7 +7,7 @@ import {
   fpsDebugger,
   bodyDebugger,
   Storage
-} from "/src/index.js" /**/
+} from "/src/index.js"
 
 export const manager = new Manager()
 export const renderer = new Renderer2D()
@@ -72,7 +72,7 @@ manager.registerSystem((dt, manager) => {
 })
 
 //Renderer
-/*manager.registerSystem((dt, manager) => {
+manager.registerSystem((dt, manager) => {
   const [transform, sprite] = manager.query("transform", "sprite")
   Renderer2D.update(renderer, transform, sprite, dt)
 }) /**/
@@ -81,5 +81,5 @@ manager.registerSystem((dt, manager) => {
 fpsDebugger(manager)
 bodyDebugger(manager,{
   clearRenderer: true,
-  drawCollisionArm:false
+  drawCollisionArm:true
 })
