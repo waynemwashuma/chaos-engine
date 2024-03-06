@@ -1,6 +1,4 @@
-import { System } from "../ecs/index.js"
-import { Vector2 } from "../math/index.js"
-import { Utils } from "../utils/index.js"
+import { Transform } from "./transformComponent.js"
 
 export class Intergrator {
   /**
