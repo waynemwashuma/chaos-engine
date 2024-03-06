@@ -1,5 +1,4 @@
 import { Vector2, degToRad, radToDeg } from "../../math/index.js"
-import { Component } from "../../ecs/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../../math/index.js"
 import { ObjType, Settings } from "../settings.js"
@@ -11,7 +10,7 @@ import { Logger } from "../../logger/index.js"
  * Holds information needed for collision detection and response.
  * 
  */
-export class Body2D extends Component {
+export class Body2D {
   /**
    * Unique identification of a body.
    * 
@@ -135,7 +134,6 @@ export class Body2D extends Component {
    * @param {Shape[]} shapes
    */
   constructor(...shapes) {
-    super()
     this.type = Settings.type
     this.shapes = shapes
     this.mass = 1
