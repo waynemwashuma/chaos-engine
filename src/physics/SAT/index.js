@@ -1,6 +1,6 @@
 import { Vector2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
-
+import { ShapeType } from "../settings.js"
 const _arr = [],
   tmp1 = {
     overlap: 0,
@@ -46,6 +46,8 @@ export const SAT = {
       axis = tmp5.copy(manifold.axis),
       shape1 = manifold.shapes[0],
       shape2 = manifold.shapes[1]
+    //console.log(manifold.verticesA)
+    //throw ""
     let overload = []
     const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, [])
     const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), [])
@@ -72,19 +74,19 @@ export const SAT = {
     overload = SAT.findNearSupports(overload, axis, [])
     if (body == shape2) axis.reverse()
     if (body == shape1) {
-      manifold.verticesA[0] = overload[0]
-      manifold.verticesB[0] = overload[0].clone().add(tmp6.copy(axis).multiply(manifold.overlap))
+      manifold.verticesA[0].copy(overload[0])
+      manifold.verticesB[0].copy(axis).multiply(manifold.overlap).add(overload[0])
       if (overload.length == 2) {
-        manifold.verticesA[1] = overload[1]
-        manifold.verticesB[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap))
+        manifold.verticesA[1].copy(overload[1])
+        manifold.verticesB[1].copy(axis).multiply(-manifold.overlap).add(overload[1])
       }
     }
     if (body == shape2) {
-      manifold.verticesB[0] = overload[0].clone().sub(tmp6.copy(axis).multiply(manifold.overlap))
-      manifold.verticesA[0] = overload[0]
+      manifold.verticesB[0].copy(axis).multiply(-manifold.overlap).add(overload[0])
+      manifold.verticesA[0].copy(overload[0])
       if (overload.length == 2) {
-        manifold.verticesB[1] = overload[1].clone().sub(tmp6.copy(axis).multiply(manifold.overlap))
-        manifold.verticesA[1] = overload[1]
+        manifold.verticesB[1].copy(axis).multiply(-manifold.overlap).add(overload[1])
+        manifold.verticesA[1].copy(overload[1])
       }
     }
     manifold.contactNo = overload.length
@@ -227,7 +229,7 @@ export const SAT = {
    * @param { Vector2} point
    */
   shapeContains(shape, point) {
-    if (shape.type == "circle")
+    if (shape.type == ShapeType.CIRCLE)
       return SAT.circleContains(shape.position, shape.radius, point)
     return SAT.verticesContain(shape.vertices, point)
   },

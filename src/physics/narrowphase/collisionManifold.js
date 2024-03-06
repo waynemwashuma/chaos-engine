@@ -73,11 +73,11 @@ export class CollisionData {
   /**
    * @type {number}
    */
-  verticesA = []
+  verticesA = [new Vector2(),new Vector2()]
   /**
    * @type {number}
    */
-  verticesB = []
+  verticesB = [new Vector2(),new Vector2()]
   /**
    * @type {number}
    */
