@@ -19,13 +19,13 @@ export class System {
     Logger.warnOnce("Please override the update method in the system " + this.constructor.name)
   }
   /**
-   * @param {Component} component
+   * @param {*} component
    */
   add(component) {
     this.objects.push(component)
   }
   /**
-   * @param {Component} component
+   * @param {*} component
    */
   remove(component) {
     let index = this.objects.indexOf(component)

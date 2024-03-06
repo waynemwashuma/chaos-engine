@@ -1,4 +1,3 @@
-import { Component } from "../ecs/index.js"
 import { Vector2, Angle } from "../math/index.js"
 
 /**

@@ -1,6 +1,4 @@
 import { Vector2, Angle } from "../../math/index.js"
-import { Component } from "../../ecs/index.js"
-
 /**
  * This is the base class used to render images and paths onto the renderer.
  * Extend it to create your custom behaviour.
