@@ -1,9 +1,9 @@
-import { Component } from "../ecs/index.js"
 import { Vector2, Angle } from "../math/index.js"
+import { Behaviour } from "./behaviours/index.js"
 /**
  * This is a component class used to add AI behavior to an entity.
  */
-export class Agent extends Component {
+export class Agent {
   /**
    * The maximum speed of the agent in pixels per second.
    * 
