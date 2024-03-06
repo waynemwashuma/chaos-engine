@@ -80,12 +80,11 @@ export const SAT = {
       }
     }
     if (body == shape2) {
-      manifold.verticesA[0] = overload[0].clone()
-        .add(tmp6.copy(axis).multiply(manifold.overlap))
-      manifold.verticesB[0] = overload[0]
+      manifold.verticesB[0] = overload[0].clone().sub(tmp6.copy(axis).multiply(manifold.overlap))
+      manifold.verticesA[0] = overload[0]
       if (overload.length == 2) {
-        manifold.verticesA[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap))
-        manifold.verticesB[1] = overload[1]
+        manifold.verticesB[1] = overload[1].clone().sub(tmp6.copy(axis).multiply(manifold.overlap))
+        manifold.verticesA[1] = overload[1]
       }
     }
     manifold.contactNo = overload.length
