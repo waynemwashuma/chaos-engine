@@ -12,7 +12,7 @@ import { makePlatform } from "./utils.js"
 export function pyramid(manager) {
   const rect = manager.getResource("renderer")
   const viewX = rect.width / 2
-  stackpyramid(viewX, 100, 50, 50, 3, 5, manager)
+  stackpyramid(viewX, 100, 50, 50, 10, 0, manager)
   manager.getResource("world").gravity = 980
 
   makePlatform(
@@ -25,7 +25,7 @@ export function pyramid(manager) {
 }
 
 function stackpyramid(x, y, w, h, no, spacing, manager) {
-  let dx = x - (w / 2 * no / 2)
+  let dx = x - (w / 2 * no )
   for (var j = no; j > 0; j--) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
