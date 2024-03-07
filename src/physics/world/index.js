@@ -193,9 +193,10 @@ export class World2D {
   /**
    * Searches for objects in a given bounds and returns them.
    * 
+   * @template T
    * @param {Bounds} bound the region to search in
-   * @param {Body2D[]} [target = []] an array to store results in
-   * @returns {Body2D[]}
+   * @param {T[]} [target = []] an array to store results in
+   * @returns {T[]}
    */
   query(bound, target = []) {
     this.broadphase.query(bound, target)
