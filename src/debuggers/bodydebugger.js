@@ -10,7 +10,7 @@ export function bodyDebugger(manager, options = {}) {
   options.drawCollisionArm = options.drawCollisionArm || false
 
   manager.registerSystem(dt => {
-    const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bounds", "body")
+    const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bounds", "body").raw()
     const clmd = manager.queryEvent("collision")
     const renderer = manager.getResource("renderer")
 

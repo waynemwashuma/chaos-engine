@@ -1,4 +1,4 @@
-class Query {
+export class Query {
   /**
    * @type {string}
    */
@@ -19,7 +19,7 @@ class Query {
     this.number = componentTypes.length
   }
   raw() {
-    return this._components
+    return this.components
   }
   /**
    * @param {} callback
