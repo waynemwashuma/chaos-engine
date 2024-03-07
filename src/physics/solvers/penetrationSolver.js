@@ -2,8 +2,8 @@ import { Vector2, sq } from "../../math/index.js"
 import { Settings } from "../settings.js"
 const tmp1 = new Vector2(),
   tmp2 = new Vector2()
-const dampen = 0.3//Settings.posDampen
-const slop = 0.1
+const dampen = Settings.posDampen
+const slop = 0.01
 
 /**
  * Solves the interpenetration of bodies.
