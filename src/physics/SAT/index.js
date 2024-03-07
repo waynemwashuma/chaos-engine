@@ -90,6 +90,7 @@ export const SAT = {
       }
     }
     manifold.contactNo = overload.length
+    manifold.axis.normalFast(manifold.tangent)
     return manifold
   },
   /**
@@ -148,6 +149,7 @@ export const SAT = {
       if (overlap < temp.overlap) {
         temp.overlap = overlap
         temp.axis.copy(axis)
+        //Todo - Maybe ser it to i >= iu?shapeA:shapeB
         temp.shape = i <= iu - 1 ? shapeB : shapeA
         temp.indexA = p1.indexN
         temp.indexB = p2.indexN

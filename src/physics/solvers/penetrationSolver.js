@@ -10,8 +10,8 @@ const slop = 0.01
  */
 export class PenetrationSolver {
   static solve(movableA, movableB, bodyA, bodyB, manifold, inv_dt) {
-    let { ca1, ca2 } = manifold
-    let { axis, overlap } = manifold.contactData
+    const { ca1, ca2 } = manifold
+    const { axis, overlap } = manifold.contactData
 
     const dampened = Math.max(overlap - slop,0) * dampen
     const a = dampened / (bodyA.inv_mass + bodyB.inv_mass + sq(ca1.cross(axis)) * bodyA.inv_inertia + sq(ca2.cross(axis)) * bodyB.inv_inertia)

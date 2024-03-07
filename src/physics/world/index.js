@@ -1,8 +1,8 @@
 import { VerletSolver } from "../integrators/index.js";
-import { PenetrationSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
+import { PenetrationSolver, ImpulseSolver } from "../solvers/index.js";
 import { Vector2 } from "../../math/index.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
-import { SATNarrowPhase } from "../narrowphase/index.js"
+import { SATNarrowPhase, CollisionManifold } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
 import { Logger } from "../../logger/index.js"
 import { Body2D } from "../bodies/index.js"
@@ -105,7 +105,38 @@ export class World2D {
   static collisionResponse(manager, world, CLMDs, dt) {
     const inv_dt = 1 / dt
 
-    for (let j = 0; j < world.velocitySolverIterations; j++) {
+    for (let i = 0; i < CLMDs.length; i++) {
+      const manifold = CLMDs[i]
+      const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
+      const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
+
+      CollisionManifold.prepare(
+        manifold,
+        bodyA,
+        bodyB,
+        movableA,
+        movableB,
+        inv_dt
+      )
+    }
+    for (let i = 0; i < 1; i++) {
+      for (let i = 0; i < CLMDs.length; i++) {
+        const manifold = CLMDs[i]
+        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
+        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
+
+        CollisionManifold.solve(
+          manifold,
+          movableA,
+          movableB,
+          bodyA,
+          bodyB
+        )
+      }
+    }
+
+
+    /*for (let j = 0; j < world.velocitySolverIterations; j++) {
       for (let i = 0; i < CLMDs.length; i++) {
         const manifold = CLMDs[i]
         const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
@@ -131,16 +162,6 @@ export class World2D {
         bodyB,
         manifold,
         inv_dt
-      )
-    }
-
-    /*for (let i = 0; i < CLMDs.length; i++) {
-      const manifold = CLMDs[i]
-      ContactSolver.solve(
-        manifold.bodyA,
-        manifold.bodyB,
-        manifold.impulse,
-        manifold.contactData.contactNo
       )
     }*/
   }
@@ -187,7 +208,7 @@ export class World2D {
     world.broadphase.update(entities, bounds)
     World2D.collisionDetection(manager, world)
     World2D.collisionResponse(manager, world, world.CLMDs, dt)
-    manager.events.addEvent("collision",world.CLMDs)
+    manager.events.addEvent("collision", world.CLMDs)
   }
 
   /**

@@ -23,8 +23,6 @@ export class ImpulseSolver {
     const relVel = va.sub(vb)
     
     const tangent = normal.normal(1)
-    tangent.multiply(tangent.dot(relVel))
-    tangent.normalize()
     
     const vp_n = normal.dot(relVel);
     const vp_t = tangent.dot(relVel)
