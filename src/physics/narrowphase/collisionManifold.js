@@ -1,5 +1,5 @@
 import { Vector2 } from "../../math/index.js"
-
+import { Settings } from "../settings.js"
 /**
  * @template T
  */
@@ -12,6 +12,10 @@ export class CollisionManifold {
    * @type {T}
    */
   entityB
+  movableA
+  movableB
+  bodyA
+  bodyB
   /**
    * @type {CollisionData}
    */
@@ -20,6 +24,7 @@ export class CollisionManifold {
    * @type {number}
    */
   impulse = 0
+  tImpulse = 0
   /**
    * @type {Vector2}
    */
@@ -28,6 +33,22 @@ export class CollisionManifold {
    * @type {Vector2}
    */
   ca2 = new Vector2()
+  /**
+   * @type {number}
+   */
+  nbias = 0
+  /**
+   * @type {Jacobian}
+   */
+  nJacobian = new Jacobian()
+  /**
+   * @type {number}
+   */
+  tbias = 0
+  /**
+   * @type {Jacobian}
+   */
+  tJacobian = new Jacobian()
   /**
    * @type {number}
    */
@@ -47,6 +68,118 @@ export class CollisionManifold {
   constructor(a, b) {
     this.entityA = a
     this.entityB = b
+  }
+  static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
+    movableA.velocity.add(jacobian.va.multiply(bodyA.inv_mass * lambda));
+    movableB.velocity.add(jacobian.vb.multiply(bodyB.inv_mass * lambda));
+    movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda;
+    movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda;
+  }
+  static calculateArms(manifold, positionA, positionB) {
+    const { collisionData } = manifold
+
+    if (collisionData.contactNo == 2) {
+      Vector2.lerp(
+        collisionData.verticesA[0],
+        collisionData.verticesA[1],
+        0.5,
+        manifold.ca1
+      ).sub(positionA)
+      Vector2.lerp(
+        collisionData.verticesB[0],
+        collisionData.verticesB[1],
+        0.5,
+        manifold.ca2
+      ).sub(positionB)
+    } else {
+      manifold.ca1.copy(collisionData.verticesA[0]).sub(positionA)
+      manifold.ca2.copy(collisionData.verticesB[0]).sub(positionB)
+    }
+  }
+  static prepare(manifold, bodyA, bodyB, movableA, movableB, inv_dt) {
+    const { ca1, ca2 } = manifold
+    const { axis, overlap, tangent } = manifold.contactData
+    axis.reverse()
+    tangent.reverse()
+    manifold.nbias = 0.0;
+    manifold.nJacobian.set(
+      axis.clone().reverse(),
+      axis,
+      -(ca1.cross(axis)),
+      ca2.cross(axis)
+    );
+    manifold.tbias = 0.0;
+    manifold.tJacobian.set(
+      tangent.clone().reverse(),
+      tangent,
+      -(ca1.cross(tangent)),
+      ca2.cross(tangent)
+    );
+
+    const va = new Vector2()
+      .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
+      .add(movableA.velocity)
+    const vb = new Vector2()
+      .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
+      .add(movableB.velocity)
+    const relativeVelocity = va.sub(vb)
+    const normalVelocity = axis.dot(relativeVelocity);
+
+    if (Settings.positionCorrection)
+      manifold.nbias = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
+    manifold.nbias += manifold.restitution * Math.min(normalVelocity, 0.0);
+    const k =
+      bodyA.inv_mass +
+      bodyB.inv_mass +
+      manifold.nJacobian.wa * bodyA.inv_inertia * manifold.nJacobian.wa +
+      manifold.nJacobian.wb * bodyB.inv_inertia * manifold.nJacobian.wb;
+    manifold.effectiveMass = k > 0.0 ? 1.0 / k : 0.0;
+    //throw console.log(manifold)
+  }
+  static solve(manifold, movableA, movableB, bodyA, bodyB) {
+    const jv =
+      manifold.nJacobian.va.dot(movableA.velocity) +
+      manifold.nJacobian.wa * movableA.rotation +
+      manifold.nJacobian.vb.dot(movableB.velocity) +
+      manifold.nJacobian.wb * movableB.rotation;
+    const jt =
+      manifold.tJacobian.va.dot(movableA.velocity) +
+      manifold.tJacobian.wa * movableA.rotation +
+      manifold.tJacobian.vb.dot(movableB.velocity) +
+      manifold.tJacobian.wb * movableB.rotation;
+    let nLambda = manifold.effectiveMass * -(jv + manifold.nbias);
+    let tLambda = manifold.effectiveMass * -(jt + manifold.nbias);
+
+    const oldimpulse = manifold.impulse
+    const oldtimpulse = manifold.timpulse
+    if (Settings.impulseAccumulation)
+      manifold.impulse = Math.max(0.0, manifold.impulse + nLambda);
+    else
+      manifold.impulse = Math.max(0.0, nLambda);
+
+    if (Settings.impulseAccumulation) {
+      nLambda = manifold.impulse - oldimpulse
+      tLambda = manifold.impulse - oldtimpulse
+    } else {
+      nLambda = manifold.impulse
+      tLambda = manifold.timpulse
+    }
+    /*CollisionManifold.applyImpulse(
+      manifold.tJacobian,
+      movableA,
+      movableB,
+      bodyA,
+      bodyB,
+      tLambda
+    )*/
+    CollisionManifold.applyImpulse(
+      manifold.nJacobian,
+      movableA,
+      movableB,
+      bodyA,
+      bodyB,
+      nLambda
+    )
   }
 }
 export class CollisionData {
@@ -73,11 +206,11 @@ export class CollisionData {
   /**
    * @type {number}
    */
-  verticesA = [new Vector2(),new Vector2()]
+  verticesA = [new Vector2(), new Vector2()]
   /**
    * @type {number}
    */
-  verticesB = [new Vector2(),new Vector2()]
+  verticesB = [new Vector2(), new Vector2()]
   /**
    * @type {number}
    */
@@ -102,4 +235,31 @@ export class CollisionData {
    * @type {number}
    */
   indexB = 0
+}
+class Jacobian {
+  /**
+   * @type {Vector2}
+   */
+  va = new Vector2()
+  /**
+   * @type {number}
+   */
+  wa = 0
+  /**
+   * @type {Vector2}
+   */
+  vb = new Vector2()
+  /**
+   * @type {number}
+   */
+  wb = 0
+  constructor(va, vb, wa, wb) {
+    this.set(va, vb, wa, wb)
+  }
+  set(va, vb, wa, wb) {
+    if (va) this.va.copy(va)
+    if (vb) this.vb.copy(vb)
+    if (wa) this.wa = wa
+    if (wb) this.wb = wb
+  }
 }
