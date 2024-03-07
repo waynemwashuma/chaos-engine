@@ -119,7 +119,7 @@ export class World2D {
         inv_dt
       )
     }
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < world.velocitySolverIterations; i++) {
       for (let i = 0; i < CLMDs.length; i++) {
         const manifold = CLMDs[i]
         const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
@@ -133,7 +133,7 @@ export class World2D {
           bodyB
         )
       }
-    }
+    }/***/
 
 
     /*for (let j = 0; j < world.velocitySolverIterations; j++) {
@@ -152,8 +152,8 @@ export class World2D {
     }
     for (let i = 0; i < CLMDs.length; i++) {
       const manifold = CLMDs[i]
-      const [movableA, bodyA] = manager.get(manifold.entityA, "transform", "body")
-      const [movableB, bodyB] = manager.get(manifold.entityB, "transform", "body")
+      const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
+      const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
 
       PenetrationSolver.solveT(
         movableA,
@@ -163,7 +163,7 @@ export class World2D {
         manifold,
         inv_dt
       )
-    }*/
+    }/**/
   }
   /**
    * @private
