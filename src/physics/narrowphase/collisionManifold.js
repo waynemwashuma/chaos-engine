@@ -1,4 +1,4 @@
-import { Vector2 } from "../../math/index.js"
+import { Vector2, clamp } from "../../math/index.js"
 import { Settings } from "../settings.js"
 /**
  * @template T
@@ -42,10 +42,6 @@ export class CollisionManifold {
    */
   nJacobian = new Jacobian()
   /**
-   * @type {number}
-   */
-  tbias = 0
-  /**
    * @type {Jacobian}
    */
   tJacobian = new Jacobian()
@@ -70,8 +66,8 @@ export class CollisionManifold {
     this.entityB = b
   }
   static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
-    movableA.velocity.add(jacobian.va.multiply(bodyA.inv_mass * lambda));
-    movableB.velocity.add(jacobian.vb.multiply(bodyB.inv_mass * lambda));
+    movableA.velocity.add(jacobian.va.clone().multiply(bodyA.inv_mass * lambda));
+    movableB.velocity.add(jacobian.vb.clone().multiply(bodyB.inv_mass * lambda));
     movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda;
     movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda;
   }
@@ -108,13 +104,14 @@ export class CollisionManifold {
       -(ca1.cross(axis)),
       ca2.cross(axis)
     );
-    manifold.tbias = 0.0;
     manifold.tJacobian.set(
       tangent.clone().reverse(),
       tangent,
       -(ca1.cross(tangent)),
       ca2.cross(tangent)
     );
+    manifold.impulse = 0
+    manifold.tImpulse = 0
 
     const va = new Vector2()
       .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
@@ -134,7 +131,6 @@ export class CollisionManifold {
       manifold.nJacobian.wa * bodyA.inv_inertia * manifold.nJacobian.wa +
       manifold.nJacobian.wb * bodyB.inv_inertia * manifold.nJacobian.wb;
     manifold.effectiveMass = k > 0.0 ? 1.0 / k : 0.0;
-    //throw console.log(manifold)
   }
   static solve(manifold, movableA, movableB, bodyA, bodyB) {
     const jv =
@@ -148,30 +144,37 @@ export class CollisionManifold {
       manifold.tJacobian.vb.dot(movableB.velocity) +
       manifold.tJacobian.wb * movableB.rotation;
     let nLambda = manifold.effectiveMass * -(jv + manifold.nbias);
-    let tLambda = manifold.effectiveMass * -(jt + manifold.nbias);
+    let tLambda = manifold.effectiveMass * -(jt);
 
     const oldimpulse = manifold.impulse
-    const oldtimpulse = manifold.timpulse
-    if (Settings.impulseAccumulation)
-      manifold.impulse = Math.max(0.0, manifold.impulse + nLambda);
-    else
-      manifold.impulse = Math.max(0.0, nLambda);
+    const oldtimpulse = manifold.tImpulse
 
     if (Settings.impulseAccumulation) {
+      manifold.impulse = Math.max(0.0, manifold.impulse + nLambda);
+      const maxFriction = manifold.kineticFriction * manifold.impulse;
+      manifold.tImpulse = clamp(manifold.tImpulse + tLambda, -maxFriction, maxFriction)
+    }
+    else {
+      manifold.impulse = Math.max(0.0, nLambda);
+      const maxFriction = manifold.kineticFriction * manifold.impulse;
+      manifold.tImpulse = clamp(tLambda, -maxFriction, maxFriction);
+    }
+    if (Settings.impulseAccumulation) {
       nLambda = manifold.impulse - oldimpulse
-      tLambda = manifold.impulse - oldtimpulse
+      tLambda = manifold.tImpulse - oldtimpulse
     } else {
       nLambda = manifold.impulse
-      tLambda = manifold.timpulse
+      tLambda = manifold.tImpulse
     }
-    /*CollisionManifold.applyImpulse(
+    //console.log(movableA.velocity.y)
+    CollisionManifold.applyImpulse(
       manifold.tJacobian,
       movableA,
       movableB,
       bodyA,
       bodyB,
       tLambda
-    )*/
+    )/***/
     CollisionManifold.applyImpulse(
       manifold.nJacobian,
       movableA,
