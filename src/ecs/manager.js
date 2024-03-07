@@ -2,7 +2,7 @@ import { ArchetypeTable } from "../dataStructures/index.js"
 import { Clock } from "../math/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { Entity } from "./entity.js"
-
+import {Query} from "./query.js"
 export class Manager {
   /**
    * RAF number of current frame.Used for pausing the manager.
@@ -74,11 +74,11 @@ export class Manager {
       this.RAF();
       return
     }
-    this.events.trigger("updateStart",dt);
+    this.events.trigger("updateStart", dt);
     this.update(dt)
     this._accumulator = 0;
-    this.events.trigger("update",dt);
-    this.events.trigger("updateEnd",dt);
+    this.events.trigger("update", dt);
+    this.events.trigger("updateEnd", dt);
     this.RAF();
   }
   /**
@@ -152,7 +152,9 @@ export class Manager {
    * @returns {T[][]}
    */
   query(...compNames) {
-    return this._table.query(compNames)
+    const query = new Query(...compNames)
+    query.components = this._table.query(compNames)
+    return query
   }
   /**
    * @param {string} name
@@ -180,7 +182,7 @@ export class Manager {
    * This removes all of the entities and components from the manager
    */
   clear() {
-    this.events.trigger("clear",this)
+    this.events.trigger("clear", this)
     this._table.clear()
   }
   /**
@@ -200,7 +202,7 @@ export class Manager {
       return
     }
     this.RAF();
-    this.events.trigger("play",this);
+    this.events.trigger("play", this);
   }
   /**
    * This stops the update loop of the manager
@@ -211,7 +213,7 @@ export class Manager {
       return
     }
     cancelAnimationFrame(this._rafID);
-    this.events.trigger("pause",this);
+    this.events.trigger("pause", this);
   }
   /**
    * Marches the update loop forward,updating
@@ -234,7 +236,6 @@ export class Manager {
    * 
    */
   registerSystem(sys) {
-    return this._systems.push(sys) - 1
+    this._systems.push(sys)
   }
-
 }
