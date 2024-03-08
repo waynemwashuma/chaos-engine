@@ -18,7 +18,7 @@ export const BodyType = Object.freeze({
 
 //Default settings 
 export const Settings = {
-  
+
   //For the world
   posDampen: 0.3,
   linearDamping: 0.001,
@@ -29,6 +29,7 @@ export const Settings = {
   positionCorrection: true,
   warmStarting: false,
   impulseAccumulation: false,
+  separationTolerance: 0.1,
 
   //For all bodies
   type: BodyType.DYNAMIC,
