@@ -224,6 +224,10 @@ export class CollisionData {
    * @type {number}
    */
   vertShapeB = null
+    /**
+   * @type {number}
+   */
+  contactPoints = [new Vector2(), new Vector2()]
   /**
    * @type {number}
    */
@@ -232,14 +236,6 @@ export class CollisionData {
    * @type {number}
    */
   shapes = []
-  /**
-   * @type {number}
-   */
-  indexA = 0
-  /**
-   * @type {number}
-   */
-  indexB = 0
 }
 class Jacobian {
   /**
