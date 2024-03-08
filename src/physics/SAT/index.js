@@ -1,6 +1,6 @@
 import { Vector2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
-import { ShapeType } from "../settings.js"
+import { ShapeType, Settings } from "../settings.js"
 const _arr = [],
   tmp1 = {
     overlap: 0,
@@ -12,13 +12,11 @@ const _arr = [],
   },
   tmp2 = {
     min: 0,
-    max: 0,
-    indexN: 0
+    max: 0
   },
   tmp3 = {
     min: 0,
-    max: 0,
-    indexN: 0
+    max: 0
   },
   tmp4 = new Vector2(),
   tmp5 = new Vector2(),
@@ -36,32 +34,35 @@ export const SAT = {
   shapesInBodyCollided(body1, body2, manifold) {
     let shapesA = body1.shapes,
       shapesB = body2.shapes
-    for (var i = 0; i < shapesA.length; i++) {
-      for (var j = 0; j < shapesB.length; j++) {
+    for (let i = 0; i < shapesA.length; i++) {
+      for (let j = 0; j < shapesB.length; j++) {
         SAT.shapesCollided(shapesA[i], shapesB[j], manifold)
       }
     }
     if (manifold.overlap < 0) return manifold
-    let body = manifold.dorminantShape,
+    const
       axis = tmp5.copy(manifold.axis),
       shape1 = manifold.shapes[0],
       shape2 = manifold.shapes[1]
-    //console.log(manifold.verticesA)
-    //throw ""
-    let overload = []
+    const overload = []
     const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, [])
     const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), [])
-    for (var i = 0; i < vertices1.length; i++) {
+    const balancedOverlap = manifold.overlap * (body1.inv_mass + body2.inv_mass)
+    
+    //manifold.contactPoints[0].copy(vertices2[0]).add(tmp4.copy(axis).multiply(balancedOverlap * body2.inv_mass))
+    //if(vertices2.length < 2)
+    //manifold.contactPoints[1].copy(vertices2[1]).add(tmp4.copy(axis).multiply(balancedOverlap * body2.inv_mass))
+    
+
+    for (let i = 0; i < vertices1.length; i++) {
       if (SAT.shapeContains(shape2, vertices1[i])) {
         overload.push(vertices1[i])
       }
     }
     if (overload.length < 2) {
-      for (var i = 0; i < vertices2.length; i++) {
+      for (let i = 0; i < vertices2.length; i++) {
         if (SAT.shapeContains(shape1, vertices2[i])) {
           overload.push(vertices2[i])
-          if (!overload.length)
-            shape = shape2
         }
       }
     }
@@ -71,25 +72,15 @@ export const SAT = {
       overload.push(vertices1[0])
     }
 
-    overload = SAT.findNearSupports(overload, axis, [])
-    if (body == shape2) axis.reverse()
-    if (body == shape1) {
-      manifold.verticesA[0].copy(overload[0])
-      manifold.verticesB[0].copy(axis).multiply(manifold.overlap).add(overload[0])
-      if (overload.length == 2) {
-        manifold.verticesA[1].copy(overload[1])
-        manifold.verticesB[1].copy(axis).multiply(-manifold.overlap).add(overload[1])
-      }
+    const calcoverload = SAT.findNearSupports(overload, axis, [])
+    manifold.verticesA[0].copy(calcoverload[0])
+    manifold.verticesB[0].copy(axis).multiply(manifold.overlap).add(calcoverload[0])
+    if (calcoverload.length == 2) {
+      manifold.verticesA[1].copy(calcoverload[1])
+      manifold.verticesB[1].copy(axis).multiply(-manifold.overlap).add(calcoverload[1])
     }
-    if (body == shape2) {
-      manifold.verticesB[0].copy(axis).multiply(-manifold.overlap).add(overload[0])
-      manifold.verticesA[0].copy(overload[0])
-      if (overload.length == 2) {
-        manifold.verticesB[1].copy(axis).multiply(-manifold.overlap).add(overload[1])
-        manifold.verticesA[1].copy(overload[1])
-      }
-    }
-    manifold.contactNo = overload.length
+
+    manifold.contactNo = calcoverload.length
     manifold.axis.normalFast(manifold.tangent)
     return manifold
   },
@@ -99,14 +90,12 @@ export const SAT = {
    * @param {Object} target
    */
   shapesCollided(shape1, shape2, target) {
-    let arr = _arr,
-      boundary
+    const arr = _arr
     Utils.clearArr(arr)
     shape1.getNormals(shape2, arr)
-    boundary = arr.length
     shape2.getNormals(shape1, arr)
 
-    SAT.projectShapesToAxes(shape1, shape2, arr, target, boundary)
+    SAT.projectShapesToAxes(shape1, shape2, arr, target)
   },
   /**
    * @param {Shape} shapeA
@@ -115,20 +104,20 @@ export const SAT = {
    * @param {Manifold} shapeA
    * @param {number} iu
    */
-  projectShapesToAxes(shapeA, shapeB, axes, manifold, iu) {
-    let temp = tmp1
+  projectShapesToAxes(shapeA, shapeB, axes, manifold) {
+    const temp = tmp1
     temp.vertex = null
     temp.body = null
     temp.overlap = Infinity
     for (let i = 0; i < axes.length; i++) {
-      let axis = tmp4.copy(axes[i])
+      const axis = tmp4.copy(axes[i])
 
-      let verticesA = shapeA.getVertices(axis)
-      let verticesB = shapeB.getVertices(axis)
-      let p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2)
-      let p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3)
-      let min = p1.max < p2.max ? p1.max : p2.max
-      let max = p1.min > p2.min ? p1.min : p2.min
+      const verticesA = shapeA.getVertices(axis)
+      const verticesB = shapeB.getVertices(axis)
+      const p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2)
+      const p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3)
+      const min = p1.max < p2.max ? p1.max : p2.max
+      const max = p1.min > p2.min ? p1.min : p2.min
       let overlap = min - max
       if (overlap < 0) return manifold
 
@@ -137,7 +126,7 @@ export const SAT = {
         (p1.max > p2.max && p1.min < p2.min) ||
         (p2.max > p1.max && p2.min < p1.min)
       ) {
-        let max = Math.abs(p1.max - p2.max),
+        const max = Math.abs(p1.max - p2.max),
           min = Math.abs(p1.min - p2.min)
         if (min < max) {
           overlap += min
@@ -149,8 +138,6 @@ export const SAT = {
       if (overlap < temp.overlap) {
         temp.overlap = overlap
         temp.axis.copy(axis)
-        //Todo - Maybe ser it to i >= iu?shapeA:shapeB
-        temp.shape = i <= iu - 1 ? shapeB : shapeA
         temp.indexA = p1.indexN
         temp.indexB = p2.indexN
         temp.verticesA = verticesA
@@ -160,13 +147,10 @@ export const SAT = {
     if (temp.overlap > manifold.overlap) {
       manifold.overlap = temp.overlap
       manifold.axis.copy(temp.axis)
-      manifold.dorminantShape = temp.shape
       manifold.shapes[0] = shapeA
       manifold.shapes[1] = shapeB
       manifold.vertShapeA = temp.verticesA
       manifold.vertShapeB = temp.verticesB
-      manifold.indexA = temp.indexA
-      manifold.indexB = temp.indexB
       manifold.done = true
     }
     return manifold
@@ -178,53 +162,43 @@ export const SAT = {
    */
   projectVerticesToAxis(vertices, axis, target) {
     let min = Infinity,
-      max = -Infinity,
-      nearVertex = null,
-      length = vertices.length
+      max = -Infinity
+    const length = vertices.length
 
     for (let i = 0; i < length; i++) {
       let point = axis.dot(vertices[i])
-      if (point < min) {
-        min = point
-        nearVertex = i
-      }
-      if (point > max) {
-        max = point
-      }
+      if (point < min) min = point
+      if (point > max) max = point
     }
     target.min = min
     target.max = max
-    target.indexN = nearVertex
     return target
   },
   /**
    * @param { Vector2[]} vertices
    * @param { Vector2} axis
    * @param { Vector2[]} target
-   * @param {number} nearVertexIndex
    */
-  findNearSupports(vertices, axis, target = [], nearVertexIndex) {
-    let min = Infinity,
-      nearVertices = target,
-      length = vertices.length
+  findNearSupports(vertices, axis, target = []) {
+    let min = Infinity
 
-    for (let i = 0; i < length; i++) {
-      let point = axis.dot(vertices[i])
+    for (let i = 0; i < vertices.length; i++) {
+      const point = axis.dot(vertices[i])
       if (
-        Math.abs(point - min) <= 0.1 &&
-        !nearVertices.includes(vertices[i])
+        Math.abs(point - min) <= Settings.separationTolerance &&
+        !target.includes(vertices[i])
       ) {
-        nearVertices.push(vertices[i])
+        target.push(vertices[i])
         continue
       }
       if (point < min) {
         min = point
-        Utils.clearArr(nearVertices)
-        nearVertices.push(vertices[i])
+        Utils.clearArr(target)
+        target.push(vertices[i])
         i = -1
       }
     }
-    return nearVertices
+    return target
   },
   /**
    * @param {Shape} shape
@@ -241,7 +215,7 @@ export const SAT = {
    * @param { Vector2} point
    */
   circleContains(position, radius, point) {
-    let dx = point.x - position.x,
+    const dx = point.x - position.x,
       dy = point.y - position.y
     if (dx * dx + dy * dy > radius * radius)
       return false
@@ -252,13 +226,13 @@ export const SAT = {
    * @param {number} point 
    */
   verticesContain(vertices, point) {
-    var pointX = point.x,
+    const pointX = point.x,
       pointY = point.y,
-      length = vertices.length,
-      vertex = vertices[length - 1],
+      length = vertices.length
+    let vertex = vertices[length - 1],
       nextVertex;
     if (length < 2) return false
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       nextVertex = vertices[i];
       if ((pointX - vertex.x) * (nextVertex.y - vertex.y) +
         (pointY - vertex.y) * (vertex.x - nextVertex.x) < 0) {
