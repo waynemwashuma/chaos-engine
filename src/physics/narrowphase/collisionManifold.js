@@ -151,13 +151,16 @@ export class CollisionManifold {
 
     if (Settings.impulseAccumulation) {
       manifold.impulse = Math.max(0.0, manifold.impulse + nLambda);
-      const maxFriction = manifold.kineticFriction * manifold.impulse;
-      manifold.tImpulse = clamp(manifold.tImpulse + tLambda, -maxFriction, maxFriction)
+      manifold.tImpulse = Math.abs(tLambda) <= manifold.impulse * manifold.staticFriction ?
+        tLambda :
+        tLambda * manifold.kineticFriction
     }
     else {
       manifold.impulse = Math.max(0.0, nLambda);
-      const maxFriction = manifold.kineticFriction * manifold.impulse;
-      manifold.tImpulse = clamp(tLambda, -maxFriction, maxFriction);
+      manifold.tImpulse = Math.abs(tLambda) <= manifold.impulse * manifold.staticFriction ?
+        tLambda :
+        tLambda * manifold.kineticFriction
+
     }
     if (Settings.impulseAccumulation) {
       nLambda = manifold.impulse - oldimpulse
@@ -166,7 +169,6 @@ export class CollisionManifold {
       nLambda = manifold.impulse
       tLambda = manifold.tImpulse
     }
-    //console.log(movableA.velocity.y)
     CollisionManifold.applyImpulse(
       manifold.tJacobian,
       movableA,
@@ -174,7 +176,7 @@ export class CollisionManifold {
       bodyA,
       bodyB,
       tLambda
-    )/***/
+    ) /***/
     CollisionManifold.applyImpulse(
       manifold.nJacobian,
       movableA,
