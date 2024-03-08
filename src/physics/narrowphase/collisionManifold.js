@@ -24,6 +24,9 @@ export class CollisionManifold {
    * @type {number}
    */
   impulse = 0
+  /**
+   * @type {number}
+   */
   tImpulse = 0
   /**
    * @type {Vector2}
@@ -72,31 +75,36 @@ export class CollisionManifold {
     movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda;
   }
   static calculateArms(manifold, positionA, positionB) {
-    const { collisionData } = manifold
+    const { contactData } = manifold
+    if (contactData.contactNo == 2) {
+      const t1 = 0.5 //manifold.tangent.dot(positionA)
+      const t2 = 0.5 //manifold.tangent.dot(positionA)
 
-    if (collisionData.contactNo == 2) {
       Vector2.lerp(
-        collisionData.verticesA[0],
-        collisionData.verticesA[1],
-        0.5,
+        contactData.contactPoints[0],
+        contactData.contactPoints[1],
+        t1,
         manifold.ca1
       ).sub(positionA)
+
       Vector2.lerp(
-        collisionData.verticesB[0],
-        collisionData.verticesB[1],
-        0.5,
+        contactData.contactPoints[0],
+        contactData.contactPoints[1],
+        t2,
         manifold.ca2
       ).sub(positionB)
     } else {
-      manifold.ca1.copy(collisionData.verticesA[0]).sub(positionA)
-      manifold.ca2.copy(collisionData.verticesB[0]).sub(positionB)
+      manifold.ca1.copy(contactData.contactPoints[0]).sub(positionA)
+      manifold.ca2.copy(contactData.contactPoints[0]).sub(positionB)
     }
+    //throw console.log(manifold)
   }
   static prepare(manifold, bodyA, bodyB, movableA, movableB, inv_dt) {
     const { ca1, ca2 } = manifold
     const { axis, overlap, tangent } = manifold.contactData
     axis.reverse()
-    tangent.reverse()
+    //tangent.reverse()
+
     manifold.nbias = 0.0;
     manifold.nJacobian.set(
       axis.clone().reverse(),
@@ -121,7 +129,7 @@ export class CollisionManifold {
       .add(movableB.velocity)
     const relativeVelocity = va.sub(vb)
     const normalVelocity = axis.dot(relativeVelocity);
-
+    manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
     if (Settings.positionCorrection)
       manifold.nbias = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
     manifold.nbias += manifold.restitution * Math.min(normalVelocity, 0.0);
@@ -145,7 +153,6 @@ export class CollisionManifold {
       manifold.tJacobian.wb * movableB.rotation;
     let nLambda = manifold.effectiveMass * -(jv + manifold.nbias);
     let tLambda = manifold.effectiveMass * -(jt);
-
     const oldimpulse = manifold.impulse
     const oldtimpulse = manifold.tImpulse
 
@@ -160,7 +167,6 @@ export class CollisionManifold {
       manifold.tImpulse = Math.abs(tLambda) <= manifold.impulse * manifold.staticFriction ?
         tLambda :
         tLambda * manifold.kineticFriction
-
     }
     if (Settings.impulseAccumulation) {
       nLambda = manifold.impulse - oldimpulse
@@ -175,7 +181,7 @@ export class CollisionManifold {
       movableB,
       bodyA,
       bodyB,
-      tLambda
+      manifold.tImpulse
     ) /***/
     CollisionManifold.applyImpulse(
       manifold.nJacobian,
@@ -183,15 +189,11 @@ export class CollisionManifold {
       movableB,
       bodyA,
       bodyB,
-      nLambda
+      manifold.impulse
     )
   }
 }
 export class CollisionData {
-  /**
-   * @type {number}
-   */
-  lastOverlap = 0
   /**
    * @type {number}
    */
@@ -211,31 +213,11 @@ export class CollisionData {
   /**
    * @type {number}
    */
-  verticesA = [new Vector2(), new Vector2()]
-  /**
-   * @type {number}
-   */
-  verticesB = [new Vector2(), new Vector2()]
-  /**
-   * @type {number}
-   */
-  vertShapeA = null
-  /**
-   * @type {number}
-   */
-  vertShapeB = null
-    /**
-   * @type {number}
-   */
   contactPoints = [new Vector2(), new Vector2()]
   /**
    * @type {number}
    */
   contactNo = 0
-  /**
-   * @type {number}
-   */
-  shapes = []
 }
 class Jacobian {
   /**
