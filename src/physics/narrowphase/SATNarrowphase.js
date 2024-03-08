@@ -31,23 +31,7 @@ export class SATNarrowPhase {
       collisionData.done = false
       SAT.shapesInBodyCollided(bodyA, bodyB, collisionData)
       if (collisionData.overlap < 0 || !collisionData.done) continue
-      if (collisionData.contactNo == 2) {
-        Vector2.lerp(
-          collisionData.verticesA[0],
-          collisionData.verticesA[1],
-          0.5,
-          manifold.ca1
-        ).sub(transformA.position)
-        Vector2.lerp(
-          collisionData.verticesB[0],
-          collisionData.verticesB[1],
-          0.5,
-          manifold.ca2
-        ).sub(transformB.position)
-      } else {
-        manifold.ca1.copy(collisionData.verticesA[0]).sub(transformA.position)
-        manifold.ca2.copy(collisionData.verticesB[0]).sub(transformB.position)
-      }
+      CollisionManifold.calculateArms(manifold,transformA.position,transformB.position)
       manifold.restitution = bodyA.restitution < bodyB.restitution ? bodyA.restitution : bodyB.restitution
       manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction
       manifold.kineticFriction = bodyA.kineticFriction < bodyB.kineticFriction ? bodyA.kineticFriction : bodyB.kineticFriction

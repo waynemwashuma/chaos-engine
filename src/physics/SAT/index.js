@@ -32,55 +32,41 @@ export const SAT = {
    * @param {Manifold} manifold
    */
   shapesInBodyCollided(body1, body2, manifold) {
-    let shapesA = body1.shapes,
-      shapesB = body2.shapes
-    for (let i = 0; i < shapesA.length; i++) {
-      for (let j = 0; j < shapesB.length; j++) {
-        SAT.shapesCollided(shapesA[i], shapesB[j], manifold)
-      }
-    }
+    SAT.shapesCollided(body1.shapes[0], body2.shapes[0], manifold)
     if (manifold.overlap < 0) return manifold
     const
-      axis = tmp5.copy(manifold.axis),
-      shape1 = manifold.shapes[0],
-      shape2 = manifold.shapes[1]
+      axis = manifold.axis,
+      shape1 = body1.shapes[0],
+      shape2 = body2.shapes[0]
     const overload = []
     const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, [])
     const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), [])
-    const balancedOverlap = manifold.overlap * (body1.inv_mass + body2.inv_mass)
-    
-    //manifold.contactPoints[0].copy(vertices2[0]).add(tmp4.copy(axis).multiply(balancedOverlap * body2.inv_mass))
-    //if(vertices2.length < 2)
-    //manifold.contactPoints[1].copy(vertices2[1]).add(tmp4.copy(axis).multiply(balancedOverlap * body2.inv_mass))
-    
-
-    for (let i = 0; i < vertices1.length; i++) {
-      if (SAT.shapeContains(shape2, vertices1[i])) {
-        overload.push(vertices1[i])
+    const balancedOverlap = manifold.overlap / (body1.inv_mass + body2.inv_mass)
+    for (let i = 0; i < vertices2.length; i++) {
+      if (SAT.shapeContains(shape1, vertices2[i])) {
+        overload.push(vertices2[i])
       }
     }
     if (overload.length < 2) {
-      for (let i = 0; i < vertices2.length; i++) {
-        if (SAT.shapeContains(shape1, vertices2[i])) {
-          overload.push(vertices2[i])
+      for (let i = 0; i < vertices1.length; i++) {
+        if (SAT.shapeContains(shape2, vertices1[i])) {
+          overload.push(vertices1[i])
         }
       }
     }
     //some random error happened when this is not there.
     //Dont know if it isnt there now but i dont want to risk it ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯
     if (overload.length == 0) {
-      overload.push(vertices1[0])
+      overload.push(vertices2[0])
     }
+    manifold.contactPoints[0].copy(overload[0]).add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
+    if (overload.length === 2) {
+      manifold.contactPoints[1]
+        .copy(overload[1])
+        .add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
 
-    const calcoverload = SAT.findNearSupports(overload, axis, [])
-    manifold.verticesA[0].copy(calcoverload[0])
-    manifold.verticesB[0].copy(axis).multiply(manifold.overlap).add(calcoverload[0])
-    if (calcoverload.length == 2) {
-      manifold.verticesA[1].copy(calcoverload[1])
-      manifold.verticesB[1].copy(axis).multiply(-manifold.overlap).add(calcoverload[1])
     }
-
-    manifold.contactNo = calcoverload.length
+    manifold.contactNo = overload.length
     manifold.axis.normalFast(manifold.tangent)
     return manifold
   },
@@ -147,8 +133,6 @@ export const SAT = {
     if (temp.overlap > manifold.overlap) {
       manifold.overlap = temp.overlap
       manifold.axis.copy(temp.axis)
-      manifold.shapes[0] = shapeA
-      manifold.shapes[1] = shapeB
       manifold.vertShapeA = temp.verticesA
       manifold.vertShapeB = temp.verticesB
       manifold.done = true
