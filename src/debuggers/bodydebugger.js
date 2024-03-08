@@ -3,27 +3,37 @@ import { Vector2 } from "../math/index.js"
 import { line, circle, vertices, stroke, fill } from "../render/index.js"
 /**
  * @param {Manager} manager
- * @param {BodyDebbuggerOptions} options
+ * @param {BodyDebbuggerOptions} [options]
  */
 export function bodyDebugger(manager, options = {}) {
   options.clearRenderer = options.clearRenderer || false
   options.drawCollisionArm = options.drawCollisionArm || false
-
+  options.drawContacts = options.drawContacts || false
   manager.registerSystem(dt => {
     const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bounds", "body").raw()
     const clmd = manager.queryEvent("collision")
     const renderer = manager.getResource("renderer")
 
     if (options.clearRenderer) renderer.clear()
-
     if (options.drawCollisionArm) drawArms()
-
     if (options.drawPosition) drawPositions()
-
-    if (options.drawBounds)drawBounds()
+    if (options.drawContacts) drawContacts()
+    if (options.drawBounds) drawBounds()
+    
     for (let i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
         drawShapes(bodies[i][j].shapes, renderer.ctx)
+      }
+    }
+
+    function drawContacts() {
+      for (let i = 0; i < clmd.length; i++) {
+        let [p1, p2] = clmd[i].contactData.contactPoints
+        renderer.ctx.beginPath()
+        circle(renderer.ctx, p1.x, p1.y, 5)
+        circle(renderer.ctx, p2.x, p2.y, 5)
+        renderer.ctx.closePath()
+        fill(renderer.ctx, "blue")
       }
     }
 
