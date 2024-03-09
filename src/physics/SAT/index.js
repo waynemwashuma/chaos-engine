@@ -66,8 +66,11 @@ export const SAT = {
         .add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
 
     }
-    
-    manifold.contactNo = clamp(overload.length, 0, 2)
+
+    manifold.contactNo =
+      shape1.type === ShapeType.CIRCLE ||
+      shape2.type === ShapeType.CIRCLE ?
+      1 : clamp(overload.length, 0, 2)
     manifold.axis.normalFast(manifold.tangent)
     manifold.axis.reverse()
     return manifold
