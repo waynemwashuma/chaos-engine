@@ -239,3 +239,10 @@ export class Manager {
     this._systems.push(sys)
   }
 }
+
+/**
+ * @callback System
+ * @param {number} dt
+ * @param {Manager} manager
+ * @returns {void}
+*/
