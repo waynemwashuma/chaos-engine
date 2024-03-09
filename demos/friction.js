@@ -25,17 +25,8 @@ export function friction(manager) {
       new BasicMaterial()
     )
   })
-  let entity1 = manager.create({
-    "transform": new Transform(100, 237),
-    "movable": new Movable(),
-    "bounds": new BoundingBox(),
-    "body": new Ball(15),
-    "sprite": new Sprite(
-      new CircleGeometry(15),
-      new BasicMaterial()
-    )
-  })
-  let floor2 = manager.create({
+
+  manager.create({
     "transform": new Transform(200, 200, degToRad(20)),
     "movable": new Movable(),
     "bounds": new BoundingBox(),
@@ -45,13 +36,23 @@ export function friction(manager) {
       new BasicMaterial()
     )
   })
-  let entity2 = manager.create({
+  manager.create({
     "transform": new Transform(100, 100, degToRad(20)),
     "movable": new Movable(),
     "bounds": new BoundingBox(),
     "body": new Box(50, 20),
     "sprite": new Sprite(
       new BoxGeometry(50, 20),
+      new BasicMaterial()
+    )
+  })
+  manager.create({
+    "transform": new Transform(100, 237),
+    "movable": new Movable(),
+    "bounds": new BoundingBox(),
+    "body": new Ball(15),
+    "sprite": new Sprite(
+      new CircleGeometry(15),
       new BasicMaterial()
     )
   })

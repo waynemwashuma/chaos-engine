@@ -7,12 +7,10 @@ import {
   BoxGeometry,
   BasicMaterial
 } from "/src/index.js"
-import {makePlatform} from "./utils.js"
+import { makePlatform } from "./utils.js"
 
 export function stacking(manager) {
-  stack(200, 300, 50, 50, 8, 5, manager)
   const rect = manager.getResource("renderer")
-  manager.getResource("world").gravity = 980
   makePlatform(
     manager,
     rect.width / 2,
@@ -20,6 +18,14 @@ export function stacking(manager) {
     rect.width,
     50
   )
+  stack(200, 100, 50, 50, 12, 5, manager)
+  stack(400, 100, 50, 50, 10, 5, manager)
+  stack(600, 100, 50, 50, 8, 5, manager)
+  stack(800, 100, 50, 50, 6, 5, manager)
+  stack(1000, 100, 50, 50, 4, 5, manager)
+  
+  manager.getResource("world").gravity = 980
+
 }
 
 function stack(x, y, w, h, no, spacing, manager) {
