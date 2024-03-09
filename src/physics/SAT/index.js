@@ -1,4 +1,4 @@
-import { Vector2 } from "../../math/index.js"
+import { Vector2, clamp } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { ShapeType, Settings } from "../settings.js"
 const _arr = [],
@@ -60,14 +60,16 @@ export const SAT = {
       overload.push(vertices2[0])
     }
     manifold.contactPoints[0].copy(overload[0]).add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
-    if (overload.length === 2) {
+    if (overload.length > 1) {
       manifold.contactPoints[1]
         .copy(overload[1])
         .add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
 
     }
-    manifold.contactNo = overload.length
+    
+    manifold.contactNo = clamp(overload.length, 0, 2)
     manifold.axis.normalFast(manifold.tangent)
+    manifold.axis.reverse()
     return manifold
   },
   /**

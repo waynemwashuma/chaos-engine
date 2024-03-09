@@ -31,7 +31,6 @@ export class SATNarrowPhase {
       collisionData.done = false
       SAT.shapesInBodyCollided(bodyA, bodyB, collisionData)
       if (collisionData.overlap < 0 || !collisionData.done) continue
-      CollisionManifold.calculateArms(manifold,transformA.position,transformB.position)
       manifold.restitution = bodyA.restitution < bodyB.restitution ? bodyA.restitution : bodyB.restitution
       manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction
       manifold.kineticFriction = bodyA.kineticFriction < bodyB.kineticFriction ? bodyA.kineticFriction : bodyB.kineticFriction

@@ -27,7 +27,7 @@ export const Settings = {
   fixedFrameRate: 1 / 60,
   penetrationSlop: 0.1,
   positionCorrection: true,
-  warmStarting: false,
+  warmStarting: true,
   impulseAccumulation: false,
   separationTolerance: 0.1,
 

@@ -31,9 +31,9 @@ export function bodyDebugger(manager, options = {}) {
         let [p1, p2] = clmd[i].contactData.contactPoints
         renderer.ctx.beginPath()
         circle(renderer.ctx, p1.x, p1.y, 5)
-        circle(renderer.ctx, p2.x, p2.y, 5)
+        if(clmd[i].contactData.contactNo === 2)circle(renderer.ctx, p2.x, p2.y, 5)
         renderer.ctx.closePath()
-        fill(renderer.ctx, "blue")
+        fill(renderer.ctx, "white")
       }
     }
 
