@@ -63,7 +63,29 @@ export class CollisionManifold {
     this.entityA = a
     this.entityB = b
   }
-  static warmstart(manifold) {}
+  static warmstart(manifold, movableA, movableB, bodyA, bodyB) {
+    const { contactNo } = manifold.contactData
+
+    for (let i = 0; i < contactNo; i++) {
+      CollisionManifold.applyImpulse(
+        manifold.tJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.tLambda[i]
+      ) /***/
+      CollisionManifold.applyImpulse(
+        manifold.nJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.nLambda[i]
+      )
+
+    }
+  }
 
   static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
     movableA.velocity.add(jacobian.va.clone().multiply(bodyA.inv_mass * lambda));
@@ -140,17 +162,19 @@ export class CollisionManifold {
       const oldtImpulse = manifold.tImpulse[i]
       if (Settings.impulseAccumulation) {
         manifold.impulse[i] = Math.max(0.0, manifold.impulse[i] + nLambda);
-        manifold.tImpulse[i] = Math.abs(tLambda) <= nLambda * manifold.staticFriction ?
+        const maxfriction = manifold.impulse[i] * manifold.kineticFriction
+        manifold.tImpulse[i] = Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
           tLambda :
           tLambda * manifold.kineticFriction
         manifold.nLambda[i] = manifold.impulse[i] - oldImpulse
         manifold.tLambda[i] = manifold.tImpulse[i] - oldtImpulse
+        // if (manifold.tLambda[i] > 3000) throw console.log(manifold,jt)
       }
       else {
         manifold.impulse[i] = Math.max(0.0, nLambda);
-        manifold.tImpulse[i] = Math.abs(tLambda) <= nLambda * manifold.staticFriction ?
+        manifold.tImpulse[i] = Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
           tLambda :
-          tLambda * manifold.kineticFriction
+        tLambda * manifold.kineticFriction
         manifold.nLambda[i] = manifold.impulse[i]
         manifold.tLambda[i] = manifold.tImpulse[i]
       }
@@ -172,8 +196,8 @@ export class CollisionManifold {
         bodyB,
         manifold.nLambda[i]
       )
+
     }
-    //throw console.log()
   }
 }
 export class CollisionData {

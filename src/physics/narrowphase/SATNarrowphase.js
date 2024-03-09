@@ -1,7 +1,7 @@
 import { Vector2, naturalizePair } from "../../math/index.js"
 import { SAT } from "../SAT/index.js";
 import { NarrowPhase } from "./Narrowphase.js"
-import {CollisionManifold} from "./collisionManifold.js"
+import { CollisionManifold } from "./collisionManifold.js"
 
 /**
  * Uses the Separation Axis Theorem.
@@ -12,20 +12,22 @@ export class SATNarrowPhase {
    * @param {CollisionPair[]} contactList 
    * @param {Manifold[]} [clmds=[]]
    */
+   clmdrecord = new Map()
   getCollisionPairs(manager, contactList, clmds = []) {
     for (let i = 0; i < contactList.length; i++) {
       const { a, b } = contactList[i]
-      const [transformA,bodyA] = manager.get(a,"transform", "body")
-      const [transformB,bodyB] = manager.get(b,"transform","body")
+      const [bodyA] = manager.get(a, "body")
+      const [bodyB] = manager.get(b, "body")
 
       if (!NarrowPhase.canCollide(bodyA, bodyB)) continue
       if (bodyA.aabbDetectionOnly || bodyB.aabbDetectionOnly) continue
 
       bodyA.sleeping = false
       bodyB.sleeping = false
-
-      const manifold = new CollisionManifold(a,b)
-      
+      const id = bodyA.id > bodyB.id ? bodyA.id + " " + bodyB.id : bodyB.id + " " + bodyA.id
+      if (!this.clmdrecord.has(id))
+        this.clmdrecord.set(id, new CollisionManifold(a, b))
+      const manifold = this.clmdrecord.get(id)
       const collisionData = manifold.contactData
       collisionData.overlap = -Infinity
       collisionData.done = false
