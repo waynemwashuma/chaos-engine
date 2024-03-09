@@ -55,7 +55,6 @@ export class World2D {
    * @type {NarrowPhase}
    */
   narrowphase = null
-  clmdrecord = new Map()
   constructor() {
     this.broadphase = new NaiveBroadphase(this)
     this.narrowphase = new SATNarrowPhase()
@@ -110,6 +109,14 @@ export class World2D {
       const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body")
       const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body")
 
+      if (Settings.warmStarting)
+        CollisionManifold.warmstart(
+          manifold,
+          movableA,
+          movableB,
+          bodyA,
+          bodyB
+        )
       CollisionManifold.prepare(
         manifold,
         bodyA,
