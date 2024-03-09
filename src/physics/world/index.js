@@ -55,7 +55,7 @@ export class World2D {
    * @type {NarrowPhase}
    */
   narrowphase = null
-
+  clmdrecord = new Map()
   constructor() {
     this.broadphase = new NaiveBroadphase(this)
     this.narrowphase = new SATNarrowPhase()
@@ -107,8 +107,8 @@ export class World2D {
 
     for (let i = 0; i < CLMDs.length; i++) {
       const manifold = CLMDs[i]
-      const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
-      const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
+      const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body")
+      const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body")
 
       CollisionManifold.prepare(
         manifold,
@@ -116,6 +116,8 @@ export class World2D {
         bodyB,
         movableA,
         movableB,
+        transformA.position,
+        transformB.position,
         inv_dt
       )
     }
@@ -133,37 +135,7 @@ export class World2D {
           bodyB
         )
       }
-    }/***/
-
-
-    /*for (let j = 0; j < world.velocitySolverIterations; j++) {
-      for (let i = 0; i < CLMDs.length; i++) {
-        const manifold = CLMDs[i]
-        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
-        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
-        ImpulseSolver.solveWithFriction(
-          movableA,
-          movableB,
-          bodyA,
-          bodyB,
-          manifold
-        )
-      }
-    }
-    for (let i = 0; i < CLMDs.length; i++) {
-      const manifold = CLMDs[i]
-      const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
-      const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
-
-      PenetrationSolver.solveT(
-        movableA,
-        movableB,
-        bodyA,
-        bodyB,
-        manifold,
-        inv_dt
-      )
-    }/**/
+    } /***/
   }
   /**
    * @private
