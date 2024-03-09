@@ -24,7 +24,7 @@ export const demos = {
     renderer.domElement.style.backgroundColor = "black"
     //renderer.camera.transform.scale.y = -1
     //renderer.camera.transform.position.y = renderer.width
-    
+
     this.setup(Storage.get("setup"))
     window.onresize = () => {
       renderer.setViewport(innerWidth, innerHeight * 0.5)
@@ -35,9 +35,9 @@ export const demos = {
   },
   setup: function(name) {
     manager.clear()
-    Storage.set("setup",name)
-    if(this.examples.has(name))
-    this.examples.get(name)(manager)
+    Storage.set("setup", name)
+    if (this.examples.has(name))
+      this.examples.get(name)(manager)
   },
   play(n) {
     this.setup(n)
@@ -49,7 +49,7 @@ export const demos = {
 
 manager.setResource("renderer", renderer)
 manager.setResource("world", world)
-manager.setResource("tweener",tweener)
+manager.setResource("tweener", tweener)
 
 //Tweener
 manager.registerSystem((dt, manager) => {
@@ -60,26 +60,29 @@ manager.registerSystem((dt, manager) => {
 
 //Intergrator
 manager.registerSystem((dt, manager) => {
-  const [transform, movable] = manager.query("transform", "movable")
+  const [transform, movable] = manager.query("transform", "movable").raw()
 
-  Intergrator.update(transform, movable, 1/60)
+  Intergrator.update(transform, movable, 1 / 60)
 })
 
 //Physics
 manager.registerSystem((dt, manager) => {
-  const [entity, transform, movable, bounds, body] = manager.query("entity", "transform", "movable", "bounds", "body")
+  const [entity, transform, movable, bounds, body] = manager.query("entity", "transform", "movable", "bounds", "body").raw()
   World2D.update(manager, world, entity, transform, movable, bounds, body, dt)
 })
 
 //Renderer
 manager.registerSystem((dt, manager) => {
-  const [transform, sprite] = manager.query("transform", "sprite")
+  const [transform, sprite] = manager.query("transform", "sprite").raw()
   Renderer2D.update(renderer, transform, sprite, dt)
 }) /**/
 
 //debuggers
 fpsDebugger(manager)
-bodyDebugger(manager,{
+bodyDebugger(manager, {
   clearRenderer: true,
-  drawCollisionArm:true
+  drawCollisionArm: false,
+  drawContacts:true,
+  drawBounds:false,
+  drawPosition:true
 })
