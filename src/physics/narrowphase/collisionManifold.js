@@ -21,33 +21,25 @@ export class CollisionManifold {
    */
   contactData = new CollisionData()
   /**
-   * @type {number}
+   * @type {number[]}
    */
-  impulse = 0
+  impulse = [0.0, 0.0]
+  /**
+   * @type {number[]}
+   */
+  tImpulse = [0.0, 0.0]
   /**
    * @type {number}
    */
-  tImpulse = 0
-  /**
-   * @type {Vector2}
-   */
-  ca1 = new Vector2()
-  /**
-   * @type {Vector2}
-   */
-  ca2 = new Vector2()
-  /**
-   * @type {number}
-   */
-  nbias = 0
+  nbias = [0.0, 0.0]
   /**
    * @type {Jacobian}
    */
-  nJacobian = new Jacobian()
+  nJacobian = [new Jacobian(), new Jacobian()]
   /**
    * @type {Jacobian}
    */
-  tJacobian = new Jacobian()
+  tJacobian = [new Jacobian(), new Jacobian()]
   /**
    * @type {number}
    */
@@ -60,6 +52,9 @@ export class CollisionManifold {
    * @type {number}
    */
   kineticFriction = 0
+  effectiveMass = [0, 0]
+  nLambda = [0, 0]
+  tLambda = [0, 0]
   /**
    * @param {T} a
    * @param {T} b
@@ -68,129 +63,117 @@ export class CollisionManifold {
     this.entityA = a
     this.entityB = b
   }
+  static warmstart(manifold) {}
+
   static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
     movableA.velocity.add(jacobian.va.clone().multiply(bodyA.inv_mass * lambda));
     movableB.velocity.add(jacobian.vb.clone().multiply(bodyB.inv_mass * lambda));
     movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda;
     movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda;
   }
-  static calculateArms(manifold, positionA, positionB) {
-    const { contactData } = manifold
-    if (contactData.contactNo == 2) {
-      const t1 = 0.5 //manifold.tangent.dot(positionA)
-      const t2 = 0.5 //manifold.tangent.dot(positionA)
 
-      Vector2.lerp(
-        contactData.contactPoints[0],
-        contactData.contactPoints[1],
-        t1,
-        manifold.ca1
-      ).sub(positionA)
+  static prepare(manifold, bodyA, bodyB, movableA, movableB, positionA, positionB, inv_dt) {
+    const { axis, overlap, tangent, contactPoints, contactNo } = manifold.contactData
 
-      Vector2.lerp(
-        contactData.contactPoints[0],
-        contactData.contactPoints[1],
-        t2,
-        manifold.ca2
-      ).sub(positionB)
-    } else {
-      manifold.ca1.copy(contactData.contactPoints[0]).sub(positionA)
-      manifold.ca2.copy(contactData.contactPoints[0]).sub(positionB)
+    for (let i = 0; i < contactNo; i++) {
+      const ca1 = contactPoints[i].clone().sub(positionA)
+      const ca2 = contactPoints[i].clone().sub(positionB)
+      //console.log(ca1)
+      //console.log(ca2)
+
+      manifold.nbias[i] = 0.0;
+      manifold.nJacobian[i].set(
+        axis.clone().reverse(),
+        axis,
+        -(ca1.cross(axis)),
+        ca2.cross(axis)
+      );
+      manifold.tJacobian[i].set(
+        tangent.clone().reverse(),
+        tangent,
+        -(ca1.cross(tangent)),
+        ca2.cross(tangent)
+      );
+      manifold.impulse[i] = 0
+      manifold.tImpulse[i] = 0
+      const va = new Vector2()
+        .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
+        .add(movableA.velocity)
+      const vb = new Vector2()
+        .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
+        .add(movableB.velocity)
+      const relativeVelocity = va.sub(vb)
+      const normalVelocity = axis.dot(relativeVelocity);
+      //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
+      if (Settings.positionCorrection)
+        manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
+      manifold.nbias[i] += manifold.restitution * Math.min(normalVelocity, 0.0);
+      const k =
+        bodyA.inv_mass +
+        bodyB.inv_mass +
+        manifold.nJacobian[i].wa * bodyA.inv_inertia * manifold.nJacobian[i].wa +
+        manifold.nJacobian[i].wb * bodyB.inv_inertia * manifold.nJacobian[i].wb;
+      manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
+
+      //throw console.log(k )
     }
-    //throw console.log(manifold)
-  }
-  static prepare(manifold, bodyA, bodyB, movableA, movableB, inv_dt) {
-    const { ca1, ca2 } = manifold
-    const { axis, overlap, tangent } = manifold.contactData
-    axis.reverse()
-    //tangent.reverse()
-
-    manifold.nbias = 0.0;
-    manifold.nJacobian.set(
-      axis.clone().reverse(),
-      axis,
-      -(ca1.cross(axis)),
-      ca2.cross(axis)
-    );
-    manifold.tJacobian.set(
-      tangent.clone().reverse(),
-      tangent,
-      -(ca1.cross(tangent)),
-      ca2.cross(tangent)
-    );
-    manifold.impulse = 0
-    manifold.tImpulse = 0
-
-    const va = new Vector2()
-      .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
-      .add(movableA.velocity)
-    const vb = new Vector2()
-      .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
-      .add(movableB.velocity)
-    const relativeVelocity = va.sub(vb)
-    const normalVelocity = axis.dot(relativeVelocity);
-    manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
-    if (Settings.positionCorrection)
-      manifold.nbias = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
-    manifold.nbias += manifold.restitution * Math.min(normalVelocity, 0.0);
-    const k =
-      bodyA.inv_mass +
-      bodyB.inv_mass +
-      manifold.nJacobian.wa * bodyA.inv_inertia * manifold.nJacobian.wa +
-      manifold.nJacobian.wb * bodyB.inv_inertia * manifold.nJacobian.wb;
-    manifold.effectiveMass = k > 0.0 ? 1.0 / k : 0.0;
+    //throw ""
   }
   static solve(manifold, movableA, movableB, bodyA, bodyB) {
-    const jv =
-      manifold.nJacobian.va.dot(movableA.velocity) +
-      manifold.nJacobian.wa * movableA.rotation +
-      manifold.nJacobian.vb.dot(movableB.velocity) +
-      manifold.nJacobian.wb * movableB.rotation;
-    const jt =
-      manifold.tJacobian.va.dot(movableA.velocity) +
-      manifold.tJacobian.wa * movableA.rotation +
-      manifold.tJacobian.vb.dot(movableB.velocity) +
-      manifold.tJacobian.wb * movableB.rotation;
-    let nLambda = manifold.effectiveMass * -(jv + manifold.nbias);
-    let tLambda = manifold.effectiveMass * -(jt);
-    const oldimpulse = manifold.impulse
-    const oldtimpulse = manifold.tImpulse
+    const { contactNo } = manifold.contactData
 
-    if (Settings.impulseAccumulation) {
-      manifold.impulse = Math.max(0.0, manifold.impulse + nLambda);
-      manifold.tImpulse = Math.abs(tLambda) <= manifold.impulse * manifold.staticFriction ?
-        tLambda :
-        tLambda * manifold.kineticFriction
+    for (let i = 0; i < contactNo; i++) {
+
+      const jv =
+        manifold.nJacobian[i].va.dot(movableA.velocity) +
+        manifold.nJacobian[i].wa * movableA.rotation +
+        manifold.nJacobian[i].vb.dot(movableB.velocity) +
+        manifold.nJacobian[i].wb * movableB.rotation;
+      const jt =
+        manifold.tJacobian[i].va.dot(movableA.velocity) +
+        manifold.tJacobian[i].wa * movableA.rotation +
+        manifold.tJacobian[i].vb.dot(movableB.velocity) +
+        manifold.tJacobian[i].wb * movableB.rotation;
+      let nLambda = manifold.effectiveMass[i] * -(jv + manifold.nbias[i]);
+      let tLambda = manifold.effectiveMass[i] * -(jt);
+      const oldImpulse = manifold.impulse[i]
+      const oldtImpulse = manifold.tImpulse[i]
+      if (Settings.impulseAccumulation) {
+        manifold.impulse[i] = Math.max(0.0, manifold.impulse[i] + nLambda);
+        manifold.tImpulse[i] = Math.abs(tLambda) <= nLambda * manifold.staticFriction ?
+          tLambda :
+          tLambda * manifold.kineticFriction
+        manifold.nLambda[i] = manifold.impulse[i] - oldImpulse
+        manifold.tLambda[i] = manifold.tImpulse[i] - oldtImpulse
+      }
+      else {
+        manifold.impulse[i] = Math.max(0.0, nLambda);
+        manifold.tImpulse[i] = Math.abs(tLambda) <= nLambda * manifold.staticFriction ?
+          tLambda :
+          tLambda * manifold.kineticFriction
+        manifold.nLambda[i] = manifold.impulse[i]
+        manifold.tLambda[i] = manifold.tImpulse[i]
+      }
     }
-    else {
-      manifold.impulse = Math.max(0.0, nLambda);
-      manifold.tImpulse = Math.abs(tLambda) <= manifold.impulse * manifold.staticFriction ?
-        tLambda :
-        tLambda * manifold.kineticFriction
+    for (let i = 0; i < contactNo; i++) {
+      CollisionManifold.applyImpulse(
+        manifold.tJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.tLambda[i]
+      ) /***/
+      CollisionManifold.applyImpulse(
+        manifold.nJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.nLambda[i]
+      )
     }
-    if (Settings.impulseAccumulation) {
-      nLambda = manifold.impulse - oldimpulse
-      tLambda = manifold.tImpulse - oldtimpulse
-    } else {
-      nLambda = manifold.impulse
-      tLambda = manifold.tImpulse
-    }
-    CollisionManifold.applyImpulse(
-      manifold.tJacobian,
-      movableA,
-      movableB,
-      bodyA,
-      bodyB,
-      manifold.tImpulse
-    ) /***/
-    CollisionManifold.applyImpulse(
-      manifold.nJacobian,
-      movableA,
-      movableB,
-      bodyA,
-      bodyB,
-      manifold.impulse
-    )
+    //throw console.log()
   }
 }
 export class CollisionData {
