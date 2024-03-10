@@ -6,27 +6,27 @@ export class DOMEventHandler {
    * A dictionary of callback functions
    * 
    * @private
-   * @type Object<string,function[]>
+   * @type {Record<string,function[]>}
    */
   handlers = {}
   /**
    * A dictionary of the main callback functions
    * 
    * @private
-   * @type Object<string,function>
+   * @type Object<keyof DocumentEventMap,function>
    */
   _evHandlers = {}
   /**
    * Adds an eventlistener.
    * 
-   * @param {string} e Name of the DOMEvent.
+   * @param {keyof DocumentEventMap} e Name of the DOMEvent.
    * @param {function} h The eventlistener.
    */
   add(e, h) {
     if (this.handlers[e])
       return this.handlers[e].push(h)
     this.handlers[e] = [h]
-    let listener = (event) => {
+    let listener = (/** @type {Event} */ event) => {
       let handlers = this.handlers[e]
       for (var i = 0; i < handlers.length; i++) {
         handlers[i](event)
@@ -38,19 +38,18 @@ export class DOMEventHandler {
   /**
    * Removes an eventlistener.
    * 
-   * @param {string} e Name of the DOMEvent.
+   * @param {keyof DocumentEventMap} e Name of the DOMEvent.
    * @param {function} h The eventlistener.
    */
   remove(e, h) {
     this.handlers[e].splice(this.handlers[e].indexOf(h), 1)
     if (!this.handlers[e].length)
-      this.dispose(e)
+      this.disposeEvent(e)
   }
   /**
    * Removes all eventlisteners of an event.
    * 
-   * @param {string} e Name of the DOMEvent.
-   * @param {function} h The eventlistener.
+   * @param {keyof DocumentEventMap} e Name of the DOMEvent.
    */
   disposeEvent(e) {
     document.removeEventListener(e, this._evHandlers[e])
@@ -61,8 +60,9 @@ export class DOMEventHandler {
    * Clears all eventlisteners of every event registered.
    */
   clear() {
-    for (var ev in this.handlers) {
-      this.dispose(ev)
+    for (const ev in this.handlers) {
+      // @ts-ignore
+      this.disposeEvent(ev)
     }
   }
   /* 

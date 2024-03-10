@@ -9,6 +9,7 @@ import {Renderer} from "./renderer.js"
 */
 export class WebGPURenderer extends Renderer{
   constructor(){
+    super()
     throw new Error("Dont get too excited yet :)")
   }
 }

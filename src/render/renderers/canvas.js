@@ -1,5 +1,6 @@
 import { Renderer } from "./renderer.js"
 import { Sprite } from "../sprites/index.js"
+import { Transform } from "../../intergrator/index.js"
 
 /**
  * Renders images and paths to the 2D context of a canvas.
@@ -7,15 +8,12 @@ import { Sprite } from "../sprites/index.js"
  * @extends Renderer
  */
 export class Renderer2D extends Renderer {
-  frameRate = 1 / 60
-  renderLast = []
   /**
   @param {HTMLCanvasElement} [canvas] element to draw on
   */
-  constructor(canvas) {
-    canvas = canvas || document.createElement("canvas")
-    super(canvas, canvas.getContext("2d"))
-
+  constructor(canvas = document.createElement("canvas"),context = canvas.getContext('2d')) {
+    if(!context)throw " Could not get a 3d context"
+    super(canvas, context)
   }
   clear() {
     this.ctx.setTransform()
@@ -25,8 +23,8 @@ export class Renderer2D extends Renderer {
   }
   /**
    * @param {number} dt
-   * @param {Tranform} transforms
-   * @param {Sprite} sprites
+   * @param {Transform[][]} transforms
+   * @param {Sprite<any,any>[][]} sprites
    * @param {Renderer2D} renderer
    */
   static update(renderer, transforms, sprites, dt) {
@@ -59,6 +57,7 @@ export class Renderer2D extends Renderer {
     renderer.ctx.restore()
   }
   requestFullScreen() {
+    // @ts-ignore
     this.domElement.parentElement.requestFullscreen()
   }
 }

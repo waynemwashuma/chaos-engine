@@ -1,3 +1,4 @@
+import { DOMEventHandler } from "../events/index.js"
 /**
  * This handles all inputs from mouse and touchpad on laptops
  */
@@ -85,19 +86,22 @@ export class Mouse {
     eh.add('click', this._onClick)
     eh.add('mousedown', this._onDown)
     eh.add('mouseup', this._onUp)
-    eh.add('mousewheel', this._onWheel)
+    eh.add('wheel', this._onWheel)
     eh.add('mousemove', this._onMove)
     eh.add("contextmenu", this._onContextMenu)
   }
   /**
    * @private
    */
+  // @ts-ignore
+  // @ts-ignore
   _onClick = (e) => {
     ++this.clickCount
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onMove = (e) => {
     this.position.x = e.clientX;
 
@@ -117,6 +121,7 @@ export class Mouse {
   /**
    * @private
    */
+  // @ts-ignore
   _onDown = (e) => {
     switch (e.button) {
 
@@ -132,6 +137,7 @@ export class Mouse {
   /**
    * @private
    */
+  // @ts-ignore
   _onUp = (e) => {
     switch (e.button) {
       case 0:
@@ -145,11 +151,13 @@ export class Mouse {
   /**
    * @private
    */
+  // @ts-ignore
   _onWheel = (e) => {
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onContextMenu = (e) => {
     e.preventDefault()
   }

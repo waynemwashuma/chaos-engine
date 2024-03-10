@@ -10,7 +10,7 @@ export const Cookies = {
    * 
    * @param {string} n Key of the cookie.
    * @param {string} v The value of the cookie.
-   * @param {number} [=12000] Max age of the cookie before it is deleted.
+   * @param {number} [maxAge=12000] Max age of the cookie before it is deleted.
    */
   set(n, v, maxAge = 12000) {
     document.cookie = `${n}=${v};maxAge=${maxAge}`
@@ -19,7 +19,7 @@ export const Cookies = {
    * Returns the value of the given key.
    * 
    * @param {string} n Key of the cookie
-   * @returns {string}
+   * @returns {string | undefined}
    */
   get(n) {
     let arr = document.cookie.split(";")
