@@ -25,16 +25,6 @@ export class Rectangle extends Shape {
     this.height = height
     this.width = width
   }
-  /**
-   * @inheritdoc
-   * @param {number} mass of the body
-   * @param {number} width
-   * @param {number} height
-   * @returns number
-   */
-  static calcInertia(mass, width, height) {
-    return mass * (sq(width) + sq(height)) / 12
-  }
   get area() {
     return this.width * this.height
   }
