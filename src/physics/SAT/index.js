@@ -84,8 +84,8 @@ export const SAT = {
   shapesCollided(shape1, shape2, target) {
     const arr = _arr
     Utils.clearArr(arr)
-    shape1.getNormals(shape2, arr)
-    shape2.getNormals(shape1, arr)
+    Shape.getNormals(shape1,shape2, arr)
+    Shape.getNormals(shape2,shape1, arr)
 
     SAT.projectShapesToAxes(shape1, shape2, arr, target)
   },
