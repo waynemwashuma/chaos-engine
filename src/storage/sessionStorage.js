@@ -16,11 +16,13 @@ export const Session = {
   },
   /**
    * Gets a value from sessions using a key
-   * 
+   * @template T
    * @param {string} k A key to retrieve a value
+   * @returns {T | undefined}
   */
   get(k) {
     let json = sessionStorage.getItem(k)
+    if(!json)return undefined
     return JSON.parse(json)
   },
   /**

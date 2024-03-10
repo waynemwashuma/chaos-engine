@@ -11,12 +11,12 @@ const obj = {
  */
 export class Vector2 {
   /**
-   * @param {number} x the x coordinate of the vector
-   * @param {number} y the y coordinate of the vector
+   * @param {number} [x] the x coordinate of the vector
+   * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
   }
   /**
    * @type string
@@ -320,7 +320,7 @@ export class Vector2 {
   /**
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
-   * @param {number} normal the unit vector perpendicular to reflection surface
+   * @param {Vector2} normal the unit vector perpendicular to reflection surface
    * @param { Vector2} [target]
    * @return { Vector2}
    */
@@ -349,13 +349,17 @@ export class Vector2 {
   toJson() {
     return this
   }
+  /**
+   * @param {*} obj
+   */
   fromJson(obj) {
     this.x = obj.x
     this.y = obj.y
   }
-
-  [Symbol.iterator] = function*() {
+  [Symbol.iterator] =function*() {
+    // @ts-ignore
     yield this.x
+    // @ts-ignore
     yield this.y
   }
   /**

@@ -9,12 +9,12 @@ export class Ray {
    * @private
    * @type {Vector2}
    */
-  _origin = null;
+  _origin
   /**
    * @private
    * @type {Vector2}
    */
-  _direction = null;
+  _direction
   /**
    * @param {Vector2} origin
    * @param {Vector2} direction

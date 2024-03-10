@@ -7,6 +7,9 @@ export class IndexedList {
    * @type {Map<string,number>}
    */
   _keys = new Map()
+  /**
+   * @type {string[]}
+   */
   _actualKeys = []
   /**
    * @private 
@@ -17,7 +20,9 @@ export class IndexedList {
    * @param {string} name
    */
   get(name) {
-    return this._list[this._keys.get(name)]
+    const index = this._keys.get(name)
+    if(!index)return undefined
+    return this._list[index]
   }
   /**
    * @param {string} name
@@ -33,6 +38,7 @@ export class IndexedList {
    */
   remove(name) {
     const index = this._keys.get(name)
+    if(!index)return
     this._actualKeys.splice(index, 1)
     this._list.splice(index, 1)
     this._keys.delete(name)

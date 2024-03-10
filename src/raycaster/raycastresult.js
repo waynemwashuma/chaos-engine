@@ -7,7 +7,7 @@ export class RayCollisionResult {
   /**
    * @type {T}
    */
-  object = null
+  object
   /**
    * @readonly
    * @type {RayPoint[]}
@@ -24,7 +24,7 @@ export class RayPoint {
   /**
    * @type {Vector2}
    */
-  point = null
+  point
   /**
    * @type {number}
    */
