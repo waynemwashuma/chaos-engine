@@ -33,14 +33,6 @@ export class Circle extends Shape {
   set radius(x) {
     this.vertices[1].x = x
   }
-  /**
-   * @inheritdoc
-   * @param {number} mass
-   * @param {number} radius 
-   */
-  static calcInertia(mass, radius) {
-    return mass * (radius * radius) / 4
-  }
   get area() {
     return Math.PI * this.radius * this.radius
   }
