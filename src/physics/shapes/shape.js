@@ -38,30 +38,9 @@ class Shape {
    * @param { Vector2} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vector2(), offsetAngle = 0) {
-    this.offPosition = offset
-    this.offAngle = offsetAngle * Math.PI / 180
+  constructor(vertices) {
     this.vertices = vertices.map(v => v.clone())
     this.geometry = new Geometry(vertices)
-  }
-  /**
-   * @type {string}
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type {string}
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "shape"
-  }
-  /**
-   * The area occupied by a shape.
-   * @type {number}
-   */
-  get area() {
-    return 0
   }
   /**
    * Returns the normals of the faces when rotated.
@@ -97,7 +76,7 @@ class Shape {
   static update(shape, position, angle, scale) {
     shape.angle = angle
     if (shape.type === ShapeType.CIRCLE) {
-      shape.position.copy(position)
+      shape.vertices[0].copy(position)
       return
     }
     Geometry.transform(
@@ -151,22 +130,6 @@ class Shape {
       i = j
     }
     return mass * numerator / (denominator * 6.0)
-  }
-  toJson() {
-    let obj = {
-      type: this.CHAOS_OBJ_TYPE,
-      geometry: this.geometry.toJson(),
-      shapeType: this.type,
-      offset: this.offPosition.toJson(),
-      offAngle: this.offAngle
-    }
-    return obj
-  }
-  fromJson(obj) {
-    this.offAngle = obj.offAngle
-    this.offPosition = obj.offset
-    this.geometry.fromJson(obj.geometry)
-    this.vertices = this.geometry.vertices.map(v => v.clone())
   }
   static CIRCLE = 0
   static POLYGON = 1

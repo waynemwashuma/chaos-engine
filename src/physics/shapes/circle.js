@@ -21,34 +21,16 @@ export class Circle extends Shape {
       new Vector2(),
       new Vector2(radius, radius)
     ])
-    this.radius = radius
     this.type = Shape.CIRCLE
   }
+  
+  //TODO - Remove these getters and setters
+  /**
+  */
   get position() {
     return this.vertices[0]
   }
   get radius() {
     return this.vertices[1].x
-  }
-  set radius(x) {
-    this.vertices[1].x = x
-  }
-  get area() {
-    return Math.PI * this.radius * this.radius
-  }
-  toJson() {
-    let obj = {
-      radius: this.radius,
-      offset: this.offPosition,
-      offAngle: this.offAngle,
-      shapeType: this.type,
-      type: this.CHAOS_OBJ_TYPE
-    }
-    return obj
-  }
-  fromJson(obj) {
-    return new Circle(
-      obj.radius
-    )
   }
 }
