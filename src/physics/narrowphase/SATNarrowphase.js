@@ -233,7 +233,7 @@ export class SATNarrowPhase {
    */
   static shapeContains(shape, point) {
     if (shape.type == Shape.CIRCLE)
-      return SATNarrowPhase.circleContains(shape.position, shape.radius, point)
+      return SATNarrowPhase.circleContains(shape.vertices[0], shape.vertices[1].x, point)
     return SATNarrowPhase.verticesContain(shape.vertices, point)
   }
   /**
