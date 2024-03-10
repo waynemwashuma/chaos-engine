@@ -1,6 +1,7 @@
 import { Vector2, clamp } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
-import { ShapeType, Settings } from "../settings.js"
+import {Shape} from "../shapes/index.js"
+import { Settings } from "../settings.js"
 const _arr = [],
   tmp1 = {
     overlap: 0,
@@ -68,8 +69,8 @@ export const SAT = {
     }
 
     manifold.contactNo =
-      shape1.type === ShapeType.CIRCLE ||
-      shape2.type === ShapeType.CIRCLE ?
+      shape1.type === Shape.CIRCLE ||
+      shape2.type === Shape.CIRCLE ?
       1 : clamp(overload.length, 0, 2)
     manifold.axis.normalFast(manifold.tangent)
     manifold.axis.reverse()
@@ -103,8 +104,8 @@ export const SAT = {
     for (let i = 0; i < axes.length; i++) {
       const axis = tmp4.copy(axes[i])
 
-      const verticesA = shapeA.getVertices(axis)
-      const verticesB = shapeB.getVertices(axis)
+      const verticesA = Shape.getVertices(shapeA,axis)
+      const verticesB = Shape.getVertices(shapeB,axis)
       const p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2)
       const p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3)
       const min = p1.max < p2.max ? p1.max : p2.max
@@ -194,7 +195,7 @@ export const SAT = {
    * @param { Vector2} point
    */
   shapeContains(shape, point) {
-    if (shape.type == ShapeType.CIRCLE)
+    if (shape.type == Shape.CIRCLE)
       return SAT.circleContains(shape.position, shape.radius, point)
     return SAT.verticesContain(shape.vertices, point)
   },
