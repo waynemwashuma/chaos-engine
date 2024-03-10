@@ -241,11 +241,13 @@ export class Body2D {
 
     for (let i = 0; i < body.shapes.length; i++) {
       const shape = body.shapes[i]
-      if (shape.type == 0) {
-        const idx = shape.position.x - shape.radius,
-          idy = shape.position.y - shape.radius,
-          mdx = shape.position.x + shape.radius,
-          mdy = shape.position.y + shape.radius
+      if (shape.type == Shape.CIRCLE) {
+        const position = shape.vertices[0]
+        const radius = shape.vertices[1].x
+        const idx = position.x - radius,
+          idy = position.y - radius,
+          mdx = position.x + radius,
+          mdy = position.y + radius
         if (!minX || idx < minX) minX = idx
         if (!maxX || mdx > maxX) maxX = mdx
         if (!minY || idy < minY) minY = idy

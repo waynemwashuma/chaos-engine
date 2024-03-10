@@ -102,12 +102,12 @@ function drawShapes(shapes, ctx) {
     if (shape.type === Shape.CIRCLE) {
       circle(
         ctx,
-        shape.position.x,
-        shape.position.y,
-        shape.radius
+        shape.vertices[0].x,
+        shape.vertices[0].y,
+        shape.vertices[1].x
       )
-      const r = Vector2.fromAngle(shape.angle).multiply(shape.radius)
-      drawArm(ctx, shape.position, r)
+      const r = Vector2.fromAngle(shape.angle).multiply(shape.vertices[1].x)
+      drawArm(ctx, shape.vertices[0], r)
     } else {
       vertices(ctx, shape.vertices, true)
     }

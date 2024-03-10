@@ -27,13 +27,4 @@ export class Triangle extends Shape {
       l2.sub(center)
     ])
   }
-  /**
-   * @param {number} mass
-   * @param {number} base
-   * @param {number} height
-   * @param {number} angle
-   */
-  static calcInertia(mass, base, height, angle) {
-    return 0.5 * mass * base * height * (1 - 2 / 3 * (1 - (Math.cos(2 * angle * 180 / Math.PI)) / 2))
-  }
 }
