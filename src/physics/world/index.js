@@ -1,5 +1,4 @@
 import { VerletSolver } from "../integrators/index.js";
-import { PenetrationSolver, ImpulseSolver } from "../solvers/index.js";
 import { Vector2 } from "../../math/index.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { SATNarrowPhase, CollisionManifold } from "../narrowphase/index.js"
