@@ -42,20 +42,6 @@ export class Circle extends Shape {
     return mass * (radius * radius) / 4
   }
   /**
-   * @inheritdoc
-   * 
-   * @param { Vector2} axis
-   * @param { Vector2[]} out 
-   * @returns { Vector2[]}
-   */
-  getVertices(axis, target = []) {
-    const v1 = new Vector2().copy(axis).multiply(-this.vertices[1].x).add(this.vertices[0])
-    const v2 = new Vector2().copy(axis).multiply(this.vertices[1].x).add(this.vertices[0])
-    target[0] = v1
-    target[1] = v2
-    return target
-  }
-  /**
    * 
    * @param {Shape} shape 
    * @param { Vector2[]} [target=[]] target

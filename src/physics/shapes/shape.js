@@ -18,7 +18,7 @@ class Shape {
   type = ShapeType.POLYGON
   /**
    * @type {number}
-  */
+   */
   angle = 0
   /**
    * The vertices describing the shape.
@@ -99,13 +99,19 @@ class Shape {
 
   /**
    * Returns the world coordinates of the vertices.
-   * 
+   * @template {Shape} T
+   * @param {T} shape
    * @param { Vector2 } axis
-   * @param { Vector2[] } target 
+   * @param { Vector2[] } target
    * @returns { Vector2[] }
    */
-  getVertices(axis, target) {
-    return this.vertices
+  static getVertices(shape, axis, target = []) {
+    if (shape.type === Shape.POLYGON) return shape.vertices
+    const v1 = new Vector2().copy(axis).multiply(-shape.vertices[1].x).add(shape.vertices[0])
+    const v2 = new Vector2().copy(axis).multiply(shape.vertices[1].x).add(shape.vertices[0])
+    target[0] = v1
+    target[1] = v2
+    return target
   }
 
   /**
