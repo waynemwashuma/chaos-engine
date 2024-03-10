@@ -11,50 +11,37 @@ import { Camera } from "../camera.js"
  */
 export class Renderer {
   /**
-   * @type number
+   * @type {number}
    */
   _rafID = 0
   /**
    * Used to throttle the frame rate.
    * 
    * @private
-   * @rype number
+   * @type {number}
    */
   _accumulator = 0
-  /**
-   * A list of meshes.
-   * 
-   * @type Sprite[]
-   */
-  objects = []
   /**
    * @private
    * @type {HTMLCanvasElement}
    */
-  domElement = null
-  /**@type {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext}*/
-  ctx = null
+  domElement
+  /**@type {CanvasRenderingContext2D }*/
+  ctx
   /**
    * @type {Camera}
    */
-  camera = null
+  camera
   /**
-   * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
+   * @param {CanvasRenderingContext2D} context
    * @param {HTMLCanvasElement} canvas element to draw on
    */
   constructor(canvas, context) {
     this.domElement = canvas
     this.ctx = context
-    this.camera = new Camera(this)
+    this.camera = new Camera()
     this.clock = new Clock()
-  }
-  /**
-   * Instantiates the renderer.
-   * 
-   * @param {Manager} manager
-   */
-  init(manager) {
-    manager.setComponentList("sprite", this.objects)
+    this._update = (/** @type {number} */ dt)=>{this.update(dt)}
   }
   /**
    * Clears the canvas on which the renderer draws on.
@@ -99,31 +86,17 @@ export class Renderer {
    */
   bindTo(selector, focus = true) {
     let element = document.querySelector(selector)
+    if(!element)return console.error("could not find container for the canvas.");
     this.domElement.remove()
     this.domElement.style.backgroundColor = "grey"
     this.domElement.style.touchAction = "none"
     element.append(this.domElement)
   }
   /**
-   * Adds a mesh to the renderer.
-   * 
-   * @param {Sprite | Group} sprite
-   */
-  add(sprite) {
-    this.objects.push(sprite)
-  }
-  /**
-   * Removes the given sprite from the renderer.
-   * 
-   * @param {Sprite} sprite
-   */
-  remove(sprite) {
-    this.objects.splice(this.objects.indexOf(sprite), 1)
-  }
-  /**
    * Requests fullscreen for the renderer.
    */
   requestFullScreen() {
+    // @ts-ignore
     this.domElement.parentElement.requestFullscreen()
   }
   /**

@@ -1,3 +1,4 @@
+import { BoundingCircle } from "./boundingSphere.js"
 import { Overlaps } from "./overlap.js"
 
 /**
@@ -7,15 +8,15 @@ export class BoundingBox {
   /**
    * The upper limit of the bounding box
    * 
-   * @type Vector_like
+   * @type {Vector_like}
    */
-  max = null
+  max
   /**
    * The lower limit of the bounding box
    * 
-   * @type Vector_like
+   * @type {Vector_like}
    */
-  min = null
+  min
   /**
    * @param {number} [minX=0]
    * @param {number} [minY=0]
@@ -39,7 +40,8 @@ export class BoundingBox {
    * @returns boolean
    **/
   intersects(bound) {
-    if (bound.r)
+    //use bound.type instead
+    if (bound instanceof BoundingCircle)
       return Overlaps.AABBvsSphere(this, bound)
     return Overlaps.AABBColliding(this, bound)
   }
@@ -67,8 +69,6 @@ export class BoundingBox {
    * @param {BoundingBox} bounds
    */
   copy(bounds) {
-    this.pos.x = bounds.pos.x
-    this.pos.y = bounds.pos.y
     this.min.x = bounds.min.x
     this.min.y = bounds.min.y
     this.max.x = bounds.max.x
@@ -76,17 +76,16 @@ export class BoundingBox {
   }
   toJson() {
     return {
-      posX: this.pos.x,
-      posY: this.pos.y,
       minX: this.min.x,
       minY: this.min.y,
       maxX: this.max.x,
       maxY: this.max.y,
     }
   }
+  /**
+   * @param {*} obj
+   */
   fromJson(obj) {
-    this.pos.x = obj.posX
-    this.pos.y = obj.posY
     this.min.x = obj.minX
     this.min.y = obj.minY
     this.max.x = obj.maxX

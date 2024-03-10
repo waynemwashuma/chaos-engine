@@ -11,24 +11,24 @@ export class Input {
   /**
    * This attaches callbacks to the DOM.
    * 
-   * @type DOMEventHandler
+   * @type {DOMEventHandler}
   */
-  DOMEventHandler = null
+  DOMEventHandler
   /**
    * 
-   * @type Mouse
+   * @type {Mouse}
   */
-  mouse = null
+  mouse
   /**
    * 
-   * @type Touch
+   * @type {Touch}
   */
-  touch = null
+  touch
   /**
    * 
-   * @type Keyboard
+   * @type {Keyboard}
   */
-  keyboard = null
+  keyboard
   /**
    * @param {DOMEventHandler} eventHandler
   */
@@ -50,8 +50,8 @@ export class Input {
   */
   dispose() {
     //TODO remove eventlisteners
-    this.mouse.dispose()
-    this.keyboard.dispose()
-    this.touch.dispose()
+    //this.mouse.dispose()
+    //this.keyboard.dispose()
+    //this.touch.dispose()
   }
 }

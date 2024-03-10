@@ -53,9 +53,11 @@ export function removeElement(arr, index) {
   if (index == -1) return null
   if (arr.length - 1 == index) return arr.pop()
 
-  let temp = arr[index]
-  arr[index] = arr.pop()
-  return temp
+  const temp = arr[index]
+  const temp2 = arr.pop()
+  if(!temp2)return 
+  arr[index] = temp2
+  return
 }
 /**
  * Generates a unique id when called
@@ -66,79 +68,6 @@ export function generateID() {
   return (tmpID += 1)
 }
 
-/**
- * Mixes the functions required by a component into a class.
- * 
- * @memberof Utils
- * @param {Function} component the class/constructor function to add methods to.
- * @param {boolean} [overrideInit=true]
- * @param {boolean} [overrideUpdate=true]
- */
-export function inheritComponent(component, overrideInit = true, overrideUpdate = true) {
-  if (component == void 0 || typeof component !== "function") return
-  let proto = component.prototype
-
-  if (proto.destroy) {
-    let destroy = component.destroy
-    proto.destroy = function() {
-      this.entity = null
-      destroy.call(this)
-    }
-  } else {
-    proto.destroy = function() {
-      this.entity = null
-    }
-  }
-  if (proto.init && overrideInit) {
-    let init = proto.init
-    proto.init = function(entity) {
-      this.entity = entity
-      init.call(this, entity)
-    }
-  } else if (!proto.init) {
-    proto.init = function(entity) {
-      this.entity = entity
-    }
-  }
-  if (!proto.update && overrideUpdate) {
-    proto.update = function() {
-      Logger.warnOnce("Please override the update function in the component " + proto.constructor.name)
-
-    }
-  }
-  proto.get = function(n) {
-    return this.entity.getComponent(n);
-  }
-  proto.requires = function(entity, ...names) {
-    for (var i = 0; i < names.length; i++)
-      if (!entity.has(names[i]))
-        throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
-  }
-
-  proto.query = function(bound, target = []) {
-    return this.entity.query(bound, target)
-  }
-  if (!proto.toJson) {
-    //console.log(proto);
-    proto.toJson = function() {
-      throw "Error, implement .toJson() in the class " + this.CHOAS_CLASSNAME
-    }
-  }
-  Object.defineProperty(proto, "CHOAS_CLASSNAME", {
-    get: function() {
-      return this.constructor.name.toLowerCase()
-    },
-    enumerable: true,
-    configurable: false
-  })
-  Object.defineProperty(proto, "CHAOS_OBJ_TYPE", {
-    get: function() {
-      return "component"
-    },
-    enumerable: true,
-    configurable: false
-  })
-}
 /**
  * Todo - Fix this function to add all props if no props param is given
  * Mixes the properties and methods required by an object from another object.

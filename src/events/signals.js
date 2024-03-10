@@ -2,11 +2,14 @@
  * @template T
  */
 export class Signal {
+  /**
+   * @type {signalListener<T>[]}
+   */
   _listeners = []
   /**
    * @type {T}
    */
-  _value = null
+  _value
   /**
    * @param {T} value
    */
@@ -22,28 +25,22 @@ export class Signal {
   set value(x) {
     this._value = x
     for (var i = 0; i < this._listeners.length; i++) {
-      let func = this._listeners[i]
-      func.listener(this)
-      if (func.callOnce)
-        this.removeListener(func.listener)
+      this._listeners[i](this.value)
     }
   }
   /**
-   * @param {signalListener} listener
+   * @param {signalListener<T>} listener
    * @param {boolean} callOnce
    */
   addListener(listener, callOnce = false) {
-    this._listeners.push({
-      listener,
-      callOnce
-    })
+    this._listeners.push(listener)
   }
   /**
-   * @param {signalListener} listener
+   * @param {signalListener<T>} listener
    */
   removeListener(listener) {
     for (var i = 0; i < this._listeners.length; i++) {
-      if (this._listeners[i].listener == listener)
+      if (this._listeners[i] == listener)
         return this._detach(i)
     }
   }
@@ -52,12 +49,13 @@ export class Signal {
    * @param {number} bindingIndex
    */
   _detach(bindingIndex) {
-    this._listeners.splice(i, 1)
+    this._listeners.splice(bindingIndex, 1)
   }
 }
 
 /**
+ * @template T
  * @callback signalListener
- * @param {Signal} value
+ * @param {T} value
  * @returns {void}
  */

@@ -56,9 +56,7 @@ export function makeContainer(
       height + thickness
     )
   )
-  let [[body]] = manager.query("transform")
 }
-
 function createStaticBox(x, y, w, h) {
   const box = {
     "transform": new Transform(x, y),

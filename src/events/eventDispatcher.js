@@ -39,9 +39,16 @@ export class EventDispatcher {
     }
     this.handlers[name] = [handler]
   }
+  /**
+   * @param {string} n
+   * @param {any} data
+   */
   addEvent(n,data){
     this.events[n] = data
   }
+  /**
+   * @param {string} n
+   */
   getEvent(n){
     return this.events[n]
   }

@@ -1,3 +1,4 @@
+import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
 
 export class Intergrator {

@@ -1,3 +1,4 @@
+import { BoundingBox } from "./boundingBox.js"
 import { Overlaps } from "./overlap.js"
 
 /**
@@ -26,7 +27,7 @@ export class BoundingCircle {
    * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {
-    if (bound.r)
+    if (bound instanceof BoundingCircle)
       return Overlaps.boundSpheresColliding(this, bound)
     return Overlaps.AABBvsSphere(bound, this)
   }
@@ -45,6 +46,9 @@ export class BoundingCircle {
       r: this.r
     }
   }
+  /**
+   * @param {*} obj
+   */
   fromJson(obj) {
     this.pos.x = obj.posX
     this.pos.y = obj.posY

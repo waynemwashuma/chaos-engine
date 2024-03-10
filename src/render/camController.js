@@ -1,4 +1,6 @@
-import { Vector2 } from '../math/index.js'
+import { Transform } from '../intergrator/index.js'
+import { Angle, Vector2 } from '../math/index.js'
+import { Camera } from './camera.js'
 
 export class CamController {
   /**
@@ -8,7 +10,7 @@ export class CamController {
   /**
    * @type {Transform}
    */
-  transform = null
+  transform
   /**
    * @type {Vector2 | null}
    */
@@ -26,19 +28,11 @@ export class CamController {
   }
   /**
    * @param {Vector2} position
-   * @param {Angle} orientation
+   * @param {Angle} [orientation]
    */
-  follow(position, orientation = null) {
-    this.targetOrientation = orientation
+  follow(position, orientation) {
+    this.targetOrientation = orientation || null
     this.targetPosition = position
-  }
-  /**
-   * @param {Entity} entity
-   */
-  followEntity(entity) {
-    if (!entity.has("transform")) return
-    let target = entity.get("transform")
-    this.follow(target.position, target.orientation)
   }
   /**
    * @param {number} x
@@ -47,11 +41,10 @@ export class CamController {
   setOffset(x, y) {
     this.offset.set(x, y)
   }
-  init() {}
   update() {
     if (this.targetPosition)
       this.transform.position.copy(this.targetPosition.clone().sub(this.offset))
     if (this.targetOrientation)
-      this.transform.orientation.copy(this.targetOrientation)
+      this.transform.orientation = this.targetOrientation.value
   }
 }

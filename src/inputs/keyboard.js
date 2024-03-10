@@ -1,3 +1,5 @@
+import { DOMEventHandler } from "../events/index.js";
+
 /**
  * Handled the keyboard input of an application on a PC.
 */
@@ -41,6 +43,7 @@ export class Keyboard {
   /**
    * @private
   */
+  // @ts-ignore
   _onDown = e => {
     let key = this.normalize(e.code)
     this.keys[key] = true
@@ -49,6 +52,7 @@ export class Keyboard {
     /**
      * @private
      */
+  // @ts-ignore
   _onUp = e =>{
     this.keys[this.normalize(e.code)] = false
   }
