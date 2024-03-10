@@ -21,8 +21,11 @@ export class Transform{
       orientation:this.orientation
     }
   }
+  /**
+   * @param {*} obj
+   */
   fromJson(obj){
     this.position.fromJson(obj.position)
-    this.orientation.fromJson(obj.orientation)
+    this.orientation = obj.orientation
   }
 }

@@ -15,11 +15,13 @@ export const Storage = {
   },
   /**
    * Gets a value from local storage by its key.
-   * 
+   * @template T
    * @param {string} k
+   * @returns {T | undefined}
   */
   get(k) {
     let json = localStorage.getItem(k)
+    if(!json)return undefined
     return JSON.parse(json)
   },
   /**

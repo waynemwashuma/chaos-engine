@@ -83,8 +83,11 @@ export class Manager {
   }
   /**
    * Creates a new instance of Manager class
+   * @param {ManagerOptions} options
    **/
-  constructor(options = {}) {
+  constructor(options = {
+    autoplay: true
+  }) {
     options = Object.assign({
       autoplay: true,
     }, options)
@@ -149,7 +152,7 @@ export class Manager {
   /**
    * @template T
    * @param { string[]  } compNames
-   * @returns {T[][]}
+   * @returns {Query<T>}
    */
   query(...compNames) {
     const query = new Query(...compNames)
@@ -246,3 +249,7 @@ export class Manager {
  * @param {Manager} manager
  * @returns {void}
 */
+/**
+ * @typedef ManagerOptions
+ * @property {boolean} autoplay
+ */

@@ -40,11 +40,11 @@ export class Color {
 
   /**
    * Copy a color object or CSS color into this one.
-   * @param {Color|string} color
+   * @param {Color} color
    * @returns {Color} Reference to this object for method chaining
    */
   copy(color) {
-    this.set(color.r, color.g, color.b, color.a)
+    return this.set(color.r, color.g, color.b, color.a)
   }
 
   /**
@@ -125,8 +125,9 @@ export class Color {
       this.a
     );
   }
-
-
+  /**
+   * @param {number[]} array
+   */
   toArray(array, offset = 0) {
     array[offset] = this.r
     array[offset + 1] = this.g

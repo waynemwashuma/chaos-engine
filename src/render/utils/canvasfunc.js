@@ -1,5 +1,7 @@
+import { Vector2 } from "../../math/index.js";
+
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x1
  * @param {number} y1
  * @param {number} x2
@@ -10,7 +12,7 @@ export function line(ctx, x1, y1, x2, y2) {
   ctx.lineTo(x2, y2)
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x
  * @param {number} y
  * @param {number} w
@@ -20,7 +22,7 @@ export function rect(ctx, x, y, w, h) {
   ctx.rect(x, y, w, h)
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x
  * @param {number} y
  * @param {number} r
@@ -29,7 +31,7 @@ export function circle(ctx, x, y, r) {
   ctx.arc(x, y, r, 0, Math.PI * 2)
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param { Vector2[]} vertices
  * @param {boolean} [close=true]
  */
@@ -43,7 +45,7 @@ export function vertices(ctx, vertices, close = true) {
     ctx.lineTo(vertices[0].x, vertices[0].y)
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x
  * @param {number} y
  * @param {number} r
@@ -65,7 +67,7 @@ export function fillText(ctx, text, x, y) {
 /**
  * @param {CanvasRenderingContext2D} ctx
  * @param {string} [color="black"]
- * @param {string} [fillRule]
+ * @param {CanvasFillRule} [fillRule]
  */
 export function fill(ctx, color = "black", fillRule) {
   ctx.fillStyle = color

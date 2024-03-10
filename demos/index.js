@@ -60,26 +60,26 @@ manager.registerSystem((dt, manager) => {
 
 //Intergrator
 manager.registerSystem((dt, manager) => {
-  const [transform, movable] = manager.query("transform", "movable")
+  const [transform, movable] = manager.query("transform", "movable").raw()
 
   Intergrator.update(transform, movable, 1/60)
 })
 
 //Physics
 manager.registerSystem((dt, manager) => {
-  const [entity, transform, movable, bounds, body] = manager.query("entity", "transform", "movable", "bounds", "body")
+  const [entity, transform, movable, bounds, body] = manager.query("entity", "transform", "movable", "bounds", "body").raw()
   World2D.update(manager, world, entity, transform, movable, bounds, body, dt)
 })
 
 //Renderer
 manager.registerSystem((dt, manager) => {
-  const [transform, sprite] = manager.query("transform", "sprite")
+  const [transform, sprite] = manager.query("transform", "sprite").raw()
   Renderer2D.update(renderer, transform, sprite, dt)
 }) /**/
 
 //debuggers
 fpsDebugger(manager)
 bodyDebugger(manager,{
-  clearRenderer: true,
-  drawCollisionArm:true
+  clearRenderer: false,
+  drawCollisionArm:false
 })

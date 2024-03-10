@@ -1,3 +1,5 @@
+import { Vector2 } from "./vector.js";
+
 /**
  * A class that is used to transform positions through rotation, scaling and translation.
  */
@@ -204,11 +206,17 @@ export class Matrix2 {
   }
 
   [Symbol.iterator] = function*() {
+    // @ts-ignore
     yield this.a
+    // @ts-ignore
     yield this.b
+    // @ts-ignore
     yield this.c
+    // @ts-ignore
     yield this.d
+    // @ts-ignore
     yield this.e
+    // @ts-ignore
     yield this.f
   }
 }

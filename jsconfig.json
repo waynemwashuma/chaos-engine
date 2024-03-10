@@ -3,7 +3,7 @@
         "strict": true,
         "checkJs":true,
         "module": "CommonJS",
-        "target": "ES6"
+        "target": "ES2017"
     },
     "include": [
         "src/**/*"

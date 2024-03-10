@@ -3,12 +3,18 @@ import { Logger } from "../logger/index.js"
 import { getURLName, getURLExtension } from "./utils.js"
 
 export class TextureLoader {
-  resources = []
+  /**
+   * @type {{ [x: string]: { buffer: ArrayBuffer, dimensions: any; } }}
+   */
+  resources = {}
   onSingleFinish = () => {}
   onfinish = () => {}
   baseUrl = ""
+  /**
+   * @param {string[]} urls
+   */
   async load(urls) {
-    for (var url of urls) {
+    for (const url of urls) {
       const name = getURLName(url)
       const extension = getURLExtension(url)
 
@@ -39,6 +45,9 @@ export class TextureLoader {
   }
 }
 
+/**
+ * @param {string} url
+ */
 function getDimensions(url) {
   return new Promise((resolve, reject) => {
     const img = new Image()

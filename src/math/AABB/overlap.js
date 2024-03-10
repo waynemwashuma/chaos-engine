@@ -1,3 +1,6 @@
+import { BoundingBox } from "./boundingBox.js";
+import { BoundingCircle } from "./boundingSphere.js";
+
 /**
  * This module is used to check if bounds of a body overlap
  */
@@ -45,16 +48,23 @@ export const Overlaps = {
   /**
    * Checks if any AABB or/and a BoundingCircle overlap
    * 
-   * @param {BoundingBox | BoundingCircle} a
-   * @param {BoundingCircle | BoundingBox} b
+   * @param {BoundingBox | BoundingCircle} bound1
+   * @param {BoundingCircle | BoundingBox} bound2
    */
   colliding(bound1, bound2) {
+    // @ts-ignore
     if (bound1.max && bound2.max)
+      // @ts-ignore
       return Overlaps.AABBColliding(bound1, bound2)
+    // @ts-ignore
     if (bound1.r && bound2.r)
+      // @ts-ignore
       return Overlaps.boundSpheresColliding(bound1, bound2)
+    // @ts-ignore
     if (bound1.r)
+      // @ts-ignore
       return Overlaps.AABBvsSphere(bound2, bound1)
+    // @ts-ignore
     return Overlaps.AABBvsSphere(bound1, bound2)
   }
 }

@@ -9,16 +9,10 @@ export class CircleGeometry {
     this.init(radius)
   }
   /**
-   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} radius
    */
   init(radius) {
     this.drawable = new Path2D()
     circle(this.drawable,0,0,radius)
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    circle(ctx, 0, 0, this.radius)
   }
 }

@@ -1,4 +1,4 @@
-import { Interpolation, Easing } from "../../math/index.js"
+import { Interpolation, Easing, Angle, Color, Vector2 } from "../../math/index.js"
 /**
  * Component responsible for animations.
  * 
@@ -21,17 +21,17 @@ export class Tween {
    * @type {T}
    * @private
    */
-  _to = null
+  _to
   /**
    * @type {T}
    * @private
    */
-  _from = null
+  _from
   /**
    * @type {T}
    * @private
    */
-  _into = null
+  _into
   /**
    * @type {LerpFunc}
    * @private
@@ -53,15 +53,19 @@ export class Tween {
    */
   _updateFunc = NoUpdateThrow
   /**
-   * @type {Tween}
+   * @type {Tween<T> | null}
    * @private
    */
   _next = null
   /**
-   *@param {T} into
+   * @param {T} into
+   * @param {T} to
+   * @param {T} from
    */
-  constructor(into) {
+  constructor(to,from,into) {
     this._into = into
+    this._to = to
+    this._from = from
   }
   /**
    * @param {T} x
@@ -78,7 +82,7 @@ export class Tween {
     return this
   }
   /**
-   * @param {T} t
+   * @param {number} t
    */
   duration(t) {
     this._duration = t
@@ -105,15 +109,15 @@ export class Tween {
   /**
    * @param {EasingFunc} callback
    */
-  easing(func) {
-    this._easingFunction = func
+  easing(callback) {
+    this._easingFunction = callback
     return this
   }
   /**
    * @param {LerpFunc} callback
    */
-  interpolant(func) {
-    this._interpolationFunc = func
+  interpolant(callback) {
+    this._interpolationFunc = callback
     return this
   }
   /**
@@ -125,20 +129,20 @@ export class Tween {
     if (!tween.active) return
 
     tween._timeTaken += dt
-    if (tween._timeTaken >= this._duration) {
-      if (tween._next !== void 0) {
+    if (tween._timeTaken >= tween._duration) {
+      if (tween._next) {
         tween.stop()
         tween._next.play()
       }
       if (tween._repeat) {
         tween._timeTaken = 0
       } else {
-        tween._timeTaken = this._duration
+        tween._timeTaken = tween._duration
         tween.active = false
       }
     }
     let t = tween._easingFunction(
-      tween._timeTaken / this._duration
+      tween._timeTaken / tween._duration
     )
     tween._updateFunc(
       tween._interpolationFunc,
@@ -149,7 +153,7 @@ export class Tween {
     )
   }
   /**
-   * @param {Tween} next
+   * @param {Tween<T>} next
    */
   chain(next) {
     this._next = next
@@ -166,16 +170,19 @@ export function Vector2Update(lerpFunc, to, from, t, into) {
 }
 /**
  * @template T
- * @type {TweenUpdate}
+ * 
+ * @type {TweenUpdate<T>}
  */
 export function Vector3Update(lerpFunc, to, from, t, into) {
+  // @ts-ignore
   into.x = lerpFunc(from.x, to.x, t)
+  // @ts-ignore
   into.y = lerpFunc(from.y, to.y, t)
+  // @ts-ignore
   into.z = lerpFunc(from.z, to.z, t)
 }
 
 /**
- * @template T
  * @type {TweenUpdate<Color>}
  */
 export function ColorUpdate(lerpFunc, to, from, t, into) {
@@ -192,15 +199,14 @@ export function AngleUpdate(lerpFunc, to, from, t, into) {
   into.value = lerpFunc(from.value, to.value, t)
 }
 /**
- * @template T
- * @type {TweenUpdate}
+ * @type {TweenUpdate<any>}
  */
 function NoUpdateThrow(lerpFunc, to, from, t, into) {
   throw "The Tween does not have a valid onUpdate callback."
 }
 
 /**
- * @template {T}
+ * @template T
  * @callback TweenUpdate
  * @param {LerpFunc} lerpFunc
  * @param {T} to

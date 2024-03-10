@@ -3,10 +3,16 @@ import { Logger } from "../logger/index.js"
 import { getURLName, getURLExtension } from "./utils.js"
 
 export class SoundLoader {
-  resources = []
+  /**
+   * @type {{ [x: string]: any; }}
+   */
+  resources = {}
   onSingleFinish = () => {}
   onfinish = () => {}
   baseUrl = ""
+  /**
+   * @param {string[]} urls
+   */
   async load(urls) {
     for (var url of urls) {
       const name = getURLName(url)
@@ -29,8 +35,8 @@ export class SoundLoader {
       this.resources[name] = {
         buffer: raw
       }
-      this.onSingleFinish(url,this.resources[name])
+      //this.onSingleFinish(url,this.resources[name])
     }
-    this.onfinish(this.resources)
+    //this.onfinish(this.resources)
   }
 }
