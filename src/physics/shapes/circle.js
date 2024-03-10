@@ -41,26 +41,6 @@ export class Circle extends Shape {
   static calcInertia(mass, radius) {
     return mass * (radius * radius) / 4
   }
-  /**
-   * 
-   * @param {Shape} shape 
-   * @param { Vector2[]} [target=[]] target
-   * @returns {Vector2[]}
-   */
-  getNormals(shape, target = []) {
-    let min = null,
-      vertex = null
-    for (let i = 0; i < shape.vertices.length; i++) {
-      let a = this.vertices[0].distanceToSquared(shape.vertices[i])
-      if (!min || min > a) {
-        vertex = shape.vertices[i]
-        min = a
-      }
-    }
-    if (!vertex) vertex = shape.vertices[0]
-    target.push(new Vector2().copy(vertex).sub(this.vertices[0]).normalize())
-    return target
-  }
   get area() {
     return Math.PI * this.radius * this.radius
   }

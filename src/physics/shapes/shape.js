@@ -59,8 +59,20 @@ class Shape {
    * @param { Vector2[]} [target=[]] An array where results are stored.
    * @returns { Vector2[]}
    */
-  getNormals(shape, target) {
-    return this.geometry.getNormals(this.angle, target)
+  static getNormals(shape, refshape, target = []) {
+    if (shape.type === Shape.POLYGON) return shape.geometry.getNormals(shape.angle, target)
+    let min = null,
+      vertex = null
+    for (let i = 0; i < refshape.vertices.length; i++) {
+      const a = shape.vertices[0].distanceToSquared(refshape.vertices[i])
+      if (!min || min > a) {
+        vertex = refshape.vertices[i]
+        min = a
+      }
+    }
+    if (!vertex) vertex = refshape.vertices[0]
+    target.push(new Vector2().copy(vertex).sub(shape.vertices[0]).normalize())
+    return target
   }
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
