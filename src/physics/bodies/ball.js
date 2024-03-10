@@ -1,5 +1,5 @@
 import { Body2D } from "./body.js"
-import { Circle } from "../shapes/index.js"
+import { Circle,Shape } from "../shapes/index.js"
 
 
 /**
@@ -13,7 +13,7 @@ export class Ball extends Body2D {
   */
   constructor(radius) {
     super(new Circle(radius))
-    this.inertia = Circle.calcInertia(this.mass, radius)
+    this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
   }
   /**
    * @inheritdoc
@@ -25,6 +25,6 @@ export class Ball extends Body2D {
   set mass(x) {
     this._mass = x
     this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inertia = Circle.calcInertia(this.mass, this.shapes[0].radius)
+    this.inertia = this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
   }
 }

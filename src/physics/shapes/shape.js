@@ -132,8 +132,25 @@ class Shape {
    * @virtual
    * @returns {number}
    */
-  static calcInertia() {
-    throw new Error("Implement in the children classes")
+  static calcInertia(shape, mass) {
+    const vertices = shape.vertices
+    if (shape.type === Shape.CIRCLE) {
+      const radius = vertices[1].x
+      return mass * (radius * radius) * 0.5
+    }
+    const vertexCount = vertices.length
+    let numerator = 0.0
+    let denominator = 0.0
+    let i = vertexCount - 1
+    for (let j = 0; j < vertexCount; ++j) {
+      const v1 = vertices[i]
+      const v2 = vertices[j]
+      const crs = Math.abs(v2.cross(v1))
+      numerator += crs * (v2.dot(v2) + v2.dot(v1) + v1.dot(v1))
+      denominator += crs
+      i = j
+    }
+    return mass * numerator / (denominator * 6.0)
   }
   toJson() {
     let obj = {
