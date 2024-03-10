@@ -35,10 +35,10 @@ export class Geometry {
    * @param {number} rad
    * @param {Vector2[]} target
    */
-  getNormals(rad, target) {
+  static getNormals(geometry,rad, target) {
     target = target || []
-    for (var i = 0; i < this.normals.length; i++) {
-      target.push(this._dynNormals[i].copy(this.normals[i]).rotate(rad))
+    for (var i = 0; i < geometry.normals.length; i++) {
+      target.push(geometry._dynNormals[i].copy(geometry.normals[i]).rotate(rad))
     }
     return target
   }
