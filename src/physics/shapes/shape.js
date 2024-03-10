@@ -60,7 +60,7 @@ class Shape {
    * @returns { Vector2[]}
    */
   static getNormals(shape, refshape, target = []) {
-    if (shape.type === Shape.POLYGON) return shape.geometry.getNormals(shape.angle, target)
+    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry,shape.angle, target)
     let min = null,
       vertex = null
     for (let i = 0; i < refshape.vertices.length; i++) {
