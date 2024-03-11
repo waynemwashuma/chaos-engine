@@ -8,16 +8,19 @@ import { Transform } from "../../intergrator/index.js"
  * @extends Renderer
  */
 export class Renderer2D extends Renderer {
+  /**@type {CanvasRenderingContext2D }*/
+  ctx
   /**
   @param {HTMLCanvasElement} [canvas] element to draw on
   */
-  constructor(canvas = document.createElement("canvas"),context = canvas.getContext('2d')) {
-    if(!context)throw " Could not get a 3d context"
-    super(canvas, context)
+  constructor(canvas = document.createElement("canvas"), context = canvas.getContext('2d')) {
+    if (!context) throw "Could not get a 2d context"
+    super(canvas)
+    this.ctx = context
   }
   clear() {
     this.ctx.setTransform()
-    let h = this.height,
+    const h = this.height,
       w = this.width
     this.ctx.clearRect(0, 0, w, h)
   }
