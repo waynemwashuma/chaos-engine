@@ -1,37 +1,26 @@
+import { MaterialType } from "./types.js"
 /**
  * 
  * @implements Material
 */
 export class BasicMaterial {
+  type = MaterialType.BASIC
   /**
    * 
-   * @type string
+   * @type {string}
    * @default "white"
    */
   fill = "white"
   /**
    * 
-   * @type string
+   * @type {string}
    * @default "black"
    */
   stroke = "black"
   /**
    * 
-   * @type boolean
+   * @type {Boolean}
    * @default false
    */
   wireframe = false
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   * @param {Path2D} path
-   */
-  render(ctx,dt, path) {
-    if (!this.wireframe) {
-      ctx.fillStyle = this.fill
-      ctx.fill(path)
-    }
-    ctx.strokeStyle = this.stroke
-    ctx.stroke(path)
-  }
 }

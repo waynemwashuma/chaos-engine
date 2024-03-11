@@ -1,8 +1,10 @@
-/**
+import { MaterialType } from "./types.js"
+ /**
  * 
  * @implements Material
  */
 export class StaticImageMaterial {
+  type = MaterialType.STATICIMAGE
   /**
    * @readonly
    * @type Image
@@ -36,11 +38,5 @@ export class StaticImageMaterial {
     this.height = height
     this.offset.x = -width/2
     this.offset.y = -height/2
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    ctx.drawImage(this.image, this.offset.x, this.offset.y, this.width, this.height)
   }
 }
