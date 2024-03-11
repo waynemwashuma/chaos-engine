@@ -1,9 +1,10 @@
-import { drawImage } from "../utils/canvasfunc.js"
+import { MaterialType } from "./types.js"
 /**
  * 
  * @implements Material
  */
 export class SpriteMaterial {
+  type = MaterialType.SPRITE
   /**
    * @type {HTMLImageElement}
    */
@@ -119,29 +120,5 @@ export class SpriteMaterial {
     this._maxFrame = (this._maxFrames[index] || 0)
     this._index = index
     this._frame = 0
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   */
-  render(ctx, dt) {
-    drawImage(
-      ctx,
-      this.img,
-      -this.width / 2,
-      -this.width / 2,
-      this.frameWidth,
-      this.frameHeight,
-      this._frame,
-      this._index,
-      this.width,
-      this.height
-    )
-    this._accumulator += dt
-    if (this._accumulator < this.frameRate) return
-    this._accumulator = 0
-    this._frame += 1
-    if (this._frame >= this._maxFrame)
-      this._frame = 0
   }
 }
