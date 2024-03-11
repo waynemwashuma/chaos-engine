@@ -1,4 +1,3 @@
-import { Clock } from '../../math/clock.js'
 import { Camera } from "../camera.js"
 
 /**
@@ -15,8 +14,6 @@ export class Renderer {
    * @type {HTMLCanvasElement}
    */
   domElement
-  /**@type {CanvasRenderingContext2D }*/
-  ctx
   /**
    * @type {Camera}
    */
@@ -25,9 +22,8 @@ export class Renderer {
    * @param {CanvasRenderingContext2D} context
    * @param {HTMLCanvasElement} canvas element to draw on
    */
-  constructor(canvas, context) {
+  constructor(canvas) {
     this.domElement = canvas
-    this.ctx = context
     this.camera = new Camera()
   }
   /**
