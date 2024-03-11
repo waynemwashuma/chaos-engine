@@ -35,7 +35,13 @@ export class Material {
           ctx.strokeText(material.text, x, y)
         break;
       case MaterialType.STATICIMAGE:
-        // Tab to edit
+        ctx.drawImage(
+          material.image,
+          material.offset.x,
+          material.offset.y,
+          material.width,
+          material.height
+        )
         break;
       case MaterialType.SPRITE:
         drawImage(
