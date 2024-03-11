@@ -67,7 +67,7 @@ export class Manager {
    * @param {number} accumulate
    */
   _update = accumulate => {
-    const dt = this.clock.update(accumulate);
+    const dt = Clock.update(this.clock,accumulate);
 
     if (this._accumulator < this.frameRate) {
       this._accumulator += dt;
