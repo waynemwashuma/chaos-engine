@@ -3,6 +3,10 @@ import { vertices } from "../utils/index.js"
 
 export class BufferGeometry {
   /**
+   * @type {Record<string,any[]>}
+  */
+  attributes = {}
+  /**
    * @package
    * @type {Path2D}
    */
@@ -10,14 +14,18 @@ export class BufferGeometry {
   /**
    * @param { Vector2[]} vertices
    */
-  constructor(vertices) {
+  constructor(positions) {
     this.drawable = new Path2D()
-    this.updateVertices(vertices)
+    BufferGeometry.setAttribute(this,"position",positions)
+    this.updateVertices(positions)
   }
   /**
    * @param {Vector2[]} data
   */
   updateVertices(data){
     vertices(this.drawable, data, true)
+  }
+  static setAttribute(geometry,name,attribute){
+    geometry.attributes[name] = attribute
   }
 }
