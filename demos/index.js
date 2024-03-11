@@ -19,8 +19,8 @@ export const demos = {
   world,
   examples: new Map(),
   init: function(selector) {
-    renderer.bindTo(selector)
-    renderer.setViewport(innerWidth, innerHeight * 0.5)
+    Renderer2D.bindTo(renderer,selector)
+    Renderer2D.setViewport(renderer,innerWidth, innerHeight * 0.5)
     renderer.domElement.style.backgroundColor = "black"
     //renderer.camera.transform.scale.y = -1
     //renderer.camera.transform.position.y = renderer.width
