@@ -11,17 +11,6 @@ import { Camera } from "../camera.js"
  */
 export class Renderer {
   /**
-   * @type {number}
-   */
-  _rafID = 0
-  /**
-   * Used to throttle the frame rate.
-   * 
-   * @private
-   * @type {number}
-   */
-  _accumulator = 0
-  /**
    * @private
    * @type {HTMLCanvasElement}
    */
@@ -40,8 +29,6 @@ export class Renderer {
     this.domElement = canvas
     this.ctx = context
     this.camera = new Camera()
-    this.clock = new Clock()
-    this._update = (/** @type {number} */ dt)=>{this.update(dt)}
   }
   /**
    * Attaches the renderer to a given html element by its selector.
