@@ -19,18 +19,6 @@ export class Vector2 {
     this.y = y;
   }
   /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "vector"
-  }
-  /**
    *Calculates length of this vector and returns 
    * it
    * 
@@ -345,17 +333,7 @@ export class Vector2 {
       return this.multiply(min / length)
     return this
   }
-
-  toJson() {
-    return this
-  }
-  /**
-   * @param {*} obj
-   */
-  fromJson(obj) {
-    this.x = obj.x
-    this.y = obj.y
-  }
+  
   [Symbol.iterator] =function*() {
     // @ts-ignore
     yield this.x

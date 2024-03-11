@@ -74,23 +74,7 @@ export class BoundingBox {
     this.max.x = bounds.max.x
     this.max.y = bounds.max.y
   }
-  toJson() {
-    return {
-      minX: this.min.x,
-      minY: this.min.y,
-      maxX: this.max.x,
-      maxY: this.max.y,
-    }
-  }
-  /**
-   * @param {*} obj
-   */
-  fromJson(obj) {
-    this.min.x = obj.minX
-    this.min.y = obj.minY
-    this.max.x = obj.maxX
-    this.max.y = obj.maxY
-  }
+  
   /**
    * Combines two bounds to create a new one that covers the previous two.
    * 
