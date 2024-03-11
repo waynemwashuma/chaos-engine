@@ -23,7 +23,7 @@ export class Clock {
    */
   update(accumulate = performance.now()) {
     Logger.deprecate("Clock().update()","Clock.update()")
-    Clock.update(this, accumulate)
+    return Clock.update(this, accumulate)
   }
   /*getFrameRate(){
     return 1/(this.dt/1000)
