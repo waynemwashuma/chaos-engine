@@ -8,6 +8,8 @@ export class LineGeometry extends BufferGeometry {
   constructor(length) {
     let start = new Vector2(1).multiply(length / 2),
       end = new Vector2(1).multiply(-length / 2)
-    super([start, end])
+    super()
+    BufferGeometry.setAttribute(this, "position", [start, end])
+    BufferGeometry.initCanvas2D(this)
   }
 }
