@@ -1,7 +1,6 @@
-import { Renderer } from "./renderer.js"
-import { Sprite } from "../sprites/index.js"
-import { Transform } from "../../intergrator/index.js"
-import { Logger } from "../../logger/index.js"
+import { Renderer,Sprite } from "../render/index.js"
+import { Transform } from "../intergrator/index.js"
+import { Logger } from "../logger/index.js"
 /**
  * Renders images and paths to the 2D context of a canvas.
  * 
@@ -65,9 +64,5 @@ export class Renderer2D extends Renderer {
       }
     }
     renderer.ctx.restore()
-  }
-  requestFullScreen() {
-    // @ts-ignore
-    this.domElement.parentElement.requestFullscreen()
   }
 }
