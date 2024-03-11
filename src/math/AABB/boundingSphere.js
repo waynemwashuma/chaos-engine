@@ -39,19 +39,4 @@ export class BoundingCircle {
     this.pos.x += x
     this.pos.y += y
   }
-  toJson() {
-    return {
-      posX: this.pos.x,
-      posY: this.pos.y,
-      r: this.r
-    }
-  }
-  /**
-   * @param {*} obj
-   */
-  fromJson(obj) {
-    this.pos.x = obj.posX
-    this.pos.y = obj.posY
-    this.r = obj.r
-  }
 }
