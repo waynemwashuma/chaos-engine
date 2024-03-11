@@ -44,18 +44,7 @@ class Shape {
     this.vertices = vertices.map(v => v.clone())
     this.geometry = new Geometry(vertices)
   }
-  /**
-   * @type {string}
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type {string}
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "shape"
-  }
+
   /**
    * The area occupied by a shape.
    * @type {number}
@@ -116,22 +105,6 @@ class Shape {
    */
   static calcInertia() {
     throw new Error("Implement in the children classes")
-  }
-  toJson() {
-    let obj = {
-      type: this.CHAOS_OBJ_TYPE,
-      geometry: this.geometry.toJson(),
-      shapeType: this.type,
-      offset: this.offPosition.toJson(),
-      offAngle: this.offAngle
-    }
-    return obj
-  }
-  fromJson(obj) {
-    this.offAngle = obj.offAngle
-    this.offPosition = obj.offset
-    this.geometry.fromJson(obj.geometry)
-    this.vertices = this.geometry.vertices.map(v => v.clone())
   }
   static CIRCLE = 0
   static POLYGON = 1

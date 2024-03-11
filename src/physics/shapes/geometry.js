@@ -19,18 +19,7 @@ export class Geometry {
     this.normals = this.calcFaceNormals()
     this._dynNormals = this.normals.map(e => e.clone())
   }
-  /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "geometry"
-  }
+
   /**
    * @param {number} rad
    * @param {Vector2[]} target
@@ -81,16 +70,5 @@ export class Geometry {
         pos.y + vertex.y * scale.y,
       )
     }
-  }
-  toJson() {
-    let obj = {
-      vertices: this.vertices.map((v) => v.toJson())
-    }
-    return obj
-  }
-  fromJson(obj) {
-    this.vertices = obj.vertices.map(v => new Vector2().fromJson(v))
-    this.normals = this.calcFaceNormals()
-    this._dynNormals = this.normals.map(e => e.clone())
   }
 }
