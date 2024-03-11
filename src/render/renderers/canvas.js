@@ -1,7 +1,7 @@
 import { Renderer } from "./renderer.js"
 import { Sprite } from "../sprites/index.js"
 import { Transform } from "../../intergrator/index.js"
-
+import { Logger } from "../../logger/index.js"
 /**
  * Renders images and paths to the 2D context of a canvas.
  * 
@@ -18,11 +18,18 @@ export class Renderer2D extends Renderer {
     super(canvas)
     this.ctx = context
   }
+  /**
+   * @deprecated
+   */
   clear() {
-    this.ctx.setTransform()
-    const h = this.height,
-      w = this.width
-    this.ctx.clearRect(0, 0, w, h)
+    Logger.deprecate("Renderer2D().clear()","Renderer2D.clear()")
+    Renderer2D.clear(this)
+  }
+  static clear(renderer) {
+    renderer.ctx.setTransform()
+    const h = renderer.height,
+      w = renderer.width
+    renderer.ctx.clearRect(0, 0, w, h)
   }
   /**
    * @param {number} dt
