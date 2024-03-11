@@ -36,18 +36,6 @@ class Angle {
     this.value = deg * Math.PI/180
   }
   /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "angle"
-  }
-  /**
    * The orientation in degrees.
    * @deprecated
    */
@@ -115,22 +103,6 @@ class Angle {
    */
   copy(angle) {
     this.value = angle.value
-  }
-
-  /**
-   * @param {*} obj
-   */
-  fromJSON(obj) {
-    this.value = obj.val
-  }
-  /**
-   * 
-   */
-  toJson() {
-    return {
-      deg: this.value,
-      type: this.CHAOS_OBJ_TYPE
-    }
   }
 }
 
