@@ -1,20 +1,30 @@
-/**
+import {Logger} from "../logger/index.js"
+  /**
  * Handles time management for the game.
-*/
+ */
 export class Clock {
   /**
    * Last time the clock was updated
    * 
    * @private
    * @type number
-  */
+   */
   lastcall = 0
   /**
    * Difference between the last call in the last frame and current call.
    * 
    * @type number 
-  */
+   */
   dt = 0
+  /**
+   * Updates the clock
+   * @deprecated
+   * @param {number} [accumulate]
+   */
+  update(accumulate = performance.now()) {
+    Logger.deprecate("Clock().update()","Clock.update()")
+    Clock.update(this, accumulate)
+  }
   /*getFrameRate(){
     return 1/(this.dt/1000)
   }
@@ -25,11 +35,11 @@ export class Clock {
    * Updates the clock
    * 
    * @param {number} [accumulate]
-  */
-  update(accumulate = performance.now()){
+   */
+  static update(accumulate = performance.now()) {
     this.dt = accumulate - this.lastcall || 0
     this.lastcall = accumulate
-    
-    return this.dt/1000
+
+    return this.dt / 1000
   }
 }
