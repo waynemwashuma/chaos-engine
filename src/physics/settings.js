@@ -36,7 +36,7 @@ export const Settings = {
   mass: 1,
   restitution: 0.6,
   staticFriction: 1,//0.4,
-  kineticFriction: 0.8,//0.2,
+  kineticFriction: 0.5,//0.2,
   boundPadding: 0,
   allowSleep: false,
   aabbDetectionOnly: false,

@@ -98,8 +98,18 @@ export class CollisionManifold {
     const { axis, overlap, tangent, contactPoints, contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
+      manifold.impulse[i] = 0
+      manifold.tImpulse[i] = 0
       const ca1 = contactPoints[i].clone().sub(positionA)
       const ca2 = contactPoints[i].clone().sub(positionB)
+      const va = new Vector2()
+        .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
+        .add(movableA.velocity)
+      const vb = new Vector2()
+        .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
+        .add(movableB.velocity)
+      const relativeVelocity = vb.sub(va)
+
       //console.log(ca1)
       //console.log(ca2)
 
@@ -110,26 +120,19 @@ export class CollisionManifold {
         (ca1.cross(axis)),
         -ca2.cross(axis)
       );
+
+      //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
       manifold.tJacobian[i].set(
         tangent,
         tangent.clone().reverse(),
         ca1.cross(tangent),
         -ca2.cross(tangent)
       );
-      manifold.impulse[i] = 0
-      manifold.tImpulse[i] = 0
-      const va = new Vector2()
-        .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
-        .add(movableA.velocity)
-      const vb = new Vector2()
-        .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
-        .add(movableB.velocity)
-      const relativeVelocity = vb.sub(va)
       const normalVelocity = axis.dot(relativeVelocity);
-      //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
+
       if (Settings.positionCorrection)
         manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
-      manifold.nbias[i] += (manifold.restitution + 0.5) * Math.min(normalVelocity, 0.0);
+      manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity, 0.0);
       const k =
         bodyA.inv_mass +
         bodyB.inv_mass +
@@ -171,23 +174,18 @@ export class CollisionManifold {
       }
       else {
         manifold.impulse[i] = Math.max(0.0, nLambda);
-        manifold.tImpulse[i] = Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
-          tLambda :
-        tLambda * manifold.kineticFriction
+        const maxfriction = manifold.impulse[i] * manifold.kineticFriction
+        manifold.tImpulse[i] = clamp(tLambda, -maxfriction, maxfriction) //Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
+        //tLambda :
+        //-manifold.impulse[i] * manifold.kineticFriction
         manifold.nLambda[i] = manifold.impulse[i]
         manifold.tLambda[i] = manifold.tImpulse[i]
-        //if (Math.abs(manifold.impulse[i]) > 3000) throw console.log(manifold, jv)
+        //console.log(Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction)
+        //if (Math.abs(manifold.tImpulse[i]) > 3000) throw console.log(manifold, jt)
       }
     }
     for (let i = 0; i < contactNo; i++) {
-      /*CollisionManifold.applyImpulse(
-        manifold.tJacobian[i],
-        movableA,
-        movableB,
-        bodyA,
-        bodyB,
-        manifold.tLambda[i]
-      ) /***/
+
       CollisionManifold.applyImpulse(
         manifold.nJacobian[i],
         movableA,
@@ -196,7 +194,15 @@ export class CollisionManifold {
         bodyB,
         manifold.nLambda[i]
       )
-
+      if (manifold.nLambda[i] <= 0) continue
+      CollisionManifold.applyImpulse(
+        manifold.tJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.tLambda[i]
+      ) /***/
     }
   }
 }
