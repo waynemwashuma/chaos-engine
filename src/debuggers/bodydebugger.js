@@ -57,11 +57,15 @@ export function bodyDebugger(manager, options = {}) {
       renderer.ctx.beginPath()
       for (let i = 0; i < clmd.length; i++) {
         const manifold = clmd[i]
+        const {contactData:{contactNo,contactPoints}} = clmd[i]
         const [transformA] = manager.get(manifold.entityA, "transform")
         const [transformB] = manager.get(manifold.entityB, "transform")
-
-        drawArm(renderer.ctx, transformA.position, manifold.ca1, "yellow")
-        drawArm(renderer.ctx, transformB.position, manifold.ca2, "yellow")
+        
+        for (let j = 0; j < contactNo; j++) {
+          drawArmRaw(renderer.ctx, transformA.position, contactPoints[j], "yellow")
+          drawArmRaw(renderer.ctx, transformB.position, contactPoints[j], "yellow")
+        }
+        
       }
       renderer.ctx.closePath()
     }
@@ -89,6 +93,16 @@ function drawArm(ctx, position, arm, color = "blue") {
   ctx.lineTo(
     position.x + arm.x,
     position.y + arm.y
+  )
+
+  ctx.strokeStyle = color
+  ctx.stroke()
+}
+function drawArmRaw(ctx, position, arm, color = "blue") {
+  ctx.moveTo(position.x, position.y)
+  ctx.lineTo(
+    arm.x,
+    arm.y
   )
 
   ctx.strokeStyle = color
