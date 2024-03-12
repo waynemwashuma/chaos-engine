@@ -19,7 +19,7 @@ export function bodyDebugger(manager, options = {}) {
     if (options.drawPosition) drawPositions()
     if (options.drawContacts) drawContacts()
     if (options.drawBounds) drawBounds()
-    
+
     for (let i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
         drawShapes(bodies[i][j].shapes, renderer.ctx)
@@ -31,7 +31,7 @@ export function bodyDebugger(manager, options = {}) {
         let [p1, p2] = clmd[i].contactData.contactPoints
         renderer.ctx.beginPath()
         circle(renderer.ctx, p1.x, p1.y, 5)
-        if(clmd[i].contactData.contactNo === 2)circle(renderer.ctx, p2.x, p2.y, 5)
+        if (clmd[i].contactData.contactNo === 2) circle(renderer.ctx, p2.x, p2.y, 5)
         renderer.ctx.closePath()
         fill(renderer.ctx, "white")
       }
@@ -57,16 +57,18 @@ export function bodyDebugger(manager, options = {}) {
       renderer.ctx.beginPath()
       for (let i = 0; i < clmd.length; i++) {
         const manifold = clmd[i]
-        const {contactData:{contactNo,contactPoints}} = clmd[i]
+        const { contactData: { contactNo, contactPoints } } = clmd[i]
         const [transformA] = manager.get(manifold.entityA, "transform")
         const [transformB] = manager.get(manifold.entityB, "transform")
-        
+
         for (let j = 0; j < contactNo; j++) {
-          drawArmRaw(renderer.ctx, transformA.position, contactPoints[j], "yellow")
-          drawArmRaw(renderer.ctx, transformB.position, contactPoints[j], "yellow")
+          drawArmRaw(renderer.ctx, transformA.position, contactPoints[j])
+          drawArmRaw(renderer.ctx, transformB.position, contactPoints[j])
         }
-        
+
       }
+      renderer.ctx.strokeStyle = "yellow"
+      renderer.ctx.stroke()
       renderer.ctx.closePath()
     }
 
@@ -98,15 +100,13 @@ function drawArm(ctx, position, arm, color = "blue") {
   ctx.strokeStyle = color
   ctx.stroke()
 }
+
 function drawArmRaw(ctx, position, arm, color = "blue") {
   ctx.moveTo(position.x, position.y)
   ctx.lineTo(
     arm.x,
     arm.y
   )
-
-  ctx.strokeStyle = color
-  ctx.stroke()
 }
 
 function drawShapes(shapes, ctx) {
