@@ -10,39 +10,39 @@ class Angle {
    * Orientation in radians.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _value = 0
   /**
    * Cosine of the angle.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _cos = 0
   /**
    * Cosine of the angle.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _sin = 0
   /**
-   * @param {number} [deg=0] Orientation in degrees.
+   * @param {number} [rad=0] angle in radians.
    */
 
   //TODO - Change this to radians instead
-  constructor(deg = 0) {
-    this.value = deg * Math.PI/180
+  constructor(rad = 0) {
+    this.value = rad * Math.PI/180
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHOAS_CLASSNAME() {
     return this.constructor.name.toLowerCase()
   }
   /**
-   * @type string
+   * @type {string}
    */
   get CHAOS_OBJ_TYPE() {
     return "angle"
