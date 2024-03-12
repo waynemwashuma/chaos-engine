@@ -699,6 +699,9 @@ export class Vector2 {
   */
   static ZERO = Object.freeze(new Vector2())
 }
+/**
+ * @deprecated
+ */
 export class Vector extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
@@ -710,6 +713,9 @@ export class Vector extends Vector2 {
   }
 }
 
+/**
+ * @deprecated
+ */
 export class Vec2 extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
