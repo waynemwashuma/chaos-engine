@@ -109,8 +109,8 @@ export class SATNarrowPhase {
       shape1.type === Shape.CIRCLE ||
       shape2.type === Shape.CIRCLE ?
       1 : clamp(overload.length, 0, 2)
+    //manifold.axis.reverse()
     manifold.axis.normalFast(manifold.tangent)
-    manifold.axis.reverse()
     return manifold
   }
   /**

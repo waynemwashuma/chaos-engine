@@ -105,16 +105,16 @@ export class CollisionManifold {
 
       manifold.nbias[i] = 0.0;
       manifold.nJacobian[i].set(
-        axis.clone().reverse(),
         axis,
-        -(ca1.cross(axis)),
-        ca2.cross(axis)
+        axis.clone().reverse(),
+        (ca1.cross(axis)),
+        -ca2.cross(axis)
       );
       manifold.tJacobian[i].set(
-        tangent.clone().reverse(),
         tangent,
-        -(ca1.cross(tangent)),
-        ca2.cross(tangent)
+        tangent.clone().reverse(),
+        ca1.cross(tangent),
+        -ca2.cross(tangent)
       );
       manifold.impulse[i] = 0
       manifold.tImpulse[i] = 0
@@ -124,12 +124,12 @@ export class CollisionManifold {
       const vb = new Vector2()
         .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
         .add(movableB.velocity)
-      const relativeVelocity = va.sub(vb)
+      const relativeVelocity = vb.sub(va)
       const normalVelocity = axis.dot(relativeVelocity);
       //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
       if (Settings.positionCorrection)
         manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
-      manifold.nbias[i] += manifold.restitution * Math.min(normalVelocity, 0.0);
+      manifold.nbias[i] += (manifold.restitution + 0.5) * Math.min(normalVelocity, 0.0);
       const k =
         bodyA.inv_mass +
         bodyB.inv_mass +
@@ -168,7 +168,6 @@ export class CollisionManifold {
           tLambda * manifold.kineticFriction
         manifold.nLambda[i] = manifold.impulse[i] - oldImpulse
         manifold.tLambda[i] = manifold.tImpulse[i] - oldtImpulse
-        // if (manifold.tLambda[i] > 3000) throw console.log(manifold,jt)
       }
       else {
         manifold.impulse[i] = Math.max(0.0, nLambda);
@@ -177,10 +176,11 @@ export class CollisionManifold {
         tLambda * manifold.kineticFriction
         manifold.nLambda[i] = manifold.impulse[i]
         manifold.tLambda[i] = manifold.tImpulse[i]
+        //if (Math.abs(manifold.impulse[i]) > 3000) throw console.log(manifold, jv)
       }
     }
     for (let i = 0; i < contactNo; i++) {
-      CollisionManifold.applyImpulse(
+      /*CollisionManifold.applyImpulse(
         manifold.tJacobian[i],
         movableA,
         movableB,
