@@ -5,10 +5,11 @@ export class LoadManager {
   _sucessful = 0
   _failed = 0
   onItemFinish = NOOP
+  onItemStart = NOOP
   onFinish = NOOP
   onError = NOOP
   static itemStart(manager, url) {
-    manager.total += 1
+    manager._total += 1
     manager.onItemStart(url)
   }
   /**
