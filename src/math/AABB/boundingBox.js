@@ -1,10 +1,11 @@
 import { BoundingCircle } from "./boundingSphere.js"
-import { Overlaps } from "./overlap.js"
+import { AABBvsSphere,AABBColliding,BoundType } from "./overlap.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
 export class BoundingBox {
+  type = BoundType.bOX
   /**
    * The upper limit of the bounding box
    * 
@@ -41,9 +42,9 @@ export class BoundingBox {
    **/
   intersects(bound) {
     //use bound.type instead
-    if (bound instanceof BoundingCircle)
-      return Overlaps.AABBvsSphere(this, bound)
-    return Overlaps.AABBColliding(this, bound)
+    if (bound.type === BoundType.BOX)
+      return AABBvsSphere(this, bound)
+    return AABBColliding(this, bound)
   }
   /**
    * @param {number} x
