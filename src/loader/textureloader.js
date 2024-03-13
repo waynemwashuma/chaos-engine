@@ -9,7 +9,7 @@ export class ImageLoader extends Loader {
   /**
    * @param {string[]} urls
    */
-  parse(request) {
+  async parse(request) {
     if (!request.ok) return
 
     const raw = await request.arrayBuffer()
@@ -26,7 +26,7 @@ export class ImageLoader extends Loader {
  */
 function getDimensions(raw) {
   return new Promise((resolve, reject) => {
-    const imgUrl = URL.createObjectURL(new Blob([raw]))
+    const url = URL.createObjectURL(new Blob([raw]))
     const img = new Image()
     img.onload = e => {
       resolve({
@@ -35,6 +35,6 @@ function getDimensions(raw) {
       })
     }
     img.src = url
-    URL.revokeObjectURL(imgUrl)
+    URL.revokeObjectURL(url)
   })
 }

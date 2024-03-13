@@ -18,7 +18,7 @@ export class Loader {
   verify(_extension) {
     return true
   }
-  parse(_request) {}
+  async parse(_request) {}
   /**
    * @param {string} url
    */
@@ -27,7 +27,7 @@ export class Loader {
     const name = getURLName(url)
     const extension = getURLExtension(url)
 
-    if (this.resources[name])
+    if (this._resources[name])
       return warn("Duplicate load of \"" + fullurl + "\".")
     if (!this.verify(extension))
       return error(`\`${this.name()}\` could not load "${fullurl}" as it does not support the extension ${extension}.`)
@@ -36,12 +36,12 @@ export class Loader {
 
     LoadManager.itemStart(this.manager, fullurl)
     const resource = this.parse(request)
-    if (resource) this.resources[name] = resource
+    if (resource) this._resources[name] = resource
     LoadManager.itemFinish(this.manager, request)
     LoadManager.finish(this.manager)
   }
   get(name) {
-    const resource = this.resource[name]
+    const resource = this._resource[name]
     if (!resource) throws(`\`${this.name()}\` could not find the resource "${name}" `)
     return resource
   }
