@@ -1,5 +1,4 @@
-import { demos } from "./index.js"
-
+import * as demos from "./index.js"
 import { materials } from "./marterial.js"
 import { box } from "./box.js"
 import { random } from "./random.js"
