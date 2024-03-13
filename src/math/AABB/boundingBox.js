@@ -1,11 +1,12 @@
 import { BoundingCircle } from "./boundingSphere.js"
-import { AABBvsSphere,AABBColliding,BoundType } from "./overlap.js"
+import { AABBvsSphere, AABBColliding, BoundType } from "./overlap.js"
+import { Logger } from "../../logger/index.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
 export class BoundingBox {
-  type = BoundType.bOX
+  type = BoundType.BOX
   /**
    * The upper limit of the bounding box
    * 
@@ -41,41 +42,56 @@ export class BoundingBox {
    * @returns boolean
    **/
   intersects(bound) {
-    //use bound.type instead
+    Logger.deprecate("BoundingBox().intersects()", "boundsColliding()")
     if (bound.type === BoundType.BOX)
       return AABBvsSphere(this, bound)
     return AABBColliding(this, bound)
   }
   /**
+   * @deprecated
    * @param {number} x
    * @param {number} y
    */
   translate(x, y) {
-    this.min.x += x
-    this.min.y += y
-    this.max.x += x
-    this.max.y += y
+    Logger.deprecate("BoundingBox().translate()", "BoundingBox.translate()")
+    return BoundingBox.translate(this,x,y,this)
   }
   /**
    * Deep copies a bounding box to a new one.
    * 
-   * @returns BoundingBox
+   * @deprecated
+   * @returns {BoundingBox}
    */
   clone() {
-    return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
+    Logger.deprecate("BoundingBox().clone()", "BoundingBox.copy()")
+    return BoundingBox.copy(this)
   }
   /**
    * Deep copies another bounding box.
    * 
+   * @deprecated
    * @param {BoundingBox} bounds
    */
   copy(bounds) {
-    this.min.x = bounds.min.x
-    this.min.y = bounds.min.y
-    this.max.x = bounds.max.x
-    this.max.y = bounds.max.y
+    Logger.deprecate("BoundingBox().copy()", "BoundingBox.copy()")
+    BoundingBox.copy(bounds,this)
   }
-  
+  static copy(bound,out = new BoundingBox()){
+    out.min.x = bounds.min.x
+    out.min.y = bounds.min.y
+    out.max.x = bounds.max.x
+    out.max.y = bounds.max.y
+    
+    return out
+  }
+  static translate(bound, x, y, out = new BoundingBox()) {
+    out.min.x = bound.min.x + x
+    out.min.y = bound.min.y + y
+    out.max.x = bound.max.x + x
+    out.max.y = bound.max.y + y
+    
+    return out
+  }
   /**
    * Combines two bounds to create a new one that covers the previous two.
    * 
@@ -84,13 +100,12 @@ export class BoundingBox {
    * @param {BoundingBox} target Bound to store results into.
    * @returns BoundingBox
    */
-  static union(bound1, bound2, target) {
-    target = target || new BoundingBox()
-
-    target.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x
-    target.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y
-    target.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x
-    target.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y
-    return target
+  static union(bound1, bound2, out = new BoundingBox()) {
+    out.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x
+    out.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y
+    out.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x
+    out.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y
+    
+    return out
   }
 }
