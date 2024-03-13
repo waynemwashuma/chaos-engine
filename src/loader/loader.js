@@ -1,3 +1,5 @@
+import { LoadManager } from './loadmanager.js';
+import { warn, error, throws } from '../logger/index.js';
 import { getURLName, getURLExtension } from "./utils.js"
 
 export class Loader {
@@ -10,7 +12,7 @@ export class Loader {
   constructor(manager = new LoadManager()) {
     this.manager = manager
   }
-  name(){
+  name() {
     return this.constructor.name
   }
   verify(_extension) {
@@ -40,7 +42,7 @@ export class Loader {
   }
   get(name) {
     const resource = this.resource[name]
-    if(!resource)throws(`\`${this.name()}\` could not find the resource "${name}" `)
+    if (!resource) throws(`\`${this.name()}\` could not find the resource "${name}" `)
     return resource
   }
 }
