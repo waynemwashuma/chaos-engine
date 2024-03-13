@@ -1,24 +1,15 @@
 import { DEVICE } from "../device/index.js"
 import { Loader } from "./loader.js"
 
-export class SoundLoader {
-  /**
-   * @type {{ [x: string]: any; }}
-   */
-  resources = {}
-  manager
-  baseUrl = ""
-  constructor(manager = new LoadManager()) {
-    this.manager = manager
-  }
+export class SoundLoader extends Loader {
   verify(extension){
-    if (!DEVICE.supportedAudio.includes(extension))return true
+    if (DEVICE.supportedAudio.includes(extension))return true
     return false
   }
   /**
    * @param {string} url
    */
-  parse(request) {
+  async parse(request) {
     if(!request.ok) return null
     const raw = await request.arrayBuffer()
 
