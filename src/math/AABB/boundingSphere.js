@@ -1,10 +1,11 @@
 import { BoundingBox } from "./boundingBox.js"
-import { Overlaps } from "./overlap.js"
-
+import { boundSpheresColliding,AABBvsSphere,BoundType } from "./overlap.js"
+import {Logger} from "../../logfer/index.js"
 /**
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
 export class BoundingCircle {
+  type = BoundType.CIRCLE
   /**
    * 
    * @type {number}
@@ -23,13 +24,14 @@ export class BoundingCircle {
   }
   /**
    * 
+   * @deprecated
    * Checks to see if this intersects with another bounding box
    * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {
-    if (bound instanceof BoundingCircle)
-      return Overlaps.boundSpheresColliding(this, bound)
-    return Overlaps.AABBvsSphere(bound, this)
+    if (bound.type === BoundType.CIRCLE)
+      return boundSpheresColliding(this, bound)
+    return AABBvsSphere(bound, this)
   }
   /**
    * @param {number} x
