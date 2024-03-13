@@ -1,42 +1,29 @@
 import { DEVICE } from "../device/index.js"
-import { Logger } from "../logger/index.js"
-import { getURLName, getURLExtension } from "./utils.js"
+import { Loader } from "./loader.js"
 
 export class SoundLoader {
   /**
    * @type {{ [x: string]: any; }}
    */
   resources = {}
-  onSingleFinish = () => {}
-  onfinish = () => {}
+  manager
   baseUrl = ""
+  constructor(manager = new LoadManager()) {
+    this.manager = manager
+  }
+  verify(extension){
+    if (!DEVICE.supportedAudio.includes(extension))return true
+    return false
+  }
   /**
-   * @param {string[]} urls
+   * @param {string} url
    */
-  async load(urls) {
-    for (var url of urls) {
-      const name = getURLName(url)
-      const extension = getURLExtension(url)
+  parse(request) {
+    if(!request.ok) return null
+    const raw = await request.arrayBuffer()
 
-      if (!DEVICE.supportedAudio.includes(extension)) {
-        Logger.error("`SoundLoader()` could not load in \"" + url + "\" : Unsupported extension name.")
-        continue
-      }
-
-      const request = await fetch(url)
-
-      if (!request.ok) {
-        Logger.error("`SoundLoader()` could not load in \"" + url + "\" : Resource not found.")
-        continue
-      }
-
-      const raw = await request.arrayBuffer()
-
-      this.resources[name] = {
-        buffer: raw
-      }
-      //this.onSingleFinish(url,this.resources[name])
+    return {
+      buffer: raw
     }
-    //this.onfinish(this.resources)
   }
 }
