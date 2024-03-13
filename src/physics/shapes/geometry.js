@@ -1,14 +1,14 @@
 export class Geometry {
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   vertices = null
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   normals = null
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
   _dynNormals = null
   /**
@@ -44,7 +44,7 @@ export class Geometry {
   }
   /**
    * @private
-   * @returns Vector2[]
+   * @returns {Vector2[]}
    */
   calcFaceNormals() {
     const axes = [],
@@ -65,28 +65,31 @@ export class Geometry {
     return axes
   }
   /**
+   * @param {Geometry} geometry
    * @param {number} n
-   * @param { Vector2[]} vertices
-   * @param { Vector2} pos
+   * @param {Vector2[]} vertices
+   * @param {Vector2} pos
    * @param {number} rad
    */
-  transform(vertices, pos, rad, n) {
-    for (let i = 0; i < this.vertices.length; i++) {
+  static transform(geometry, vertices, pos, rad, scale) {
+    for (let i = 0; i < geometry.vertices.length; i++) {
       let vertex = vertices[i]
-      vertex.copy(this.vertices[i])
+      vertex.copy(geometry.vertices[i])
       vertex.rotate(rad)
-      vertex.multiply(n)
-      vertex.add(pos)
+      vertex.set(
+        pos.x + vertex.x * scale.x,
+        pos.y + vertex.y * scale.y,
+      )
     }
   }
-  toJson(){
+  toJson() {
     let obj = {
-      vertices:this.vertices.map((v)=>v.toJson())
+      vertices: this.vertices.map((v) => v.toJson())
     }
     return obj
   }
-  fromJson(obj){
-    this.vertices = obj.vertices.map(v=>new Vector2().fromJson(v))
+  fromJson(obj) {
+    this.vertices = obj.vertices.map(v => new Vector2().fromJson(v))
     this.normals = this.calcFaceNormals()
     this._dynNormals = this.normals.map(e => e.clone())
   }

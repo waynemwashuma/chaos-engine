@@ -1,10 +1,6 @@
 import { Shape } from "./shape.js"
 import { Vector2 } from "../../math/index.js"
 
-let _vec1 = new Vector2()
-let _vec2 = new Vector2()
-let _arr = []
-
 /**
  * A circular shape.
  * 
@@ -17,28 +13,25 @@ export class Circle extends Shape {
    * @param { Vector2} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
-  constructor(radius, offset, offsetAngle) {
-
-    //the first vertex is position 
-    super([], offset, offsetAngle)
-    this.vertices = [new Vector2(), new Vector2(), new Vector2()]
+  constructor(radius) {
+    //the first vertex is position
+    //the second vertex x-position is radius
+    //
+    super([
+      new Vector2(),
+      new Vector2(radius, radius)
+    ])
     this.radius = radius
     this.type = Shape.CIRCLE
   }
   get position() {
     return this.vertices[0]
   }
-  get angle(){
+  get radius() {
     return this.vertices[1].x
   }
-  set angle(x) {
+  set radius(x) {
     this.vertices[1].x = x
-  }
-  get radius(){
-    return this.vertices[1].y
-  }
-  set radius(x){
-    this.vertices[1].y = x
   }
   /**
    * @inheritdoc
@@ -55,12 +48,11 @@ export class Circle extends Shape {
    * @param { Vector2[]} out 
    * @returns { Vector2[]}
    */
-  getVertices(axis, out) {
-    let target = out || []
-    let v1 = _vec1.copy(axis).multiply(-this.radius).add(this.position)
-    let v2 = _vec2.copy(axis).multiply(this.radius).add(this.position)
-    target[0] = v1.clone()
-    target[1] = v2.clone()
+  getVertices(axis, target = []) {
+    const v1 = new Vector2().copy(axis).multiply(-this.vertices[1].x).add(this.vertices[0])
+    const v2 = new Vector2().copy(axis).multiply(this.vertices[1].x).add(this.vertices[0])
+    target[0] = v1
+    target[1] = v2
     return target
   }
   /**
@@ -73,26 +65,15 @@ export class Circle extends Shape {
     let min = null,
       vertex = null
     for (let i = 0; i < shape.vertices.length; i++) {
-      let a = this.position.distanceToSquared(shape.vertices[i])
+      let a = this.vertices[0].distanceToSquared(shape.vertices[i])
       if (!min || min > a) {
         vertex = shape.vertices[i]
         min = a
       }
     }
-    if (!vertex) vertex = shape.position
-    target.push(_vec1.copy(vertex).sub(this.position).normalize().clone())
+    if (!vertex) vertex = shape.vertices[0]
+    target.push(new Vector2().copy(vertex).sub(this.vertices[0]).normalize())
     return target
-  }
-  /**
-   * @inheritdoc
-   * 
-   * @param { Vector2} position
-   * @param {number} angle
-   * @param {number} scale 
-   */
-  update(position, angle, scale) {
-    this.position.copy(position).add(this.offPosition)
-    this.angle = this.offAngle + angle
   }
   get area() {
     return Math.PI * this.radius * this.radius
@@ -109,9 +90,7 @@ export class Circle extends Shape {
   }
   fromJson(obj) {
     return new Circle(
-      obj.radius,
-      new Vector2().fromJson(obj.offset),
-      obj.offAngle
+      obj.radius
     )
   }
 }

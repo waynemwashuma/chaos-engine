@@ -3,11 +3,11 @@ import { Vector2, sq }from "../../math/index.js"
 
 export class Rectangle extends Shape {
   /**
-   * @type number
+   * @type {number}
    */
   height = 0
   /**
-   * @type number
+   * @type {number}
    */
   width = 0
   /**

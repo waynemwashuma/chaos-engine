@@ -13,11 +13,11 @@ export class SeekBehaviour extends Behaviour {
    * Not implemented.
    * Radius in which to seek out the target.
    * 
-   * @type number
+   * @type {number}
   */
   radius = 100
   /**
-   * @type Vector2
+   * @type {Vector2}
   */
   target = null
   /**
