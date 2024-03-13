@@ -43,7 +43,7 @@ export class BoundingBox {
    **/
   intersects(bound) {
     Logger.deprecate("BoundingBox().intersects()", "boundsColliding()")
-    if (bound.type === BoundType.BOX)
+    if (bound.type === BoundType.CIRCLE)
       return AABBvsSphere(this, bound)
     return AABBColliding(this, bound)
   }
