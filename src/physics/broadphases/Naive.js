@@ -1,4 +1,5 @@
 import { Broadphase } from "./broadphase.js"
+import { boundsColliding } from "../../math/index.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
@@ -46,7 +47,7 @@ export class NaiveBroadphase extends Broadphase {
     const { entities, bounds } = this
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
-        if (!bounds[i].intersects(bounds[j]))
+        if (!boundsColliding(bounds[i], bounds[j]))
           continue
         target.push({
           a: entities[i],

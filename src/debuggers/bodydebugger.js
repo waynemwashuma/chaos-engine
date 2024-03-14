@@ -1,20 +1,20 @@
 import { Shape } from "../physics/index.js"
 import { Vector2 } from "../math/index.js"
+import {Renderer2D} from "../render-canvas2d/index.js"
 import { line, circle, vertices, stroke, fill } from "../render/index.js"
 /**
  * @param {Manager} manager
  * @param {BodyDebbuggerOptions} [options]
  */
-export function bodyDebugger(manager, options = {}) {
+export function bodyDebugger(manager,renderer, options = {}) {
   options.clearRenderer = options.clearRenderer || false
   options.drawCollisionArm = options.drawCollisionArm || false
   options.drawContacts = options.drawContacts || false
   manager.registerSystem(dt => {
     const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bounds", "body").raw()
     const clmd = manager.queryEvent("collision")
-    const renderer = manager.getResource("renderer")
 
-    if (options.clearRenderer) renderer.clear()
+    if (options.clearRenderer) Renderer2D.clear(renderer)
     if (options.drawCollisionArm) drawArms()
     if (options.drawPosition) drawPositions()
     if (options.drawContacts) drawContacts()
@@ -120,7 +120,8 @@ function drawShapes(shapes, ctx) {
         shape.vertices[0].y,
         shape.vertices[1].x
       )
-      const r = Vector2.fromAngle(shape.angle).multiply(shape.vertices[1].x)
+      const r = Vector2.fromAngle(shape.angle)
+      Vector2.multiplyScalar(r,shape.vertices[1].x,r)
       drawArm(ctx, shape.vertices[0], r)
     } else {
       vertices(ctx, shape.vertices, true)

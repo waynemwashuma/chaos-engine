@@ -1,6 +1,6 @@
 import { MaterialType } from "./types.js"
 import { drawImage } from "../utils/canvasfunc.js"
-import { Logger } from "../../logger/index.js"
+import { throws } from "../../logger/index.js"
 /**
  * @interface
  */
@@ -73,7 +73,7 @@ export class Material {
         )
         break;
       default:
-        Logger.throws("Unsupported Material type")
+        throws("Unsupported Material type")
     }
   }
 }

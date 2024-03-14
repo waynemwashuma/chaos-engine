@@ -88,10 +88,15 @@ export class CollisionManifold {
   }
 
   static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
-    movableA.velocity.add(jacobian.va.clone().multiply(bodyA.inv_mass * lambda));
-    movableB.velocity.add(jacobian.vb.clone().multiply(bodyB.inv_mass * lambda));
-    movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda;
-    movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda;
+    const velA = movableA.velocity
+    const velB = movableB.velocity
+    const va = Vector2.multiplyScalar(jacobian.va, bodyA.inv_mass * lambda)
+    const vb = Vector2.multiplyScalar(jacobian.vb, bodyB.inv_mass * lambda)
+
+    Vector2.add(velA, va, velA)
+    Vector2.add(velB, vb, velB)
+    movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda
+    movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda
   }
 
   static prepare(manifold, bodyA, bodyB, movableA, movableB, positionA, positionB, inv_dt) {
@@ -100,35 +105,30 @@ export class CollisionManifold {
     for (let i = 0; i < contactNo; i++) {
       manifold.impulse[i] = 0
       manifold.tImpulse[i] = 0
-      const ca1 = contactPoints[i].clone().sub(positionA)
-      const ca2 = contactPoints[i].clone().sub(positionB)
-      const va = new Vector2()
-        .set(ca1.y * -movableA.rotation, ca1.x * movableA.rotation)
-        .add(movableA.velocity)
-      const vb = new Vector2()
-        .set(ca2.y * -movableB.rotation, ca2.x * movableB.rotation)
-        .add(movableB.velocity)
-      const relativeVelocity = vb.sub(va)
-
-      //console.log(ca1)
-      //console.log(ca2)
+      const ca1 = Vector2.sub(contactPoints[i], positionA)
+      const ca2 = Vector2.sub(contactPoints[i], positionB)
+      const va = Vector2.crossScalar(ca1, movableA.rotation)
+      Vector2.add(va, movableA.velocity, va)
+      const vb = Vector2.crossScalar(ca2, movableB.rotation)
+      Vector2.add(vb, movableB.velocity, vb)
+      const relativeVelocity = Vector2.sub(vb, va, vb)
 
       manifold.nbias[i] = 0.0;
       manifold.nJacobian[i].set(
         axis,
-        axis.clone().reverse(),
-        (ca1.cross(axis)),
-        -ca2.cross(axis)
+        Vector2.reverse(axis),
+        Vector2.cross(ca1, axis),
+        -Vector2.cross(ca2, axis)
       );
 
       //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
       manifold.tJacobian[i].set(
         tangent,
-        tangent.clone().reverse(),
-        ca1.cross(tangent),
-        -ca2.cross(tangent)
+        Vector2.reverse(tangent),
+        Vector2.cross(ca1, tangent),
+        -Vector2.cross(ca2, tangent)
       );
-      const normalVelocity = axis.dot(relativeVelocity);
+      const normalVelocity = Vector2.dot(axis, relativeVelocity);
 
       if (Settings.positionCorrection)
         manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
@@ -139,25 +139,36 @@ export class CollisionManifold {
         manifold.nJacobian[i].wa * bodyA.inv_inertia * manifold.nJacobian[i].wa +
         manifold.nJacobian[i].wb * bodyB.inv_inertia * manifold.nJacobian[i].wb;
       manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
-
-      //throw console.log(k )
     }
-    //throw ""
   }
   static solve(manifold, movableA, movableB, bodyA, bodyB) {
     const { contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
-
-      const jv =
-        manifold.nJacobian[i].va.dot(movableA.velocity) +
+      const nvaDot = Vector2.dot(
+        manifold.nJacobian[i].va,
+        movableA.velocity
+      )
+      const nvbDot = Vector2.dot(
+        manifold.nJacobian[i].vb,
+        movableB.velocity
+      )
+      const tvaDot = Vector2.dot(
+        manifold.tJacobian[i].va,
+        movableA.velocity
+      )
+      const tvbDot = Vector2.dot(
+        manifold.tJacobian[i].vb,
+        movableB.velocity
+      )
+      const jv = nvaDot +
         manifold.nJacobian[i].wa * movableA.rotation +
-        manifold.nJacobian[i].vb.dot(movableB.velocity) +
+        nvbDot +
         manifold.nJacobian[i].wb * movableB.rotation;
       const jt =
-        manifold.tJacobian[i].va.dot(movableA.velocity) +
+        tvaDot +
         manifold.tJacobian[i].wa * movableA.rotation +
-        manifold.tJacobian[i].vb.dot(movableB.velocity) +
+        tvbDot +
         manifold.tJacobian[i].wb * movableB.rotation;
       let nLambda = manifold.effectiveMass[i] * -(jv + manifold.nbias[i]);
       let tLambda = manifold.effectiveMass[i] * -(jt);
@@ -209,7 +220,7 @@ export class CollisionData {
   /**
    * @type {number}
    */
-  overlap = -Infinity
+  overlap = 0
   /**
    * @type {boolean}
    */
@@ -252,8 +263,8 @@ class Jacobian {
     this.set(va, vb, wa, wb)
   }
   set(va, vb, wa, wb) {
-    if (va) this.va.copy(va)
-    if (vb) this.vb.copy(vb)
+    if (va) Vector2.copy(va,this.va)
+    if (vb) Vector2.copy(vb,this.vb)
     if (wa) this.wa = wa
     if (wb) this.wb = wb
   }

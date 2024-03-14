@@ -1,4 +1,4 @@
-import { Logger } from "../logger/index.js";
+import { deprecate } from "../logger/index.js";
 import { TWO_PI } from "./constants.js";
 
 const obj = {
@@ -8,23 +8,22 @@ const obj = {
 /**
  * This is a 2D vector class.
  * 
- * @license MIT
  */
 export class Vector2 {
   /**
    * @param {number} [x] the x coordinate of the vector
    * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x = 0,y = 0) {
+  constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
   /**
    * @deprecated
- *Calculates length squared of vector and returns it
- */
+   *Calculates length squared of vector and returns it
+   */
   magnitudeSquared() {
-    Logger.deprecate("Vector2().magnitudeSquared()","Vector2.magnitudeSquared()")
+    deprecate("Vector2().magnitudeSquared()", "Vector2.magnitudeSquared()")
     return Vector2.magnitudeSquared(this)
   }
   /**
@@ -35,7 +34,7 @@ export class Vector2 {
    * @returns {number}
    */
   magnitude() {
-    Logger.deprecate("Vector2().magnitude()","Vector2.magnitude()")
+    deprecate("Vector2().magnitude()", "Vector2.magnitude()")
     return Vector2.magnitude(this)
   }
   /**
@@ -45,8 +44,8 @@ export class Vector2 {
    * @param {number} length 
    */
   setMagnitude(length) {
-    Logger.deprecate("Vector2().setMagnitude()","Vector2.setMagnitude()")
-    Vector2.setMagnitude(this,length,this)
+    deprecate("Vector2().setMagnitude()", "Vector2.setMagnitude()")
+    Vector2.setMagnitude(this, length, this)
     return this
   }
   /**
@@ -55,9 +54,9 @@ export class Vector2 {
    * @param { Vector2} v the other vector
    */
   distanceTo(v) {
-    Logger.deprecate("Vector2().distanceTo()","Vector2.distanceTo()")
+    deprecate("Vector2().distanceTo()", "Vector2.distanceTo()")
 
-    return Vector2.distanceTo(this,v)
+    return Vector2.distanceTo(this, v)
   }
   /**
    *Calculates length squared of this vector to another vector
@@ -67,8 +66,8 @@ export class Vector2 {
    * @returns {number}
    */
   distanceToSquared(v) {
-    Logger.deprecate("Vector2().distanceToSquared()","Vector2.distanceToSquared()")
-    return Vector2.distanceTo(this,v)
+    deprecate("Vector2().distanceToSquared()", "Vector2.distanceToSquared()")
+    return Vector2.distanceTo(this, v)
   }
   /**
    * Adds a given vector into this 
@@ -77,44 +76,44 @@ export class Vector2 {
    * @param { Vector2} v
    */
   add(v) {
-    Logger.deprecate("Vector2().add()","Vector2.add()")
-    Vector2.add(this,v,this)
+    deprecate("Vector2().add()", "Vector2.add()")
+    Vector2.add(this, v, this)
     return this
   }
   /**
-    * Adds a scalar value into this vector's
-    * x and y values
-    * 
-    * @deprecated
-    * @param {number} n
-    */
+   * Adds a scalar value into this vector's
+   * x and y values
+   * 
+   * @deprecated
+   * @param {number} n
+   */
   addScalar(n) {
-    Logger.deprecate("Vector2().addScalar()","Vector2.addScalar()")
-    Vector2.addScalar(this,n,this)
+    deprecate("Vector2().addScalar()", "Vector2.addScalar()")
+    Vector2.addScalar(this, n, this)
     return this
   }
   /**
-    * Subtracts a given vector from this vector
-    * 
-    * @deprecated
-    * @param { Vector2} v
-    * @returns {this}
-    */
+   * Subtracts a given vector from this vector
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {this}
+   */
   sub(v) {
-    Logger.deprecate("Vector2().sub()","Vector2.sub()")
-    Vector2.sub(this,v,this)
+    deprecate("Vector2().sub()", "Vector2.sub()")
+    Vector2.sub(this, v, this)
     return this
   }
   /**
-    * Subtracts a scalar value from this vector's x and y values.
-    * 
-    * @deprecated
-    * @param {number} n
-    * @returns {this}
-    */
+   * Subtracts a scalar value from this vector's x and y values.
+   * 
+   * @deprecated
+   * @param {number} n
+   * @returns {this}
+   */
   subScalar(n) {
-    Logger.deprecate("Vector2().subScalar()","Vector2.subScalar()")
-    Vector2.subScalar(this,n,this)
+    deprecate("Vector2().subScalar()", "Vector2.subScalar()")
+    Vector2.subScalar(this, n, this)
     return this
   }
   /**
@@ -125,21 +124,21 @@ export class Vector2 {
    * @returns {this}
    */
   multiply(n) {
-    Logger.deprecate("Vector2().multiply()","Vector2.multiply()")
-    Vector2.multiplyScalar(this,n,this)
+    deprecate("Vector2().multiply()", "Vector2.multiply()")
+    Vector2.multiplyScalar(this, n, this)
     return this
   }
   /**
- * Rotates this vector by a given angle in radians.
- * 
- * @deprecated
- * @param {number} cos
- * @param {number} sin 
- * @returns {this}
- */
-  rotateFast(cos,sin) {
-    Logger.deprecate("Vector2().rotateFast()","Vector2.rotateFast()")
-    Vector2.rotateFast(this,cos,sin,this)
+   * Rotates this vector by a given angle in radians.
+   * 
+   * @deprecated
+   * @param {number} cos
+   * @param {number} sin 
+   * @returns {this}
+   */
+  rotateFast(cos, sin) {
+    deprecate("Vector2().rotateFast()", "Vector2.rotateFast()")
+    Vector2.rotateFast(this, cos, sin, this)
     return this
   };
   /**
@@ -154,8 +153,8 @@ export class Vector2 {
    * array if not provided one
    * @returns number[]
    */
-  toArray(target = [],offset = 0) {
-    Logger.deprecate("Vector2().toArray()","Vector2.toArray()")
+  toArray(target = [], offset = 0) {
+    deprecate("Vector2().toArray()", "Vector2.toArray()")
     target[offset] = this.x
     target[offset + 1] = this.y
     return target;
@@ -167,7 +166,7 @@ export class Vector2 {
    * @return Vector2
    */
   clone() {
-    Logger.deprecate("Vector2().clone()","Vector2.copy()")
+    deprecate("Vector2().clone()", "Vector2.copy()")
     return Vector2.copy(this)
   }
   /**
@@ -179,8 +178,8 @@ export class Vector2 {
    * @return this
    */
   copy(v) {
-    Logger.deprecate("Vector2().copy()","Vector2.copy()")
-    Vector2.copy(v,this)
+    deprecate("Vector2().copy()", "Vector2.copy()")
+    Vector2.copy(v, this)
     return this
   }
   /**
@@ -190,60 +189,60 @@ export class Vector2 {
    * @param {Number} x 
    * @param {Number} y
    */
-  set(x,y) {
-    Logger.deprecate("Vector2().set()","Vector2.set()")
-    Vector2.set(this,x,y)
+  set(x, y) {
+    deprecate("Vector2().set()", "Vector2.set()")
+    Vector2.set(this, x, y)
     return this
   }
   /**
- * Returns a vector of this reflected on a sirface perpendicular to the normal.
- * 
- * @deprecated
- * @param {Vector2} normal the unit vector perpendicular to reflection surface
- * @param { Vector2} [target]
- * @return { Vector2}
- */
-  reflect(normal,target = new Vector2()) {
-    Logger.deprecate("Vector2().reflect()","Vector2.reflect()")
-    Vector2.reflect(this,normal,target)
+   * Returns a vector of this reflected on a sirface perpendicular to the normal.
+   * 
+   * @deprecated
+   * @param {Vector2} normal the unit vector perpendicular to reflection surface
+   * @param { Vector2} [target]
+   * @return { Vector2}
+   */
+  reflect(normal, target = new Vector2()) {
+    deprecate("Vector2().reflect()", "Vector2.reflect()")
+    Vector2.reflect(this, normal, target)
     return target
   }
   /**
- * Forces this vector to have a length 
- * between the min and max.
- * 
- * @deprecated
- * @param {number} [min = 0] The smallest value 
- * the length of this vector is allowed to have.
- * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
- * @returns {this}
- */
-  clamp(min = 0,max = 1) {
-    Logger.deprecate("Vector2().clamp()","Vector2.clamp()")
-    Vector2.clampMagnitude(this,min,max,this)
+   * Forces this vector to have a length 
+   * between the min and max.
+   * 
+   * @deprecated
+   * @param {number} [min = 0] The smallest value 
+   * the length of this vector is allowed to have.
+   * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
+   * @returns {this}
+   */
+  clamp(min = 0, max = 1) {
+    deprecate("Vector2().clamp()", "Vector2.clamp()")
+    Vector2.clampMagnitude(this, min, max, this)
     return this
   }
   /**
- * Calculates the dot product of two vectors.
- * 
- * @deprecated
- * @param { Vector2} v
- * @returns {number}
-*/
+   * Calculates the dot product of two vectors.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {number}
+   */
   dot(v) {
-    Logger.deprecate("Vector2().dot()","Vector2.dot()")
-    return Vector2.dot(this,v)
+    deprecate("Vector2().dot()", "Vector2.dot()")
+    return Vector2.dot(this, v)
   }
   /**
- * Calculates the cross product of two vectors.
- * 
- * @deprecated
- * @param { Vector2} v
- * @returns {number}
- */
+   * Calculates the cross product of two vectors.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {number}
+   */
   cross(v) {
-    Logger.deprecate("Vector2().cross()","Vector2.cross()")
-    return Vector.cross(this,v)
+    deprecate("Vector2().cross()", "Vector2.cross()")
+    return Vector.cross(this, v)
   }
   /**
    * Makes this vector a unit vector by 
@@ -253,23 +252,23 @@ export class Vector2 {
    * @returns {this}
    */
   normalize() {
-    Logger.deprecate("Vector2().normalize()","Vector2.normalize()")
-    Vector2.normalize(this,this)
+    deprecate("Vector2().normalize()", "Vector2.normalize()")
+    Vector2.normalize(this, this)
     return this
   }
   /**
- * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
- * 
- * @deprecated
- * @param {number} l the length of the vector returned.
- * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
- * @returns { Vector2}
- */
-  normal(l = 1,target = new Vector2()) {
-    Logger.deprecate("Vector2().normal()","Vector2.normal()")
-    Vector2.normal(this,target)
-    Vector2.normalize(target,target)
-    Vector2.multiplyScalar(target,l,target)
+   * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
+   * 
+   * @deprecated
+   * @param {number} l the length of the vector returned.
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   * @returns { Vector2}
+   */
+  normal(l = 1, target = new Vector2()) {
+    deprecate("Vector2().normal()", "Vector2.normal()")
+    Vector2.normal(this, target)
+    Vector2.normalize(target, target)
+    Vector2.multiplyScalar(target, l, target)
     return target
   }
   /**
@@ -280,8 +279,8 @@ export class Vector2 {
    *  @returns { Vector2}
    */
   normalFast(target = new Vector2()) {
-    Logger.deprecate("Vector2().normalFast()","Vector2.normal()")
-    return target.set(-this.y,this.x)
+    deprecate("Vector2().normalFast()", "Vector2.normal()")
+    return Vector2.set(target,-this.y, this.x)
   }
   /**
    * Rotates this vector by a given angle in radians.
@@ -291,33 +290,33 @@ export class Vector2 {
    * @returns {this}
    */
   rotate(rad) {
-    Logger.deprecate("Vector2().rotate()","Vector2.rotate()")
-    Vector2.rotate(this,rad,this)
+    deprecate("Vector2().rotate()", "Vector2.rotate()")
+    Vector2.rotate(this, rad, this)
     return this
   }
   /**
- * Divides this vector with a scalar.
- * 
- * @deprecated
- * @param {number} n 
- * @returns {this}
- */
+   * Divides this vector with a scalar.
+   * 
+   * @deprecated
+   * @param {number} n 
+   * @returns {this}
+   */
   divide(n) {
-    Logger.deprecate("Vector2().divide()","Vector2.divide()")
+    deprecate("Vector2().divide()", "Vector2.divide()")
     this.multiply(1 / n)
     return this
   }
   /**
- * Checks to see if this vector is equal to
- * another vector.
- * 
- * @deprecated
- * @param { Vector2} v
- * @returns {boolean}
- */
+   * Checks to see if this vector is equal to
+   * another vector.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {boolean}
+   */
   equals(v) {
-    Logger.deprecate("Vector2().equals()","Vector2.equals()")
-    return Vector2.equals(this,v)
+    deprecate("Vector2().equals()", "Vector2.equals()")
+    return Vector2.equal(this, v)
   }
   /**
    * Checks if the vector length is zero.
@@ -326,18 +325,18 @@ export class Vector2 {
    * @returns {boolean}
    */
   equalsZero() {
-    Logger.deprecate("Vector2().equalsZero()","Vector2.equalsZero()")
+    deprecate("Vector2().equalsZero()", "Vector2.equalsZero()")
     return Vector2.equalsZero(this)
   }
   /**
- * Negates the values of this vector.
- * 
- * @deprecated
- * @returns {this}
- */
+   * Negates the values of this vector.
+   * 
+   * @deprecated
+   * @returns {this}
+   */
   reverse() {
-    Logger.deprecate("Vector2().reverse()","Vector2.reverse()")
-    Vector2.reverse(this,this)
+    deprecate("Vector2().reverse()", "Vector2.reverse()")
+    Vector2.reverse(this, this)
     return this
   }
   /**
@@ -356,16 +355,16 @@ export class Vector2 {
    * @param {Vector_like} v
    * @param {number} length
    */
-  static setMagnitude(v,length,out = new Vector2()) {
-    Vector2.normalize(v,out)
-    Vector2.multiplyScalar(v,length,out)
+  static setMagnitude(v, length, out = new Vector2()) {
+    Vector2.normalize(v, out)
+    Vector2.multiplyScalar(v, length, out)
     return out
   }
   /**
    * @param {Vector_like} v1
    * @param {Vector_like} v2
    */
-  static distanceTo(v1,v2) {
+  static distanceTo(v1, v2) {
     obj.x = v1.x - v2.x
     obj.y = v1.y - v2.y
     return Vector2.magnitude(obj)
@@ -376,7 +375,7 @@ export class Vector2 {
    * @param {Vector_like} v1
    * @param {Vector_like} v2
    */
-  static distanceToSquared(v1,v2) {
+  static distanceToSquared(v1, v2) {
     obj.x = v1.x - v2.x
     obj.y = v1.y - v2.y
     return Vector2.magnitudeSquared(obj)
@@ -386,7 +385,7 @@ export class Vector2 {
    * @param {Vector_like} v2
    * @param {Vector_like} [out]
    */
-  static add(v1,v2,out = new Vector2()) {
+  static add(v1, v2, out = new Vector2()) {
     out.x = v1.x + v2.x
     out.y = v1.y + v2.y
     return out
@@ -396,7 +395,7 @@ export class Vector2 {
    * @param {number} n
    * @param {Vector_like} [out]
    */
-  static addScalar(v1,n,out = new Vector2()) {
+  static addScalar(v1, n, out = new Vector2()) {
     out.x = v1.x + n
     out.y = v1.y + n
     return out
@@ -406,7 +405,7 @@ export class Vector2 {
    * @param {Vector_like} v2
    * @param {Vector_like} [out]
    */
-  static sub(v1,v2,out = new Vector2()) {
+  static sub(v1, v2, out = new Vector2()) {
     out.x = v1.x - v2.x
     out.y = v1.y - v2.y
     return out
@@ -415,8 +414,8 @@ export class Vector2 {
    * @param {Vector_like} v1
    * @param {number} n
    * @param {Vector_like} [out]
-  */
-  static subScalar(v1,n,out = new Vector2()) {
+   */
+  static subScalar(v1, n, out = new Vector2()) {
     out.x = v1.x - n
     out.y = v1.y - n
     return out
@@ -426,17 +425,17 @@ export class Vector2 {
    * @param {Vector_like} v2
    * @param {Vector_like} [out]
    */
-  static multiply(v1,v2,out = new Vector2()) {
+  static multiply(v1, v2, out = new Vector2()) {
     out.x = v1.x * v2.x
     out.y = v1.y * v2.y
     return out
   }
   /**
-  * @param {Vector_like} v1
-  * @param {number} n
-  * @param {Vector_like} [out]
-  */
-  static multiplyScalar(v1,n,out = new Vector2()) {
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static multiplyScalar(v1, n, out = new Vector2()) {
     out.x = v1.x * n
     out.y = v1.y * n
     return out
@@ -446,7 +445,7 @@ export class Vector2 {
    * @param {Vector_like} v2
    * @param {Vector_like} [out]
    */
-  static divide(v1,v2,out = new Vector2()) {
+  static divide(v1, v2, out = new Vector2()) {
     out.x = v1.x / v2.x
     out.y = v1.y / v2.y
     return out
@@ -456,21 +455,21 @@ export class Vector2 {
    * @param {number} n
    * @param {Vector_like} [out]
    */
-  static divideScalar(v1,n,out = new Vector2()) {
-    return Vector2.multiplyScalar(v1,1 / n,out)
+  static divideScalar(v1, n, out = new Vector2()) {
+    return Vector2.multiplyScalar(v1, 1 / n, out)
   }
   /**
    * @param {Vector_like} v1
    * @param {Vector_like} v2
    */
-  static dot(v1,v2) {
+  static dot(v1, v2) {
     return v1.x * v2.x + v1.y * v2.y
   }
   /**
    * @param {Vector_like} v1
    * @param {Vector_like} v2
    */
-  static cross(v1,v2) {
+  static cross(v1, v2) {
     return v1.x * v2.y - v1.y * v2.x
   }
   /**
@@ -478,7 +477,7 @@ export class Vector2 {
    * @param {number} n
    * @param {Vector_like} out
    */
-  static crossScalar(v1,n,out = new Vector2()) {
+  static crossScalar(v1, n, out = new Vector2()) {
     out.x = v1.y * -n
     out.y = v1.x * n
     return out
@@ -487,7 +486,7 @@ export class Vector2 {
    * @param {Vector_like} v
    * @param {Vector_like} [out=new Vector2()] 
    */
-  static normalize(v,out = new Vector2()) {
+  static normalize(v, out = new Vector2()) {
     const length = Vector2.magnitude(v)
     if (length == 0) return out
     out.x = v.x / length
@@ -498,8 +497,14 @@ export class Vector2 {
    * @param {Vector_like} v1
    * @param {Vector_like} v2
    */
-  static equals(v1,v2) {
+  static equal(v1, v2) {
     return v1.x === v2.x && v1.y === v2.y
+  }
+  static absEqual(v1, v2) {
+    return (
+      Math.abs(v1.x) === Math.abs(v2.x) ||
+      Math.abs(v1.y) === Math.abs(v2.y)
+    )
   }
   /**
    * @param {Vector_like} v
@@ -511,16 +516,16 @@ export class Vector2 {
    * @param {Vector_like} v
    * @param {Vector_like} out
    */
-  static normal(v,out = new Vector2()) {
-    return Vector2.set(out,-v.y,v.x);
+  static normal(v, out = new Vector2()) {
+    return Vector2.set(out, -v.y, v.x);
   }
   /**
    * @param {Vector_like} v
    * @param {number} angle
    * @param {Vector_like} out
    */
-  static rotate(v,angle,out = new Vector2()) {
-    return Vector2.rotateFast(v,Math.cos(angle),Math.sin(angle),out)
+  static rotate(v, angle, out = new Vector2()) {
+    return Vector2.rotateFast(v, Math.cos(angle), Math.sin(angle), out)
   }
   /**
    * @param {Vector_like} v
@@ -528,7 +533,7 @@ export class Vector2 {
    * @param {number} sin
    * @param {Vector_like} out
    */
-  static rotateFast(v,cos,sin,out = new Vector2()) {
+  static rotateFast(v, cos, sin, out = new Vector2()) {
     const x = v.x
     out.x = x * cos - v.y * sin
     out.y = x * sin + v.y * cos
@@ -538,7 +543,7 @@ export class Vector2 {
    * @param {Vector_like} v
    * @param {Vector_like} [out=new Vector2()] 
    */
-  static copy(v,out = new Vector2()) {
+  static copy(v, out = new Vector2()) {
     out.x = v.x
     out.y = v.y
     return out
@@ -548,7 +553,7 @@ export class Vector2 {
    * @param {number} x
    * @param {number} y
    */
-  static set(v,x,y) {
+  static set(v, x, y) {
     v.x = x
     v.y = y
     return v
@@ -557,16 +562,16 @@ export class Vector2 {
    * @param {Vector_like} v
    * @param {Vector_like} [out=new Vector2()] 
    */
-  static reverse(v,out = new Vector2()) {
-    return Vector2.multiplyScalar(v,-1,out)
+  static reverse(v, out = new Vector2()) {
+    return Vector2.multiplyScalar(v, -1, out)
   }
   /**
    * @param {Vector_like} v
    * @param {Vector_like} normal
    * @param {Vector_like} [out]
    */
-  static reflect(v,normal,out = new Vector2()) {
-    const multiplier = Vector2.dot(v,normal) * 2
+  static reflect(v, normal, out = new Vector2()) {
+    const multiplier = Vector2.dot(v, normal) * 2
     out.x = normal.x * multiplier - v.x
     out.y = normal.y * multiplier - v.y
 
@@ -578,14 +583,14 @@ export class Vector2 {
    * @param {number} max
    * @param {Vector_like} out
    */
-  static clampMagnitude(v,min,max,out) {
-    if (Vector2.equalsZero(v)) return Vector2.copy(v,out)
+  static clampMagnitude(v, min, max, out) {
+    if (Vector2.equalsZero(v)) return Vector2.copy(v, out)
     let length = Vector2.magnitude(v)
     if (length > max)
-      return Vector2.multiplyScalar(v,max / length,out)
+      return Vector2.multiplyScalar(v, max / length, out)
     if (length < min)
-      return Vector2.multiplyScalar(v,min / length,out)
-    return Vector2.copy(v,out)
+      return Vector2.multiplyScalar(v, min / length, out)
+    return Vector2.copy(v, out)
   }
   /**
    * Gets the angle (in degrees) between two
@@ -594,10 +599,10 @@ export class Vector2 {
    * @param { Vector2} v1 start of the angle
    * @param { Vector2} v2 end of the angle
    * @returns {number}
-  */
-  static getAbsDegBtwn(v1,v2) {
-    let a = v1.cross(v2)
-    let deg = Vector2.getDegBtwn(v1,v2)
+   */
+  static getAbsDegBtwn(v1, v2) {
+    let a = Vector2.cross(v1,v2)
+    let deg = Vector2.getDegBtwn(v1, v2)
     return a < 0 ? deg : 360 - deg
   }
   /**
@@ -606,10 +611,10 @@ export class Vector2 {
    * @param { Vector2 } v1 start of the angle
    * @param { Vector2 } v2 end of the angle
    * @returns {number}
-  **/
-  static getAbsAngleBetween(v1,v2) {
-    const a = Vector2.cross(v1,v2)
-    const deg = Vector2.getAngleBetween(v1,v2)
+   **/
+  static getAbsAngleBetween(v1, v2) {
+    const a = Vector2.cross(v1, v2)
+    const deg = Vector2.getAngleBetween(v1, v2)
 
     return a < 0 ? deg : Math.PI * 2 - deg
   }
@@ -620,9 +625,9 @@ export class Vector2 {
    * @param { Vector2} v1 start of the angle
    * @param { Vector2} v2 end of the angle
    * @returns {number}
-  */
-  static getAngleBetween(v1,v2) {
-    return Math.acos(Vector2.dot(v1,v2) / (Vector2.magnitude(v1) * Vector2.magnitude(v2)))
+   */
+  static getAngleBetween(v1, v2) {
+    return Math.acos(Vector2.dot(v1, v2) / (Vector2.magnitude(v1) * Vector2.magnitude(v2)))
   }
   /**
    * Gets the angle (in degrees) between two
@@ -631,9 +636,9 @@ export class Vector2 {
    * @param { Vector2} v1 start of the angle
    * @param { Vector2} v2 end of the angle
    * @returns {number}
-  */
-  static getDegBtwn(v1,v2) {
-    return Vector2.getAngleBetween(v1,v2) * 180 / Math.PI
+   */
+  static getDegBtwn(v1, v2) {
+    return Vector2.getAngleBetween(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
@@ -642,9 +647,9 @@ export class Vector2 {
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
    * @param { Vector2} [out] Vector2 to store results in.
    * @returns { Vector2}
-  */
-  static fromAngle(radian,out = new Vector2()) {
-    Vector2.set(out,Math.cos(radian),Math.sin(radian))
+   */
+  static fromAngle(radian, out = new Vector2()) {
+    Vector2.set(out, Math.cos(radian), Math.sin(radian))
     return out
   }
   /**
@@ -652,9 +657,9 @@ export class Vector2 {
    * 
    * @param { Vector2} [out]
    * @returns { Vector2}
-  */
+   */
   static random(out) {
-    return Vector2.fromAngle(Math.random() * TWO_PI,out)
+    return Vector2.fromAngle(Math.random() * TWO_PI, out)
   }
   /**
    * Returns a Vector2 that has been lerped between v1 and v2
@@ -665,7 +670,7 @@ export class Vector2 {
    * 
    * @returns { Vector2}
    */
-  static lerp(v1,v2,t,out = new Vector2()) {
+  static lerp(v1, v2, t, out = new Vector2()) {
     Vector2.set(
       out,
       (v2.x - v1.x) * t + v1.x,
@@ -678,15 +683,15 @@ export class Vector2 {
    * 
    * @param { Vector2} v
    * @returns {number}
-  */
+   */
   static toAngle(v) {
-    let a = Math.atan2(v.y,v.x)
+    let a = Math.atan2(v.y, v.x)
     return a < 0 ? TWO_PI + a : a
   }
   /**
    * @this {Vector2}
    */
-  [Symbol.iterator] = function* () {
+  [Symbol.iterator] = function*() {
     yield this.x
     yield this.y
   }
@@ -696,7 +701,7 @@ export class Vector2 {
    * @static
    * @readonly
    * @type { Vector2}
-  */
+   */
   static ZERO = Object.freeze(new Vector2())
 }
 /**
@@ -706,9 +711,9 @@ export class Vector extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
-  */
-  constructor(x,y) {
-    super(x,y)
+   */
+  constructor(x, y) {
+    super(x, y)
     console.error("The class `Vector` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }
@@ -721,8 +726,8 @@ export class Vec2 extends Vector2 {
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
    */
-  constructor(x,y) {
-    super(x,y)
+  constructor(x, y) {
+    super(x, y)
     console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }

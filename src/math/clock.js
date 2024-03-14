@@ -1,4 +1,4 @@
-import {Logger} from "../logger/index.js"
+import {deprecate} from "../logger/index.js"
   /**
  * Handles time management for the game.
  */
@@ -22,7 +22,7 @@ export class Clock {
    * @param {number} [accumulate]
    */
   update(accumulate = performance.now()) {
-    Logger.deprecate("Clock().update()","Clock.update()")
+    deprecate("Clock().update()","Clock.update()")
     return Clock.update(this, accumulate)
   }
   /*getFrameRate(){

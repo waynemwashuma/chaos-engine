@@ -1,6 +1,6 @@
 import { BoundingCircle } from "./boundingSphere.js"
 import { AABBvsSphere, AABBColliding, BoundType } from "./overlap.js"
-import { Logger } from "../../logger/index.js"
+import { deprecate } from "../../logger/index.js"
 
 /**
  * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -42,7 +42,7 @@ export class BoundingBox {
    * @returns boolean
    **/
   intersects(bound) {
-    Logger.deprecate("BoundingBox().intersects()", "boundsColliding()")
+    deprecate("BoundingBox().intersects()", "boundsColliding()")
     if (bound.type === BoundType.CIRCLE)
       return AABBvsSphere(this, bound)
     return AABBColliding(this, bound)
@@ -53,7 +53,7 @@ export class BoundingBox {
    * @param {number} y
    */
   translate(x, y) {
-    Logger.deprecate("BoundingBox().translate()", "BoundingBox.translate()")
+    deprecate("BoundingBox().translate()", "BoundingBox.translate()")
     return BoundingBox.translate(this,x,y,this)
   }
   /**
@@ -63,7 +63,7 @@ export class BoundingBox {
    * @returns {BoundingBox}
    */
   clone() {
-    Logger.deprecate("BoundingBox().clone()", "BoundingBox.copy()")
+    deprecate("BoundingBox().clone()", "BoundingBox.copy()")
     return BoundingBox.copy(this)
   }
   /**
@@ -73,7 +73,7 @@ export class BoundingBox {
    * @param {BoundingBox} bounds
    */
   copy(bounds) {
-    Logger.deprecate("BoundingBox().copy()", "BoundingBox.copy()")
+    deprecate("BoundingBox().copy()", "BoundingBox.copy()")
     BoundingBox.copy(bounds,this)
   }
   static copy(bound,out = new BoundingBox()){

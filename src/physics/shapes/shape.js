@@ -2,13 +2,11 @@ import { Vector2 } from "../../math/index.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
 
-let tmp1 = new Vector2()
-
 /**
  * This class makes a body tangible
  * to collision detection and response.Without it,the body will not be able to interact with other bodies.
  */
-class Shape {
+export class Shape {
   /**
    * Used to determine what type of shape this is.
    * 
@@ -38,19 +36,9 @@ class Shape {
    * @param { Vector2} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vector2(), offsetAngle = 0) {
-    this.offPosition = offset
-    this.offAngle = offsetAngle * Math.PI / 180
-    this.vertices = vertices.map(v => v.clone())
+  constructor(vertices) {
+    this.vertices = vertices.map(v => Vector2.copy(v))
     this.geometry = new Geometry(vertices)
-  }
-
-  /**
-   * The area occupied by a shape.
-   * @type {number}
-   */
-  get area() {
-    return 0
   }
   /**
    * Returns the normals of the faces when rotated.
@@ -60,18 +48,18 @@ class Shape {
    * @returns { Vector2[]}
    */
   static getNormals(shape, refshape, target = []) {
-    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry,shape.angle, target)
+    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, target)
     let min = null,
       vertex = null
-    for (let i = 0; i < refshape.vertices.length; i++) {
-      const a = shape.vertices[0].distanceToSquared(refshape.vertices[i])
-      if (!min || min > a) {
-        vertex = refshape.vertices[i]
-        min = a
-      }
-    }
-    if (!vertex) vertex = refshape.vertices[0]
-    target.push(new Vector2().copy(vertex).sub(shape.vertices[0]).normalize())
+    if (refshape.type === Shape.POLYGON)
+      vertex = getNearVertex(shape.vertices[0], shape.vertices)
+    if (refshape.type === Shape.CIRCLE)
+      vertex = refshape.vertices[0]
+    const normal = Vector2.copy(vertex)
+    Vector2.sub(normal, shape.vertices[0], normal)
+    Vector2.normalize(normal, normal)
+    target.push(normal)
+
     return target
   }
   /**
@@ -86,15 +74,15 @@ class Shape {
   static update(shape, position, angle, scale) {
     shape.angle = angle
     if (shape.type === ShapeType.CIRCLE) {
-      shape.position.copy(position)
+      Vector2.copy(position, shape.vertices[0])
       return
     }
     Geometry.transform(
-      shape.geometry,
-      shape.vertices,
+      shape.geometry.vertices,
       position,
       angle,
-      scale
+      scale,
+      shape.vertices
     )
   }
 
@@ -107,11 +95,18 @@ class Shape {
    * @returns { Vector2[] }
    */
   static getVertices(shape, axis, target = []) {
-    if (shape.type === Shape.POLYGON) return shape.vertices
-    const v1 = new Vector2().copy(axis).multiply(-shape.vertices[1].x).add(shape.vertices[0])
-    const v2 = new Vector2().copy(axis).multiply(shape.vertices[1].x).add(shape.vertices[0])
+    if (shape.type === Shape.POLYGON)
+      return shape.vertices
+
+    const v1 = Vector2.multiplyScalar(axis, -shape.vertices[1].x)
+    const v2 = Vector2.multiplyScalar(axis, shape.vertices[1].x)
+
+    Vector2.add(v1, shape.vertices[0], v1)
+    Vector2.add(v2, shape.vertices[0], v2)
+
     target[0] = v1
     target[1] = v2
+
     return target
   }
 
@@ -134,8 +129,8 @@ class Shape {
     for (let j = 0; j < vertexCount; ++j) {
       const v1 = vertices[i]
       const v2 = vertices[j]
-      const crs = Math.abs(v2.cross(v1))
-      numerator += crs * (v2.dot(v2) + v2.dot(v1) + v1.dot(v1))
+      const crs = Math.abs(Vector2.cross(v1,v2))
+      numerator += crs * (Vector2.dot(v2,v2) + Vector2.dot(v1,v2) + Vector2.dot(v1,v1))
       denominator += crs
       i = j
     }
@@ -145,6 +140,15 @@ class Shape {
   static POLYGON = 1
 }
 
-export {
-  Shape
+function getNearVertex(position, vertices) {
+  let vertex = Vector2.ZERO
+  let min = -Infinity
+  for (let i = 0; i < vertices.length; i++) {
+    const a = Vector2.distanceToSquared(vertices[i], position)
+    if (min > a) {
+      vertex = vertices[i]
+      min = a
+    }
+  }
+  return vertex
 }
