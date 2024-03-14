@@ -1,5 +1,5 @@
 import { Shape } from "./shape.js"
-import { Vector2, sq } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
 export class Rectangle extends Shape {
   /**

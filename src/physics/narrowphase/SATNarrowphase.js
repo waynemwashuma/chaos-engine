@@ -23,7 +23,6 @@ const _arr = [],
     max: 0
   },
   tmp4 = new Vector2(),
-  tmp5 = new Vector2(),
   tmp6 = new Vector2()
 
 /**

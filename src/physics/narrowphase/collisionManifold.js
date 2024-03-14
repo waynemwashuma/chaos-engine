@@ -165,7 +165,6 @@ export class CollisionManifold {
       const oldtImpulse = manifold.tImpulse[i]
       if (Settings.impulseAccumulation) {
         manifold.impulse[i] = Math.max(0.0, manifold.impulse[i] + nLambda);
-        const maxfriction = manifold.impulse[i] * manifold.kineticFriction
         manifold.tImpulse[i] = Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
           tLambda :
           tLambda * manifold.kineticFriction
