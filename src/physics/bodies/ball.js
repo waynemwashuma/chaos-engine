@@ -25,6 +25,6 @@ export class Ball extends Body2D {
   set mass(x) {
     this._mass = x
     this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inertia = this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
+    this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
   }
 }
