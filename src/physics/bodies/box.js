@@ -13,7 +13,7 @@ export class Box extends Body2D {
   */
   constructor(w,h) {
     super(new Rectangle(w,h))
-    this.inertia = this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
+    this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
   }
   /**
    * @inheritdoc
@@ -22,7 +22,7 @@ export class Box extends Body2D {
   set mass(x){
     this._mass = x
     this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inertia = this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
+    this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
   }
   get mass(){
     return this._mass
