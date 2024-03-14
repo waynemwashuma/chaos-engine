@@ -1,5 +1,5 @@
 import { Body2D } from "./body.js"
-import { Triangle } from "../shapes/index.js"
+import { Triangle,Shape } from "../shapes/index.js"
 
 export class Trigon extends Body2D {
     /**
@@ -10,7 +10,7 @@ export class Trigon extends Body2D {
     */
     constructor(base, height, angle = Math.PI/3) {
         super(new Triangle(base, height, angle))
-        this.inertia = Triangle.calcInertia(this.mass, base, height, angle)
+        this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
         this.base = base
         this.height = height
         this.bangle = angle
@@ -25,6 +25,6 @@ export class Trigon extends Body2D {
     set mass(x) {
         this._mass = x
         this.inv_mass = x === 0 ? 0 : 1 / x
-        this.inertia = Triangle.calcInertia(this.mass, this.base, this.height,this.bangle)
+        this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
     }
 }
