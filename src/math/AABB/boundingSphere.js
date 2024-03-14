@@ -1,10 +1,11 @@
 import { BoundingBox } from "./boundingBox.js"
-import { Overlaps } from "./overlap.js"
-
+import { boundSpheresColliding, AABBvsSphere, BoundType } from "./overlap.js"
+import { Logger } from "../../logger/index.js"
 /**
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
  */
 export class BoundingCircle {
+  type = BoundType.CIRCLE
   /**
    * 
    * @type {number}
@@ -23,35 +24,36 @@ export class BoundingCircle {
   }
   /**
    * 
+   * @deprecated
    * Checks to see if this intersects with another bounding box
    * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
    **/
   intersects(bound) {
-    if (bound instanceof BoundingCircle)
-      return Overlaps.boundSpheresColliding(this, bound)
-    return Overlaps.AABBvsSphere(bound, this)
+    Logger.deprecate("BoundingCircle().intersects()", "boundsColliding()")
+    if (bound.type === BoundType.CIRCLE)
+      return boundSpheresColliding(this, bound)
+    return AABBvsSphere(bound, this)
   }
   /**
    * @param {number} x
    * @param {number} y
    */
   translate(x, y) {
+    Logger.deprecate("BoundingCircle().translate()", "BoundingCircle.translate()")
     this.pos.x += x
     this.pos.y += y
   }
-  toJson() {
-    return {
-      posX: this.pos.x,
-      posY: this.pos.y,
-      r: this.r
-    }
+  static translate(bound, x, y, out = new BoundingCircle()) {
+    out.pos.x = bound.pos.x + x
+    out.pos.y = bound.pos.y + y
+    
+    return out
   }
-  /**
-   * @param {*} obj
-   */
-  fromJson(obj) {
-    this.pos.x = obj.posX
-    this.pos.y = obj.posY
-    this.r = obj.r
+  static copy(bound, out = new BoundingCircle()) {
+    out.pos.x = bound.pos.x
+    out.pos.y = bound.pos.y
+    out.r = bound.r
+
+    return out
   }
 }

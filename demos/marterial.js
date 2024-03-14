@@ -5,7 +5,6 @@ import {
   BasicMaterial,
   StaticImageMaterial,
   SpriteMaterial,
-  TextMaterial,
   Vector2,
   createEntity
 } from "/src/index.js"
@@ -48,10 +47,8 @@ export function materials(manager) {
     material3.frameRate = 1 / 10
     material3.setAction(1)
   }
-  let material4 = new TextMaterial("here it is")
   createsprite(manager, 290, 60, geometry, material3)
-  createsprite(manager, 380, 60, geometry, material4)
-  
+
   let r = 0
   setInterval(() => {
     material3.setAction(r)

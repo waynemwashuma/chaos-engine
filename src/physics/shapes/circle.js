@@ -78,19 +78,4 @@ export class Circle extends Shape {
   get area() {
     return Math.PI * this.radius * this.radius
   }
-  toJson() {
-    let obj = {
-      radius: this.radius,
-      offset: this.offPosition,
-      offAngle: this.offAngle,
-      shapeType: this.type,
-      type: this.CHAOS_OBJ_TYPE
-    }
-    return obj
-  }
-  fromJson(obj) {
-    return new Circle(
-      obj.radius
-    )
-  }
 }
