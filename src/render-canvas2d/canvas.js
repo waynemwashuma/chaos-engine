@@ -1,7 +1,7 @@
 
 import { Renderer,Sprite } from "../render/index.js"
 import { Transform } from "../intergrator/index.js"
-import { Logger } from "../logger/index.js"
+import { deprecate } from "../logger/index.js"
 /**
  * Renders images and paths to the 2D context of a canvas.
  * 
@@ -24,7 +24,7 @@ export class Renderer2D extends Renderer {
    * @param {boolean} focus
    */
   bindTo(selector,focus = true){
-    Logger.deprecate("Renderer2D().bindTo()","Renderer2D.bindTo()")
+    deprecate("Renderer2D().bindTo()","Renderer2D.bindTo()")
     Renderer.bindTo(this,selector,focus)
   }
     /**
@@ -33,14 +33,14 @@ export class Renderer2D extends Renderer {
    * @param {number} y
    */
     setViewport(x,y){
-      Logger.deprecate("Renderer2D().setViewport()","Renderer2D.setViewport()")
+      deprecate("Renderer2D().setViewport()","Renderer2D.setViewport()")
       Renderer.setViewport(this,x,y)
     }
   /**
    * @deprecated
    */
   clear() {
-    Logger.deprecate("Renderer2D().clear()","Renderer2D.clear()")
+    deprecate("Renderer2D().clear()","Renderer2D.clear()")
     Renderer2D.clear(this)
   }
   /**
@@ -60,7 +60,7 @@ export class Renderer2D extends Renderer {
    */
   static update(renderer, transforms, sprites, dt) {
     renderer.camera.update()
-    renderer.clear()
+    Renderer2D.clear(renderer)
     renderer.ctx.save()
     renderer.ctx.rotate(
       renderer.camera.transform.orientation

@@ -1,4 +1,4 @@
-import { Camera } from "../camera.js"
+import { Camera2D } from "../camera.js"
 
 /**
  * This is an abstract class from which different types of renderers are implemented.
@@ -15,7 +15,7 @@ export class Renderer {
    */
   domElement
   /**
-   * @type {Camera}
+   * @type {Camera2D}
    */
   camera
   /**
@@ -23,7 +23,7 @@ export class Renderer {
    */
   constructor(canvas) {
     this.domElement = canvas
-    this.camera = new Camera()
+    this.camera = new Camera2D()
   }
   /**
    * Attaches the renderer to a given html element by its selector.

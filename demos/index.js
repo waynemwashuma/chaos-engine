@@ -23,8 +23,8 @@ export const world = new World2D()
 export const tweener = new TweenManager()
 
 export function init(selector) {
-  renderer.bindTo(selector)
-  renderer.setViewport(innerWidth, innerHeight * 0.5)
+  Renderer2D.bindTo(renderer,selector)
+  Renderer2D.setViewport(renderer,innerWidth, innerHeight * 0.5)
   renderer.domElement.style.backgroundColor = "black"
   //renderer.camera.transform.scale.y = -1
   //renderer.camera.transform.position.y = renderer.width
@@ -83,7 +83,7 @@ manager.registerSystem((dt, manager) => {
 
 //debuggers
 fpsDebugger(manager)
-bodyDebugger(manager, {
+bodyDebugger(manager,renderer, {
   clearRenderer: false,
   drawCollisionArm: false
 })

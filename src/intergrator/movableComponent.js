@@ -22,9 +22,13 @@ export class Movable {
    * @param {number} inv_mass
    * @param {number} inv_inertia
    */
-  applyForce(force,inv_mass,inv_inertia, arm = Vector2.ZERO) {
-    this.acceleration.add(force.multiply(inv_mass))
-    this.torque += arm.cross(force) * inv_inertia
+  applyForce(force, inv_mass, inv_inertia, arm = Vector2.ZERO) {
+    Vector2.set(
+      this.acceleration,
+      this.acceleration.x + force.x * inv_mass,
+      this.acceleration.y + force.y * inv_mass
+    )
+    this.torque += Vector2.cross(arm,force) * inv_inertia
   }
   /**
    * Applies a force to a body affecting its direction of travel and rotation.
@@ -33,23 +37,12 @@ export class Movable {
    * @param {number} inv_mass
    * @param {number} inv_inertia
    */
-  applyImpulse(impulse,inv_mass,inv_inertia, arm = Vector2.ZERO) {
-    this.velocity.add(impulse.multiply(inv_mass))
-    this.rotation += arm.cross(impulse) * inv_inertia
-  }
-  toJson() {
-    return {
-      velocity: this.velocity,
-      rotation: this.rotation,
-      acceleration: this.acceleration
-    }
-  }
-  /**
-   * @param {*} obj
-   */
-  fromJson(obj) {
-    this.velocity.fromJson(obj.velocity)
-    this.rotation = obj.rotatjon
-    this.acceleration.fromJson(obj.acceleration)
+  applyImpulse(impulse, inv_mass, inv_inertia, arm = Vector2.ZERO) {
+    Vector2.set(
+      this.velocity,
+      this.velocity.x + impulse.x * inv_mass,
+      this.velocity.y + impulse.y * inv_mass
+    )
+    this.rotation += Vector2.cross(arm,impulse) * inv_inertia
   }
 }

@@ -1,4 +1,4 @@
-import { Logger } from "../logger/index.js"
+import { warn } from "../logger/index.js"
 import { Utils } from "../utils/index.js"
 
 
@@ -15,7 +15,7 @@ class Archetype {
    */
   insert(entity, components) {
     if (entity.index !== -1)
-      return Logger.warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
+      return warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
     for (let i = 0; i < this.keys.length; i++) {
       this.components.get(this.keys[i]).push(components[this.keys[i]])
     }

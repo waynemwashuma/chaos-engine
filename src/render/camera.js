@@ -1,6 +1,6 @@
 import {Transform} from '../intergrator/index.js'
 import { Vector2 } from '../math/index.js'
-import { Logger } from '../logger/index.js'
+import { deprecate } from '../logger/index.js'
 
 export class Camera2D {
   /**
@@ -27,6 +27,6 @@ export class Camera2D {
 export class Camera extends Camera2D{
   constructor(){
     super()
-    Logger.deprecate("Camera()","Camera2D()")
+    deprecate("Camera()","Camera2D()")
   }
 }

@@ -3,7 +3,7 @@ import { Vector2 } from "../../math/index.js"
 import { NaiveBroadphase } from "../broadphases/index.js"
 import { SATNarrowPhase, CollisionManifold } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
-import { Logger } from "../../logger/index.js"
+import { deprecate } from "../../logger/index.js"
 import { Body2D } from "../bodies/index.js"
 
 /**
@@ -70,9 +70,9 @@ export class World2D {
 
   set gravity(x) {
     if (typeof x === "object") {
-      this.gravitationalAcceleration.copy(x)
+      Vector2.copy(x, this.gravitationalAcceleration)
     } else {
-      this.gravitationalAcceleration.set(0, x)
+      Vector2.set(this.gravitationalAcceleration, 0, x)
     }
   }
 
@@ -152,7 +152,11 @@ export class World2D {
     for (var i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
         if (bodies[i][j].inv_mass)
-          movable[i][j].acceleration.add(world.gravitationalAcceleration)
+          Vector2.add(
+            movable[i][j].acceleration,
+            world.gravitationalAcceleration,
+            movable[i][j].acceleration
+          )
       }
     }
   }
@@ -213,7 +217,7 @@ export class World extends World2D {
    * @inheritdoc
    */
   constructor() {
-    Logger.deprecate("World()", "World2D()")
+    deprecate("World()", "World2D()")
     super(...arguments)
   }
 }
