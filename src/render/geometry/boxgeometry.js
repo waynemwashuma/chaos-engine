@@ -11,6 +11,8 @@ export class BoxGeometry extends BufferGeometry{
     let v2 = new Vector2(-width / 2, height / 2)
     let v3 = new Vector2(width / 2, height / 2)
     let v4 = new Vector2(width / 2, -height / 2)
-    super([v1, v2, v3, v4])
+    super()
+    BufferGeometry.setAttribute(this, "position", [v1, v2, v3, v4])
+    BufferGeometry.initCanvas2D(this)
   }
 }

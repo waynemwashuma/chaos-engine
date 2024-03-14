@@ -1,5 +1,5 @@
 import { World2D } from "../physics/index.js"
-import { Renderer2D } from "../render/index.js"
+import { Renderer2D } from "../render-canvas2d/index.js"
 import { Input } from "../inputs/index.js"
 import { Manager } from "../ecs/index.js"
 import {

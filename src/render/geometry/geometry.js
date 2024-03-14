@@ -1,23 +1,31 @@
 import { Vector2 } from "../../math/index.js"
 import { vertices } from "../utils/index.js"
+import { Logger } from "../../logger/index.js"
+
 
 export class BufferGeometry {
   /**
+   * @type {Record<string,any[] | undefined>}
+   */
+  attributes = {}
+  /**
    * @package
-   * @type {Path2D}
+   * @type {Path2D | null}
    */
   drawable
   /**
    * @param { Vector2[]} vertices
    */
-  constructor(vertices) {
-    this.drawable = new Path2D()
-    this.updateVertices(vertices)
-  }
   /**
    * @param {Vector2[]} data
-  */
-  updateVertices(data){
-    vertices(this.drawable, data, true)
+   */
+  static initCanvas2D(geometry) {
+    geometry.drawable = new Path2D()
+    const positions = geometry.attributes["position"]
+    if (!positions) return Logger.warnOnce("The `position` attribute should be available in `BufferGeometry` to use `Renderer2D` ")
+    vertices(geometry.drawable, positions, true)
+  }
+  static setAttribute(geometry, name, attribute) {
+    geometry.attributes[name] = attribute
   }
 }
