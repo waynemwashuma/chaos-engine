@@ -20,11 +20,32 @@ export class Renderer2D extends Renderer {
   }
   /**
    * @deprecated
+   * @param {string} selector
+   * @param {boolean} focus
+   */
+  bindTo(selector,focus = true){
+    Logger.deprecate("Renderer2D().bindTo()","Renderer2D.bindTo()")
+    Renderer.bindTo(this,selector,focus)
+  }
+    /**
+   * @deprecated
+   * @param {number} x
+   * @param {number} y
+   */
+    setViewport(x,y){
+      Logger.deprecate("Renderer2D().setViewport()","Renderer2D.setViewport()")
+      Renderer.setViewport(this,x,y)
+    }
+  /**
+   * @deprecated
    */
   clear() {
     Logger.deprecate("Renderer2D().clear()","Renderer2D.clear()")
     Renderer2D.clear(this)
   }
+  /**
+   * @param {Renderer2D} renderer
+   */
   static clear(renderer) {
     renderer.ctx.setTransform()
     const h = renderer.height,
