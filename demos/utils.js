@@ -57,6 +57,7 @@ export function makeContainer(
     )
   )
 }
+
 function createStaticBox(x, y, w, h) {
   const box = {
     "transform": new Transform(x, y),

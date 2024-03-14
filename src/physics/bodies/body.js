@@ -160,6 +160,15 @@ export class Body2D {
   /**
    * @type string
    */
+  get CHOAS_CLASSNAME() {
+    return this.constructor.name.toLowerCase()
+  }
+  /**
+   * @type string
+   */
+  get CHAOS_OBJ_TYPE() {
+    return "body"
+  }
   /**
    * Mass of a body.
    * 
@@ -233,6 +242,73 @@ export class Body2D {
     return target.copy(this._localanchors[index]).rotate(this.orientation.value)
   }
 
+  toJson() {
+    let obj = {
+      id: this.id,
+      position: this.position.toJson(),
+      velocity: this.velocity.toJson(),
+      acceleration: this.acceleration.toJson(),
+      orientation: this.orientation.toJson(),
+      rotation: this.rotation.toJson(),
+      shapes: [],
+      anchors: [],
+      collisionResponse: this.collisionResponse,
+      allowSleep: this.allowSleep,
+      type: this.CHAOS_OBJ_TYPE,
+      phyType: this.type,
+      mass: this.mass,
+      inertia: this.inertia,
+      autoUpdateBound: this.autoUpdateBound,
+      boundPadding: this.boundPadding,
+      aabbDetectionOnly: this.aabbDetectionOnly,
+      mask: this.mask
+    }
+    this.anchors.forEach((a) => {
+      obj.anchors.push(a)
+    })
+    this.shapes.forEach((a) => {
+      obj.shapes.push(a.toJson())
+    })
+    return obj
+  }
+  /**
+   * @@param {Shape} shape
+   */
+  addShape(shape) {
+    this.shapes.push(shape)
+  }
+  fromJson(obj) {
+    let shapes = []
+    obj.shapes.forEach((shape) => {
+      shapes.push(Shape.fromJson(shape))
+    })
+    let body = this
+    body.shapes = shapes
+    body.acceleration = obj.acceleration
+    body.velocity = obj.velocity
+    body.position = pbj.position
+    body.rotation = obj.rotation
+    body.orientation = obj.orientation
+    body.mass = obj.mass
+    body.inertia = obj.inertia
+    body.type = obj.phyType
+    body.allowSleep = obj.allowSleep
+    body.aabbDetectionOnly = obj.aabbDetectionOnly
+    body.collisionResponse = obj.collisionResponse
+    body.autoUpdateBound = obj.autoUpdateBound
+    body.id = obj.id
+    body.mask = obj.mask
+    obj.anchors.forEach((v) => {
+      body.setAnchor(new Vector2().fromJson(v))
+    })
+  }
+  /**
+   * Calculates the bounds of the body
+   * 
+   * @param {BoundingBox} bound
+   * @param {Body2D} body Body2D to calculate max and min from
+   * @param {Number} padding increases the size of the bounds
+   */
   static calculateBounds(body, bound, padding = 0) {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
@@ -241,11 +317,13 @@ export class Body2D {
 
     for (let i = 0; i < body.shapes.length; i++) {
       const shape = body.shapes[i]
-      if (shape.type == 0) {
-        const idx = shape.position.x - shape.radius,
-          idy = shape.position.y - shape.radius,
-          mdx = shape.position.x + shape.radius,
-          mdy = shape.position.y + shape.radius
+      if (shape.type == Shape.CIRCLE) {
+        const position = shape.vertices[0]
+        const radius = shape.vertices[1].x
+        const idx = position.x - radius,
+          idy = position.y - radius,
+          mdx = position.x + radius,
+          mdy = position.y + radius
         if (!minX || idx < minX) minX = idx
         if (!maxX || mdx > maxX) maxX = mdx
         if (!minY || idy < minY) minY = idy

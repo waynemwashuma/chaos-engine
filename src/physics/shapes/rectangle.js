@@ -1,42 +1,18 @@
 import { Shape } from "./shape.js"
-import { Vector2, sq }from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
 export class Rectangle extends Shape {
-  /**
-   * @type {number}
-   */
-  height = 0
-  /**
-   * @type {number}
-   */
-  width = 0
   /**
    * @param {number} width
    * @param {number} height
    * @param { Vector2} offset Positional offset from the body center.
    *  @param {number} offsetAngle Angular offset from the body center.
    */
-  constructor(width, height, offset, offsetAngle) {
+  constructor(width, height) {
     let v1 = new Vector2(-width / 2, -height / 2)
     let v2 = new Vector2(-width / 2, height / 2)
     let v3 = new Vector2(width / 2, height / 2)
     let v4 = new Vector2(width / 2, -height / 2)
-    super([v1, v2, v3, v4], offset, offsetAngle)
-    this.height = height
-    this.width = width
+    super([v1, v2, v3, v4])
   }
-  /**
-   * @inheritdoc
-   * @param {number} mass of the body
-   * @param {number} width
-   * @param {number} height
-   * @returns number
-   */
-  static calcInertia(mass, width, height) {
-    return mass * (sq(width) + sq(height)) / 12
-  }
-  get area() {
-    return this.width * this.height
-  }
-
 }

@@ -3,27 +3,37 @@ import { Vector2 } from "../math/index.js"
 import { line, circle, vertices, stroke, fill } from "../render/index.js"
 /**
  * @param {Manager} manager
- * @param {BodyDebbuggerOptions} options
+ * @param {BodyDebbuggerOptions} [options]
  */
 export function bodyDebugger(manager, options = {}) {
   options.clearRenderer = options.clearRenderer || false
   options.drawCollisionArm = options.drawCollisionArm || false
-
+  options.drawContacts = options.drawContacts || false
   manager.registerSystem(dt => {
     const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bounds", "body").raw()
     const clmd = manager.queryEvent("collision")
     const renderer = manager.getResource("renderer")
 
     if (options.clearRenderer) renderer.clear()
-
     if (options.drawCollisionArm) drawArms()
-
     if (options.drawPosition) drawPositions()
+    if (options.drawContacts) drawContacts()
+    if (options.drawBounds) drawBounds()
 
-    if (options.drawBounds)drawBounds()
     for (let i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
         drawShapes(bodies[i][j].shapes, renderer.ctx)
+      }
+    }
+
+    function drawContacts() {
+      for (let i = 0; i < clmd.length; i++) {
+        let [p1, p2] = clmd[i].contactData.contactPoints
+        renderer.ctx.beginPath()
+        circle(renderer.ctx, p1.x, p1.y, 5)
+        if (clmd[i].contactData.contactNo === 2) circle(renderer.ctx, p2.x, p2.y, 5)
+        renderer.ctx.closePath()
+        fill(renderer.ctx, "white")
       }
     }
 
@@ -47,12 +57,18 @@ export function bodyDebugger(manager, options = {}) {
       renderer.ctx.beginPath()
       for (let i = 0; i < clmd.length; i++) {
         const manifold = clmd[i]
+        const { contactData: { contactNo, contactPoints } } = clmd[i]
         const [transformA] = manager.get(manifold.entityA, "transform")
         const [transformB] = manager.get(manifold.entityB, "transform")
 
-        drawArm(renderer.ctx, transformA.position, manifold.ca1, "yellow")
-        drawArm(renderer.ctx, transformB.position, manifold.ca2, "yellow")
+        for (let j = 0; j < contactNo; j++) {
+          drawArmRaw(renderer.ctx, transformA.position, contactPoints[j])
+          drawArmRaw(renderer.ctx, transformB.position, contactPoints[j])
+        }
+
       }
+      renderer.ctx.strokeStyle = "yellow"
+      renderer.ctx.stroke()
       renderer.ctx.closePath()
     }
 
@@ -85,6 +101,14 @@ function drawArm(ctx, position, arm, color = "blue") {
   ctx.stroke()
 }
 
+function drawArmRaw(ctx, position, arm, color = "blue") {
+  ctx.moveTo(position.x, position.y)
+  ctx.lineTo(
+    arm.x,
+    arm.y
+  )
+}
+
 function drawShapes(shapes, ctx) {
   ctx.beginPath()
   for (var i = 0; i < shapes.length; i++) {
@@ -92,12 +116,12 @@ function drawShapes(shapes, ctx) {
     if (shape.type === Shape.CIRCLE) {
       circle(
         ctx,
-        shape.position.x,
-        shape.position.y,
-        shape.radius
+        shape.vertices[0].x,
+        shape.vertices[0].y,
+        shape.vertices[1].x
       )
-      const r = Vector2.fromAngle(shape.angle).multiply(shape.radius)
-      drawArm(ctx, shape.position, r)
+      const r = Vector2.fromAngle(shape.angle).multiply(shape.vertices[1].x)
+      drawArm(ctx, shape.vertices[0], r)
     } else {
       vertices(ctx, shape.vertices, true)
     }

@@ -1,4 +1,4 @@
-import { Body2D, Shape } from "../physics/index.js"
+import { Shape } from "../physics/index.js"
 import { Ray } from "./ray.js"
 import { Vector2 } from "../math/index.js"
 import { RayCollisionResult, RayPoint } from "./raycastresult.js"
@@ -12,7 +12,10 @@ export class Raycast2D {
    * @returns {RayCollisionResult<T>}
    */
   static castToBody(ray, body, value) {
-    return Raycast2D.cast(ray,body.shapes[0],value)
+    Raycast2D.cast(ray)
+    for (let i = 0; i < body.shapes.length; i++) {
+      Raycast2D.cast(ray, body.shapes[i], value)
+    }
   }
   /**
    * @template {Shape} T
@@ -26,17 +29,10 @@ export class Raycast2D {
     if (shape.type === Shape.POLYGON)
       return Raycast2D.testVertices(ray, shape.vertices, results)
     if (shape.type === Shape.CIRCLE)
-      return Raycast2D.testCircle(ray, shape.vertices[0], shape.vertices[1].x, results)
+      return Raycast2D.testCircle(ray, shape.position, shape.radius, results)
     return results
   }
-  /**
-   * @template T
-   * @param {Ray} ray
-   * @param {Vector2} center
-   * @param {number} radius
-   * @param {RayCollisionResult<T>} results
-   */
-  static testCircle(ray, center, radius, results) {
+  static testCircle(ray, position, radius, results) {
     const x1 = ray.origin.x
     const y1 = ray.origin.y
     const x2 = ray.direction.x
@@ -71,12 +67,6 @@ export class Raycast2D {
     ))
     return results
   }
-  /**
-   * @template T
-   * @param {Ray} ray
-   * @param {string | any[]} vertices
-   * @param {RayCollisionResult<T>} result
-   */
   static testVertices(ray, vertices, result) {
     const origin = ray.origin
     const direction = ray.direction
@@ -85,7 +75,7 @@ export class Raycast2D {
       vertices[vertices.length - 1],
       vertices[0], ray.origin, ray.direction
     )
-    if (res) result.points.push(
+    if (res) results.points.push(
       new RayPoint(
         res,
         res.clone().sub(origin)
@@ -97,7 +87,7 @@ export class Raycast2D {
         vertices[i], vertices[i + 1],
         ray.origin, ray.direction
       )
-      if (res) result.points.push(
+      if (res) results.points.push(
         new RayPoint(
           res,
           res.clone().sub(origin)
@@ -105,16 +95,10 @@ export class Raycast2D {
         )
       )
     }
-    return result
+    return results
   }
 }
 
-/**
- * @param {Vector2} v1
- * @param {Vector2} v2
- * @param {Vector2} or
- * @param {Vector2} dir
- */
 function testSingleEdge(v1, v2, or, dir) {
   const x1 = v1.x
   const y1 = v1.y

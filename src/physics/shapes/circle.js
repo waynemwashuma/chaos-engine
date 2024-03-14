@@ -21,61 +21,16 @@ export class Circle extends Shape {
       new Vector2(),
       new Vector2(radius, radius)
     ])
-    this.radius = radius
     this.type = Shape.CIRCLE
   }
+  
+  //TODO - Remove these getters and setters
+  /**
+  */
   get position() {
     return this.vertices[0]
   }
   get radius() {
     return this.vertices[1].x
-  }
-  set radius(x) {
-    this.vertices[1].x = x
-  }
-  /**
-   * @inheritdoc
-   * @param {number} mass
-   * @param {number} radius 
-   */
-  static calcInertia(mass, radius) {
-    return mass * (radius * radius) / 4
-  }
-  /**
-   * @inheritdoc
-   * 
-   * @param { Vector2} axis
-   * @param { Vector2[]} out 
-   * @returns { Vector2[]}
-   */
-  getVertices(axis, target = []) {
-    const v1 = new Vector2().copy(axis).multiply(-this.vertices[1].x).add(this.vertices[0])
-    const v2 = new Vector2().copy(axis).multiply(this.vertices[1].x).add(this.vertices[0])
-    target[0] = v1
-    target[1] = v2
-    return target
-  }
-  /**
-   * 
-   * @param {Shape} shape 
-   * @param { Vector2[]} [target=[]] target
-   * @returns {Vector2[]}
-   */
-  getNormals(shape, target = []) {
-    let min = null,
-      vertex = null
-    for (let i = 0; i < shape.vertices.length; i++) {
-      let a = this.vertices[0].distanceToSquared(shape.vertices[i])
-      if (!min || min > a) {
-        vertex = shape.vertices[i]
-        min = a
-      }
-    }
-    if (!vertex) vertex = shape.vertices[0]
-    target.push(new Vector2().copy(vertex).sub(this.vertices[0]).normalize())
-    return target
-  }
-  get area() {
-    return Math.PI * this.radius * this.radius
   }
 }

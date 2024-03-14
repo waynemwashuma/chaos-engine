@@ -18,7 +18,7 @@ class Shape {
   type = ShapeType.POLYGON
   /**
    * @type {number}
-  */
+   */
   angle = 0
   /**
    * The vertices describing the shape.
@@ -38,19 +38,9 @@ class Shape {
    * @param { Vector2} [offset=vector] offset position relative to parent body
    * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vector2(), offsetAngle = 0) {
-    this.offPosition = offset
-    this.offAngle = offsetAngle * Math.PI / 180
+  constructor(vertices) {
     this.vertices = vertices.map(v => v.clone())
     this.geometry = new Geometry(vertices)
-  }
-
-  /**
-   * The area occupied by a shape.
-   * @type {number}
-   */
-  get area() {
-    return 0
   }
   /**
    * Returns the normals of the faces when rotated.
@@ -59,8 +49,20 @@ class Shape {
    * @param { Vector2[]} [target=[]] An array where results are stored.
    * @returns { Vector2[]}
    */
-  getNormals(shape, target) {
-    return this.geometry.getNormals(this.angle, target)
+  static getNormals(shape, refshape, target = []) {
+    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry,shape.angle, target)
+    let min = null,
+      vertex = null
+    for (let i = 0; i < refshape.vertices.length; i++) {
+      const a = shape.vertices[0].distanceToSquared(refshape.vertices[i])
+      if (!min || min > a) {
+        vertex = refshape.vertices[i]
+        min = a
+      }
+    }
+    if (!vertex) vertex = refshape.vertices[0]
+    target.push(new Vector2().copy(vertex).sub(shape.vertices[0]).normalize())
+    return target
   }
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
@@ -74,7 +76,7 @@ class Shape {
   static update(shape, position, angle, scale) {
     shape.angle = angle
     if (shape.type === ShapeType.CIRCLE) {
-      shape.position.copy(position)
+      shape.vertices[0].copy(position)
       return
     }
     Geometry.transform(
@@ -88,13 +90,19 @@ class Shape {
 
   /**
    * Returns the world coordinates of the vertices.
-   * 
+   * @template {Shape} T
+   * @param {T} shape
    * @param { Vector2 } axis
-   * @param { Vector2[] } target 
+   * @param { Vector2[] } target
    * @returns { Vector2[] }
    */
-  getVertices(axis, target) {
-    return this.vertices
+  static getVertices(shape, axis, target = []) {
+    if (shape.type === Shape.POLYGON) return shape.vertices
+    const v1 = new Vector2().copy(axis).multiply(-shape.vertices[1].x).add(shape.vertices[0])
+    const v2 = new Vector2().copy(axis).multiply(shape.vertices[1].x).add(shape.vertices[0])
+    target[0] = v1
+    target[1] = v2
+    return target
   }
 
   /**
@@ -103,8 +111,25 @@ class Shape {
    * @virtual
    * @returns {number}
    */
-  static calcInertia() {
-    throw new Error("Implement in the children classes")
+  static calcInertia(shape, mass) {
+    const vertices = shape.vertices
+    if (shape.type === Shape.CIRCLE) {
+      const radius = vertices[1].x
+      return mass * (radius * radius) * 0.5
+    }
+    const vertexCount = vertices.length
+    let numerator = 0.0
+    let denominator = 0.0
+    let i = vertexCount - 1
+    for (let j = 0; j < vertexCount; ++j) {
+      const v1 = vertices[i]
+      const v2 = vertices[j]
+      const crs = Math.abs(v2.cross(v1))
+      numerator += crs * (v2.dot(v2) + v2.dot(v1) + v1.dot(v1))
+      denominator += crs
+      i = j
+    }
+    return mass * numerator / (denominator * 6.0)
   }
   static CIRCLE = 0
   static POLYGON = 1
