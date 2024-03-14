@@ -1,5 +1,5 @@
 import { clamp, rand } from "./math.js"
-import { Logger } from "../logger/index.js"
+import { deprecate } from "../logger/index.js"
 
 /**
  * A color manipulation class.
@@ -24,7 +24,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   set(r, g, b, alpha = 1.0) {
-    Logger.deprecate("Color().set()", "Color.set()")
+    deprecate("Color().set()", "Color.set()")
     return Color.set(this, r, g, b, alpha)
   }
   /**
@@ -33,7 +33,7 @@ export class Color {
    * @returns {Color} Reference to the newly cloned object
    */
   clone() {
-    Logger.deprecate("Color().clone()", "Color.copy()")
+    deprecate("Color().clone()", "Color.copy()")
     return Color.copy(this);
   }
   /**
@@ -43,7 +43,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   copy(color) {
-    Logger.deprecate("Color().copy()", "Color.copy()")
+    deprecate("Color().copy()", "Color.copy()")
 
     return Color.copy(color, this)
   }
@@ -55,7 +55,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   add(color) {
-    Logger.deprecate("Color().add()", "Color.add()")
+    deprecate("Color().add()", "Color.add()")
 
     this.r = clamp(this.r + color.r, 0, 255);
     this.g = clamp(this.g + color.g, 0, 255);
@@ -72,7 +72,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   darken(scale) {
-    Logger.deprecate("Color().darken()", "Color.darken()")
+    deprecate("Color().darken()", "Color.darken()")
 
     scale = clamp(scale, 0, 1);
     this.r *= scale;
@@ -89,7 +89,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   lighten(scale) {
-    Logger.deprecate("Color().lighten()", "Color.lighten()")
+    deprecate("Color().lighten()", "Color.lighten()")
 
     scale = clamp(scale, 0, 1);
     this.r = clamp(this.r + (1 - this.r) * scale, 0, 1);
@@ -106,7 +106,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   lerp(color, alpha) {
-    Logger.deprecate("Color().lerp()", "Color.lerp()")
+    deprecate("Color().lerp()", "Color.lerp()")
 
     alpha = clamp(alpha, 0, 1);
     this.r += (color.r - this.r) * alpha;
@@ -123,7 +123,7 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   random(min = 0, max = 255) {
-    Logger.deprecate("Color().random()", "Color.random()")
+    deprecate("Color().random()", "Color.random()")
 
     if (min < 0) {
       min = 0;
@@ -143,7 +143,7 @@ export class Color {
    * @param {number[]} array
    */
   toArray(array, offset = 0) {
-    Logger.deprecate("Color().toArray()")
+    deprecate("Color().toArray()")
 
     array[offset] = this.r
     array[offset + 1] = this.g

@@ -4,7 +4,7 @@ import { BoundingBox } from "../../math/index.js"
 import { ObjType, Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
 import { Movable, Transform } from "../../intergrator/index.js"
-import { Logger } from "../../logger/index.js"
+import { deprecate } from "../../logger/index.js"
 
 /**
  * Holds information needed for collision detection and response.
@@ -389,7 +389,7 @@ export class Body extends Body2D {
    * @inheritdoc
    */
   constructor() {
-    Logger.deprecate("Body()", "Body2D()")
+    deprecate("Body()", "Body2D()")
     super(...arguments)
   }
 }

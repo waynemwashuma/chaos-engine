@@ -1,3 +1,5 @@
+import { Vector2 } from "../../math/index.js"
+
 export class Geometry {
   /**
    * @type {Vector2[]}
@@ -16,58 +18,61 @@ export class Geometry {
    */
   constructor(vertices) {
     this.vertices = vertices
-    this.normals = this.calcFaceNormals()
-    this._dynNormals = this.normals.map(e => e.clone())
+    this.normals = Geometry.calcFaceNormals(vertices)
+    this._dynNormals = this.normals.map(e => Vector2.copy(e))
   }
   /**
    * @param {number} rad
    * @param {Vector2[]} target
    */
-  static getNormals(geometry,rad, target) {
+  static getNormals(geometry, angle, target) {
     target = target || []
-    for (var i = 0; i < geometry.normals.length; i++) {
-      target.push(geometry._dynNormals[i].copy(geometry.normals[i]).rotate(rad))
+    for (let i = 0; i < geometry.normals.length; i++) {
+      const normal = Vector2.rotate(geometry.normals[i], angle)
+      target.push(normal)
     }
     return target
   }
   /**
-   * @private
    * @returns {Vector2[]}
    */
-  calcFaceNormals() {
-    const axes = [],
-      { vertices } = this
-    for (var i = 0; i < vertices.length; i++) {
-      let axis = vertices[i >= vertices.length ? vertices.length - 1 : i]
-        .clone()
-        .sub(vertices[i + 1 >= vertices.length ? 0 : i + 1]).normal()
-      for (var j = 0; j < axes.length; j++) {
-        if (axis.equals(axes[j]) || axis.clone().reverse().equals(axes[j])) {
-          axis = null
-          break
-        }
-      }
-      if (!axis) continue
-      axes.push(axis)
+  static calcFaceNormals(vertices) {
+    const axes = []
+    let previous = vertices[vertices.length - 1]
+    for (let i = 0; i < vertices.length; i++) {
+      const current = vertices[i]
+      const axis = Vector2.sub(previous, current)
+      Vector2.normal(axis, axis)
+      Vector2.normalize(axis, axis)
+
+      previous = current
+      if (!checkifEquals(axis, axes))
+        axes.push(axis)
     }
     return axes
   }
   /**
-   * @param {Geometry} geometry
+   * @param {Geometry} original
    * @param {number} n
    * @param {Vector2[]} vertices
    * @param {Vector2} pos
    * @param {number} rad
    */
-  static transform(geometry, vertices, pos, rad, scale) {
-    for (let i = 0; i < geometry.vertices.length; i++) {
-      let vertex = vertices[i]
-      vertex.copy(geometry.vertices[i])
-      vertex.rotate(rad)
-      vertex.set(
-        pos.x + vertex.x * scale.x,
-        pos.y + vertex.y * scale.y,
-      )
+  static transform(vertices, pos, angle, scale, out) {
+    const cos = Math.cos(angle)
+    const sin = Math.sin(angle)
+    for (let i = 0; i < vertices.length; i++) {
+      const vertex = out[i]
+      Vector2.rotateFast(vertices[i], cos, sin, vertex)
+      Vector2.multiply(vertex,scale,vertex)
+      Vector2.add(vertex,pos,vertex)
     }
   }
+}
+
+function checkifEquals(axis, axes) {
+  for (let i = 0; i < axes.length; i++)
+    if (Vector2.absEqual(axis, axes[i]))
+      return true
+  return false
 }

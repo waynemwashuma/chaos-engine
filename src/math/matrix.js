@@ -1,5 +1,5 @@
 import { Vector2 } from "./vector.js";
-import {Logger} from "../logger/index.js"
+import {deprecate} from "../logger/index.js"
 /**
  * A class that is used to transform positions through rotation, scaling and translation.
  */
@@ -32,7 +32,7 @@ export class Matrix2 {
    * @returns this
    */
   setFromTransform(x, y, scaleX, scaleY, rotation) {
-    Logger.deprecate("Matrix2().setFromTransform()","Matrix2.setFromTransform()")
+    deprecate("Matrix2().setFromTransform()","Matrix2.setFromTransform()")
     Matrix2.setFromTransform(this, x, y, rotation, scaleX, scaleY)
     return this;
   }
@@ -45,7 +45,7 @@ export class Matrix2 {
    * @returns this
    */
   prepend(m) {
-    Logger.deprecate("Matrix2().prepend()","Matrix2.multiply()")
+    deprecate("Matrix2().prepend()","Matrix2.multiply()")
     let x = this.e;
     let a1 = this.a;
     let c1 = this.c;
@@ -66,7 +66,7 @@ export class Matrix2 {
    * @returns {this}
    */
   append(m) {
-    Logger.deprecate("Matrix2().append()","Matrix2.multiply()")
+    deprecate("Matrix2().append()","Matrix2.multiply()")
     let a1 = this.a;
     let b1 = this.b;
     let c1 = this.c;
@@ -87,7 +87,7 @@ export class Matrix2 {
    * @returns this
    */
   rotate(radians) {
-    Logger.deprecate("Matrix2().rotate()","Matrix2.rotate()")
+    deprecate("Matrix2().rotate()","Matrix2.rotate()")
     let cos = Math.cos(radians);
     let sin = Math.sin(radians);
     let a1 = this.a;
@@ -108,7 +108,7 @@ export class Matrix2 {
    * @returns this
    */
   identity() {
-    Logger.deprecate("Matrix2().identity()","Matrix2.identity()")
+    deprecate("Matrix2().identity()","Matrix2.identity()")
     
     this.a = 1;
     this.b = 0;
@@ -127,7 +127,7 @@ export class Matrix2 {
    * @returns this
    */
   translate(x, y) {
-    Logger.deprecate("Matrix2().translate()","Matrix2.translate()")
+    deprecate("Matrix2().translate()","Matrix2.translate()")
     this.e += x;
     this.f += y;
     return this;
@@ -141,7 +141,7 @@ export class Matrix2 {
    * @returns this
    */
   scale(x, y) {
-    Logger.deprecate("Matrix2().scale()","Matrix2.scale()")
+    deprecate("Matrix2().scale()","Matrix2.scale()")
     this.a *= x;
     this.d *= y;
     return this;
@@ -153,7 +153,7 @@ export class Matrix2 {
    * @param { Vector2} v
    */
   transform(v) {
-    Logger.deprecate("Matrix2().transform()","Matrix2.transformVector2()")
+    deprecate("Matrix2().transform()","Matrix2.transformVector2()")
     const x = v.x
 
     v.x = this.a * x + this.c * v.y + this.e;
@@ -167,7 +167,7 @@ export class Matrix2 {
    * @returns this
    */
   invert() {
-    Logger.deprecate("Matrix2().invert()","Matrix2.invert()")
+    deprecate("Matrix2().invert()","Matrix2.invert()")
     let a = this.a;
     let b = this.b;
     let c = this.c;
@@ -190,7 +190,7 @@ export class Matrix2 {
    * @returns this
    */
   copy(m) {
-    Logger.deprecate("Matrix2().copy()","Matrix2.copy()")
+    deprecate("Matrix2().copy()","Matrix2.copy()")
     this.a = m.a;
     this.b = m.b;
     this.c = m.c;
@@ -206,7 +206,7 @@ export class Matrix2 {
    * @returns Matrix2
    */
   clone() {
-    Logger.deprecate("Matrix2().clone()","Matrix2.copy()")
+    deprecate("Matrix2().clone()","Matrix2.copy()")
     return new Matrix2().copy(this);
   }
   /**
@@ -217,7 +217,7 @@ export class Matrix2 {
    * @returns boolean
    */
   equals(matrix) {
-    Logger.deprecate("Matrix2().equals()","Matrix2.equals()")
+    deprecate("Matrix2().equals()","Matrix2.equals()")
     return (this.a === matrix.a && this.b === matrix.b && this.c === matrix.c && this.d === matrix.d && this.e === matrix.e && this.f === matrix.f);
   }
   static setFromTransform(matrix, x, y, angle, scaleX, scaleY) {

@@ -1,4 +1,4 @@
-import { Logger } from "../logger/index.js"
+import { deprecate } from "../logger/index.js"
 
 /**
  * Wrapper class since JavaScript doesn't support references to numbers explicitly.
@@ -24,7 +24,7 @@ export class Angle {
    * @deprecated
    */
   set degree(x) {
-    Logger.deprecate("Angle.degree")
+    deprecate("Angle.degree")
     this.value = x * Math.PI / 180
   }
   /**
@@ -33,15 +33,15 @@ export class Angle {
    * @deprecated
    */
   set radian(x) {
-    Logger.deprecate("Angle().radian", "Angle().value")
+    deprecate("Angle().radian", "Angle().value")
     this.value = x
   }
   get radian() {
-    Logger.deprecate("Angle().radian", "Angle().value")
+    deprecate("Angle().radian", "Angle().value")
     return this.value
   }
   get degree() {
-    Logger.deprecate("Angle().degree")
+    deprecate("Angle().degree")
     return this.value * 180/Math.PI
   }
   /**

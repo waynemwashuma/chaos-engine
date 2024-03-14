@@ -23,7 +23,7 @@ const _arr = [],
     max: 0
   },
   tmp4 = new Vector2(),
-  tmp6 = new Vector2()
+  tmp5 = new Vector2()
 
 /**
  * Uses the Separation Axis Theorem.
@@ -71,13 +71,17 @@ export class SATNarrowPhase {
   static shapesInBodyCollided(body1, body2, manifold) {
     SATNarrowPhase.shapesCollided(body1.shapes[0], body2.shapes[0], manifold)
     if (manifold.overlap < 0) return manifold
+    const contactPoints = manifold.contactPoints
+    Vector2.normal(manifold.axis, manifold.tangent)
+
     const
       axis = manifold.axis,
       shape1 = body1.shapes[0],
       shape2 = body2.shapes[0]
+    const axisReverse = Vector2.reverse(axis, tmp5)
     const overload = []
     const vertices1 = SATNarrowPhase.findNearSupports(manifold.vertShapeA, axis, [])
-    const vertices2 = SATNarrowPhase.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), [])
+    const vertices2 = SATNarrowPhase.findNearSupports(manifold.vertShapeB, axisReverse, [])
     const balancedOverlap = manifold.overlap / (body1.inv_mass + body2.inv_mass)
     for (let i = 0; i < vertices2.length; i++) {
       if (SATNarrowPhase.shapeContains(shape1, vertices2[i])) {
@@ -96,20 +100,17 @@ export class SATNarrowPhase {
     if (overload.length == 0) {
       overload.push(vertices2[0])
     }
-    manifold.contactPoints[0].copy(overload[0]).add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
+    Vector2.multiplyScalar(axis, -balancedOverlap * body2.inv_mass, tmp4)
+    Vector2.add(tmp4, overload[0], contactPoints[0])
     if (overload.length > 1) {
-      manifold.contactPoints[1]
-        .copy(overload[1])
-        .add(tmp4.copy(axis).multiply(-balancedOverlap * body2.inv_mass))
-
+      Vector2.add(tmp4, overload[1], contactPoints[1])
     }
 
     manifold.contactNo =
       shape1.type === Shape.CIRCLE ||
       shape2.type === Shape.CIRCLE ?
       1 : clamp(overload.length, 0, 2)
-    //manifold.axis.reverse()
-    manifold.axis.normalFast(manifold.tangent)
+
     return manifold
   }
   /**
@@ -138,8 +139,7 @@ export class SATNarrowPhase {
     temp.body = null
     temp.overlap = Infinity
     for (let i = 0; i < axes.length; i++) {
-      const axis = tmp4.copy(axes[i])
-
+      const axis = Vector2.copy(axes[i], tmp4)
       const verticesA = Shape.getVertices(shapeA, axis)
       const verticesB = Shape.getVertices(shapeB, axis)
       const p1 = SATNarrowPhase.projectVerticesToAxis(verticesA, axis, tmp2)
@@ -148,8 +148,8 @@ export class SATNarrowPhase {
       const max = p1.min > p2.min ? p1.min : p2.min
       let overlap = min - max
       if (overlap < 0) return manifold
-
-      if (p1.max < p2.max) axis.reverse()
+      if (p1.max < p2.max)
+        Vector2.reverse(axis, axis)
       if (
         (p1.max > p2.max && p1.min < p2.min) ||
         (p2.max > p1.max && p2.min < p1.min)
@@ -160,12 +160,12 @@ export class SATNarrowPhase {
           overlap += min
         } else {
           overlap += max
-          axis.reverse()
+          Vector2.reverse(axis, axis)
         }
       }
       if (overlap < temp.overlap) {
+        Vector2.copy(axis, temp.axis)
         temp.overlap = overlap
-        temp.axis.copy(axis)
         temp.indexA = p1.indexN
         temp.indexB = p2.indexN
         temp.verticesA = verticesA
@@ -173,8 +173,8 @@ export class SATNarrowPhase {
       }
     }
     if (temp.overlap > manifold.overlap) {
+      Vector2.copy(temp.axis, manifold.axis)
       manifold.overlap = temp.overlap
-      manifold.axis.copy(temp.axis)
       manifold.vertShapeA = temp.verticesA
       manifold.vertShapeB = temp.verticesB
       manifold.done = true
@@ -192,7 +192,7 @@ export class SATNarrowPhase {
     const length = vertices.length
 
     for (let i = 0; i < length; i++) {
-      let point = axis.dot(vertices[i])
+      const point = Vector2.dot(axis, vertices[i])
       if (point < min) min = point
       if (point > max) max = point
     }
@@ -209,7 +209,7 @@ export class SATNarrowPhase {
     let min = Infinity
 
     for (let i = 0; i < vertices.length; i++) {
-      const point = axis.dot(vertices[i])
+      const point = Vector2.dot(axis, vertices[i])
       if (
         Math.abs(point - min) <= Settings.separationTolerance &&
         !target.includes(vertices[i])
@@ -255,16 +255,16 @@ export class SATNarrowPhase {
     const pointX = point.x,
       pointY = point.y,
       length = vertices.length
-    let vertex = vertices[length - 1],
-      nextVertex;
+    let previous = vertices[length - 1],
+      current
     if (length < 2) return false
     for (let i = 0; i < length; i++) {
-      nextVertex = vertices[i];
-      if ((pointX - vertex.x) * (nextVertex.y - vertex.y) +
-        (pointY - vertex.y) * (vertex.x - nextVertex.x) < 0) {
+      current = vertices[i];
+      if ((pointX - previous.x) * (current.y - previous.y) +
+        (pointY - previous.y) * (previous.x - current.x) < 0) {
         return false;
       }
-      vertex = nextVertex;
+      previous = current;
     }
 
     return true;
