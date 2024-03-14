@@ -67,7 +67,7 @@ export class Manager {
    * @param {number} accumulate
    */
   _update = accumulate => {
-    const dt = this.clock.update(accumulate);
+    const dt = Clock.update(this.clock,accumulate);
 
     if (this._accumulator < this.frameRate) {
       this._accumulator += dt;
@@ -83,8 +83,11 @@ export class Manager {
   }
   /**
    * Creates a new instance of Manager class
+   * @param {ManagerOptions} options
    **/
-  constructor(options = {}) {
+  constructor(options = {
+    autoplay: true
+  }) {
     options = Object.assign({
       autoplay: true,
     }, options)
@@ -149,7 +152,7 @@ export class Manager {
   /**
    * @template T
    * @param { string[]  } compNames
-   * @returns {T[][]}
+   * @returns {Query<T>}
    */
   query(...compNames) {
     const query = new Query(...compNames)
@@ -239,3 +242,14 @@ export class Manager {
     this._systems.push(sys)
   }
 }
+
+/**
+ * @callback System
+ * @param {number} dt
+ * @param {Manager} manager
+ * @returns {void}
+*/
+/**
+ * @typedef ManagerOptions
+ * @property {boolean} autoplay
+ */

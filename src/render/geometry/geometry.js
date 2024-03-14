@@ -4,20 +4,20 @@ import { vertices } from "../utils/index.js"
 export class BufferGeometry {
   /**
    * @package
-   * @type Path2D | WebGLVertexArrayObject
+   * @type {Path2D}
    */
-  drawable = null
+  drawable
   /**
    * @param { Vector2[]} vertices
    */
   constructor(vertices) {
+    this.drawable = new Path2D()
     this.updateVertices(vertices)
   }
   /**
    * @param {Vector2[]} data
   */
   updateVertices(data){
-    const path = this.drawable = new Path2D()
-    vertices(path, data, true)
+    vertices(this.drawable, data, true)
   }
 }

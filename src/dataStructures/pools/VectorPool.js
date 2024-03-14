@@ -1,25 +1,15 @@
 import {Pool} from "./objectPool.js"
-import { Vector2} from "../math/index.js"
+import { Vector2} from "../../math/index.js"
 
 /**
  * A vector pool.
+ * @extends Pool<Vector2>
 */
 export class VectorPool extends Pool{
   /**
-   * @inheritdoc
-   * 
-   * @returns Vector2
-  */
-  create(){
-    return new Vector2()
-  }
-  /**
-   * 
-  */
-  destroy(v){
-    v.x = 0
-    v.y = 0
-    
-    return v
+   * @param {number} num
+   */
+  constructor(num){
+    super(num,()=>new Vector2())
   }
 }

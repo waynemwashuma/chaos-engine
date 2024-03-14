@@ -18,6 +18,9 @@ export class TweenManager {
       Tween.update(manager.objects[i],dt)
     }
   }
+  /**
+   * @param {Tween<T>} tween
+   */
   add(tween){
     this.objects.push(tween)
   }

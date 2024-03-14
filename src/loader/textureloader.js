@@ -1,46 +1,32 @@
 import { DEVICE } from "../device/index.js"
-import { Logger } from "../logger/index.js"
-import { getURLName, getURLExtension } from "./utils.js"
+import { Loader } from "./loader.js"
 
-export class TextureLoader {
-  resources = []
-  onSingleFinish = () => {}
-  onfinish = () => {}
-  baseUrl = ""
-  async load(urls) {
-    for (var url of urls) {
-      const name = getURLName(url)
-      const extension = getURLExtension(url)
+export class ImageLoader extends Loader {
+  verify(extension) {
+    if (DEVICE.supportedImages.includes(extension)) return true
+    return false
+  }
+  /**
+   * @param {string[]} urls
+   */
+  async parse(request) {
+    if (!request.ok) return
 
-      if (!DEVICE.supportedImages.includes(extension)) {
-        Logger.error("`ImageLoader()` could not load in \"" + url + "\" : Unsupported extension name.")
-        continue
-      }
-
-      const request = await fetch(url)
-
-      if (!request.ok) {
-        Logger.error("`ImageLoader()` could not load in \"" + url + "\" : Resource not found.")
-        continue
-      }
-
-      const raw = await request.arrayBuffer()
-      const imgUrl = URL.createObjectURL(new Blob([raw]))
-      const dimensions = await getDimensions(imgUrl)
-
-      URL.revokeObjectURL(imgUrl)
-      this.resources[name] = {
-        buffer: raw,
-        dimensions
-      }
-      this.onSingleFinish()
+    const raw = await request.arrayBuffer()
+    const dimensions = await getDimensions(raw)
+    return {
+      buffer: raw,
+      dimensions
     }
-    this.onfinish()
   }
 }
 
-function getDimensions(url) {
+/**
+ * @param {string} url
+ */
+function getDimensions(raw) {
   return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(new Blob([raw]))
     const img = new Image()
     img.onload = e => {
       resolve({
@@ -49,5 +35,6 @@ function getDimensions(url) {
       })
     }
     img.src = url
+    URL.revokeObjectURL(url)
   })
 }

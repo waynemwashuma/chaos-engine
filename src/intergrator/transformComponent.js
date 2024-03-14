@@ -15,14 +15,4 @@ export class Transform{
     this.orientation = a
     this.scale = new Vector2(1,1)
   }
-  toJson(){
-    return {
-      position: this.position.toJson(),
-      orientation:this.orientation
-    }
-  }
-  fromJson(obj){
-    this.position.fromJson(obj.position)
-    this.orientation.fromJson(obj.orientation)
-  }
 }
