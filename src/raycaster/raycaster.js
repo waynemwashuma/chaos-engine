@@ -94,7 +94,7 @@ export class Raycast2D {
     for (let i = 0; i < vertices.length - 1; i++) {
       let res = testSingleEdge(
         vertices[i], vertices[i + 1],
-        ray.origin, ray.direction
+        origin, direction
       )
       if (res) result.points.push(
         new RayPoint(

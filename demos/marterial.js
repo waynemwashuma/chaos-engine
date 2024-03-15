@@ -5,8 +5,7 @@ import {
   BasicMaterial,
   StaticImageMaterial,
   SpriteMaterial,
-  Vector2,
-  createEntity
+  Vector2
 } from "/src/index.js"
 const assets = {
   static: "./assets/warrior.png"

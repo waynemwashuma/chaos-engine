@@ -1,5 +1,3 @@
-import { Logger } from "../logger/index.js"
-
 let tmpID = 0
 
 /**
@@ -52,8 +50,6 @@ export function popArr(arr, number) {
 export function removeElement(arr, index) {
   if (index == -1) return null
   if (arr.length - 1 == index) return arr.pop()
-
-  const temp = arr[index]
   const temp2 = arr.pop()
   if(!temp2)return 
   arr[index] = temp2

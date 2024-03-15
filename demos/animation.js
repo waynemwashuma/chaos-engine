@@ -20,9 +20,8 @@ export function animation(manager) {
   const easings = Object.keys(Easing)
   for (let i = offset; i < renderer.width - offset; i += stride) {
     const easeName = easings[(i - offset) / stride]
-    const text = createText(manager,i, 100, easeName)
-
-    const entity = createAnimation(
+    createText(manager,i,100,easeName)
+    createAnimation(
       manager,
       Easing[easeName],
       i,
@@ -32,7 +31,7 @@ export function animation(manager) {
   }
 }
 
-function createAnimation(manager, easing, width, height, tweener) {
+function createAnimation(manager,easing,width,height,tweener) {
   const transform = new Transform(width,100)
   const box = manager.create({
     transform,
@@ -48,15 +47,15 @@ function createAnimation(manager, easing, width, height, tweener) {
     transform.position
   )
   tween
-    .from(new Vector2(width, 200))
-    .to(new Vector2(width, height))
+    .from(new Vector2(width,200))
+    .to(new Vector2(width,height))
     .duration(4)
     .onUpdate(Vector2Update)
     .easing(easing).play()
 
   tween2
-    .from(new Vector2(width, height))
-    .to(new Vector2(width, 200))
+    .from(new Vector2(width,height))
+    .to(new Vector2(width,200))
     .duration(4)
     .onUpdate(Vector2Update)
     .easing(easing)
@@ -67,7 +66,7 @@ function createAnimation(manager, easing, width, height, tweener) {
   return box
 }
 
-function createText(manager, x, y, text) {
+function createText(manager,x,y,text) {
   const geometry = new BufferGeometry([])
   const material = new TextMaterial(text)
   const entity = manager.create({
