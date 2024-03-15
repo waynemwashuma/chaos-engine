@@ -245,7 +245,7 @@ export class Manager {
    * @param {Plugin} plugin
   */
   registerPlugin(plugin){
-    plugin.register(manager)
+    plugin.register(this)
   }
 }
 
