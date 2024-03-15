@@ -18,7 +18,7 @@ export class Manager {
   /**
    * 
    * @private
-   * @type {System[]}
+   * @type {SystemFunc[]}
    */
   _systems = []
   /**
@@ -235,7 +235,7 @@ export class Manager {
   /**
    * Used to register a system
    *
-   * @param {System} sys The system to be addad
+   * @param {SystemFunc} sys The system to be addad
    * 
    */
   registerSystem(sys) {
@@ -244,7 +244,7 @@ export class Manager {
 }
 
 /**
- * @callback System
+ * @callback SystemFunc
  * @param {number} dt
  * @param {Manager} manager
  * @returns {void}

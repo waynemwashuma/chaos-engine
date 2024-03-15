@@ -1,10 +1,15 @@
+import { Entity, Manager } from "../../ecs/index.js"
+import { Body2D } from "../bodies/index.js"
+import { CollisionManifold } from "./collisionManifold.js"
+
 export class NarrowPhase {
   /**
    * @param {CollisionPair[]} _contactList
-   * @param {Manifold[]} _clmds
-   * @returns {Manifold[]}
+   * @param {CollisionManifold<Entity>[]} [_clmds]
+   * @returns {CollisionManifold<Entity>[]}
+   * @param {Manager} _manager
    */
-  getCollisionPairs(_contactList, _clmds) {}
+  getCollisionPairs(_manager,_contactList, _clmds = []) {return _clmds}
   /**
    * Checks to see if two bodies can proceed to have their bounding boxes checked 
    * 
@@ -23,9 +28,4 @@ export class NarrowPhase {
     if (a.sleeping && b.sleeping) return false
     return true
   }
-  static generateManifold(
-    manifold,
-    bodyA,
-    bodyB,
-    ){}
 }

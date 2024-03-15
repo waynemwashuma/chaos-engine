@@ -1,6 +1,7 @@
 import { Movable } from "./movableComponent.js"
 import { Transform } from "./transformComponent.js"
 import { Vector2 } from "../math/index.js"
+import { Movable } from "./movableComponent.js"
 export class Intergrator {
   /**
    * @param {IntergratorFunc} intergrator
@@ -48,6 +49,11 @@ export class Intergrator {
     transform.orientation += movable.rotation * dt
     movable.torque = 0
   }
+  /**
+   * @param {Transform} transform
+   * @param {Movable} movable
+   * @param {number} dt
+   */
   static verlet(transform, movable, dt) {
     const position = transform.position
     const velocity = movable.velocity

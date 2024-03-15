@@ -1,11 +1,14 @@
 import { Shape } from "../physics/index.js"
-import { Vector2 } from "../math/index.js"
+import { BoundingBox, Vector2 } from "../math/index.js"
 import {Renderer2D} from "../render-canvas2d/index.js"
-import { line, circle, vertices, stroke, fill } from "../render/index.js"
+import { circle, vertices, stroke, fill } from "../render/index.js"
+import { Manager } from "../ecs/index.js"
 /**
  * @param {Manager} manager
  * @param {BodyDebbuggerOptions} [options]
+ * @param {Renderer2D} renderer
  */
+// @ts-ignore
 export function bodyDebugger(manager,renderer, options = {}) {
   options.clearRenderer = options.clearRenderer || false
   options.drawCollisionArm = options.drawCollisionArm || false
@@ -101,7 +104,12 @@ function drawArm(ctx, position, arm, color = "blue") {
   ctx.stroke()
 }
 
-function drawArmRaw(ctx, position, arm, color = "blue") {
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Vector2} position
+ * @param {Vector2} arm
+ */
+function drawArmRaw(ctx, position, arm) {
   ctx.moveTo(position.x, position.y)
   ctx.lineTo(
     arm.x,
@@ -109,6 +117,10 @@ function drawArmRaw(ctx, position, arm, color = "blue") {
   )
 }
 
+/**
+ * @param {Shape[]} shapes
+ * @param {CanvasRenderingContext2D} ctx
+ */
 function drawShapes(shapes, ctx) {
   ctx.beginPath()
   for (var i = 0; i < shapes.length; i++) {
@@ -132,6 +144,10 @@ function drawShapes(shapes, ctx) {
   ctx.closePath()
 }
 
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {BoundingBox} bounds
+ */
 function renderObj(ctx, bounds) {
   const w = (bounds.max.x - bounds.min.x)
   const h = (bounds.max.y - bounds.min.y)
@@ -149,4 +165,5 @@ function renderObj(ctx, bounds) {
  * @property {boolean} [drawVelocity=false]
  * @property {boolean} [clearRenderer=false]
  * @property {boolean} [drawCollisionArm=false]
+ * @property {boolean} drawContacts
  */

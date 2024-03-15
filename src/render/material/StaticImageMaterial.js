@@ -3,7 +3,7 @@ import { Material } from "././material.js"
 
  /**
  * 
- * @implements Material
+ * @implements {Material}
  */
 export class StaticImageMaterial{
   type = MaterialType.STATICIMAGE
@@ -11,7 +11,7 @@ export class StaticImageMaterial{
    * @readonly
    * @type {Image}
    */
-  image = null
+  image
   /**
    * 
    * @type {number}
