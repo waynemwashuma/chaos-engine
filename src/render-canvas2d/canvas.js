@@ -1,5 +1,5 @@
 
-import { Renderer,Sprite } from "../render/index.js"
+import { Renderer,Material,BufferGeometry } from "../render/index.js"
 import { Transform } from "../intergrator/index.js"
 import { deprecate } from "../logger/index.js"
 /**
@@ -13,11 +13,11 @@ export class Renderer2D extends Renderer {
   /**
   @param {HTMLCanvasElement} [canvas] element to draw on
   */
-  constructor(canvas = document.createElement("canvas"), context = canvas.getContext('2d')) {
-    if (!context) throw "Could not get a 2d context"
-    super(canvas)
-    this.ctx = context
-  }
+    constructor(canvas = document.createElement("canvas"), context = canvas.getContext('2d')) {
+      if (!context) throw "Could not get a 2d context"
+      super(canvas)
+      this.ctx = context
+    }
   /**
    * @deprecated
    * @param {string} selector
@@ -53,38 +53,31 @@ export class Renderer2D extends Renderer {
     renderer.ctx.clearRect(0, 0, w, h)
   }
   /**
+   * @template {BufferGeometry} T
+   * @template {Material} U
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {Sprite<T,U>} sprite
    * @param {number} dt
-   * @param {Transform[][]} transforms
-   * @param {Sprite<any,any>[][]} sprites
-   * @param {Renderer2D} renderer
    */
-  static update(renderer, transforms, sprites, dt) {
-    renderer.camera.update()
-    Renderer2D.clear(renderer)
-    renderer.ctx.save()
-    renderer.ctx.rotate(
-      renderer.camera.transform.orientation
-    )
-    renderer.ctx.scale(
-      renderer.camera.transform.scale.x,
-      renderer.camera.transform.scale.y
-    )
-    renderer.ctx.translate(
-      renderer.camera.transform.position.x,
-      -renderer.camera.transform.position.y
-    )
-    for (let i = 0; i < sprites.length; i++) {
-      for (let j = 0; j < sprites[i].length; j++) {
-        Sprite.render(
-          renderer.ctx,
-          sprites[i][j],
-          transforms[i][j].position,
-          transforms[i][j].orientation,
-          transforms[i][j].scale,
-          dt
-        )
-      }
-    }
-    renderer.ctx.restore()
+  static render(
+    ctx,
+    sprite,
+    position,
+    orientation,
+    scale,
+    dt
+  ) {
+    ctx.save()
+    ctx.beginPath()
+    ctx.translate(position.x, position.y)
+    ctx.rotate(orientation)
+    ctx.scale(scale.x, scale.y)
+    // @ts-ignore
+    Material.render(sprite.material,ctx, dt, sprite.geometry.drawable)
+    ctx.closePath()
+    ctx.restore()
   }
 }
