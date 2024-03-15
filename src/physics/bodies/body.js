@@ -1,9 +1,8 @@
-import { Vector2,degToRad,radToDeg } from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../../math/index.js"
-import { ObjType,Settings } from "../settings.js"
+import { Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
-import { Movable,Transform } from "../../intergrator/index.js"
 import { deprecate } from "../../logger/index.js"
 
 /**

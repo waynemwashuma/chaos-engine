@@ -202,7 +202,6 @@ export class World2D {
    * @param {BoundingBox[][]} bounds
    */
   static update(manager,world,entities,transform,movable,bounds,bodies,dt) {
-    let delta = world.fixedFrameRate || dt
     /** @type {CollisionManifold<Entity>[]}*/
     this.CLMDs = []
     World2D.applyGravity(world,movable,bodies)

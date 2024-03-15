@@ -58,9 +58,9 @@ export class AudioHandler {
    * Master volume for all sounds.
    * 
    * @private
-   * @type {AudioNode | null}
+   * @type {GainNode}
    */
-  masterGainNode = null
+  masterGainNode
   /**
    * @type {string}
    */
@@ -177,18 +177,16 @@ export class AudioHandler {
    * Sets the volume to zero.Sounds will continue playing but not be audible.
    */
   mute() {
-    // @ts-ignore
-    this._mute = this.masterGainNode?.gain ?? 1
-    // @ts-ignore
-    this.masterGainNode.gain = 0
+    if(!this.masterGainNode)return
+    this._mute = this.masterGainNode.gain.value
+    this.masterGainNode.gain.value = 0
 
   }
   /**
    * Restores the volume before it was muted.
    */
   unmute() {
-    // @ts-ignore
-    this.masterGainNode.gain = this._mute
+    this.masterGainNode.gain.value = this._mute
   }
   /**
    * Removes an sfx from the handler and disconnects it from its destination.

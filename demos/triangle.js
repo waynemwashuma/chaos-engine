@@ -13,7 +13,7 @@ export function triangle(manager) {
   const rect = manager.getResource("renderer")
   const angle = Math.PI/2
   const base = 200
-  const box = manager.create({
+  manager.create({
     "transform": new Transform(rect.width / 2, 300),
     "movable": new Movable(),
     "bounds": new BoundingBox(),
