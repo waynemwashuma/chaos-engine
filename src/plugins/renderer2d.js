@@ -1,4 +1,4 @@
-import { Renderer2D } from "./canvas.js"
+import { Renderer2D } from "../render-canvas2d/index.js"
 
 export function Renderer2DPlugin(manager) {
   const renderer = new Renderer2D()
