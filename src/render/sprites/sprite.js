@@ -29,6 +29,7 @@ export class Sprite {
     this.material = material
   }
   /**
+   * @deprecated
    * @template {BufferGeometry} T
    * @template {Material} U
    * @param {CanvasRenderingContext2D} ctx
