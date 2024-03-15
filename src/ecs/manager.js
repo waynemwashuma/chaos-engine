@@ -2,7 +2,7 @@ import { ArchetypeTable } from "../dataStructures/index.js"
 import { Clock } from "../math/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { Entity } from "./entity.js"
-import {Query} from "./query.js"
+import { Query } from "./query.js"
 export class Manager {
   /**
    * RAF number of current frame.Used for pausing the manager.
@@ -67,7 +67,7 @@ export class Manager {
    * @param {number} accumulate
    */
   _update = accumulate => {
-    const dt = Clock.update(this.clock,accumulate);
+    const dt = Clock.update(this.clock, accumulate);
 
     if (this._accumulator < this.frameRate) {
       this._accumulator += dt;
@@ -227,9 +227,9 @@ export class Manager {
    */
   update(dt = 0.016) {
     const systems = this._systems;
-
+    this.setResource("delta",dt)
     for (let i = 0; i < systems.length; i++) {
-      systems[i](dt, this);
+      systems[i](this);
     }
   }
   /**
@@ -241,15 +241,24 @@ export class Manager {
   registerSystem(sys) {
     this._systems.push(sys)
   }
+  /**
+   * @param {Plugin} plugin
+  */
+  registerPlugin(plugin){
+    plugin.register(this)
+  }
 }
 
 /**
  * @callback SystemFunc
- * @param {number} dt
  * @param {Manager} manager
  * @returns {void}
-*/
+ */
 /**
  * @typedef ManagerOptions
  * @property {boolean} autoplay
+ */
+ /**
+  * @typedef Plugin
+  * @property {SystemFunc} register
  */
