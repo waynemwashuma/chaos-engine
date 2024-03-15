@@ -7,6 +7,7 @@ import { Manager } from "./manager.js"
  * Updates components assigned to it.
  */
 export class System {
+  objects = []
   /**
    * @param {Manager} manager
    */
