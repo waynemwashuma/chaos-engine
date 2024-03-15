@@ -134,7 +134,7 @@ export class SATNarrowPhase extends NarrowPhase {
   const arr = _arr
     Utils.clearArr(arr)
     Shape.getNormals(shapeA,shapeB,arr)
-    Shape.getNormals(shapeA,shapeB,arr)
+    Shape.getNormals(shapeB,shapeA,arr)
     SATNarrowPhase.projectShapesToAxes(shapeA,shapeB,arr,target)
   }
   /**
