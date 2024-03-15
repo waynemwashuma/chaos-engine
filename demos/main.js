@@ -72,7 +72,7 @@ function main() {
   demoOption.onchange = () => {
     demos.play(demoOption.value)
   }
-  const pause = createCheckbox("pause", "Pause", (ev) => {
+  createCheckbox("pause", "Pause", (ev) => {
     ev.currentTarget.checked ? demos.manager.pause() : demos.manager.play()
   },optionTab)
   //const slider = createSlider("slide","slide",0,100,()=>{},optionTab)

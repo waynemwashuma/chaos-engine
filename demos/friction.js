@@ -12,10 +12,10 @@ import {
   degToRad
 } from "/src/index.js"
 export function friction(manager) {
-  let body1 = new Box(300, 20)
-  let body2 = new Box(300, 20)
+  const body1 = new Box(300, 20)
+  const body2 = new Box(300, 20)
 
-  let floor1 = manager.create({
+  manager.create({
     "transform": new Transform(200, 300, degToRad(20)),
     "movable": new Movable(),
     "bounds": new BoundingBox(),
