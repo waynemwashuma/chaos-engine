@@ -1,14 +1,15 @@
+import { Material } from "./material.js"
 import { MaterialType } from "./types.js"
 /**
  * 
- * @implements Material
+ * @implements {Material}
  */
 export class SpriteMaterial {
   type = MaterialType.SPRITE
   /**
    * @type {HTMLImageElement}
    */
-  img = null
+  img
   /**
    * The index of the current action.
    * 
@@ -50,8 +51,6 @@ export class SpriteMaterial {
    * @type {number[]}
    */
   _maxFrames = []
-  /**
-   * @type {Vector}
   /**
    * The width of the sprite.
    * 

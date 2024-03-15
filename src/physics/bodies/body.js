@@ -1,9 +1,9 @@
-import { Vector2, degToRad, radToDeg } from "../../math/index.js"
+import { Vector2,degToRad,radToDeg } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../../math/index.js"
-import { ObjType, Settings } from "../settings.js"
+import { ObjType,Settings } from "../settings.js"
 import { Shape } from "../shapes/index.js"
-import { Movable, Transform } from "../../intergrator/index.js"
+import { Movable,Transform } from "../../intergrator/index.js"
 import { deprecate } from "../../logger/index.js"
 
 /**
@@ -151,23 +151,13 @@ export class Body2D {
    * 
    */
   set type(x) {
+    deprecate("Ball().type")
     if (x === Body2D.STATIC || x === Body2D.KINEMATIC) this.mass = 0
     this._type = x
   }
   get type() {
+    deprecate("Ball().type")
     return this._type
-  }
-  /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "body"
   }
   /**
    * Mass of a body.
@@ -179,26 +169,22 @@ export class Body2D {
     if (x == 0) this.inertia = 0
   }
   get mass() {
-    return 1/this.inv_mass
+    return 1 / this.inv_mass
   }
   /**
    * Density of a body.
    *
-   * @type number
+   * @type {number}
    */
   set density(x) {
-    let area = 0
-    for (var i = 0; i < this.shapes.length; i++) {
-      area += this.shapes[i].area
-    }
-    this.mass = x * area * 0.01
+    deprecate("Ball().density")
+    const area = Body2D.getArea(this.shapes[0])
+    this.inv_mass = 1 / (x * area)
   }
   get density() {
-    let area = 0
-    for (var i = 0; i < this.shapes.length; i++) {
-      area += this.shapes[i].area
-    }
-    return 100 * this.mass / area
+    deprecate("Ball().density")
+    const area = Body2D.getArea(this.shapes[0])
+    return this.inv_mass * 1 / area
   }
   /**
    * Rotational inertia of a body.
@@ -206,10 +192,12 @@ export class Body2D {
    * @type number
    */
   set inertia(x) {
+    deprecate("Ball().inertia")
     this.inv_inertia = x == 0 ? 0 : 1 / x
   }
   get inertia() {
-    return 1/this.inv_inertia
+    deprecate("Ball().inertia")
+    return 1 / this.inv_inertia
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -218,7 +206,8 @@ export class Body2D {
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vector2(v.x, v.y))
+    deprecate("Ball().setAnchor()")
+    this.anchors.push(new Vector2(v.x,v.y))
     return this._localanchors.push(v) - 1
   }
   /**
@@ -229,78 +218,19 @@ export class Body2D {
    * @returns { Vector2}
    */
   getAnchor(index) {
+    deprecate("Ball().getAnchor()")
     return this.anchors[index]
   }
   /**
    * Returns a rotated anchor relative to the body.
-   * 
    * @param {number} index The position of the anchor.
-   * @param { Vector2} [target= Vector2] Vector2 to store results in.
-   * @returns { Vector2}
+   * @param {Vector2} [target] Vector2 to store results in.
+   * @returns {Vector2}
+   * @param {number} angle
    */
-  getLocalAnchor(index, target = new Vector2()) {
-    return target.copy(this._localanchors[index]).rotate(this.orientation.value)
-  }
-
-  toJson() {
-    let obj = {
-      id: this.id,
-      position: this.position.toJson(),
-      velocity: this.velocity.toJson(),
-      acceleration: this.acceleration.toJson(),
-      orientation: this.orientation.toJson(),
-      rotation: this.rotation.toJson(),
-      shapes: [],
-      anchors: [],
-      collisionResponse: this.collisionResponse,
-      allowSleep: this.allowSleep,
-      type: this.CHAOS_OBJ_TYPE,
-      phyType: this.type,
-      mass: this.mass,
-      inertia: this.inertia,
-      autoUpdateBound: this.autoUpdateBound,
-      boundPadding: this.boundPadding,
-      aabbDetectionOnly: this.aabbDetectionOnly,
-      mask: this.mask
-    }
-    this.anchors.forEach((a) => {
-      obj.anchors.push(a)
-    })
-    this.shapes.forEach((a) => {
-      obj.shapes.push(a.toJson())
-    })
-    return obj
-  }
-  /**
-   * @@param {Shape} shape
-   */
-  addShape(shape) {
-    this.shapes.push(shape)
-  }
-  fromJson(obj) {
-    let shapes = []
-    obj.shapes.forEach((shape) => {
-      shapes.push(Shape.fromJson(shape))
-    })
-    let body = this
-    body.shapes = shapes
-    body.acceleration = obj.acceleration
-    body.velocity = obj.velocity
-    body.position = pbj.position
-    body.rotation = obj.rotation
-    body.orientation = obj.orientation
-    body.mass = obj.mass
-    body.inertia = obj.inertia
-    body.type = obj.phyType
-    body.allowSleep = obj.allowSleep
-    body.aabbDetectionOnly = obj.aabbDetectionOnly
-    body.collisionResponse = obj.collisionResponse
-    body.autoUpdateBound = obj.autoUpdateBound
-    body.id = obj.id
-    body.mask = obj.mask
-    obj.anchors.forEach((v) => {
-      body.setAnchor(new Vector2().fromJson(v))
-    })
+  getLocalAnchor(index,angle,target = new Vector2()) {
+    deprecate("Ball().getLocalAnchor()")
+    return target.copy(this._localanchors[index]).rotate(angle)
   }
   /**
    * Calculates the bounds of the body
@@ -309,7 +239,7 @@ export class Body2D {
    * @param {Body2D} body Body2D to calculate max and min from
    * @param {Number} padding increases the size of the bounds
    */
-  static calculateBounds(body, bound, padding = 0) {
+  static calculateBounds(body,bound,padding = 0) {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
@@ -345,39 +275,52 @@ export class Body2D {
   }
   /**
    * This updates the world coordinates of shapes, anchors and bounds.
+   * @param {Body2D} body
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {BoundingBox} bounds
    */
-  static update(body, position, orientation, scale, bounds) {
+  static update(body,position,orientation,scale,bounds) {
     for (let i = 0; i < body.shapes.length; i++) {
-      Shape.update(body.shapes[i], position, orientation, scale)
+      Shape.update(body.shapes[i],position,orientation,scale)
     }
     for (let i = 0; i < body.anchors.length; i++) {
       body.anchors[i].copy(body._localanchors[i]).rotate(orientation)
     }
     if (body.autoUpdateBound)
-      Body2D.calculateBounds(body, bounds)
+      Body2D.calculateBounds(body,bounds)
     //else
     //  bounds.update(position)
+  }
+  /**
+   * 
+   * @param {Shape} _shape 
+   * @returns {number}
+   */
+  static getArea(_shape) {
+    return 0
   }
   /**
    *Body2D type that dictates a body cannot move nor respond to collisions.
    * 
    * @static
    * @type number*/
-  static STATIC = ObjType.STATIC
+  static STATIC = 0
   /**
    * Body2D type that dictates a body can move but not respond to collisions.
    * 
    * @static
    * @type number
    */
-  static KINEMATIC = ObjType.KINEMATIC
+  static KINEMATIC = 1
   /**
    * Body2D type that dictates a body can move and respond to collisions.
    * 
    * @static
    * @type number
    */
-  static DYNAMIC = ObjType.DYNAMIC
+  static DYNAMIC = 2
 }
 
 /**
@@ -389,7 +332,7 @@ export class Body extends Body2D {
    * @inheritdoc
    */
   constructor() {
-    deprecate("Body()", "Body2D()")
+    deprecate("Body()","Body2D()")
     super(...arguments)
   }
 }

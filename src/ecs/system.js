@@ -1,7 +1,9 @@
 import { mixin, Utils } from "../utils/index.js"
 import { Logger } from "../logger/index.js"
+import { Manager } from "./manager.js"
 
 /**
+ * @deprecated
  * Updates components assigned to it.
  */
 export class System {

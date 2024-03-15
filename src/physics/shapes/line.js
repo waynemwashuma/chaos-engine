@@ -4,8 +4,6 @@ import { Vector2 } from "../../math/index.js"
 export class Line extends Shape {
   /**
    * @param {number} length
-   * @param { Vector2} offset
-   * @param {number} offsetAngle
    */
   constructor(length) {
     const start = new Vector2(length / 2)

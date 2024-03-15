@@ -1,5 +1,5 @@
 const marker = `🚀Chaos Engine:\n\n`
-const mess = []
+const mess = [""]
 /**
  * Logs out a warning to the console.
  *

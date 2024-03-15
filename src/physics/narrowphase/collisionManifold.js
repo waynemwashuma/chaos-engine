@@ -1,4 +1,6 @@
-import { Vector2, clamp } from "../../math/index.js"
+import { Movable } from "../../intergrator/movableComponent.js"
+import { Vector2,clamp } from "../../math/index.js"
+import { Body2D } from "../bodies/index.js"
 import { Settings } from "../settings.js"
 /**
  * @template T
@@ -12,10 +14,6 @@ export class CollisionManifold {
    * @type {T}
    */
   entityB
-  movableA
-  movableB
-  bodyA
-  bodyB
   /**
    * @type {CollisionData}
    */
@@ -23,23 +21,23 @@ export class CollisionManifold {
   /**
    * @type {number[]}
    */
-  impulse = [0.0, 0.0]
+  impulse = [0.0,0.0]
   /**
    * @type {number[]}
    */
-  tImpulse = [0.0, 0.0]
+  tImpulse = [0.0,0.0]
   /**
-   * @type {number}
+   * @type {number[]}
    */
-  nbias = [0.0, 0.0]
+  nbias = [0.0,0.0]
   /**
-   * @type {Jacobian}
+   * @type {Jacobian[]}
    */
-  nJacobian = [new Jacobian(), new Jacobian()]
+  nJacobian = [new Jacobian(),new Jacobian()]
   /**
-   * @type {Jacobian}
+   * @type {Jacobian[]}
    */
-  tJacobian = [new Jacobian(), new Jacobian()]
+  tJacobian = [new Jacobian(),new Jacobian()]
   /**
    * @type {number}
    */
@@ -52,18 +50,26 @@ export class CollisionManifold {
    * @type {number}
    */
   kineticFriction = 0
-  effectiveMass = [0, 0]
-  nLambda = [0, 0]
-  tLambda = [0, 0]
+  effectiveMass = [0,0]
+  nLambda = [0,0]
+  tLambda = [0,0]
   /**
    * @param {T} a
    * @param {T} b
    */
-  constructor(a, b) {
+  constructor(a,b) {
     this.entityA = a
     this.entityB = b
   }
-  static warmstart(manifold, movableA, movableB, bodyA, bodyB) {
+  /**
+   * @template T
+   * @param {CollisionManifold<T>} manifold
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   */
+  static warmstart(manifold,movableA,movableB,bodyA,bodyB) {
     const { contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
@@ -86,53 +92,71 @@ export class CollisionManifold {
 
     }
   }
-
-  static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
+  /**
+   * @template T
+   * @param {Jacobian} jacobian
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   * @param {number} lambda
+   */
+  static applyImpulse(jacobian,movableA,movableB,bodyA,bodyB,lambda) {
     const velA = movableA.velocity
     const velB = movableB.velocity
-    const va = Vector2.multiplyScalar(jacobian.va, bodyA.inv_mass * lambda)
-    const vb = Vector2.multiplyScalar(jacobian.vb, bodyB.inv_mass * lambda)
+    const va = Vector2.multiplyScalar(jacobian.va,bodyA.inv_mass * lambda)
+    const vb = Vector2.multiplyScalar(jacobian.vb,bodyB.inv_mass * lambda)
 
-    Vector2.add(velA, va, velA)
-    Vector2.add(velB, vb, velB)
+    Vector2.add(velA,va,velA)
+    Vector2.add(velB,vb,velB)
     movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda
     movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda
   }
-
-  static prepare(manifold, bodyA, bodyB, movableA, movableB, positionA, positionB, inv_dt) {
-    const { axis, overlap, tangent, contactPoints, contactNo } = manifold.contactData
+  /**
+   * @template T
+   * @param {CollisionManifold<T>} manifold
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   * @param {Vector_like} positionA
+   * @param {Vector_like} positionB
+   * @param {number} inv_dt
+   */
+  static prepare(manifold,bodyA,bodyB,movableA,movableB,positionA,positionB,inv_dt) {
+    const { axis,overlap,tangent,contactPoints,contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
       manifold.impulse[i] = 0
       manifold.tImpulse[i] = 0
-      const ca1 = Vector2.sub(contactPoints[i], positionA)
-      const ca2 = Vector2.sub(contactPoints[i], positionB)
-      const va = Vector2.crossScalar(ca1, movableA.rotation)
-      Vector2.add(va, movableA.velocity, va)
-      const vb = Vector2.crossScalar(ca2, movableB.rotation)
-      Vector2.add(vb, movableB.velocity, vb)
-      const relativeVelocity = Vector2.sub(vb, va, vb)
+      const ca1 = Vector2.sub(contactPoints[i],positionA)
+      const ca2 = Vector2.sub(contactPoints[i],positionB)
+      const va = Vector2.crossScalar(ca1,movableA.rotation)
+      Vector2.add(va,movableA.velocity,va)
+      const vb = Vector2.crossScalar(ca2,movableB.rotation)
+      Vector2.add(vb,movableB.velocity,vb)
+      const relativeVelocity = Vector2.sub(vb,va,vb)
 
       manifold.nbias[i] = 0.0;
       manifold.nJacobian[i].set(
         axis,
         Vector2.reverse(axis),
-        Vector2.cross(ca1, axis),
-        -Vector2.cross(ca2, axis)
+        Vector2.cross(ca1,axis),
+        -Vector2.cross(ca2,axis)
       );
 
       //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
       manifold.tJacobian[i].set(
         tangent,
         Vector2.reverse(tangent),
-        Vector2.cross(ca1, tangent),
-        -Vector2.cross(ca2, tangent)
+        Vector2.cross(ca1,tangent),
+        -Vector2.cross(ca2,tangent)
       );
-      const normalVelocity = Vector2.dot(axis, relativeVelocity);
+      const normalVelocity = Vector2.dot(axis,relativeVelocity);
 
       if (Settings.positionCorrection)
-        manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
-      manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity, 0.0);
+        manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop,0.0);
+      manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity,0.0);
       const k =
         bodyA.inv_mass +
         bodyB.inv_mass +
@@ -141,7 +165,15 @@ export class CollisionManifold {
       manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
     }
   }
-  static solve(manifold, movableA, movableB, bodyA, bodyB) {
+  /**
+   * @template T
+   * @param {CollisionManifold<T>} manifold
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   */
+  static solve(manifold,movableA,movableB,bodyA,bodyB) {
     const { contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
@@ -175,7 +207,7 @@ export class CollisionManifold {
       const oldImpulse = manifold.impulse[i]
       const oldtImpulse = manifold.tImpulse[i]
       if (Settings.impulseAccumulation) {
-        manifold.impulse[i] = Math.max(0.0, manifold.impulse[i] + nLambda);
+        manifold.impulse[i] = Math.max(0.0,manifold.impulse[i] + nLambda);
         manifold.tImpulse[i] = Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
           tLambda :
           tLambda * manifold.kineticFriction
@@ -183,9 +215,9 @@ export class CollisionManifold {
         manifold.tLambda[i] = manifold.tImpulse[i] - oldtImpulse
       }
       else {
-        manifold.impulse[i] = Math.max(0.0, nLambda);
+        manifold.impulse[i] = Math.max(0.0,nLambda);
         const maxfriction = manifold.impulse[i] * manifold.kineticFriction
-        manifold.tImpulse[i] = clamp(tLambda, -maxfriction, maxfriction) //Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
+        manifold.tImpulse[i] = clamp(tLambda,-maxfriction,maxfriction) //Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
         //tLambda :
         //-manifold.impulse[i] * manifold.kineticFriction
         manifold.nLambda[i] = manifold.impulse[i]
@@ -234,9 +266,9 @@ export class CollisionData {
    */
   tangent = new Vector2()
   /**
-   * @type {number}
+   * @type {Vector2[]}
    */
-  contactPoints = [new Vector2(), new Vector2()]
+  contactPoints = [new Vector2(),new Vector2()]
   /**
    * @type {number}
    */
@@ -259,10 +291,22 @@ class Jacobian {
    * @type {number}
    */
   wb = 0
-  constructor(va, vb, wa, wb) {
-    this.set(va, vb, wa, wb)
+  /**
+   * @param {Vector_like} [va]
+   * @param {Vector_like} [vb]
+   * @param {number} [wa]
+   * @param {number} [wb]
+   */
+  constructor(va,vb,wa,wb) {
+    this.set(va,vb,wa,wb)
   }
-  set(va, vb, wa, wb) {
+  /**
+   * @param {Vector_like} [va]
+   * @param {Vector_like} [vb]
+   * @param {number} [wa]
+   * @param {number } [wb]
+   */
+  set(va,vb,wa,wb) {
     if (va) Vector2.copy(va,this.va)
     if (vb) Vector2.copy(vb,this.vb)
     if (wa) this.wa = wa

@@ -10,8 +10,6 @@ import { Vector2 } from "../../math/index.js"
 export class Circle extends Shape {
   /**
    * @param {number} radius 
-   * @param { Vector2} offset Positional offset from the body center.
-   *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(radius) {
     //the first vertex is position

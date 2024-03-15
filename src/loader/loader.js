@@ -2,9 +2,12 @@ import { LoadManager } from './loadmanager.js';
 import { warn, error, throws } from '../logger/index.js';
 import { getURLName, getURLExtension } from "./utils.js"
 
+/**
+ * @template T
+ */
 export class Loader {
   /**
-   * @type {{ [x: string]: any; }}
+   * @type {{ [x: string]: T; }}
    */
   _resources = {}
   manager
@@ -15,10 +18,20 @@ export class Loader {
   name() {
     return this.constructor.name
   }
+  /**
+   * @param {string} _extension
+   */
   verify(_extension) {
     return true
   }
-  async parse(_request) {}
+  /**
+   * @abstract
+   * @param {Response} _request
+   * @returns {Promise<T | undefined>}
+   */
+  async parse(_request) {
+    return new Promise(()=>{})
+  }
   /**
    * @param {string} url
    */
@@ -35,13 +48,16 @@ export class Loader {
     const request = await fetch(fullurl)
 
     LoadManager.itemStart(this.manager, fullurl)
-    const resource = this.parse(request)
+    const resource = await this.parse(request)
     if (resource) this._resources[name] = resource
     LoadManager.itemFinish(this.manager, request)
     LoadManager.finish(this.manager)
   }
+  /**
+   * @param {string} name
+   */
   get(name) {
-    const resource = this._resource[name]
+    const resource = this._resources[name]
     if (!resource) throws(`\`${this.name()}\` could not find the resource "${name}" `)
     return resource
   }

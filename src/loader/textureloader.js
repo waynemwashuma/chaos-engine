@@ -1,13 +1,19 @@
 import { DEVICE } from "../device/index.js"
 import { Loader } from "./loader.js"
 
+/**
+ * @extends {Loader<{buffer: ArrayBuffer;dimensions:Vector_like}>}
+ */
 export class ImageLoader extends Loader {
+  /**
+   * @param {string} extension
+   */
   verify(extension) {
     if (DEVICE.supportedImages.includes(extension)) return true
     return false
   }
   /**
-   * @param {string[]} urls
+   * @param {Response} request
    */
   async parse(request) {
     if (!request.ok) return
@@ -22,16 +28,17 @@ export class ImageLoader extends Loader {
 }
 
 /**
- * @param {string} url
+ * @param {BlobPart} raw
+ * @returns {Promise<Vector_like>}
  */
 function getDimensions(raw) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     const url = URL.createObjectURL(new Blob([raw]))
     const img = new Image()
     img.onload = e => {
       resolve({
-        width: img.width,
-        height: img.height
+        x: img.width,
+        y: img.height
       })
     }
     img.src = url

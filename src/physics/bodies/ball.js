@@ -1,5 +1,6 @@
 import { Body2D } from "./body.js"
 import { Circle,Shape } from "../shapes/index.js"
+import { deprecate } from "../../logger/index.js"
 
 
 /**
@@ -20,9 +21,11 @@ export class Ball extends Body2D {
    * @type number 
    */
   get mass() {
-    return this._mass
+    deprecate("Ball().mass")
+    return 1 / this.inv_mass
   }
   set mass(x) {
+    deprecate("Ball().mass")
     this._mass = x
     this.inv_mass = x === 0 ? 0 : 1 / x
     this.inertia = Shape.calcInertia(this.shapes[0],this.mass)

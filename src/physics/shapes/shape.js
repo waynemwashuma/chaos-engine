@@ -23,41 +23,41 @@ export class Shape {
    * 
    * @type {Vector2[]}
    */
-  vertices = null
+  vertices
   /**
    * Keeps the original normals and vertices of this shape
    * 
    * @type {Geometry}
    */
-  geometry = null
+  geometry
 
   /**
    * @param { Vector2[]} vertices The vertices of the shape in local space coordinates.
-   * @param { Vector2} [offset=vector] offset position relative to parent body
-   * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
   constructor(vertices) {
+    // @ts-ignore
     this.vertices = vertices.map(v => Vector2.copy(v))
     this.geometry = new Geometry(vertices)
   }
   /**
    * Returns the normals of the faces when rotated.
-   * 
    * @param {Shape} shape
-   * @param { Vector2[]} [target=[]] An array where results are stored.
-   * @returns { Vector2[]}
+   * @param {Shape} refshape
+   * @param {Vector2[]} [target] An array where results are stored.
+   * @returns {Vector2[]}
    */
-  static getNormals(shape, refshape, target = []) {
-    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, target)
-    let min = null,
-      vertex = null
+  static getNormals(shape,refshape,target = []) {
+    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry,shape.angle,target)
+
+    let vertex = null
     if (refshape.type === Shape.POLYGON)
-      vertex = getNearVertex(shape.vertices[0], shape.vertices)
-    if (refshape.type === Shape.CIRCLE)
+      vertex = getNearVertex(shape.vertices[0],shape.vertices)
+    if (!vertex)
       vertex = refshape.vertices[0]
     const normal = Vector2.copy(vertex)
-    Vector2.sub(normal, shape.vertices[0], normal)
-    Vector2.normalize(normal, normal)
+    Vector2.sub(normal,shape.vertices[0],normal)
+    Vector2.normalize(normal,normal)
+    // @ts-ignore
     target.push(normal)
 
     return target
@@ -69,12 +69,12 @@ export class Shape {
    * @param {T} shape
    * @param {Vector2} position the world position of the body
    * @param {number} angle the orientation of body
-   * @param {number} scale the scale of the body
+   * @param {Vector2} scale the scale of the body
    */
-  static update(shape, position, angle, scale) {
+  static update(shape,position,angle,scale) {
     shape.angle = angle
     if (shape.type === ShapeType.CIRCLE) {
-      Vector2.copy(position, shape.vertices[0])
+      Vector2.copy(position,shape.vertices[0])
       return
     }
     Geometry.transform(
@@ -94,17 +94,19 @@ export class Shape {
    * @param { Vector2[] } target
    * @returns { Vector2[] }
    */
-  static getVertices(shape, axis, target = []) {
+  static getVertices(shape,axis,target = []) {
     if (shape.type === Shape.POLYGON)
       return shape.vertices
 
-    const v1 = Vector2.multiplyScalar(axis, -shape.vertices[1].x)
-    const v2 = Vector2.multiplyScalar(axis, shape.vertices[1].x)
+    const v1 = Vector2.multiplyScalar(axis,-shape.vertices[1].x)
+    const v2 = Vector2.multiplyScalar(axis,shape.vertices[1].x)
 
-    Vector2.add(v1, shape.vertices[0], v1)
-    Vector2.add(v2, shape.vertices[0], v2)
+    Vector2.add(v1,shape.vertices[0],v1)
+    Vector2.add(v2,shape.vertices[0],v2)
 
+    // @ts-ignore
     target[0] = v1
+    // @ts-ignore
     target[1] = v2
 
     return target
@@ -112,11 +114,12 @@ export class Shape {
 
   /**
    * Calculates the inertia of a given shape.
-   * 
    * @virtual
+   * @param {Shape} shape
+   * @param {number} mass
    * @returns {number}
    */
-  static calcInertia(shape, mass) {
+  static calcInertia(shape,mass) {
     const vertices = shape.vertices
     if (shape.type === Shape.CIRCLE) {
       const radius = vertices[1].x
@@ -140,11 +143,15 @@ export class Shape {
   static POLYGON = 1
 }
 
-function getNearVertex(position, vertices) {
+/**
+ * @param {Vector2} position
+ * @param {Vector2[]} vertices
+ */
+function getNearVertex(position,vertices) {
   let vertex = Vector2.ZERO
   let min = -Infinity
   for (let i = 0; i < vertices.length; i++) {
-    const a = Vector2.distanceToSquared(vertices[i], position)
+    const a = Vector2.distanceToSquared(vertices[i],position)
     if (min > a) {
       vertex = vertices[i]
       min = a

@@ -88,8 +88,8 @@ export function stroke(ctx, color = "black", width = 1) {
  * @param {HTMLImageElement} img
  * @param {number} x
  * @param {number} y
- * @param { number } [w = img#width]
- * @param { number } [h=img#height]
+ * @param { number } [w = img.width]
+ * @param { number } [h=img.height]
  * @param { number } [ix = 0]
  * @param { number } [iy = 0]
  */

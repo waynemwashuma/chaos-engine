@@ -5,8 +5,6 @@ export class Rectangle extends Shape {
   /**
    * @param {number} width
    * @param {number} height
-   * @param { Vector2} offset Positional offset from the body center.
-   *  @param {number} offsetAngle Angular offset from the body center.
    */
   constructor(width, height) {
     let v1 = new Vector2(-width / 2, -height / 2)
