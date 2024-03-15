@@ -4,37 +4,41 @@ export class Geometry {
   /**
    * @type {Vector2[]}
    */
-  vertices = null
+  vertices
   /**
    * @type {Vector2[]}
    */
-  normals = null
+  normals
   /**
    * @type {Vector2[]}
    */
-  _dynNormals = null
+  _dynNormals
   /**
    * @param { Vector2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices
     this.normals = Geometry.calcFaceNormals(vertices)
+    // @ts-ignore
     this._dynNormals = this.normals.map(e => Vector2.copy(e))
   }
 
   /**
-   * @param {number} rad
+   * @param {Geometry} geometry
+   * @param {number} angle
    * @param {Vector2[]} target
    */
   static getNormals(geometry, angle, target) {
     target = target || []
     for (let i = 0; i < geometry.normals.length; i++) {
       const normal = Vector2.rotate(geometry.normals[i], angle)
+      // @ts-ignore
       target.push(normal)
     }
     return target
   }
   /**
+   * @param {Vector2[]} vertices
    * @returns {Vector2[]}
    */
   static calcFaceNormals(vertices) {
@@ -47,17 +51,19 @@ export class Geometry {
       Vector2.normalize(axis, axis)
 
       previous = current
+      // @ts-ignore
       if (!checkifEquals(axis, axes))
         axes.push(axis)
     }
+    // @ts-ignore
     return axes
   }
   /**
-   * @param {Geometry} original
-   * @param {number} n
    * @param {Vector2[]} vertices
    * @param {Vector2} pos
-   * @param {number} rad
+   * @param {number} angle
+   * @param {Vector2} scale
+   * @param {Vector2[]} out
    */
   static transform(vertices, pos, angle, scale, out) {
     const cos = Math.cos(angle)
@@ -71,6 +77,10 @@ export class Geometry {
   }
 }
 
+/**
+ * @param {Vector2} axis
+ * @param {Vector2[]} axes
+ */
 function checkifEquals(axis, axes) {
   for (let i = 0; i < axes.length; i++)
     if (Vector2.absEqual(axis, axes[i]))

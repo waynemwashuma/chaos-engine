@@ -9,7 +9,6 @@ export class Angle {
   /**
    * Orientation in radians.
    * 
-   * @private
    * @type {number}
    */
   value = 0

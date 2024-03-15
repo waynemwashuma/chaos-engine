@@ -3,7 +3,7 @@ import {deprecate} from "../logger/index.js"
 /**
  * A class that is used to transform positions through rotation, scaling and translation.
  */
-export class Matrix2 {
+export class Matrix3x2 {
   /**
    *  @param {number} [a=1]
    *  @param {number} [b=0]
@@ -32,8 +32,8 @@ export class Matrix2 {
    * @returns this
    */
   setFromTransform(x, y, scaleX, scaleY, rotation) {
-    deprecate("Matrix2().setFromTransform()","Matrix2.setFromTransform()")
-    Matrix2.setFromTransform(this, x, y, rotation, scaleX, scaleY)
+    deprecate("Matrix3x2().setFromTransform()","Matrix3x2.setFromTransform()")
+    Matrix3x2.setFromTransform(this, x, y, rotation, scaleX, scaleY)
     return this;
   }
   /**
@@ -41,11 +41,11 @@ export class Matrix2 {
    *  A * B = C, where B is this matrix
    * 
    * @deprecated
-   * @param {Matrix2} m
+   * @param {Matrix3x2} m
    * @returns this
    */
   prepend(m) {
-    deprecate("Matrix2().prepend()","Matrix2.multiply()")
+    deprecate("Matrix3x2().prepend()","Matrix3x2.multiply()")
     let x = this.e;
     let a1 = this.a;
     let c1 = this.c;
@@ -62,11 +62,11 @@ export class Matrix2 {
    *  A * B = C, where A is this matrix
    * 
    * @deprecated
-   * @param {Matrix2} m
+   * @param {Matrix3x2} m
    * @returns {this}
    */
   append(m) {
-    deprecate("Matrix2().append()","Matrix2.multiply()")
+    deprecate("Matrix3x2().append()","Matrix3x2.multiply()")
     let a1 = this.a;
     let b1 = this.b;
     let c1 = this.c;
@@ -87,7 +87,7 @@ export class Matrix2 {
    * @returns this
    */
   rotate(radians) {
-    deprecate("Matrix2().rotate()","Matrix2.rotate()")
+    deprecate("Matrix3x2().rotate()","Matrix3x2.rotate()")
     let cos = Math.cos(radians);
     let sin = Math.sin(radians);
     let a1 = this.a;
@@ -108,7 +108,7 @@ export class Matrix2 {
    * @returns this
    */
   identity() {
-    deprecate("Matrix2().identity()","Matrix2.identity()")
+    deprecate("Matrix3x2().identity()","Matrix3x2.identity()")
     
     this.a = 1;
     this.b = 0;
@@ -127,7 +127,7 @@ export class Matrix2 {
    * @returns this
    */
   translate(x, y) {
-    deprecate("Matrix2().translate()","Matrix2.translate()")
+    deprecate("Matrix3x2().translate()","Matrix3x2.translate()")
     this.e += x;
     this.f += y;
     return this;
@@ -141,7 +141,7 @@ export class Matrix2 {
    * @returns this
    */
   scale(x, y) {
-    deprecate("Matrix2().scale()","Matrix2.scale()")
+    deprecate("Matrix3x2().scale()","Matrix3x2.scale()")
     this.a *= x;
     this.d *= y;
     return this;
@@ -153,7 +153,7 @@ export class Matrix2 {
    * @param { Vector2} v
    */
   transform(v) {
-    deprecate("Matrix2().transform()","Matrix2.transformVector2()")
+    deprecate("Matrix3x2().transform()","Matrix3x2.transformVector2()")
     const x = v.x
 
     v.x = this.a * x + this.c * v.y + this.e;
@@ -167,7 +167,7 @@ export class Matrix2 {
    * @returns this
    */
   invert() {
-    deprecate("Matrix2().invert()","Matrix2.invert()")
+    deprecate("Matrix3x2().invert()","Matrix3x2.invert()")
     let a = this.a;
     let b = this.b;
     let c = this.c;
@@ -186,11 +186,11 @@ export class Matrix2 {
    * Copies a matrix into this matrix.
    * 
    * @deprecated
-   * @param {Matrix2} m
+   * @param {Matrix3x2} m
    * @returns this
    */
   copy(m) {
-    deprecate("Matrix2().copy()","Matrix2.copy()")
+    deprecate("Matrix3x2().copy()","Matrix3x2.copy()")
     this.a = m.a;
     this.b = m.b;
     this.c = m.c;
@@ -203,26 +203,34 @@ export class Matrix2 {
    * Creates a new matrix,fills its values with this ones and returns the former.
    * 
    * @deprecated
-   * @returns Matrix2
+   * @returns Matrix3x2
    */
   clone() {
-    deprecate("Matrix2().clone()","Matrix2.copy()")
-    return new Matrix2().copy(this);
+    deprecate("Matrix3x2().clone()","Matrix3x2.copy()")
+    return new Matrix3x2().copy(this);
   }
   /**
    * Deeply checks if a matrix is equal to another.
    * 
    * @deprecated
-   * @param {Matrix2} matrix
+   * @param {Matrix3x2} matrix
    * @returns boolean
    */
   equals(matrix) {
-    deprecate("Matrix2().equals()","Matrix2.equals()")
+    deprecate("Matrix3x2().equals()","Matrix3x2.equals()")
     return (this.a === matrix.a && this.b === matrix.b && this.c === matrix.c && this.d === matrix.d && this.e === matrix.e && this.f === matrix.f);
   }
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {number} x
+   * @param {number} y
+   * @param {number} angle
+   * @param {number} scaleX
+   * @param {number} scaleY
+   */
   static setFromTransform(matrix, x, y, angle, scaleX, scaleY) {
-    const cos = Math.cos(rotation)
-    const sin = Math.sin(rotation)
+    const cos = Math.cos(angle)
+    const sin = Math.sin(angle)
 
     matrix.a = cos * scaleX
     matrix.b = sin * scaleX
@@ -233,7 +241,11 @@ export class Matrix2 {
 
     return matrix
   }
-  static multiply(m1, m2, out = new Matrix2()) {
+  /**
+   * @param {Matrix3x2} m1
+   * @param {Matrix3x2} m2
+   */
+  static multiply(m1, m2, out = new Matrix3x2()) {
     const a1 = m1.a;
     const b1 = m1.b;
     const c1 = m1.c;
@@ -248,7 +260,7 @@ export class Matrix2 {
 
     return out
   }
-  static identity(out = new Matrix2()) {
+  static identity(out = new Matrix3x2()) {
     out.a = 1;
     out.b = 0;
     out.c = 0;
@@ -258,9 +270,13 @@ export class Matrix2 {
 
     return out
   }
-  static rotate(matrix, angle, out = new Matrix2()) {
-    const cos = Math.cos(radians);
-    const sin = Math.sin(radians);
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {number} angle
+   */
+  static rotate(matrix, angle, out = new Matrix3x2()) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
     const a1 = matrix.a;
     const c1 = matrix.c;
     const x = matrix.e;
@@ -274,7 +290,12 @@ export class Matrix2 {
 
     return out;
   };
-  static translate(matrix, x, y, out = new Matrix2()) {
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {any} x
+   * @param {any} y
+   */
+  static translate(matrix, x, y, out = new Matrix3x2()) {
     out.a = matrix.a
     out.b = matrix.b
     out.c = matrix.c
@@ -284,7 +305,12 @@ export class Matrix2 {
 
     return out;
   }
-  static scale(matrix, x, y, out = new Matrix2()) {
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {number} x
+   * @param {number} y
+   */
+  static scale(matrix, x, y, out = new Matrix3x2()) {
     out.a = matrix.a * x
     out.b = matrix.b
     out.c = matrix.c
@@ -294,6 +320,10 @@ export class Matrix2 {
 
     return out;
   };
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {Vector_like} v
+   */
   static transformVector2(matrix, v, out = new Vector2()) {
     const x = v.x
 
@@ -302,7 +332,10 @@ export class Matrix2 {
 
     return out;
   }
-  static invert(matrix, out = new Matrix2()) {
+  /**
+   * @param {Matrix3x2} matrix
+   */
+  static invert(matrix, out = new Matrix3x2()) {
     const a = matrix.a;
     const b = matrix.b;
     const c = matrix.c;
@@ -319,7 +352,10 @@ export class Matrix2 {
 
     return out;
   };
-  static copy(matrix, out = new Matrix2()) {
+  /**
+   * @param {Matrix3x2} matrix
+   */
+  static copy(matrix, out = new Matrix3x2()) {
     out.a = matrix.a;
     out.b = matrix.b;
     out.c = matrix.c;
@@ -330,7 +366,7 @@ export class Matrix2 {
     return out;
   }
   /**
-   * @this {Matrix2}
+   * @this {Matrix3x2}
    */
   [Symbol.iterator] = function*() {
     yield this.a
@@ -341,5 +377,3 @@ export class Matrix2 {
     yield this.f
   }
 }
-
-export { Matrix2 as Matrix }

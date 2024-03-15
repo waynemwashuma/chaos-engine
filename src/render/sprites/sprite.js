@@ -51,6 +51,7 @@ export class Sprite {
     ctx.translate(position.x, position.y)
     ctx.rotate(orientation)
     ctx.scale(scale.x, scale.y)
+    // @ts-ignore
     Material.render(sprite.material,ctx, dt, sprite.geometry.drawable)
     ctx.closePath()
     ctx.restore()

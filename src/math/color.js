@@ -160,32 +160,53 @@ export class Color {
       rand(min, max)
     );
   }
+  /**
+   * @param {Color} color
+   * @param {number} r
+   * @param {number} g
+   * @param {number} b
+   */
   static set(color, r, g, b, a = 1.0) {
     color.r = r;
     color.g = g;
     color.b = b;
-    color.a = alpha;
+    color.a = a;
     return color;
   }
+  /**
+   * @param {Color} color
+   */
   static copy(color, out = new Color()) {
     return Color.set(out, color.r, color.g, color.b, color.a)
   }
+  /**
+   * @param {Color} color1
+   * @param {Color} color2
+   */
   static add(color1, color2, out = new Color()) {
     out.r = clamp(color1.r + color2.r, 0, 255);
     out.g = clamp(color1.g + color2.g, 0, 255);
     out.b = clamp(color1.b + color2.b, 0, 255);
-    out.a = (color1.a + color.a) / 2;
+    out.a = (color1.a + color2.a) / 2;
 
     return out;
   }
+  /**
+   * @param {Color} color1
+   * @param {Color} color2
+   */
   static sub(color1, color2, out = new Color()) {
     out.r = clamp(color1.r - color2.r, 0, 255);
     out.g = clamp(color1.g - color2.g, 0, 255);
     out.b = clamp(color1.b - color2.b, 0, 255);
-    out.a = (color1.a + color.a) / 2;
+    out.a = (color1.a + color2.a) / 2;
 
     return out;
   }
+  /**
+   * @param {Color} color
+   * @param {number} scale
+   */
   static darken(color, scale, out = new Color()) {
     scale = clamp(scale, 0, 1)
 
@@ -195,6 +216,10 @@ export class Color {
     out.a = color.a
     return this;
   }
+  /**
+   * @param {Color} color
+   * @param {number} scale
+   */
   static lighten(color, scale, out = new Color()) {
     scale = clamp(scale, 0, 1);
     out.r = clamp(color.r + (1 - color.r) * scale, 0, 1);
@@ -203,10 +228,15 @@ export class Color {
 
     return out;
   }
+  /**
+   * @param {Color} color1
+   * @param {Color} color2
+   * @param {number} t
+   */
   static lerp(color1, color2, t, out = new Color()) {
-    out.r += color.r + (color1.r - color2.r) * t;
-    out.g += color.g + (color1.g - color2.g) * t;
-    out.b += color.b + (color1.b - color2.b) * t;
+    out.r += color1.r + (color1.r - color2.r) * t;
+    out.g += color1.g + (color1.g - color2.g) * t;
+    out.b += color1.b + (color1.b - color2.b) * t;
     out.a = color1.a + (color1.a - color2.a) * t;
 
     return out

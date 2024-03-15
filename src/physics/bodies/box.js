@@ -1,5 +1,6 @@
 import{Body2D} from "./body.js"
 import {Rectangle,Shape} from "../shapes/index.js"
+import { deprecate } from "../../logger/index.js"
 
 /**
  * A body with a rectangle shape on it.
@@ -20,11 +21,12 @@ export class Box extends Body2D {
    * @type number 
   */
   set mass(x){
-    this._mass = x
+    deprecate("Box().mass")
     this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inertia = Shape.calcInertia(this.shapes[0],this.mass)
+    this.inv_inertia = 1 / Shape.calcInertia(this.shapes[0],this.mass)
   }
   get mass(){
-    return this._mass
+    deprecate("Box().mass")
+    return 1 / this.inv_mass
   }
 }

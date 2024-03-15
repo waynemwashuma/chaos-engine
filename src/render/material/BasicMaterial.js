@@ -1,7 +1,8 @@
+import { Material } from "./material.js"
 import { MaterialType } from "./types.js"
 /**
  * 
- * @implements Material
+ * @implements {Material}
 */
 export class BasicMaterial {
   type = MaterialType.BASIC

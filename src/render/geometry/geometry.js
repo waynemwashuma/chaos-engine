@@ -12,12 +12,12 @@ export class BufferGeometry {
    * @package
    * @type {Path2D | null}
    */
-  drawable
+  drawable = null
   /**
    * @param { Vector2[]} vertices
    */
   /**
-   * @param {Vector2[]} data
+   * @param {BufferGeometry} geometry
    */
   static initCanvas2D(geometry) {
     geometry.drawable = new Path2D()
@@ -25,6 +25,11 @@ export class BufferGeometry {
     if (!positions) return warnOnce("The `position` attribute should be available in `BufferGeometry` to use `Renderer2D` ")
     vertices(geometry.drawable, positions, true)
   }
+  /**
+   * @param {BufferGeometry} geometry
+   * @param {string} name
+   * @param {any[]} attribute
+   */
   static setAttribute(geometry, name, attribute) {
     geometry.attributes[name] = attribute
   }

@@ -280,7 +280,8 @@ export class Vector2 {
    */
   normalFast(target = new Vector2()) {
     deprecate("Vector2().normalFast()", "Vector2.normal()")
-    return Vector2.set(target,-this.y, this.x)
+    Vector2.set(target,-this.y, this.x)
+    return this
   }
   /**
    * Rotates this vector by a given angle in radians.
@@ -500,6 +501,10 @@ export class Vector2 {
   static equal(v1, v2) {
     return v1.x === v2.x && v1.y === v2.y
   }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
   static absEqual(v1, v2) {
     return (
       Math.abs(v1.x) === Math.abs(v2.x) ||

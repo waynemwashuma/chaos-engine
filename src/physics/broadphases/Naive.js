@@ -1,5 +1,6 @@
 import { Broadphase } from "./broadphase.js"
-import { boundsColliding } from "../../math/index.js"
+import { BoundingBox,boundsColliding } from "../../math/index.js"
+import { Entity } from "../../ecs/index.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
@@ -17,26 +18,23 @@ export class NaiveBroadphase extends Broadphase {
   bounds = []
   /**
    * @inheritdoc
-   * @param {Bounds} bound Region to check in.
-   * @param {Body2D[]} target Empty array to store results.
-   * @returns {Body2D[]}
+   * @param {BoundingBox} bound Region to check in.
+   * @param {Entity[]} target Empty array to store results.
+   * @returns {Entity[]}
    */
-  query(bound, target) {
-    closeObjects = target || []
-    for (var i = 0; i < this.objects.length; i++) {
-      let ob = this.world.objects[i]
-      if (ob.bounds.intersects(bound) < dist)
-        closeObjects.push(ob)
-    }
-    return closeObjects
+  query(bound,target = []) {
+    for (let i = 0; i < this.entities.length; i++)
+      if (boundsColliding(bound,this.bounds[i]))
+        target.push(this.entities[i])
+    return target
   }
   /**
    * @param {Entity[][]} entities 
    * @param {BoundingBox[][]} bounds
    */
-  update(entities, bounds) {
-    this.entities = entities.reduce((a, b) => a.concat(b), [])
-    this.bounds = bounds.reduce((a, b) => a.concat(b), [])
+  update(entities,bounds) {
+    this.entities = entities.reduce((a,b) => a.concat(b),[])
+    this.bounds = bounds.reduce((a,b) => a.concat(b),[])
   }
   /**
    * @inheritdoc
@@ -44,10 +42,10 @@ export class NaiveBroadphase extends Broadphase {
    * @returns {CollisionPair[]}
    */
   getCollisionPairs(target = []) {
-    const { entities, bounds } = this
+    const { entities,bounds } = this
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
-        if (!boundsColliding(bounds[i], bounds[j]))
+        if (!boundsColliding(bounds[i],bounds[j]))
           continue
         target.push({
           a: entities[i],

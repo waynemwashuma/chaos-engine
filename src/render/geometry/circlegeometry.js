@@ -11,10 +11,12 @@ export class CircleGeometry extends BufferGeometry {
     CircleGeometry.initCanvas2D(this)
   }
   /**
-   * @param {number} radius
+   * @param {CircleGeometry} geometry
    */
   static initCanvas2D(geometry) {
     geometry.drawable = new Path2D()
-    circle(geometry.drawable, 0, 0, geometry.attributes["position"][0])
+    const position = geometry.attributes["position"]
+    if(!position)return
+    circle(geometry.drawable, 0, 0, position[0])
   }
 }

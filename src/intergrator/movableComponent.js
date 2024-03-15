@@ -1,4 +1,4 @@
-import { Vector2, Angle } from "../math/index.js"
+import { Vector2 } from "../math/index.js"
 /**
  * Component to hold requirements for an entity to move.
  * 

@@ -1,5 +1,6 @@
 import { Utils } from "../utils/index.js"
 import {Logger } from "../logger/index.js"
+import { Entity } from "./entity.js"
 
 
 /**
@@ -9,6 +10,7 @@ import {Logger } from "../logger/index.js"
  * Use instead `Component.implement()` if you have your own hierarchy of classes.
  * In typescript,this would be an interface.
  * 
+ * @deprecated
  * @interface
  * 
  */
@@ -32,12 +34,14 @@ export class Component {
    */
   init(entity) {}
   /**
+   * @deprecated
    * @param {number} dt
    */
   update(dt) {
     Logger.warnOnce("Please ovLoggeride the update function in the component " + proto.constructor.name)
   }
   /**
+   * @deprecated
    * @param {Entity} entity
    * @param {string} n
    */

@@ -1,3 +1,4 @@
+import { Manager } from "../ecs/index.js"
 import { Perf } from "../utils/index.js"
 
 /**

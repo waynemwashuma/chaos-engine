@@ -32,18 +32,18 @@ export class Raycast2D {
   /**
    * @template T
    * @param {Ray} ray
-   * @param {Vector2} center
+   * @param {Vector_like} position
    * @param {number} radius
-   * @param {RayCollisionResult<T>} results
+   * @param {RayCollisionResult<T>} results 
    */
-  static testCircle(ray, center, radius, results) {
+  static testCircle(ray, position, radius, results) {
     const x1 = ray.origin.x
     const y1 = ray.origin.y
     const x2 = ray.direction.x
     const y2 = ray.direction.y
 
-    const x3 = center.x
-    const y3 = center.y
+    const x3 = position.x
+    const y3 = position.y
     const x4 = x3 - x1
     const y4 = y3 - y1
     const r = radius
@@ -74,8 +74,8 @@ export class Raycast2D {
   /**
    * @template T
    * @param {Ray} ray
-   * @param {string | any[]} vertices
-   * @param {RayCollisionResult<T>} result
+   * @param {Vector2[]} vertices
+   * @param {RayCollisionResult<T>} result 
    */
   static testVertices(ray, vertices, result) {
     const origin = ray.origin
@@ -88,8 +88,7 @@ export class Raycast2D {
     if (res) result.points.push(
       new RayPoint(
         res,
-        res.clone().sub(origin)
-        .magnitudeSquared()
+        Vector2.magnitudeSquared(Vector2.sub(res,origin))
       )
     )
     for (let i = 0; i < vertices.length - 1; i++) {
@@ -100,8 +99,7 @@ export class Raycast2D {
       if (res) result.points.push(
         new RayPoint(
           res,
-          res.clone().sub(origin)
-          .magnitudeSquared()
+          Vector2.magnitudeSquared(Vector2.sub(res,origin))
         )
       )
     }

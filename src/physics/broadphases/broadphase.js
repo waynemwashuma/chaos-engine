@@ -1,3 +1,6 @@
+import { Entity } from "../../ecs/index.js";
+import { BoundingBox } from "../../math/index.js";
+
 /**
  * This is an abstract class that extended to classes that are used to filter out unnecessary collision checks to boost performance.
  * 
@@ -8,42 +11,24 @@
  */
 export class Broadphase {
   /**
-   * Adds a body to the broadphase
-   * 
-   * @param {Body2D} obj
+   * @param {Entity[][]} _bodies
+   * @param {BoundingBox[][]} _bounds
    */
-  insert(obj) {}
-  /**
-   * Removes a body from the broadphase
-   * 
-   * @param {Body2D} obj
-   */
-  remove(obj) {}
-
-  /**
-   * Renders a representation of a broadphase
-   */
-  draw(ctx) {}
-  /**
-   * Updates the internals of the broadphase if needed.
-   * 
-   * @param {Body2D[]} bodies
-   */
-  update(bodies) {}
+  update(_bodies,_bounds) {}
   /**
    * Gets all possibly colliding pairs.
    * 
-   * @param {CollisionPair[]} target Empty array to store results.
+   * @param {CollisionPair[]} _target Empty array to store results.
    * @returns {CollisionPair[]}
    */
-  getCollisionPairs(target) {}
+  getCollisionPairs(_target) {return _target}
 
   /**
    * Returns bodies that are within the given bound.
    * 
-   * @param {Bounds} bounds Region to check in.
-   * @param {Body2D[]} target Empty array to store results.
-   * @returns {Body2D[]}
+   * @param {Bounds} _bounds Region to check in.
+   * @param {Entity[]} _target Empty array to store results.
+   * @returns {Entity[]}
    */
-  query(bounds, target) {}
+  query(_bounds, _target) {return _target}
 }
