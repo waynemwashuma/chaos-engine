@@ -15,7 +15,7 @@ export function box(manager) {
   manager.create({
     "transform": new Transform(1000, 300), //,Math.PI/9),
     "movable": new Movable(0,0),
-    "bounds": new BoundingBox(),
+    "bound": new BoundingBox(),
     "body": new Box(50, 50),
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
@@ -28,5 +28,5 @@ export function box(manager) {
     rect.height * 0.8,
     rect.width,
     50)
-  manager.getResource("world").gravity = 900
+  manager.getResource("gravity").y = 900
 }

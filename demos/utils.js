@@ -1,7 +1,6 @@
 import {
   Transform,
   Movable,
-  Body2D,
   BoundingBox,
   Box,
   Sprite,
@@ -16,8 +15,8 @@ export function makePlatform(
   width,
   height
 ) {
-  let box = new Box(width, height)
-  box.type = Body2D.STATIC
+  const box = new Box(width, height)
+  Box.setType(box, Box.STATIC)
   manager.create(createStaticBox(x, y, width, height))
 }
 export function makeContainer(
@@ -57,18 +56,20 @@ export function makeContainer(
     )
   )
 }
+
 function createStaticBox(x, y, w, h) {
   const box = {
     "transform": new Transform(x, y),
     "movable": new Movable(),
-    "bounds": new BoundingBox(),
+    "bound": new BoundingBox(),
     "body": new Box(w, h),
     "sprite": new Sprite(
       new BoxGeometry(w, h),
       new BasicMaterial()
     )
   }
-  box["body"].type = Body2D.STATIC
+  box["body"].inv_mass = 0
+  box["body"].inv_inertia = 0
   box["body"].restitution = 1
   box["body"].staticFriction = 1
   box["body"].kineticFriction = 1

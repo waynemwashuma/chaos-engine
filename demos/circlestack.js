@@ -19,7 +19,7 @@ export function circlestacking(manager) {
     rect.width,
     50
   )
-  manager.getResource("world").gravity = 980
+  manager.getResource("gravity").y = 900
 }
 
 function stack(x, y, r, no, spacing, manager) {
@@ -27,7 +27,7 @@ function stack(x, y, r, no, spacing, manager) {
     manager.create({
       "transform": new Transform(x, y + (r + spacing) * i),
       "movable": new Movable(),
-      "bounds": new BoundingBox(),
+      "bound": new BoundingBox(),
       "body": new Ball(r),
       "sprite": new Sprite(
         new CircleGeometry(r),
