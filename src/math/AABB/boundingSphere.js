@@ -1,4 +1,3 @@
-import { BoundingBox } from "./boundingBox.js"
 import { boundSpheresColliding, AABBvsSphere, BoundType } from "./overlap.js"
 import { deprecate } from "../../logger/index.js"
 /**
