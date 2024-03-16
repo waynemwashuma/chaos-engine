@@ -101,7 +101,7 @@ export class Body2D {
    * @type {boolean}
    * @default Settings.allowSleep
    */
-  allowSleep = false//Settings.allowSleep
+  allowSleep = false //Settings.allowSleep
   /**
    * If the body is asleep or not.
    * 
@@ -133,10 +133,9 @@ export class Body2D {
    * @param {Shape[]} shapes
    */
   constructor(...shapes) {
-    this.type = Settings.type
+    Body2D.setType(this, Settings.type)
     this.shapes = shapes
-    this.mass = 1
-    this.inertia = 1
+    Body2D.setMass(this, 1)
   }
   /**
    * Type of a body.It includes the static and dynamic for now.
@@ -144,75 +143,81 @@ export class Body2D {
    * Dynamic bodies move and respond to collisions.
    * Kinematic bodies move but do not respond to collisions.
    * 
+   * @deprecated
    * @example
    * let body = new Body2D()
    * body.type = Body2D.STATIC
    * 
    */
   set type(x) {
-    deprecate("Ball().type")
+    deprecate("Body2D().type")
     if (x === Body2D.STATIC || x === Body2D.KINEMATIC) this.mass = 0
     this._type = x
   }
   get type() {
-    deprecate("Ball().type")
+    deprecate("Body2D().type")
     return this._type
   }
   /**
-   * Mass of a body.
-   * 
-   * @type number
+   * @deprecated
+   * @type {number} 
    */
   set mass(x) {
+    deprecate("Body2D().mass")
     this.inv_mass = x === 0 ? 0 : 1 / x
-    if (x == 0) this.inertia = 0
+    this.inv_inertia = 1 / Shape.calcInertia(this.shapes[0], this.mass)
   }
   get mass() {
+    deprecate("Body2D().mass")
     return 1 / this.inv_mass
   }
   /**
    * Density of a body.
    *
+   * @deprecated
    * @type {number}
    */
   set density(x) {
-    deprecate("Ball().density")
+    deprecate("Body2D().density")
     const area = Body2D.getArea(this.shapes[0])
     this.inv_mass = 1 / (x * area)
   }
   get density() {
-    deprecate("Ball().density")
+    deprecate("Body2D().density")
     const area = Body2D.getArea(this.shapes[0])
     return this.inv_mass * 1 / area
   }
   /**
    * Rotational inertia of a body.
    * 
+   * @deprecated
    * @type number
    */
   set inertia(x) {
-    deprecate("Ball().inertia")
+    deprecate("Body2D().inertia")
     this.inv_inertia = x == 0 ? 0 : 1 / x
   }
   get inertia() {
-    deprecate("Ball().inertia")
+    deprecate("Body2D().inertia")
     return 1 / this.inv_inertia
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
+   * @deprecated
    * @param { Vector2} v The anchor arm
    * @returns {number}
    */
   setAnchor(v) {
     deprecate("Ball().setAnchor()")
-    this.anchors.push(new Vector2(v.x,v.y))
+    this.anchors.push(new Vector2(v.x, v.y))
     return this._localanchors.push(v) - 1
   }
   /**
    * Gets an anchor in its local space coordinate form.
    * Treat the returned value as read-only.
    * 
+   * @deprecated
    * @param {number} index the position of the
    * @returns { Vector2}
    */
@@ -222,12 +227,14 @@ export class Body2D {
   }
   /**
    * Returns a rotated anchor relative to the body.
+   * 
+   * @deprecated
    * @param {number} index The position of the anchor.
    * @param {Vector2} [target] Vector2 to store results in.
    * @returns {Vector2}
    * @param {number} angle
    */
-  getLocalAnchor(index,angle,target = new Vector2()) {
+  getLocalAnchor(index, angle, target = new Vector2()) {
     deprecate("Ball().getLocalAnchor()")
     return target.copy(this._localanchors[index]).rotate(angle)
   }
@@ -238,7 +245,7 @@ export class Body2D {
    * @param {Body2D} body Body2D to calculate max and min from
    * @param {Number} padding increases the size of the bounds
    */
-  static calculateBounds(body,bound,padding = 0) {
+  static calculateBounds(body, bound, padding = 0) {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
@@ -280,44 +287,51 @@ export class Body2D {
    * @param {Vector2} scale
    * @param {BoundingBox} bounds
    */
-  static update(body,position,orientation,scale,bounds) {
+  static update(body, position, orientation, scale, bounds) {
     for (let i = 0; i < body.shapes.length; i++) {
-      Shape.update(body.shapes[i],position,orientation,scale)
+      Shape.update(body.shapes[i], position, orientation, scale)
     }
     for (let i = 0; i < body.anchors.length; i++) {
       body.anchors[i].copy(body._localanchors[i]).rotate(orientation)
     }
     if (body.autoUpdateBound)
-      Body2D.calculateBounds(body,bounds)
-    //else
-    //  bounds.update(position)
+      Body2D.calculateBounds(body, bounds)
   }
-  /**
-   * 
-   * @param {Shape} _shape 
-   * @returns {number}
-   */
-  static getArea(_shape) {
-    return 0
+  static setMass(body, mass) {
+    body.inv_mass = mass === 0 ? 0 : 1 / mass
+    Body2D.setInertia(body, Shape.calcInertia(body.shapes[0], mass))
+  }
+  static setInertia(body, inertia) {
+    body.inv_inertia = inertia === 0 ? 0 : 1 / inertia
+  }
+  static setType(body, type) {
+    if(type !== Body2D.STATIC)return
+    body.inv_mass = 0
+    body.inv_inertia = 0
+  }
+  static setDensity(body, density) {
+    const area = Shape.getArea(this.shapes[0])
+    this.inv_mass = 1 / (density * area)
   }
   /**
    *Body2D type that dictates a body cannot move nor respond to collisions.
    * 
    * @static
-   * @type number*/
+   * @type {number}
+   */
   static STATIC = 0
   /**
    * Body2D type that dictates a body can move but not respond to collisions.
    * 
    * @static
-   * @type number
+   * @type {number}
    */
   static KINEMATIC = 1
   /**
    * Body2D type that dictates a body can move and respond to collisions.
    * 
    * @static
-   * @type number
+   * @type {number}
    */
   static DYNAMIC = 2
 }
@@ -331,7 +345,7 @@ export class Body extends Body2D {
    * @inheritdoc
    */
   constructor() {
-    deprecate("Body()","Body2D()")
+    deprecate("Body()", "Body2D()")
     super(...arguments)
   }
 }

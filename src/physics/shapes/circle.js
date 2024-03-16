@@ -8,6 +8,7 @@ import { Vector2 } from "../../math/index.js"
  * @augments Shape
  */
 export class Circle extends Shape {
+  type = Shape.CIRCLE
   /**
    * @param {number} radius 
    */
@@ -19,8 +20,6 @@ export class Circle extends Shape {
       new Vector2(),
       new Vector2(radius, radius)
     ])
-    this.radius = radius
-    this.type = Shape.CIRCLE
   }
   get position() {
     return this.vertices[0]
@@ -29,7 +28,7 @@ export class Circle extends Shape {
     return this.vertices[1].x
   }
   set radius(x) {
-    this.vertices[1].x = x
+    //this.vertices[1].x = x
   }
   get area() {
     return Math.PI * this.radius * this.radius
