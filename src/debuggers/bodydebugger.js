@@ -1,6 +1,6 @@
 import { Shape } from "../physics/index.js"
 import { BoundingBox, Vector2 } from "../math/index.js"
-import {Renderer2D} from "../render-canvas2d/index.js"
+import { Renderer2D } from "../render-canvas2d/index.js"
 import { circle, vertices, stroke, fill } from "../render/index.js"
 import { Manager } from "../ecs/index.js"
 /**
@@ -9,7 +9,7 @@ import { Manager } from "../ecs/index.js"
  * @param {Renderer2D} renderer
  */
 // @ts-ignore
-export function bodyDebugger(manager,renderer, options = {}) {
+export function bodyDebugger(manager, renderer, options = {}) {
   options.clearRenderer = options.clearRenderer || false
   options.drawCollisionArm = options.drawCollisionArm || false
   options.drawContacts = options.drawContacts || false
@@ -25,7 +25,7 @@ export function bodyDebugger(manager,renderer, options = {}) {
 
     for (let i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
-        drawShapes(bodies[i][j].shapes, renderer.ctx)
+        drawShapes(bodies[i][j].shape, renderer.ctx)
       }
     }
 
@@ -121,23 +121,20 @@ function drawArmRaw(ctx, position, arm) {
  * @param {Shape[]} shapes
  * @param {CanvasRenderingContext2D} ctx
  */
-function drawShapes(shapes, ctx) {
+function drawShapes(shape, ctx) {
   ctx.beginPath()
-  for (var i = 0; i < shapes.length; i++) {
-    let shape = shapes[i]
-    if (shape.type === Shape.CIRCLE) {
-      circle(
-        ctx,
-        shape.vertices[0].x,
-        shape.vertices[0].y,
-        shape.vertices[1].x
-      )
-      const r = Vector2.fromAngle(shape.angle)
-      Vector2.multiplyScalar(r,shape.vertices[1].x,r)
-      drawArm(ctx, shape.vertices[0], r)
-    } else {
-      vertices(ctx, shape.vertices, true)
-    }
+  if (shape.type === Shape.CIRCLE) {
+    circle(
+      ctx,
+      shape.vertices[0].x,
+      shape.vertices[0].y,
+      shape.vertices[1].x
+    )
+    const r = Vector2.fromAngle(shape.angle)
+    Vector2.multiplyScalar(r, shape.vertices[1].x, r)
+    drawArm(ctx, shape.vertices[0], r)
+  } else {
+    vertices(ctx, shape.vertices, true)
   }
   ctx.lineWidth = 10
   stroke(ctx, "lightgreen", 2)

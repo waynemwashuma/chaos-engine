@@ -26,16 +26,15 @@ export class Geometry {
   /**
    * @param {Geometry} geometry
    * @param {number} angle
-   * @param {Vector2[]} target
+   * @param {Vector2[]} out
    */
-  static getNormals(geometry, angle, target) {
-    target = target || []
+  static getNormals(geometry, angle, out = []) {
     for (let i = 0; i < geometry.normals.length; i++) {
       const normal = Vector2.rotate(geometry.normals[i], angle)
       // @ts-ignore
-      target.push(normal)
+      out.push(normal)
     }
-    return target
+    return out
   }
   /**
    * @param {Vector2[]} vertices
@@ -71,8 +70,8 @@ export class Geometry {
     for (let i = 0; i < vertices.length; i++) {
       const vertex = out[i]
       Vector2.rotateFast(vertices[i], cos, sin, vertex)
-      Vector2.multiply(vertex,scale,vertex)
-      Vector2.add(vertex,pos,vertex)
+      Vector2.multiply(vertex, scale, vertex)
+      Vector2.add(vertex, pos, vertex)
     }
   }
 }
