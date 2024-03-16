@@ -4,7 +4,7 @@
  * @copyright  2023-2024 Wayne Mwashuma
  *
  * @license MIT
- * @version 0.7.0
+ * @version 0.8.0
  */
  /*
  MIT License
@@ -7975,18 +7975,7 @@ class Agent {
 /**
 * A system that manages agent components by updating them.
 */
-class AgentManager {
-  /**
-   * Update all registered agents.
-   * @param {number} dt
-   * @param {Agent[]} agents
-   */
-  update(agents,dt) {
-    for (var i = 0; i < agents.length; i++) {
-      
-    }
-  }
-}
+class AgentManager {}
 
 /**
  * Contains values showing which features are supported,general model of the device and browser used.
@@ -8564,150 +8553,6 @@ function fpsDebugger(manager) {
 }
 
 /**
- * Renders images and paths to the 2D context of a canvas.
- * 
- * @extends Renderer
- */
-class Renderer2D extends Renderer {
-  /**@type {CanvasRenderingContext2D }*/
-  ctx
-  /**
-  @param {HTMLCanvasElement} [canvas] element to draw on
-  */
-    constructor(canvas = document.createElement("canvas"), context = canvas.getContext('2d')) {
-      if (!context) throw "Could not get a 2d context"
-      super(canvas);
-      this.ctx = context;
-    }
-  /**
-   * @deprecated
-   * @param {string} selector
-   * @param {boolean} focus
-   */
-  bindTo(selector,focus = true){
-    deprecate("Renderer2D().bindTo()","Renderer2D.bindTo()");
-    Renderer.bindTo(this,selector,focus);
-  }
-    /**
-   * @deprecated
-   * @param {number} x
-   * @param {number} y
-   */
-    setViewport(x,y){
-      deprecate("Renderer2D().setViewport()","Renderer2D.setViewport()");
-      Renderer.setViewport(this,x,y);
-    }
-  /**
-   * @deprecated
-   */
-  clear() {
-    deprecate("Renderer2D().clear()","Renderer2D.clear()");
-    Renderer2D.clear(this);
-  }
-  /**
-   * @param {Renderer2D} renderer
-   */
-  static clear(renderer) {
-    renderer.ctx.setTransform();
-    const h = renderer.height,
-      w = renderer.width;
-    renderer.ctx.clearRect(0, 0, w, h);
-  }
-  /**
-   * @template {BufferGeometry} T
-   * @template {Material} U
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {Vector2} position
-   * @param {number} orientation
-   * @param {Vector2} scale
-   * @param {Sprite<T,U>} sprite
-   * @param {number} dt
-   */
-  static render(
-    ctx,
-    sprite,
-    position,
-    orientation,
-    scale,
-    dt
-  ) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.translate(position.x, position.y);
-    ctx.rotate(orientation);
-    ctx.scale(scale.x, scale.y);
-    // @ts-ignore
-    Material.render(sprite.material,ctx, dt, sprite.geometry.drawable);
-    ctx.closePath();
-    ctx.restore();
-  }
-}
-
-class Renderer2DPlugin {
-  constructor(renderer = new Renderer2D()) {
-    this.renderer = renderer;
-    this.camera = renderer.camera;
-    if (!renderer.domElement.parentElement)
-      document.body.append(renderer.domElement);
-  }
-  /**
-   * @param {Manager} manager
-   */
-  register(manager) {
-    manager.setResource("renderer", this.renderer);
-    manager.setResource("ctx",this.renderer.ctx);
-    manager.setResource("camera",this.camera);
-    manager.registerSystem(manager => {
-      const [transforms, sprites] = manager.query("transform", "sprite").raw();
-      const dt = manager.getResource("delta");
-      const renderer = manager.getResource("renderer");
-      const ctx = manager.getResource("ctx");
-      const camera = manager.getResource("camera");
-      
-      Renderer2D.clear(renderer);
-      ctx.save();
-      ctx.rotate(
-        camera.transform.orientation
-      );
-      ctx.scale(
-        camera.transform.scale.x,
-        camera.transform.scale.y
-      );
-      ctx.translate(
-        camera.transform.position.x,
-        camera.transform.position.y
-      );
-      for (let i = 0; i < sprites.length; i++) {
-      for (let j = 0; j < sprites[i].length; j++) {
-        Renderer2D.render(
-          ctx,
-          sprites[i][j],
-          transforms[i][j].position,
-          transforms[i][j].orientation,
-          transforms[i][j].scale,
-          dt
-        );
-      }
-    }
-      ctx.save();
-    });
-  }
-  /**
-   * @param {number} width
-   * @param {number} height
-   */
-  setViewport(width, height) {
-    Renderer2D.setViewport(this.renderer, width, height);
-  }
-  /**
-   * @param {string} selector
-   */
-  bindTo(selector) {
-    Renderer2D.bindTo(this.renderer, selector);
-  }
-}
-
-/**
  * @param {Manager} manager
  * @param {BodyDebbuggerOptions} [options]
  */
@@ -9180,4 +9025,199 @@ function testSingleEdge(v1, v2, or, dir) {
   return null
 }
 
+/**
+ * Renders images and paths to the 2D context of a canvas.
+ * 
+ * @extends Renderer
+ */
+class Renderer2D extends Renderer {
+  /**@type {CanvasRenderingContext2D }*/
+  ctx
+  /**
+  @param {HTMLCanvasElement} [canvas] element to draw on
+  */
+    constructor(canvas = document.createElement("canvas"), context = canvas.getContext('2d')) {
+      if (!context) throw "Could not get a 2d context"
+      super(canvas);
+      this.ctx = context;
+    }
+  /**
+   * @deprecated
+   * @param {string} selector
+   * @param {boolean} focus
+   */
+  bindTo(selector,focus = true){
+    deprecate("Renderer2D().bindTo()","Renderer2D.bindTo()");
+    Renderer.bindTo(this,selector,focus);
+  }
+    /**
+   * @deprecated
+   * @param {number} x
+   * @param {number} y
+   */
+    setViewport(x,y){
+      deprecate("Renderer2D().setViewport()","Renderer2D.setViewport()");
+      Renderer.setViewport(this,x,y);
+    }
+  /**
+   * @deprecated
+   */
+  clear() {
+    deprecate("Renderer2D().clear()","Renderer2D.clear()");
+    Renderer2D.clear(this);
+  }
+  /**
+   * @param {Renderer2D} renderer
+   */
+  static clear(renderer) {
+    renderer.ctx.setTransform();
+    const h = renderer.height,
+      w = renderer.width;
+    renderer.ctx.clearRect(0, 0, w, h);
+  }
+  /**
+   * @template {BufferGeometry} T
+   * @template {Material} U
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {Sprite<T,U>} sprite
+   * @param {number} dt
+   */
+  static render(
+    ctx,
+    sprite,
+    position,
+    orientation,
+    scale,
+    dt
+  ) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(position.x, position.y);
+    ctx.rotate(orientation);
+    ctx.scale(scale.x, scale.y);
+    // @ts-ignore
+    Material.render(sprite.material,ctx, dt, sprite.geometry.drawable);
+    ctx.closePath();
+    ctx.restore();
+  }
+}
+
+class Renderer2DPlugin {
+  constructor(renderer = new Renderer2D()) {
+    this.renderer = renderer;
+    this.camera = renderer.camera;
+    if (!renderer.domElement.parentElement)
+      document.body.append(renderer.domElement);
+  }
+  /**
+   * @param {Manager} manager
+   */
+  register(manager) {
+    manager.setResource("renderer", this.renderer);
+    manager.setResource("ctx",this.renderer.ctx);
+    manager.setResource("camera",this.camera);
+    manager.registerSystem(manager => {
+      const [transforms, sprites] = manager.query("transform", "sprite").raw();
+      const dt = manager.getResource("delta");
+      const renderer = manager.getResource("renderer");
+      const ctx = manager.getResource("ctx");
+      const camera = manager.getResource("camera");
+      
+      Renderer2D.clear(renderer);
+      ctx.save();
+      ctx.rotate(
+        camera.transform.orientation
+      );
+      ctx.scale(
+        camera.transform.scale.x,
+        camera.transform.scale.y
+      );
+      ctx.translate(
+        camera.transform.position.x,
+        camera.transform.position.y
+      );
+      for (let i = 0; i < sprites.length; i++) {
+      for (let j = 0; j < sprites[i].length; j++) {
+        Renderer2D.render(
+          ctx,
+          sprites[i][j],
+          transforms[i][j].position,
+          transforms[i][j].orientation,
+          transforms[i][j].scale,
+          dt
+        );
+      }
+    }
+      ctx.save();
+    });
+  }
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
+  setViewport(width, height) {
+    Renderer2D.setViewport(this.renderer, width, height);
+  }
+  /**
+   * @param {string} selector
+   */
+  bindTo(selector) {
+    Renderer2D.bindTo(this.renderer, selector);
+  }
+}
+
 export { AABBColliding, AABBvsSphere, Agent, AgentManager, Angle, AngleUpdate, NaiveArchTypeTable as ArchetypeTable, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, Body2D, BoundType, BoundingBox, BoundingCircle, Box, BoxGeometry, Broadphase, Broadphase2DPlugin, BufferGeometry, Camera, Camera2D, Circle, CircleGeometry, Clock, CollisionData, CollisionManifold, Color, ColorUpdate, Constraint, Cookies, DEG2RAD, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, HALF_PI, ImageLoader, IndexedList, Input, Intergrator2DPlugin, Interpolation, Keyboard, Line, LineGeometry, LoadManager, Loader, Logger, Manager, Material, Matrix3x2, Mouse, Movable, NaiveArchTypeTable, NaiveBroadphase, NarrowPhase, Narrowphase2DPlugin, Noise, PI, Path, PathFollowing, Perf, Physics2DPlugin, Pool, Pursuit, Query, RAD2DEG, Ray, RayCastModes, RayCollisionResult, RayPoint, Raycast2D, Rectangle, Renderer, Renderer2D, Renderer2DPlugin, SATNarrowphase, SQRT2, SeekBehaviour, Session, Sfx, Shape, Signal, SoundLoader, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, TWO_PI, TextMaterial, Touch, Transform, Triangle, TriangleGeometry, Trigon, Tween, TweenPlugin, common as Utils, Vec2, Vector, Vector2, Vector2Update, Vector3Update, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, World2D, applyGravity, arc, assert, bodyDebugger, boundSpheresColliding, boundsColliding, circle, clamp, collisionResponse, createEntity, createManager, dampenVelocity, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, deprecate, drawImage, epilson, error, exp, fill, fillText, fpsDebugger, lerp, line, log, map, mixin, naivebroadphaseUpdate, naturalizePair, radToDeg, rand, raycastDebugger, rect, round, satNarrowphaseUpdate, sq, sqrt, stroke, throws, updateBodies, updateTransformEuler, updateTransformVerlet, vertices, warn, warnOnce, wrapAngle };
+/**
+ * @typedef Bounds
+ * @property {Vector_like} max
+ * @property {Vector_like} min
+ *//**
+ * @callback EasingFunc
+ * @param {number} t
+ * @returns {number}
+ *//**
+ * @typedef CollisionPair
+ * @property {Body2D} a
+ * @property {Body2D} b
+*/
+
+/**
+ * @typedef Manifold
+ * @property {Body2D} bodyA 
+ * @property {Body2D} bodyB
+ * @property {ContactManifold} contactData
+ * @property {number} stmp
+ * @property {number} impulse
+ * @property {boolean} persistent 
+ * @property { Vector2} ca1
+ * @property { Vector2} ca2
+ * @property {number} restitution
+ * @property {number} staticFriction
+ * @property {number} kineticFriction
+ * @property { Vector2} velA
+ * @property { Vector2} velB
+ * @property {number} rotA
+ * @property {number} rotB
+ */
+
+/**
+ * @typedef ContactManifold
+ * @property {number} lastOverlap
+ * @property {number} overlap=-Infinity
+ * @property {boolean} done=false
+ * @property { Vector2} axis
+ * @property { Vector2[]} verticesA
+ * @property { Vector2[]} verticesB
+ * @property {Shape} vertShapeA
+ * @property {Shape} vertShapeB
+ * @property {number} contactNo
+ * @property {number} indexA
+ * @property {number} indexB
+ *//**
+ * @typedef Vector_like
+ * @property {number} x
+ * @property {number} y
+ */

@@ -1,4 +1,71 @@
 
+ ## v0.8.0
+
+ - Added `TweenPlugin()` to manage tweens
+ - Added new plugins related to physics including `Physics2DPlugin()` , `Broadphase2DPlugin()` ,`Narrowphase2DPlugin()` and `Intergrator2DPlugin()`
+ - Added a new plugin `Renderer2DPlugin()` for rendering onto 2d context of canvas
+ - Added method `Manager().registerPlugin()` to add plugins onto the `Manager()`
+ - Fixed a bug on the collision manifold generation
+ - Deactivated static friction due to instability
+ - ` Geometry.getNormals()` is now a static method.
+ - Changed `Shape.calcInertia()` to a static method
+ - Removed `Composite()` and `HeightMap()`
+ - Removed `ImpulseSolver` , `ContactSolver` and `FrictionSolllver` which are replaced by `CollisionManifold.sopve()`
+ - Moved `SAT` and moved functionality to `SATNarrowPhase`
+ - Changed `Shape.getNormals()` to be static
+ - Changed `Shape.getVertices()` to a static method
+ - Added a verlet intergrator
+ - Implemented warmstarting
+ - Added Coulomb friction to the bodies which applies kinetic and static friction
+ - Added friction resolution to the new Collision solver
+ - Created a new solver
+ - `Query()` added to help cache and iterate entities and their components
+ - Deprecated all instance methods of `Renderer2D` in favor of static methods
+ - Deprecated all instance methods of `Vector2()` in favor of static methods
+ - Changed first parameter of `Angle()` to accept radians, nor degrees
+ - Added `LoadManager()` to monitor state of loaders
+ - deprecated `Logger` in favor of decomposing its functions
+ - Deprecated all instance methods of `Color()` in favor of static merhods
+ - Deprecated all instance methods of `BoundingBox()` and `BoundingCircle()`
+ - Deprecated all instance methods of `Matrix3x2()` in favor of static methods
+ - Deprecated `Clock().update()` in favor of `Clock().update()`
+ - Removed all methods named `.toJson()` and `fromJson()` and getters `CHAOS_CLASSNAME` and `CHAOS_OBJ_TYPE` from all classes
+ - Deprecated `Camera()` in favor of `Camera2D()`
+ - Deprecated `Renderer2D().clear()` in favor of `Renderer2D.clear()`
+ - New static method `geometry.setAttributes()` to update vertex attributes
+ - Changed `Renderer().setViewPort()` and `Renderer().bintTo()` to static methods
+ - Redefined System
+ - `Query()` added to help cache and iterate entities and their components
+ - Fixed a bug within contact data creation
+ - Added a new structure `ArchetypeType()`
+ - Added `Noise()` to create pseudo-random numbers.
+ - Added `CorcleBuffer.init()` method
+ - Made `StaticImageMaterial` become  centered
+ - Added new method `Interpolation.cosine()` for cosine interpolation
+ - Added new merhod `Vector.rotateFast()` for optimisation purposes
+ - Added a new option `autoPlay` on manager to detemine if manger should play on creation
+ - Added `Transform.scale` property for scaling entities
+ - removed `BufferGeometry.init()` as it is no longer used
+ - Parameter `accumulate` of `Clock.update()` is now optional
+ - Added a new property `Transform.lastPosition`
+ - Added a new method `Ovwrlaps.colliding` to check if two `boundingCircle()` and/or `BoundingSquare()` are colliding
+ - Added `Entity.id` to keep track of entities
+ - Added options to the `bodyDebugger()` to extend functionality
+ - Added a second parameter `manager` on `System.update()`
+ - Fixed the method `Pool.give()`
+ - Added new method `BoundingBox.translate()` to translate a `BoundingBox()` around
+ - Fixed `Broadphase()` not included in main namespace
+ - Deprecated `World()` in favour of using `World2D()`
+ - Deprecated `Body` in favor of `Body2D()`
+ - Removed `Err` as it is replaced by `Logger`
+ - New module `Logger` to provide same functionality as `Err`
+ - Added new method `IndexedList.has()`
+ - Fixed `Cookie.get()`
+ - Added a new loader `TextureLoader()` to load in images as textures
+ - Added a new loader `SoundLoader()` to load sound
+ - Removed `Loader()` class
+ - `Manager.loader` is no longer available
+
  ## v0.7.0
 
  - Refactored the `mixin()` function
@@ -16,7 +83,6 @@
  - Fixed `SpriteMaterial.setMaxFrames()` to set up max frames correctly
  - Fixed an error on `SpriteMaterial.setAction()`
  - Modified raycaster to have basic working
- - vscode config added
 
  ## v0.6.0
 

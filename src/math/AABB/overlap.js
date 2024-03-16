@@ -1,6 +1,3 @@
-import { BoundingBox } from "./boundingBox.js";
-import { BoundingCircle } from "./boundingSphere.js";
-
 /**
  * Checks if two AABB overlap
  * 
