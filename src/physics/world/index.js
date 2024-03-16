@@ -1,6 +1,6 @@
 import { BoundingBox, Vector2 } from "../../math/index.js"
 import { Broadphase, NaiveBroadphase } from "../broadphases/index.js"
-import { SATNarrowPhase, CollisionManifold, NarrowPhase } from "../narrowphase/index.js"
+import { SATNarrowphase, CollisionManifold, NarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
 import { deprecate } from "../../logger/index.js"
 import { Body2D } from "../bodies/index.js"
@@ -13,12 +13,6 @@ import { Transform } from "../../intergrator/index.js"
  */
 export class World2D {
   /**
-   * The number of times to solve for velocity.A high number results in much more stable stacking.
-   * 
-   * @type {number}
-   */
-  velocitySolverIterations = Settings.velocitySolverIterations
-  /**
    * The collision manifolds that have passed narrowphase and verified to be colliding.
    * 
    * @type {CollisionManifold<Entity>[]}
@@ -27,7 +21,7 @@ export class World2D {
   /**
    * The collision manifolds that have passed broadphase and could be colliding
    * 
-   * 
+   * @deprecated
    * @type {CollisionPair[]}
    */
   contactList = []
@@ -58,12 +52,13 @@ export class World2D {
   narrowphase
   constructor() {
     this.broadphase = new NaiveBroadphase()
-    this.narrowphase = new SATNarrowPhase()
+    this.narrowphase = new SATNarrowphase()
   }
 
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
+   * @deprecated
    * @type { Vector2 }
    */
   get gravity() {
@@ -138,7 +133,7 @@ export class World2D {
         inv_dt
       )
     }
-    for (let i = 0; i < world.velocitySolverIterations; i++) {
+    for (let i = 0; i < Settings.velocitySolverIterations; i++) {
       for (let i = 0; i < CLMDs.length; i++) {
         const manifold = CLMDs[i]
         const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
@@ -209,7 +204,6 @@ export class World2D {
     world.broadphase.update(entities, bounds)
     World2D.collisionDetection(manager, world)
     World2D.collisionResponse(manager, world, world.CLMDs, dt)
-    manager.events.addEvent("collision", world.CLMDs)
   }
 
   /**

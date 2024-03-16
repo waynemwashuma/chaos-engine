@@ -30,7 +30,7 @@ const  tmp1 = {
  * Uses the Separation Axis Theorem.
  * Best when your body shapes have few vertices.
  */
-export class SATNarrowPhase extends NarrowPhase {
+export class SATNarrowphase extends NarrowPhase {
   /**
    * @param {CollisionPair[]} contactList 
    * @param {Manifold[]} [clmds=[]]
@@ -59,7 +59,7 @@ export class SATNarrowPhase extends NarrowPhase {
       const collisionData = manifold.contactData
       collisionData.overlap = -Infinity
       collisionData.done = false
-      SATNarrowPhase.shapesInBodyCollided(bodyA, bodyB, collisionData)
+      SATNarrowphase.shapesInBodyCollided(bodyA, bodyB, collisionData)
       if (collisionData.overlap < 0 || !collisionData.done) continue
       manifold.restitution = bodyA.restitution < bodyB.restitution ? bodyA.restitution : bodyB.restitution
       manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction
@@ -75,7 +75,7 @@ export class SATNarrowPhase extends NarrowPhase {
    * @param {CollisionData} manifold
    */
   static shapesInBodyCollided(body1, body2, manifold) {
-    SATNarrowPhase.shapesCollided(body1.shape, body2.shape, manifold)
+    SATNarrowphase.shapesCollided(body1.shape, body2.shape, manifold)
     
     if (manifold.overlap < 0) return manifold
     
@@ -88,18 +88,18 @@ export class SATNarrowPhase extends NarrowPhase {
     const axisReverse = Vector2.reverse(axis, tmp5)
     const overload = []
     // @ts-ignore
-    const vertices1 = SATNarrowPhase.findNearSupports(manifold.vertShapeA, axis, [])
+    const vertices1 = SATNarrowphase.findNearSupports(manifold.vertShapeA, axis, [])
     // @ts-ignore
-    const vertices2 = SATNarrowPhase.findNearSupports(manifold.vertShapeB, axisReverse, [])
+    const vertices2 = SATNarrowphase.findNearSupports(manifold.vertShapeB, axisReverse, [])
     const balancedOverlap = manifold.overlap / (body1.inv_mass + body2.inv_mass)
     for (let i = 0; i < vertices2.length; i++) {
-      if (SATNarrowPhase.shapeContains(shape1, vertices2[i])) {
+      if (SATNarrowphase.shapeContains(shape1, vertices2[i])) {
         overload.push(vertices2[i])
       }
     }
     if (overload.length < 2) {
       for (let i = 0; i < vertices1.length; i++) {
-        if (SATNarrowPhase.shapeContains(shape2, vertices1[i])) {
+        if (SATNarrowphase.shapeContains(shape2, vertices1[i])) {
           overload.push(vertices1[i])
         }
       }
@@ -131,7 +131,7 @@ export class SATNarrowPhase extends NarrowPhase {
     const arr = []
     Shape.getNormals(shapeA, shapeB, arr)
     Shape.getNormals(shapeB, shapeA, arr)
-    SATNarrowPhase.projectShapesToAxes(shapeA, shapeB, arr, target)
+    SATNarrowphase.projectShapesToAxes(shapeA, shapeB, arr, target)
   }
   /**
    * @param {Shape} shapeB
@@ -149,8 +149,8 @@ export class SATNarrowPhase extends NarrowPhase {
       const verticesA = Shape.getVertices(shapeA, axis)
       // @ts-ignore
       const verticesB = Shape.getVertices(shapeB, axis)
-      const p1 = SATNarrowPhase.projectVerticesToAxis(verticesA, axis, tmp2)
-      const p2 = SATNarrowPhase.projectVerticesToAxis(verticesB, axis, tmp3)
+      const p1 = SATNarrowphase.projectVerticesToAxis(verticesA, axis, tmp2)
+      const p2 = SATNarrowphase.projectVerticesToAxis(verticesB, axis, tmp3)
       const min = p1.max < p2.max ? p1.max : p2.max
       const max = p1.min > p2.min ? p1.min : p2.min
       let overlap = min - max
@@ -241,8 +241,8 @@ export class SATNarrowPhase extends NarrowPhase {
    */
   static shapeContains(shape, point) {
     if (shape.type == Shape.CIRCLE)
-      return SATNarrowPhase.circleContains(shape.vertices[0], shape.vertices[1].x, point)
-    return SATNarrowPhase.verticesContain(shape.vertices, point)
+      return SATNarrowphase.circleContains(shape.vertices[0], shape.vertices[1].x, point)
+    return SATNarrowphase.verticesContain(shape.vertices, point)
   }
   /**
    * @param { Vector2} position
