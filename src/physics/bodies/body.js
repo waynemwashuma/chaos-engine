@@ -17,27 +17,6 @@ export class Body2D {
    */
   id = Utils.generateID()
   /**
-   * Type of the body e.g Dynamic, Kinematic or Static.
-   * 
-   * @private
-   * @type {number}
-   */
-  _type = 0
-  /**
-   * Anchors of the body in local space.
-   * 
-   * @private
-   * @type {Vector2[]}
-   */
-  _localanchors = []
-  /**
-   * The original anchors of the body in local space.
-   * 
-   * @private
-   * @type {Vector2[]}
-   */
-  anchors = []
-  /**
    * Inverse mass of the body.
    * 
    * @type {number}
@@ -90,11 +69,11 @@ export class Body2D {
     group: 0
   }
   /**
-   * Shapes a body is comprised of.
+   * The shape of the body.
    * 
-   * @type {Shape[]}
+   * @type {Shape}
    */
-  shapes
+  shape
   /**
    * Whether the body should sleep when at rest or not.
    * 
@@ -130,11 +109,11 @@ export class Body2D {
    */
   autoUpdateBound = Settings.autoUpdateBound
   /**
-   * @param {Shape[]} shapes
+   * @param {Shape} shape
    */
-  constructor(...shapes) {
+  constructor(shape) {
     Body2D.setType(this, Settings.type)
-    this.shapes = shapes
+    this.shape = shape
     Body2D.setMass(this, 1)
   }
   /**
@@ -165,7 +144,7 @@ export class Body2D {
   set mass(x) {
     deprecate("Body2D().mass")
     this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inv_inertia = 1 / Shape.calcInertia(this.shapes[0], this.mass)
+    this.inv_inertia = 1 / Shape.calcInertia(this.shape, this.mass)
   }
   get mass() {
     deprecate("Body2D().mass")
@@ -179,12 +158,12 @@ export class Body2D {
    */
   set density(x) {
     deprecate("Body2D().density")
-    const area = Body2D.getArea(this.shapes[0])
+    const area = Body2D.getArea(this.shape)
     this.inv_mass = 1 / (x * area)
   }
   get density() {
     deprecate("Body2D().density")
-    const area = Body2D.getArea(this.shapes[0])
+    const area = Body2D.getArea(this.shape)
     return this.inv_mass * 1 / area
   }
   /**
@@ -251,21 +230,19 @@ export class Body2D {
       maxX = -Number.MAX_SAFE_INTEGER,
       maxY = -Number.MAX_SAFE_INTEGER
 
-    for (let i = 0; i < body.shapes.length; i++) {
-      const shape = body.shapes[i]
-      if (shape.type == Shape.CIRCLE) {
-        const position = shape.vertices[0]
-        const radius = shape.vertices[1].x
-        const idx = position.x - radius,
-          idy = position.y - radius,
-          mdx = position.x + radius,
-          mdy = position.y + radius
-        if (!minX || idx < minX) minX = idx
-        if (!maxX || mdx > maxX) maxX = mdx
-        if (!minY || idy < minY) minY = idy
-        if (!maxY || mdy > maxY) maxY = mdy
-        continue
-      }
+    const shape = body.shape
+    if (shape.type == Shape.CIRCLE) {
+      const position = shape.vertices[0]
+      const radius = shape.vertices[1].x
+      const idx = position.x - radius,
+        idy = position.y - radius,
+        mdx = position.x + radius,
+        mdy = position.y + radius
+      if (!minX || idx < minX) minX = idx
+      if (!maxX || mdx > maxX) maxX = mdx
+      if (!minY || idy < minY) minY = idy
+      if (!maxY || mdy > maxY) maxY = mdy
+    } else {
       for (let j = 0; j < shape.vertices.length; j++) {
         let vertex = shape.vertices[j]
         if (vertex.x < minX) minX = vertex.x
@@ -280,7 +257,7 @@ export class Body2D {
     bound.max.y = maxY + padding
   }
   /**
-   * This updates the world coordinates of shapes, anchors and bounds.
+   * This updates the world coordinates of shape and bounds.
    * @param {Body2D} body
    * @param {Vector2} position
    * @param {number} orientation
@@ -288,49 +265,37 @@ export class Body2D {
    * @param {BoundingBox} bounds
    */
   static update(body, position, orientation, scale, bounds) {
-    for (let i = 0; i < body.shapes.length; i++) {
-      Shape.update(body.shapes[i], position, orientation, scale)
-    }
-    for (let i = 0; i < body.anchors.length; i++) {
-      body.anchors[i].copy(body._localanchors[i]).rotate(orientation)
-    }
+    Shape.update(body.shape, position, orientation, scale)
     if (body.autoUpdateBound)
       Body2D.calculateBounds(body, bounds)
   }
   static setMass(body, mass) {
     body.inv_mass = mass === 0 ? 0 : 1 / mass
-    Body2D.setInertia(body, Shape.calcInertia(body.shapes[0], mass))
+    Body2D.setInertia(body, Shape.calcInertia(body.shape, mass))
   }
   static setInertia(body, inertia) {
     body.inv_inertia = inertia === 0 ? 0 : 1 / inertia
   }
   static setType(body, type) {
-    if(type !== Body2D.STATIC)return
+    if (type !== Body2D.STATIC) return
     body.inv_mass = 0
     body.inv_inertia = 0
   }
   static setDensity(body, density) {
-    const area = Shape.getArea(this.shapes[0])
-    this.inv_mass = 1 / (density * area)
+    const area = Shape.getArea(body.shape)
+    Body2D.setMass(body, density * area)
   }
   /**
    *Body2D type that dictates a body cannot move nor respond to collisions.
    * 
-   * @static
+   * @readonly
    * @type {number}
    */
   static STATIC = 0
   /**
-   * Body2D type that dictates a body can move but not respond to collisions.
-   * 
-   * @static
-   * @type {number}
-   */
-  static KINEMATIC = 1
-  /**
    * Body2D type that dictates a body can move and respond to collisions.
    * 
-   * @static
+   * @readonly
    * @type {number}
    */
   static DYNAMIC = 2
