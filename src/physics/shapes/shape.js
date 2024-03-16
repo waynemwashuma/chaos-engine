@@ -56,6 +56,7 @@ export class Shape {
     const normal = Vector2.copy(vertex)
     Vector2.sub(normal, shape.vertices[0], normal)
     Vector2.normalize(normal, normal)
+    // @ts-ignore
     out.push(normal)
 
     return out
@@ -102,12 +103,23 @@ export class Shape {
     Vector2.add(v1, shape.vertices[0], v1)
     Vector2.add(v2, shape.vertices[0], v2)
     
+    // @ts-ignore
     out[0] = v1
+    // @ts-ignore
     out[1] = v2
 
     return out
   }
-
+  /**
+   * TODO - Actually implement this
+   * @param {Shape} shape
+   */
+  static getArea(shape){
+    if(shape.type === Shape.POLYGON){
+      return 0
+    }
+    return 0
+  }
   /**
    * Calculates the inertia of a given shape.
    * 

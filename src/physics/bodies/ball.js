@@ -1,6 +1,5 @@
 import { Body2D } from "./body.js"
-import { Circle, Shape } from "../shapes/index.js"
-import { deprecate } from "../../logger/index.js"
+import { Circle } from "../shapes/index.js"
 
 
 /**

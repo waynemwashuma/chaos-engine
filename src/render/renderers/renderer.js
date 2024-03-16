@@ -10,7 +10,6 @@ import { Camera2D } from "../camera.js"
  */
 export class Renderer {
   /**
-   * @private
    * @type {HTMLCanvasElement}
    */
   domElement

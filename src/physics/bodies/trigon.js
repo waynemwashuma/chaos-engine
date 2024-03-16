@@ -1,6 +1,5 @@
 import { Body2D } from "./body.js"
-import { Triangle, Shape } from "../shapes/index.js"
-import { deprecate } from "../../logger/index.js"
+import { Triangle } from "../shapes/index.js"
 
 export class Trigon extends Body2D {
   /**

@@ -31,7 +31,9 @@ export class BoundingCircle {
   intersects(bound) {
     deprecate("BoundingCircle().intersects()", "boundsColliding()")
     if (bound.type === BoundType.CIRCLE)
+      // @ts-ignore
       return boundSpheresColliding(this, bound)
+    // @ts-ignore
     return AABBvsSphere(bound, this)
   }
   /**
@@ -43,12 +45,20 @@ export class BoundingCircle {
     this.pos.x += x
     this.pos.y += y
   }
+  /**
+   * @param {BoundingCircle} bound
+   * @param {any} x
+   * @param {any} y
+   */
   static translate(bound, x, y, out = new BoundingCircle()) {
     out.pos.x = bound.pos.x + x
     out.pos.y = bound.pos.y + y
     
     return out
   }
+  /**
+   * @param {BoundingCircle} bound
+   */
   static copy(bound, out = new BoundingCircle()) {
     out.pos.x = bound.pos.x
     out.pos.y = bound.pos.y

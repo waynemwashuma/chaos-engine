@@ -3,7 +3,6 @@ import {
   Renderer2D,
   Renderer2DPlugin,
   Physics2DPlugin,
-  Vector2,
   TweenPlugin,
   fpsDebugger,
   bodyDebugger,

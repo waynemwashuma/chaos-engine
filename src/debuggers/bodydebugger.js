@@ -1,12 +1,10 @@
 import { Shape } from "../physics/index.js"
 import { BoundingBox, Vector2 } from "../math/index.js"
-import { Renderer2D } from "../render-canvas2d/index.js"
 import { circle, vertices, stroke, fill } from "../render/index.js"
 import { Manager } from "../ecs/index.js"
 /**
  * @param {Manager} manager
  * @param {BodyDebbuggerOptions} [options]
- * @param {Renderer2D} renderer
  */
 // @ts-ignore
 export function bodyDebugger(manager, options = {}) {
@@ -19,7 +17,7 @@ export function bodyDebugger(manager, options = {}) {
     const viewport = manager.getResource("renderer")
     const ctx = manager.getResource("ctx")
     
-    if (options.clear) ctx.clearRect(0,0,viewPort.width,viewport.height)
+    if (options.clear) ctx.clearRect(0,0,viewport.width,viewport.height)
     if (options.drawCollisionArm) drawArms()
     if (options.drawPosition) drawPositions()
     if (options.drawContacts) drawContacts()
@@ -120,7 +118,7 @@ function drawArmRaw(ctx, position, arm) {
 }
 
 /**
- * @param {Shape[]} shapes
+ * @param {Shape} shape
  * @param {CanvasRenderingContext2D} ctx
  */
 function drawShapes(shape, ctx) {
@@ -165,4 +163,5 @@ function renderObj(ctx, bounds) {
  * @property {boolean} [clearRenderer=false]
  * @property {boolean} [drawCollisionArm=false]
  * @property {boolean} [drawContacts]
+ * @property {boolean} [clear]
  */

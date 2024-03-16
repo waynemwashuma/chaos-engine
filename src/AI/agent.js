@@ -40,16 +40,22 @@ export class Agent {
       1
     )
   }
-  /**:
+  /**
+   * :
    * @param {number} inv_dt Inverse of delta time i.e frameRate.
+   * @param {Agent} agent
+   * @param {any} transform
+   * @param {any} movable
    */
   static update(agent, transform, movable, inv_dt) {
     Agent.updateBehaviours(agent.behaviours, transform, movable, inv_dt)
   }
   /**
    * Updates the behaviours of the agent and applies changes to agent.
-   * 
    * @param {number} inv_dt
+   * @param {string | any[]} behaviours
+   * @param {any} transform
+   * @param {{ acceleration: { add: (arg0: Vector2) => void; }; torque: number; }} movable
    */
   static updateBehaviours(behaviours, transform, movable, inv_dt) {
     const accumulate = new Vector2()
@@ -58,11 +64,11 @@ export class Agent {
       behaviours[i].calc(
         transform,
         movable,
-        result,
+        accumulate,
         angular,
         inv_dt
       )
-      accumulate.add(result)
+      accumulate.add(accumulate)
     }
     movable.acceleration.add(accumulate)
     movable.torque += angular.value

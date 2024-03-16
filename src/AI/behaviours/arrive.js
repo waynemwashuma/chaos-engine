@@ -1,8 +1,7 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector2, map } from "../../math/index.js"
 
-let tmp1 = new Vector2(),
-  tmp2 = new Vector2()
+let tmp1 = new Vector2()
 
 /**
  * This provides a seek behaviour which slows down when the agent approaches a target.
@@ -25,7 +24,9 @@ export class ArriveBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param { Vector2} target
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
    * @param {number} inv_dt
    * @returns Vector2 the first parameter
    */
