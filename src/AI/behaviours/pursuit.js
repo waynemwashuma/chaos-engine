@@ -13,13 +13,6 @@ export class Pursuit extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-
-  }
-  /**
-   * @inheritdoc
    * @param { Vector2} target
    * @param {number} inv_dt
    * @returns Vector2 the first parameter

@@ -1,6 +1,5 @@
 import { Body2D } from "./body.js"
-import { Rectangle, Shape } from "../shapes/index.js"
-import { deprecate } from "../../logger/index.js"
+import { Rectangle } from "../shapes/index.js"
 
 /**
  * A body with a rectangle shape on it.

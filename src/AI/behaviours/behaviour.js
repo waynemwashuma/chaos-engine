@@ -22,15 +22,4 @@ export class Behaviour {
    * @type {boolean}
    */
   active = true
-  /**
-   * Calculates the amount of force required to satisfy a behavior.
-   * 
-   * @param {Transform} _transform
-   * @param {Movable} _movable
-   * @param {Vector2} _linear
-   * @param {Angle} _angular
-   * @param {number} _inv_dt
-   * @returns {void}
-   */
-  calc(_transform, _movable, _linear, _angular, _inv_dt) {}
 }

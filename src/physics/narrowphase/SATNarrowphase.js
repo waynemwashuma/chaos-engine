@@ -128,6 +128,9 @@ export class SATNarrowphase extends NarrowPhase {
    * @param {CollisionData} target
    */
   static shapesCollided(shapeA, shapeB, target) {
+    /**
+     * @type {Vector2[]}
+     */
     const arr = []
     Shape.getNormals(shapeA, shapeB, arr)
     Shape.getNormals(shapeB, shapeA, arr)

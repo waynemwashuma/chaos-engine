@@ -2,10 +2,12 @@
  * @author Wayne Mwashuma
  * {@link https://github.com/waynemwashuma/chaos-engine.git}
  * @copyright  2023-2024 Wayne Mwashuma
- * @license MIT
  *
- * 
- * MIT License
+ * @license MIT
+ * @version 0.7.0
+ */
+ /*
+ MIT License
 
 Copyright (c) 2023 Wayne Mwashuma
 
@@ -28,1615 +30,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
  */
-let marker = `🚀Chaos Engine Says::::\n`;
-let mess = [];
-
-/**
- * Logs out a warning to the console.
- *
- * @param {string} message
- */
-function warn(message) {
-  console.warn(marker + message);
-}
-
-/**
- * Throws a fatal error.
- * 
- * @param {string} message
- */
-function throws(message) {
-  throw new Error(marker + message)
-}
-
-/**
- * Logs out a non fatal error to the console.
- * 
- * @param {string} message
- */
-function error(message) {
-  console.error(marker + message);
-}
-
-/**
- * Logs out a message to the console.
- * 
- * @param {string} message
- */
-function log(message) {
-  console.log(marker + message);
-}
-/**
- * Logs out a warning once to the console.
- * 
- * @param {string} message
- */
-function warnOnce(message) {
-  if (mess.includes(message)) return
-  mess.push(message);
-  warn(message);
-}
-/**
- * Logs out a message,warning or error to the console according to the supplied log function.
- * 
- * @param {boolean} test
- * @param {string} message
- * @param {Function} errfunc
- */
-function assert(test, errfunc, message) {
-  if (!test) errfunc(message);
-  return test
-}
-
-/**
- * Logs out a warning to the console.
- * 
- * @param {string} message
- */
-function deprecate(original, replacement = "") {
-  let message = `"${original}" has been depreciated.`;
-  if (replacement !== "")
-    message += `Use "${replacement}" instead.`;
-  warnOnce(message);
-}
-
-var error$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  warn: warn,
-  throws: throws,
-  error: error,
-  log: log,
-  warnOnce: warnOnce,
-  assert: assert,
-  deprecate: deprecate
-});
-
-let tmpID = 0;
-
-/**
- * Appends the second array to the first.
- * 
- * @memberof Utils
- * @template T
- * @param {T[]} arr1
- * @param {T[]} arr2
- */
-function appendArr(arr1, arr2) {
-  for (var i = 0; i < arr2.length; i++) {
-    arr1.push(arr2[i]);
-  }
-}
-/**
- * Clears an array
- * 
- * @memberof Utils
- * @template T
- * @param {T[]} arr
- */
-function clearArr(arr) {
-  for (var i = arr.length; i > 0; i--) {
-    arr.pop();
-  }
-}
-/**
- * Removes a number of items at the end of an array
- * 
- * @memberof Utils
- * @template T
- * @param {T[]} arr
- * @param {number} number
- */
-function popArr(arr, number) {
-  let length = arr.length;
-  for (var i = length; i > length - number; i--) {
-    arr.pop();
-  }
-}
-/**
- * Removes an element by its index from an array
- * 
- * @memberof Utils
- * @template T
- * @param {T[]} arr
- * @param {number} index
- */
-function removeElement(arr, index) {
-  if (index == -1) return null
-  if (arr.length - 1 == index) return arr.pop()
-
-  let temp = arr[index];
-  arr[index] = arr.pop();
-  return temp
-}
-/**
- * Generates a unique id when called
- * 
- * @memberof Utils
- */
-function generateID() {
-  return (tmpID += 1)
-}
-
-/**
- * Mixes the functions required by a component into a class.
- * 
- * @memberof Utils
- * @param {Function} component the class/constructor function to add methods to.
- * @param {boolean} [overrideInit=true]
- * @param {boolean} [overrideUpdate=true]
- */
-function inheritComponent(component, overrideInit = true, overrideUpdate = true) {
-  if (component == void 0 || typeof component !== "function") return
-  let proto = component.prototype;
-
-  if (proto.destroy) {
-    let destroy = component.destroy;
-    proto.destroy = function() {
-      this.entity = null;
-      destroy.call(this);
-    };
-  } else {
-    proto.destroy = function() {
-      this.entity = null;
-    };
-  }
-  if (proto.init && overrideInit) {
-    let init = proto.init;
-    proto.init = function(entity) {
-      this.entity = entity;
-      init.call(this, entity);
-    };
-  } else if (!proto.init) {
-    proto.init = function(entity) {
-      this.entity = entity;
-    };
-  }
-  if (!proto.update && overrideUpdate) {
-    proto.update = function() {
-      Err.warnOnce("Please override the update function in the component " + proto.constructor.name);
-
-    };
-  }
-  proto.get = function(n) {
-    return this.entity.getComponent(n);
-  };
-  proto.requires = function(entity, ...names) {
-    for (var i = 0; i < names.length; i++)
-      if (!entity.has(names[i]))
-        throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`);
-  };
-
-  proto.query = function(bound, target = []) {
-    return this.entity.query(bound, target)
-  };
-  if (!proto.toJson) {
-    //console.log(proto);
-    proto.toJson = function() {
-      throw "Error, implement .toJson() in the class " + this.CHOAS_CLASSNAME
-    };
-  }
-  Object.defineProperty(proto, "CHOAS_CLASSNAME", {
-    get: function() {
-      return this.constructor.name.toLowerCase()
-    },
-    enumerable: true,
-    configurable: false
-  });
-  Object.defineProperty(proto, "CHAOS_OBJ_TYPE", {
-    get: function() {
-      return "component"
-    },
-    enumerable: true,
-    configurable: false
-  });
-}
-/**
- * Todo - Fix this function to add all props if no props param is given
- * Mixes the properties and methods required by an object from another object.
- * 
- *  @param {*} from the object constructor function to add methods from.
- * @param {*} to the object constructor function to add methods to.
- * @param {string[]} [props]
- */
-function mixin(from, to, props = []) {
-  for (let name of props) {
-    to[name] = from[name];
-  }
-}
-
-var common = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  appendArr: appendArr,
-  clearArr: clearArr,
-  popArr: popArr,
-  removeElement: removeElement,
-  generateID: generateID,
-  inheritComponent: inheritComponent,
-  mixin: mixin
-});
-
-/**
- * Handles time management for the game.
-*/
-class Clock {
-  /**
-   * Last time the clock was updated
-   * 
-   * @private
-   * @type number
-  */
-  lastcall = 0
-  /**
-   * Difference between the last call in the last frame and current call.
-   * 
-   * @type number 
-  */
-  dt = 0
-  /*getFrameRate(){
-    return 1/(this.dt/1000)
-  }
-  getRoundedFrameRate(){
-    return Math.round(this.getFrameRate())
-  }*/
-  /**
-   * Updates the clock
-   * 
-   * @param {number} accumulate
-  */
-  update(accumulate){
-    this.dt = accumulate - this.lastcall || 0;
-    //this.framerate = this.getFrameRate()
-    this.lastcall = accumulate; 
-    
-    return this.dt/1000
-  }
-}
-
-class Perf{
-  _start = 0
-  _time = 0
-  start(){
-    this._start = performance.now();
-  }
-  end(){
-    this._time = performance.now() - this._start;
-    return this._time
-  }
-  fps(){
-    return 1000/this._time
-  }
-}
-
-//import { DEVICE } from "../device/index.js"
-
-class Loader {
-  /**
-   * @private
-   */
-  _toload = []
-  imgs = {}
-  sfx = {}
-  json = {}
-  /**
-   * @type {number}
-   * @private
-   */
-  _progressBytes = 0
-  /**
-   * @private
-   * @type {number}
-   */
-  _totalBytes = 0
-  /**
-   * @peivatw
-   * @type {number}
-   */
-  _filesErr = 0
-  /**
-   * @private
-   * @type {number}
-   */
-  _filesLoaded = 0
-  /**
-   * @private
-   * @type {number}
-   */
-  _totalFileNo = 0
-  /**
-   * @param {Manager} manager
-   */
-  constructor(manager) {
-    const that = this;
-    this.onfinish = null;
-    this._handlers = {
-      onload: function(xhr, e) {
-        let type = that._getType(xhr.responseURL);
-        let name = that._getName(xhr.responseURL);
-        if (e.lengthComputable === false) {
-          that._handlers.onerror(xhr, e);
-          return
-        }
-        if (type === "image") {
-          that.imgs[name] = new Image();
-          that.imgs[name].src = URL.createObjectURL(xhr.response);
-        } else if (type === "audio") {
-          that.sfx[name] = xhr.response;
-          //if using webAudio,just set it to the buffer 
-          //else find a way to put this buffer into an audio tag
-        } else if (type === "json") {
-          that.json[name] = JSON.parse(xhr.response);
-        } else {
-          return warn(`The file in url ${xhr.responseURL} is not loaded into the loader because its extension name is not supported.`)
-        }
-        that._filesLoaded += 1;
-
-        if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) {
-          that.onfinish();
-        }
-
-      },
-      onheadload: function(e) {
-        if (e.total === 0 || !e.lengthComputable) return
-        that._totalBytes += e.total;
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', files.images[i], true);
-
-        xhr.onload = e => that._handlers.onload(xhr);
-        xhr.onerror = that._handlers.onerror(xhr);
-        xhr.send();
-      },
-      onerror: function(e) {
-        that._filesErr += 1;
-        warn(`The file ${e.responseURL} could not be loaded as the file might not exist in current url`);
-        if (that._filesLoaded + that._filesErr === that._totalFileNo && that.onfinish) that.onfinish();
-      }
-    };
-  }
-  /**
-   * @private
-   */
-  _getName(url) {
-    if (url.includes("/")) {
-      let tmp = url.split("/");
-      url = tmp[tmp.length - 1];
-    }
-    return url.split(".")[0]
-  }
-  /**
-   * @private
-   */
-  _getType(url) {
-    let ext;
-    if (url.includes("/")) {
-      let tmp = url.split("/");
-      url = tmp[tmp.length - 1];
-    }
-    ext = url.split(".")[1];
-
-    if (ext === "jpg" || ext === "png" || ext === "jpeg") return "image"
-    if (ext === "mp3" || ext === "ogg") return "audio"
-    if (ext === "json") return "json"
-  }
-  loadAll(files = {}) {
-    this._totalFileNo =
-      (files.images?.length || 0) +
-      (files.audio?.length || 0) +
-      (files.json?.length || 0);
-    if (this._totalFileNo === 0) {
-      this.onfinish();
-      return
-    }
-    if (files.images) {
-      for (var i = 0; i < files.images.length; i++) {
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', files.images[i], true);
-        xhr.responseType = "blob";
-        xhr.onload = e => {
-          this._handlers.onload(xhr, e);
-
-        };
-        xhr.onerror = e => this._handlers.onerror(xhr);
-        xhr.send();
-
-      }
-    }
-    if (files.audio) {
-      for (var i = 0; i < files.audio.length; i++) {
-        let xhr = new XMLHttpRequest();
-        xhr.responseType = "arraybuffer";
-        xhr.open('GET', files.audio[i], true);
-        xhr.onload = e => this._handlers.onload(xhr, e);
-        xhr.onerror = e => this._handlers.onerror(xhr);
-        xhr.send();
-
-      }
-    }
-    if (files.json) {
-      for (var i = 0; i < files.json.length; i++) {
-        let xhr = new XMLHttpRequest();
-        xhr.responseType = "text";
-        xhr.open('GET', files.json[i], true);
-        xhr.onload = e => this._handlers.onload(xhr, e);
-        xhr.onerror = e => this._handlers.onerror(xhr);
-        xhr.send();
-      }
-
-    }
-  }
-}
-
-/**
- * This class manages all events by a game manager.
- * When adding a handler to an event with another handler,the latter will not be overriden,rather,the former will be added to complement the latter.
- */
-class EventDispatcher {
-  /**
-   * A dictionary of callback functions
-   * 
-   * @private
-   * @type Object<string,function[]>
-   */
-  handlers = {}
-  /**
-   * This fires all event handlers of a certain event.
-   * 
-   * @param {string} n the name of event fired.
-   * @param {any} data The payload of the event.
-   */
-  trigger(n, data) {
-    if (n in this.handlers)
-      this.handlers[n].forEach(h => h(data));
-  }
-  /**
-   * Ignore this,must be here for it to be a system.Might make this class not a system later
-   */
-  init() {}
-  /**
-   * Adds an event handler to an event dispatcher.
-   * 
-   * @param {string} name name of the event.
-   * @param {EventHandlerFunc} handler Function to be called when the event is triggered.
-   */
-  add(name, handler) {
-    if (name in this.handlers) {
-      this.handlers[name].push(handler);
-      return
-    }
-    this.handlers[name] = [handler];
-  }
-}
-
-/**
- * @callback EventHandlerFunc
- * @param {any} data 
- * 
- * @returns {void}
-*/
-
-/**
- * This handles events created by the DOM.
- */
-class DOMEventHandler {
-  /**
-   * A dictionary of callback functions
-   * 
-   * @private
-   * @type Object<string,function[]>
-   */
-  handlers = {}
-  /**
-   * A dictionary of the main callback functions
-   * 
-   * @private
-   * @type Object<string,function>
-   */
-  _evHandlers = {}
-  /**
-   * Adds an eventlistener.
-   * 
-   * @param {string} e Name of the DOMEvent.
-   * @param {function} h The eventlistener.
-   */
-  add(e, h) {
-    if (this.handlers[e])
-      return this.handlers[e].push(h)
-    this.handlers[e] = [h];
-    let listener = (event) => {
-      let handlers = this.handlers[e];
-      for (var i = 0; i < handlers.length; i++) {
-        handlers[i](event);
-      }
-    };
-    document.addEventListener(e, listener);
-    this._evHandlers[e] = listener;
-  }
-  /**
-   * Removes an eventlistener.
-   * 
-   * @param {string} e Name of the DOMEvent.
-   * @param {function} h The eventlistener.
-   */
-  remove(e, h) {
-    this.handlers[e].splice(this.handlers[e].indexOf(h), 1);
-    if (!this.handlers[e].length)
-      this.dispose(e);
-  }
-  /**
-   * Removes all eventlisteners of an event.
-   * 
-   * @param {string} e Name of the DOMEvent.
-   * @param {function} h The eventlistener.
-   */
-  disposeEvent(e) {
-    document.removeEventListener(e, this._evHandlers[e]);
-    delete this.handlers[e];
-    delete this._evHandlers[e];
-  }
-  /**
-   * Clears all eventlisteners of every event registered.
-   */
-  clear() {
-    for (var ev in this.handlers) {
-      this.dispose(ev);
-    }
-  }
-  /* 
-  Donno why this is here,but i do know past me has a reason for this being here.
-  Ill leave it for now.
-  */
-  init() {}
-}
-
-/**
- * This provides a way to fire off an entity's collision event handler registered to it.
- * 
- * @param {CollisionPair[]} clmds an array of collision manifolds
-*/
-function defaultCollisionHandler(clmds) {
-  let a, b;
-  for (let i = 0; i < clmds.length; i++) {
-    a = clmds[i].bodyA.entity.getHandler("collision");
-    b = clmds[i].bodyB.entity.getHandler("collision");
-
-    if (a) a(
-      clmds[i].bodyA.entity,
-      clmds[i].bodyB.entity,
-      clmds[i]
-    );
-    if (b) b(
-      clmds[i].bodyB.entity,
-      clmds[i].bodyA.entity,
-      clmds[i]
-    );
-  }
-}
-
-/**
- * This provides a way to fire off an entity's precollision event handler registered to it
- * 
- * @param {Manifold[]} clmds an array of collision manifolds
-*/
-function defaultPrecollisionHandler(clmds) {
-  let a, b;
-  for (let i = 0; i < clmds.length; i++) {
-    a = clmds[i].a.entity.getHandler("precollision");
-    b = clmds[i].b.entity.getHandler("precollision");
-
-    if (a) a(
-      clmds[i].a.entity,
-      clmds[i].b.entity,
-      clmds[i]
-    );
-    if (b) b(
-      clmds[i].b.entity,
-      clmds[i].a.entity,
-      clmds[i]
-    );
-  }
-}
-
-/**@enum {string}*/
-const Events = {
-  COLLISION : "collision",
-  PRECOLLISION : "precollision",
-  PREUPDATE : "preupdate",
-  POSTUPDATE : "postupdate",
-   UPDATE : "postupdate",  
-   INITIALIZE : "init",
-   ADD : "add",
-   REMOVE : "remove",
-   PAUSE : "pause",
-   PLAY : "play"
-};
-
-/**
- * @template T
- */
-class Signal {
-  _listeners = []
-  /**
-   * @type {T}
-   */
-  _value = null
-  /**
-   * @param {T} value
-   */
-  constructor(value) {
-    this._value = value;
-  }
-  /**
-   * @type {T}
-   */
-  get value() {
-    return this._value
-  }
-  set value(x) {
-    this._value = x;
-    for (var i = 0; i < this._listeners.length; i++) {
-      let func = this._listeners[i];
-      func.listener(this);
-      if (func.callOnce)
-        this.removeListener(func.listener);
-    }
-  }
-  /**
-   * @param {signalListener} listener
-   * @param {boolean} callOnce
-   */
-  addListener(listener, callOnce = false) {
-    this._listeners.push({
-      listener,
-      callOnce
-    });
-  }
-  /**
-   * @param {signalListener} listener
-   */
-  removeListener(listener) {
-    for (var i = 0; i < this._listeners.length; i++) {
-      if (this._listeners[i].listener == listener)
-        return this._detach(i)
-    }
-  }
-  /**
-   * @private
-   * @param {number} bindingIndex
-   */
-  _detach(bindingIndex) {
-    this._listeners.splice(i, 1);
-  }
-}
-
-/**
- * @callback signalListener
- * @param {Signal} value
- * @returns {void}
- */
-
-/**
- * This class is responsible for managing all
- * entities and ensuring that systems are updated every frame.
- * 
- */
-class Manager {
-  /**
-   * RAF number of current frame.Used for pausing the manager.
-   * 
-   * @private
-   * @type number
-   */
-  _rafID = undefined
-  /**
-   * @private
-   * @type {Object<string, function>}
-   */
-  _classes = {}
-  /**
-   * 
-   * @private
-   * @type Object<string,Component[]>
-   */
-  _componentLists = {}
-  /**
-   * 
-   * @private
-   * @type System[]
-   */
-  _systems = []
-  /**
-   * 
-   * @private
-   * @type {{
-     world:World,
-     renderer:Renderer,
-     input:Input,
-     audio:AudioHandler
-   }}
-   */
-  _coreSystems = {
-    world: null,
-    renderer: null,
-    input: null,
-    audio: null
-  }
-  /**
-   * 
-   * @private
-   * @type boolean
-   */
-  _initialized = false
-  /**
-   * Whether or not the manager is playing.
-   * 
-   * @type boolean
-   */
-  playing = false
-  /**
-   * 
-   * @private
-   * @type Object<string, number>
-   */
-  _systemsMap = {}
-  /**
-   * 
-   * @private
-   * @type Object<string, string>
-   */
-  _compMap = {}
-  /**
-   * Master clock for the game
-   * 
-   * @type Clock
-   */
-  clock = new Clock()
-  /**
-   * 
-   * @private
-   * @type Entity[]
-   */
-  objects = []
-  /**
-   * 
-   * @private
-   * @type number
-   */
-  _accumulator = 0
-  /**
-   * Ideal framerate of the manager.Not implemented corrretly.
-   * TODO correct it
-   * 
-   * @type number
-   */
-  frameRate = 0
-  /**
-   * 
-   * @ignore.
-   * This is an artifact of me debugging this.
-   * TODO - Should implement a better soluton
-   */
-  perf = new Perf()
-  /**
-   * look at Loader for more info.
-   * 
-   * @readonly
-   * @type Loader
-   */
-  loader = new Loader()
-  /**
-   * @readonly
-   * @type EventDispatcher
-   */
-  events = new EventDispatcher()
-  /**
-   * @private
-   */
-  _update = accumulate => {
-    this.perf.start();
-    let dt = this.clock.update(accumulate);
-
-    if (this._accumulator < this.frameRate) {
-      this._accumulator += dt;
-      this.RAF();
-      return
-    }
-    this.events.trigger("updateStart");
-    this.update(dt);
-    this.events.trigger("update");
-    this.events.trigger("updateEnd");
-    this._accumulator = 0;
-    this.perf.end();
-    this.RAF();
-  }
-  /**
-   * Creates a new instance of Manager class
-   **/
-  constructor(options = {}) {
-    this.loader.onfinish = e => {
-      this.init();
-      this.play();
-    };
-    this.loader.loadAll(options.files);
-  }
-  /**
-   * This initializes the manager.
-   * No need to call this function directly.
-   * This is called after the preloader finishes loading all its files.
-   * 
-   */
-  init() {
-    for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].init(this);
-    }
-    //this.initSystems()
-    this.events.trigger("init", this);
-    this.update(0);
-    this._initialized = true;
-    if (this.playing) this.play();
-  }
-  /**
-   * Adds an entity to the manager and initializes it.
-   * 
-   * @param {Entity} object The entity to add
-   */
-  add(object) {
-    if (object.manager) {
-      warn(`The entity with id ${object.id} has already been added to a manager.It will be ignored and not added to the manager`);
-      return
-    }
-    this.objects.push(object);
-    object.init(this);
-    this.events.trigger("add", object);
-  }
-  /**
-   * This adds a component to a componentList
-   * if the componentList is there else exits
-   * without an error.
-   * There is no need for you to use this method
-   * as it is for internal use only and may change in the future 
-   * 
-   * @param {string} n name of the component
-   * @param {Component} c An object implementing Component
-   */
-  addComponent(n, c) {
-    if (n === "body" && this._coreSystems.world != void 0) {
-      this._coreSystems.world.add(c);
-      return
-    }
-    if (n === "sprite" && this._coreSystems.renderer != void 0) {
-      this._coreSystems.renderer.add(c);
-      return
-    }
-    if (n in this._compMap) {
-      const name = this._compMap[n];
-      this._systems[this._systemsMap[name]].add(c);
-    }
-  }
-  /**
-   * This removes a component from a componentList
-   * if the componentList is there else exits
-   * without an error.
-   * There is no need for you to use this method
-   * as it is for internal use only and may change in the future 
-   * @param { string } n name of the component *
-   * @param { Component } c An object implementing Component interface
-   */
-  removeComponent(n, c) {
-    if (n === "body" && this._coreSystems.world != void 0) {
-      this._coreSystems.world.remove(c);
-      return
-    }
-    if (n === "sprite" && this._coreSystems.renderer != void 0) {
-      this._coreSystems.renderer.remove(c);
-      return
-    }
-    if (n in this._compMap) {
-      const name = this._compMap[n];
-      this._systems[this._systemsMap[name]].remove(c);
-    }
-
-  }
-  /**
-   * Removes an entity from the manager.
-   * Note that this doesn't destroy the entity, only removes it and its components from the manager.
-   * To destroy the entity,use `Entity.destroy()` method.
-   * 
-   * @param {Entity} object The entity to remove
-   */
-  remove(object) {
-    this.events.trigger("remove", object);
-    let index = this.objects.indexOf(object);
-    object.removeComponents();
-    object.reset();
-    removeElement(this.objects, index);
-  }
-  /**
-   * This removes all of the entities and components from the manager
-   */
-  clear() {
-    for (let i = this.objects.length - 1; i >= 0; i--) {
-      this.remove(this.objects[i]);
-    }
-    this.events.trigger("clear");
-  }
-  /**
-   * This method requests an animation frame from the browser
-   * 
-   * @private
-   */
-  RAF() {
-    this._rafID = requestAnimationFrame(this._update);
-  }
-  /**
-   * This starts up the update loop of the manager
-   */
-  play() {
-    if (!this._initialized) {
-      this.playing = true;
-      return
-    }
-    this.RAF();
-    this.events.trigger("play");
-  }
-  /**
-   * This stops the update loop of the manager
-   */
-  pause() {
-    if (!this._initialized) {
-      this.playing = false;
-      return
-    }
-    cancelAnimationFrame(this._rafID);
-    this.events.trigger("pause");
-  }
-  /**
-   * This method might be useless as systems are initialized on being added
-   * 
-   * @private 
-   */
-  initSystems() {
-    for (var i = 0; i < this._systems.length; i++) {
-      for (var j = 0; j < this._systems[i].length; j++) {
-        this._systems[i][j].init(this);
-      }
-    }
-  }
-
-  /**
-   * Marches the update loop forward,updating
-   * the systems
-   * You shouldn't mess with this/call it or everything will explode with undetectable errors.
-   * 
-   * @private
-   */
-  update(dt = 0.016) {
-    let world = this._coreSystems["world"],
-      renderer = this._coreSystems["renderer"],
-      input = this._coreSystems["input"];
-
-    //the only reason this is here is that
-    //i need to debug stuff visually - ill remove it later.
-    if (renderer) renderer.clear();
-
-    for (var i = 0; i < this._systems.length; i++) {
-      this._systems[i].update(dt);
-    }
-    if (input) input.update();
-    if (world) world.update(dt);
-    if (renderer) renderer.update(dt);
-    if (world) {
-      this.events.trigger("precollision", world.contactList);
-      this.events.trigger("collision", world.CLMDs);
-    }
-
-  }
-  /**
-   * Used to register a system
-   * 
-   * @param {string} n The name for the system
-   * @param {System} sys The system to be addad
-   * 
-   * @param {string} [cn=n] The componentList name that the system will primarily take care of
-   */
-  registerSystem(n, sys, cn = n) {
-    if (sys.init) sys.init(this);
-    if (this._systemsMap[n] !== undefined) return
-    switch (n) {
-      case "world":
-        this._coreSystems.world = sys;
-        break
-      case "renderer":
-        this._coreSystems.renderer = sys;
-        break
-      case "input":
-        this._coreSystems.input = sys;
-        break
-      default:
-        this._systemsMap[n] = this._systems.length;
-        this._systems.push(sys);
-        this._compMap[cn] = n;
-    }
-  }
-  /**
-   * Gets the named system
-   * 
-   * @param {string} n the name the system was registered with.
-   * 
-   * @return {System}
-   */
-  getSystem(n) {
-    if (n in this._coreSystems)
-      return this._coreSystems[n]
-    return this._systems[this._systemsMap[n]]
-  }
-  /**
-   * Removes a system from the manager.
-   * 
-   * @param {string} n The name of the system
-   * @returns {void}
-   * 
-   */
-  unregisterSystem(n) {
-    if (n in this._coreSystems)
-      return this._coreSystems[n] = null
-    delete this._systems[this._systemsMap[n]];
-    delete this._systemsMap[n];
-  }
-  /**
-   * Used to create a componentList in the manager.componentsA component must have the same name as the componentList to be added into it.
-   * 
-   * @param {string} n The name of the components to store into the created componentlist
-   * @param {Component[]} [arr=[]] A reference to the array to store components in.
-   */
-  setComponentList(n, arr = []) {
-    this._componentLists[n] = arr;
-  }
-  /**
-   * Used to create a componentList in the manager.A component must have the same name as the componentList to be added into it.
-   * 
-   * @param {string} n The name of the components to store into the created componentlist
-   * @returns {Component[]} An array of components
-   */
-  getComponentList(n) {
-    return this._componentLists[n]
-  }
-  /**
-   * Finds the first entity with all the components and returns it.
-   * 
-   * @param {Array<String>} comps An array containing the component names to be searched
-   * @returns {Entity} 
-   */
-  getEntityByComponents(comps, entities = this.objects) {
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = 0; j < comps.length; j++) {
-        if (!entities[i].has(comps[j])) continue
-        return entities[i]
-      }
-    }
-  }
-  /**
-   * Finds the first entity with all the tag and returns it.
-   * 
-   * @param {Array<String>} comps An array containing the component names to be searched
-   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in.Defaults to the manager's entity list
-   * @param {Entity[]} [target]
-   * 
-   * @returns {Entity[]} 
-   */
-  getEntitiesByComponents(comps, entities = this.objects, target = []) {
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = 0; j < comps.length; j++) {
-        if (!entities[i].has(comps[j])) continue
-        target.push(entities[i]);
-      }
-    }
-    return target
-  }
-  /**
-   * Finds the first entity with all the tag and returns it.
-   * 
-   * @param {Array<String>} tags An array containing the tags to be searched
-   * @returns {Entity} 
-   */
-  getEntityByTags(tags, entities = this.objects) {
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = 0; j < tags.length; j++) {
-        if (!entities[i].hasTag(tags[j])) continue
-        return entities[i]
-      }
-    }
-  }
-  /**
-   * Finds the entities with all the tag and returns them in an array.
-   * 
-   * @param {string[]} tags An array containing the tags to be searched
-   * @param {Entity[]} [entities = Manager#objects] The array of entities to search in. Defaults to the manager's entity list
-   * @param {Entity[]} target
-   * @returns {Entity[]} 
-   */
-  getEntitiesByTags(tags, entities = this.objects, target = []) {
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = 0; j < tags.length; j++) {
-        if (!entities[i].hasTag(tags[j])) continue
-        target.push(entities[i]);
-      }
-    }
-    return target
-  }
-  /**
-   * Ignore this,im going to remove it and the rest of cloning utilities.
-   * @private
-   * @deprecated
-   */
-  static DefaultSystem(name) {
-    let n = name;
-    return {
-      init(manager) {
-        manager.setComponentList(n);
-      },
-      update(dt) {
-        let comp = manager.getComponentList(n);
-        for (let i = 0; i < comp.length; i++) {
-          comp[i].update(dt);
-        }
-      },
-      add(comp) {
-        manager.getComponentList(n).push(comp);
-      },
-      remove(comp) {
-        let list = manager.getComponentList(n),
-          index = list.indexOf(comp);
-        removeElement(list, index);
-      }
-    }
-  }
-  /**
-   * @param {BoundingCircle | BoundingBpx  } bound
-   * @returns Entity[]
-   */
-  query(bound) {
-    ///TODO - What will happen if there is no world?   ...Yes,it will crash.
-    return this._coreSystems.world.query(bound)
-  }
-}
-
-/**
- * A helper class.
- * Since there are no interfaces in JavaScript,
- * you might have to extend this to create a component, but there is another solution.
- * Use instead `Component.implement()` if you have your own hierarchy of classes.
- * In typescript,this would be an interface.
- * 
- * @interface
- * 
- */
-class Component {
-
-  destroy() {}
-  /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "component"
-  }
-  /**
-   * @param {Entity} entity
-   */
-  init(entity) {}
-  /**
-   * @param {number} dt
-   */
-  update(dt) {
-    warnOnce("Please override the update function in the component " + proto.constructor.name);
-  }
-  /**
-   * @param {Entity} entity
-   * @param {string} n
-   */
-  get(entity, n) {
-    return entity.getComponent(n);
-  }
-  /**
-   * @param {Entity} entity
-   * @param {...string} names
-   * @rheows 
-   */
-  requires(entity, ...names) {
-    for (var i = 0; i < names.length; i++)
-      if (!entity.has(names[i]))
-        throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`);
-  }
-  /**
-   * @param {Entity} entity
-   * @param {CircleBounding | BoxBounding} bound
-   * @param {Entity[]} [target=[]]
-   * @returns {Entity[]}
-   */
-  query(entity, bound, target = []) {
-    return entity.query(bound, target)
-  }
-  /**
-   * @template {System} T
-   * @param {*} obj
-   * @param {T} system
-  */
-  fromJson(obj, system) {
-    throw "Implement static method fromJson() in your component " + this.CHOAS_CLASSNAME
-   
-  }
-  /**
-   * @returns {*}
-  */
-  toJson() {
-    throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
-  }
-  /**
-   * @param {*} component
-  */
-  static implement(component) {
-    inheritComponent(component);
-  }
-}
-
-/**
- * Updates components assigned to it.
- */
-class System {
-  /**
-   * @param {Manager} manager
-   */
-  init(manager) {
-    warnOnce("Please override the init method in the system " + this.constructor.name);
-  }
-  /**
-   * @param {number} dt
-   */
-  update(dt) {
-    warnOnce("Please override the update method in the system " + this.constructor.name);
-  }
-  /**
-   * @param {Component} component
-   */
-  add(component) {
-    this.objects.push(component);
-  }
-  /**
-   * @param {Component} component
-   */
-  remove(component) {
-    let index = this.objects.indexOf(component);
-    removeElement(this.objects, index);
-  }
-  //Todo - Fix this
-  /**
-   * @param {any} system
-   */
-  static implement(system) {
-    mixin(System, system);
-  }
-}
-
-/**
- * This is a container to hold components,tags and event handlers.
- * 
- * @class
- * @public
- */
-class Entity {
-  /**
-   * Dictionary of component to manage.
-   * 
-   * @private
-   * @type Object<string,Component>
-   */
-  _components = {}
-  /**
-   * Dictionary of handlers to call during an event.
-   * 
-   * @private
-   * @type Object<string,function>
-   */
-  _handlers = {}
-  /**
-   * A list of tags to identify an entity.
-   * 
-   * @private
-   * @type Set<string>
-   */
-  _tags = new Set()
-  /**
-   * The manager handling this entity.
-   * 
-   * @private
-   * @type Manager
-   */
-  _global = null
-  /**
-   * A flag to show if the entity is added to a manager.
-   * 
-   * @type {boolean}
-   */
-  active = false
-  /**
-   * @type {string}
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "entity"
-  }
-  /**
-   * @type {string}
-   */
-  get CHAOS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * Removes all components and handlers from an entity while removing it from its manager
-   */
-  destroy() {
-    for (let k in this._components) {
-      let comp = this._components[k];
-      if (comp.destroy)
-        comp.destroy();
-      delete this._components[k];
-    }
-    for (let k in this._handlers) {
-      delete this._handlers[k];
-    }
-    this.removeSelf();
-  }
-  /**
-   * Removes an entity and its components from its manager whilst retaining its components and handlers
-   */
-  removeSelf() {
-    if (this._global) this._global.remove(this);
-  }
-  /**
-   * This is an internal function,no need to use it.
-   * 
-   * @package
-   */
-  reset() {
-    this.active = false;
-    this._global = null;
-  }
-  /**
-   * Removes all components of an entity from its manager but keeps the entity inside the manager.
-   * This is an internal function so no need on your part to use it.
-   */
-  removeComponents() {
-    if (this._global === void 0) return
-    for (var k in this._components) {
-      this._global.removeComponent(k, this._components[k]);
-    }
-  }
-  /**
-   * Gets the current manager of an entity
-   * 
-   * @returns {Manager}
-   */
-  get manager() {
-    return this._global
-  }
-  /**
-   * Adds a component into an entity
-   * 
-   * @param {String} n Name of the component.
-   * @param {Component} c The component to add.
-   * 
-   * @returns {this}
-   */
-  attach(n, c) {
-    this._components[n] = c;
-    if (this.manager) {
-      c.init(this);
-      this._global.addComponent(n, c);
-    }
-    return this
-  }
-  /**
-   * Removes a component from an entity.
-   * 
-   * @param {String} n Name pf the component
-   * @rerurns {this}
-   */
-  remove(n) {
-    this._global.removeComponent(n, this._components[n]);
-    delete this._components[n];
-    return this
-  }
-  /**
-   * Registers a function to handle a named event.
-   * 
-   * @param {string} n Name of the event
-   * @param {function} h The function to be called when an event is fired.
-   */
-  register(n, h) {
-    this._handlers[n] = h;
-  }
-  /**
-   * Removes an event handler function of the given name
-   * 
-   * @param {string} n Name of the event
-   */
-  unregister(n) {
-    if (!(n in this._handlers)) return
-    delete this._handlers[n];
-  }
-  /**
-   * Returns an event handler which can be fired during an event
-   * 
-   * @param {string} n Name of the event
-   * @returns {function | undefined}
-   */
-  getHandler(n) {
-    return this._handlers[n]
-  }
-  /**
-   * Returns the named component.
-   * 
-   * @param {string} n Name of the component.
-   * @returns {Component | undefined }
-   */
-  get(n) {
-    return this._components[n]
-  }
-  /**
-   * Used to check if the component exists in an entity
-   * 
-   * @param {string} n Name of the component.
-   * @returns {boolean}
-   */
-  has(n) {
-    return n in this._components
-  }
-  /**
-   * Adds a tag into an entity.
-   * 
-   * @param {string} n The tag to be added
-   */
-  addTag(n) {
-    this._tags.add(n);
-  }
-  /**
-   * Removes a tag from an entity.
-   * 
-   * @param {string} n The tag to be added
-   */
-  removeTag(n) {
-    this._tags.delete(n);
-  }
-  /**
-   * Checks if a tag exists in an entity.
-   * 
-   * @param {string} n The tag to be added
-   * @returns {boolean}
-   */
-  hasTag(n) {
-    return this._tags.has(n)
-  }
-  /**
-   * Initializes the components within an entity and marks it as active.
-   * It is called by an instance of a game manager so no need to call it manually
-   * 
-   * @package
-   * @param {Manager} global
-   */
-  init(global) {
-    this._global = global;
-    this.active = true;
-    for (let k in this._components) {
-      this._components[k].init(this);
-      global.addComponent(k, this._components[k]);
-    }
-  }
-  /**
-   * A helper function to create a new Entity with transform,movable and bounds components.
-   * 
-   * @depreciated
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
-   * @returns {Entity}
-   */
-  static Default(x, y, a) {
-    console.warn("'Entity.Default()' is depreciated,use 'createEntity()' instead.");
-    return new Entity()
-      .attach("transform", new Transform(x, y, a))
-      .attach("movable", new Movable())
-      .attach("bounds", new Bound())
-  }
-  /**
-   * Search an entity's manager for entities in a given bound.
-   * 
-   * @param {Bounds} bound the region to search entitities in.
-   * @param {Entity[]} [target=[]] An array to store results in.
-   * @returns {Entity[]}
-   */
-  query(bound, target = []) {
-    return this._global.query(bound, target)
-  }
-  /**
-   * Todo - type serialization docs correctly
-   * @param {{}} obj
-   * @param {Map<string,function>} compList 
-   */
-  fromJSON(obj, compList) {
-    let entity = this;
-
-    obj.tags.forEach((a) => {
-      entity.addTag(a);
-    });
-    for (var key in obj.comps) {
-      let c = new compList[key]().fromJSON(obj.comps[key]);
-      entity.attach(key, c);
-    }
-    return entity
-  }
-  toJson() {
-    let obj = {
-      comps: {},
-      tags: []
-    };
-    for (var key in this._components) {
-      obj.comps[key] = this._components[key].toJson();
-    }
-    this._tags.forEach((a) => {
-      obj.tags.push(a);
-    });
-    obj.type = this.CHAOS_OBJ_TYPE;
-    return obj
-  }
-}
-
-class TweenManager extends System {
-  /**
-   * @type {Tween[]}
-  */
-  objects = []
-  /**
-   * @inheritdoc
-   * @param {Manager} manager
-  */
-  init(manager) {
-    manager.setComponentList("tween", this.objects);
-  }
-  /**
-   * @inheritdoc
-  */
-  update(dt) {
-    for (var i = 0; i < this.objects.length; i++) {
-      let tween = this.objects[i];
-
-      tween.update(dt);
-    }
-  }
-}
-
+ 
 const PI = Math.PI;
 const TWO_PI = Math.PI * 2;
 const HALF_PI = Math.PI / 2;
@@ -1782,231 +176,302 @@ function wrapAngle(x) {
   return a
 }
 
-const obj$1 = {
+const marker = `🚀Chaos Engine:\n\n`;
+const mess = [""];
+/**
+ * Logs out a warning to the console.
+ *
+ * @param {string} message
+ */
+function warn(message) {
+  console.warn(marker + message);
+}
+/**
+ * Throws a fatal error.
+ * 
+ * @param {string} message
+ */
+function throws(message) {
+  throw new Error(marker + message)
+}
+/**
+ * Logs out a non fatal error to the console.
+ * 
+ * @param {string} message
+ */
+function error(message) {
+  console.error(marker + message);
+}
+
+/**
+ * Logs out a message to the console.
+ * 
+ * @param {string} message
+ */
+function log(message) {
+  deprecate("Logger.throws()", "throws()");
+
+  console.log(marker + message);
+}
+/**
+ * Logs out a warning once to the console.
+ * 
+ * @param {string} message
+ */
+function warnOnce(message) {
+  if (mess.includes(message)) return
+  mess.push(message);
+  warn(message);
+}
+/**
+ * Logs out a message,warning or error to the console according to the supplied log function.
+ * 
+ * @param {boolean} test
+ * @param {string} message
+ * @param {(message:string)=>void} errfunc
+ */
+function assert(test, message,errfunc = throws) {
+  if (!test) errfunc(message);
+  return test
+}
+/**
+ * Logs out a warning to the console.
+ * 
+ * @param {string} original
+ * @param {string} [replacement]
+ */
+function deprecate(original, replacement = "") {
+  let message = `\`${original}\` has been depreciated.`;
+  if (replacement !== "")
+    message += `Use \`${replacement}\` instead.`;
+  warnOnce(message);
+}
+/**
+ * @deprecated
+*/
+const Logger = {
+  /**
+   * Logs out a warning to the console.
+   * @deprecated
+   * @param {string} message
+   */
+  warn(message) {
+    deprecate("Logger.warn()", "warn()");
+    console.warn(marker + message);
+  },
+  /**
+   * Throws a fatal error.
+   * @deprecated
+   * @param {string} message
+   */
+  throws(message) {
+    deprecate("Logger.throws()", "throws()");
+    throw new Error(marker + message)
+  },
+  /**
+   * Logs out a non fatal error to the console.
+   * @deprecated
+   * @param {string} message
+   */
+  error(message) {
+    deprecate("Logger.error()", "error()");
+
+    console.error(marker + message);
+  },
+
+  /**
+   * Logs out a message to the console.
+   * @deprecated
+   * @param {string} message
+   */
+  log(message) {
+    deprecate("Logger.log()", "log()");
+
+    console.log(marker + message);
+  },
+  /**
+   * Logs out a warning once to the console.
+   * @deprecated
+   * @param {string} message
+   */
+  warnOnce(message) {
+    deprecate("Logger.warnOnce()", "warnOnce()");
+
+    if (mess.includes(message)) return
+    mess.push(message);
+    this.warn(message);
+  },
+  /**
+   * Logs out a message,warning or error to the console according to the supplied log function.
+   * @deprecated
+   * @param {boolean} test
+   * @param {string} message
+   * @param {(message:string)=>void} errfunc
+   */
+  assert(test, message,errfunc = throws) {
+    deprecate("Logger.assert()", "assert()");
+
+    if (!test) errfunc(message);
+    return test
+  },
+  /**
+   * Logs out a warning to the console.
+   * @deprecated
+   * @param {string} original
+   * @param {string} [replacement]
+   */
+  deprecate(original, replacement = "") {
+    deprecate("Logger.deprecate()", "deprecate()");
+    let message = `"${original}" has been depreciated.`;
+    if (replacement !== "")
+      message += `Use "${replacement}" instead.`;
+    this.warnOnce(message);
+  }
+};
+
+const obj = {
   x: 0,
   y: 0
 };
 /**
  * This is a 2D vector class.
  * 
- * @license MIT
  */
-class Vector2$1 {
+class Vector2 {
   /**
-   * @param {number} x the x coordinate of the vector
-   * @param {number} y the y coordinate of the vector
+   * @param {number} [x] the x coordinate of the vector
+   * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
   }
   /**
-   * @type string
+   * @deprecated
+   *Calculates length squared of vector and returns it
    */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
+  magnitudeSquared() {
+    deprecate("Vector2().magnitudeSquared()", "Vector2.magnitudeSquared()");
+    return Vector2.magnitudeSquared(this)
   }
   /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "vector"
-  }
-  /**
+   * @deprecated
    *Calculates length of this vector and returns 
    * it
    * 
    * @returns {number}
    */
   magnitude() {
-    return Math.sqrt(this.magnitudeSquared());
-  };
+    deprecate("Vector2().magnitude()", "Vector2.magnitude()");
+    return Vector2.magnitude(this)
+  }
   /**
+   * @deprecated
    * Sets a vector to have the given length.
    * 
    * @param {number} length 
    */
   setMagnitude(length) {
-    this.normalize().multiply(length);
+    deprecate("Vector2().setMagnitude()", "Vector2.setMagnitude()");
+    Vector2.setMagnitude(this, length, this);
+    return this
   }
   /**
-   *Calculates length squared of vector and returns it
-   */
-  magnitudeSquared() {
-    return this.y ** 2 + this.x ** 2
-  }
-  /**
+   * @deprecated
    *Calculates length of this vector to another vector
    * @param { Vector2} v the other vector
    */
   distanceTo(v) {
-    obj$1.x = this.x - v.x;
-    obj$1.y = this.y - v.y;
-    return Math.sqrt(Vector2$1.prototype.magnitudeSquared.call(obj$1))
+    deprecate("Vector2().distanceTo()", "Vector2.distanceTo()");
+
+    return Vector2.distanceTo(this, v)
   }
   /**
    *Calculates length squared of this vector to another vector
    * 
+   * @deprecated
    * @param { Vector2} v the other vector
    * @returns {number}
    */
   distanceToSquared(v) {
-    obj$1.x = this.x - v.x;
-    obj$1.y = this.y - v.y;
-    return Vector2$1.prototype.magnitudeSquared.call(obj$1)
+    deprecate("Vector2().distanceToSquared()", "Vector2.distanceToSquared()");
+    return Vector2.distanceTo(this, v)
   }
   /**
    * Adds a given vector into this 
    * 
+   * @deprecated
    * @param { Vector2} v
-   * @returns {this}
    */
   add(v) {
-    this.x += v.x;
-    this.y += v.y;
+    deprecate("Vector2().add()", "Vector2.add()");
+    Vector2.add(this, v, this);
     return this
   }
   /**
    * Adds a scalar value into this vector's
    * x and y values
    * 
+   * @deprecated
    * @param {number} n
-   * @returns {this}
    */
   addScalar(n) {
-    this.x += n;
-    this.y += n;
+    deprecate("Vector2().addScalar()", "Vector2.addScalar()");
+    Vector2.addScalar(this, n, this);
     return this
   }
   /**
    * Subtracts a given vector from this vector
    * 
+   * @deprecated
    * @param { Vector2} v
    * @returns {this}
    */
   sub(v) {
-    this.x -= v.x;
-    this.y -= v.y;
+    deprecate("Vector2().sub()", "Vector2.sub()");
+    Vector2.sub(this, v, this);
     return this
   }
   /**
    * Subtracts a scalar value from this vector's x and y values.
    * 
+   * @deprecated
    * @param {number} n
    * @returns {this}
    */
   subScalar(n) {
-    this.x -= n;
-    this.y -= n;
+    deprecate("Vector2().subScalar()", "Vector2.subScalar()");
+    Vector2.subScalar(this, n, this);
     return this
-  }
-  /**
-   * Calculates the dot product of two vectors.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  dot(v) {
-    return this.x * v.x + this.y * v.y
-  }
-  /**
-   * Calculates the cross product of two vectors.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  cross(v) {
-    return this.x * v.y - this.y * v.x
   }
   /**
    * Multiplies this vector with a scalar.
    * 
+   * @deprecated
    * @param {number} n 
    * @returns {this}
    */
   multiply(n) {
-    this.x *= n;
-    this.y *= n;
+    deprecate("Vector2().multiply()", "Vector2.multiply()");
+    Vector2.multiplyScalar(this, n, this);
     return this
-  }
-  /**
-   * Divides this vector with a scalar.
-   * 
-   * @param {number} n 
-   * @returns {this}
-   */
-  divide(n) {
-    this.multiply(1 / n);
-    return this
-  }
-  /**
-   * Makes this vector a unit vector by 
-   * dividing its components with its length.
-   * 
-   * @returns {this}
-   */
-  normalize() {
-    const length = this.magnitude();
-    if (length == 0) return this
-    this.x = this.x / length;
-    this.y = this.y / length;
-    return this
-  };
-  /**
-   * Checks to see if this vector is equal to
-   * another vector.
-   * 
-   * @param { Vector2} v
-   * @returns {boolean}
-   */
-  equals(v) {
-    return v.x === this.x && v.y === this.y
-  }
-  /**
-   * Checks if the vector length is zero.
-   * 
-   * @returns {boolean}
-   */
-  equalsZero() {
-    return this.x === 0 && this.y === 0
-  }
-  /**
-   * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
-   * 
-   * @param {number} l the length of the vector returned.
-   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
-   * @returns { Vector2}
-   */
-  normal(l = 1, target) {
-    target = target || new Vector2$1();
-    target.copy(this).normalize();
-    return target.set(-target.y * l, target.x * l);
-  };
-  /**
-   * Returns the normal to a vector, the normal has the same length as the vector.
-   * 
-   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
-   *  @returns { Vector2}
-   */
-  normalFast(target = new Vector2$1()) {
-    return target.set(-this.y, this.x)
   }
   /**
    * Rotates this vector by a given angle in radians.
    * 
-   * @param {number} rad Angle in radians
+   * @deprecated
+   * @param {number} cos
+   * @param {number} sin 
    * @returns {this}
    */
-  rotate(rad) {
-    let
-      x = this.x,
-      cos = Math.cos(rad),
-      sin = Math.sin(rad);
-    this.x = x * cos - this.y * sin;
-    this.y = x * sin + this.y * cos;
+  rotateFast(cos, sin) {
+    deprecate("Vector2().rotateFast()", "Vector2.rotateFast()");
+    Vector2.rotateFast(this, cos, sin, this);
     return this
   };
   /**
+   * 
+   * @deprecated
    * Returns an array with x and y values of
    * this vector pushed into the array in
    * that order.
@@ -2017,6 +482,7 @@ class Vector2$1 {
    * @returns number[]
    */
   toArray(target = [], offset = 0) {
+    deprecate("Vector2().toArray()", "Vector2.toArray()");
     target[offset] = this.x;
     target[offset + 1] = this.y;
     return target;
@@ -2024,108 +490,440 @@ class Vector2$1 {
   /**
    * Copies x and y values of this vector to 
    * a new vector and returns the new vector.
-   * 
+   * @deprecated
    * @return Vector2
    */
   clone() {
-    return new Vector2$1(this.x, this.y)
+    deprecate("Vector2().clone()", "Vector2.copy()");
+    return Vector2.copy(this)
   }
   /**
    * Copies x and y values of another vector
    * to this vector.
    * 
-   * @@param { Vector2} v 
+   * @deprecated
+   * @param { Vector2} v 
    * @return this
    */
   copy(v) {
-    this.x = v.x;
-    this.y = v.y;
+    deprecate("Vector2().copy()", "Vector2.copy()");
+    Vector2.copy(v, this);
     return this
   }
   /**
    * Sets x and y values of this vector to the given parameter.
    * 
+   * @deprecated
    * @param {Number} x 
    * @param {Number} y
-   * @returns {this}
    */
   set(x, y) {
-    this.x = x;
-    this.y = y;
+    deprecate("Vector2().set()", "Vector2.set()");
+    Vector2.set(this, x, y);
     return this
-  }
-  /**
-   * Draws this vector to a 2D canvas.
-   * 
-   * @param {CanvasRenderingContext2D} ctx the context to draw on.
-   * @param {number} x Translates the x-coordinate origin of the vector
-   * @param {number} y Translates the y-coordinate origin of the vector
-   * @param {string} color a CSS string that
-   * is supplied to the rendering context.Can
-   *  be a hex(e.g "0xFFFFFF"),rgb(e.g "rgb(255,255,255)"),hsl or a color name(e.g "white")
-   * @param {Number} scale A value that
-   * lengthens or shortens the length of the vector
-   * @returns {this}
-   */
-  draw(ctx, x = 0, y = 0, color = "red", scale = 1) {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(this.x * scale + x, this.y * scale + y);
-    //ctx.arc(this.x * scale + x, this.y * scale + y, 2, 0, Math.PI * 2)
-    ctx.strokeStyle = color;
-    ctx.stroke();
-    ctx.strokeStyle = "black";
-    ctx.closePath();
-    return this
-  }
-  /**
-   * Negates the values of this vector.
-   * 
-   * @returns {this}
-   */
-  reverse() {
-    return this.multiply(-1)
   }
   /**
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
-   * @param {number} normal the unit vector perpendicular to reflection surface
+   * @deprecated
+   * @param {Vector2} normal the unit vector perpendicular to reflection surface
    * @param { Vector2} [target]
    * @return { Vector2}
    */
-  reflect(normal, target = new Vector2$1()) {
-    return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
+  reflect(normal, target = new Vector2()) {
+    deprecate("Vector2().reflect()", "Vector2.reflect()");
+    Vector2.reflect(this, normal, target);
+    return target
   }
   /**
    * Forces this vector to have a length 
    * between the min and max.
    * 
+   * @deprecated
    * @param {number} [min = 0] The smallest value 
    * the length of this vector is allowed to have.
    * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
    * @returns {this}
    */
   clamp(min = 0, max = 1) {
-    let length = this.magnitude();
-    if (length == 0) return this
+    deprecate("Vector2().clamp()", "Vector2.clamp()");
+    Vector2.clampMagnitude(this, min, max, this);
+    return this
+  }
+  /**
+   * Calculates the dot product of two vectors.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {number}
+   */
+  dot(v) {
+    deprecate("Vector2().dot()", "Vector2.dot()");
+    return Vector2.dot(this, v)
+  }
+  /**
+   * Calculates the cross product of two vectors.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {number}
+   */
+  cross(v) {
+    deprecate("Vector2().cross()", "Vector2.cross()");
+    return Vector.cross(this, v)
+  }
+  /**
+   * Makes this vector a unit vector by 
+   * dividing its components with its length.
+   * 
+   * @deprecated
+   * @returns {this}
+   */
+  normalize() {
+    deprecate("Vector2().normalize()", "Vector2.normalize()");
+    Vector2.normalize(this, this);
+    return this
+  }
+  /**
+   * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
+   * 
+   * @deprecated
+   * @param {number} l the length of the vector returned.
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   * @returns { Vector2}
+   */
+  normal(l = 1, target = new Vector2()) {
+    deprecate("Vector2().normal()", "Vector2.normal()");
+    Vector2.normal(this, target);
+    Vector2.normalize(target, target);
+    Vector2.multiplyScalar(target, l, target);
+    return target
+  }
+  /**
+   * Returns the normal to a vector, the normal has the same length as the vector.
+   * 
+   * @deprecated
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   *  @returns { Vector2}
+   */
+  normalFast(target = new Vector2()) {
+    deprecate("Vector2().normalFast()", "Vector2.normal()");
+    Vector2.set(target,-this.y, this.x);
+    return this
+  }
+  /**
+   * Rotates this vector by a given angle in radians.
+   * 
+   * @deprecated
+   * @param {number} rad Angle in radians
+   * @returns {this}
+   */
+  rotate(rad) {
+    deprecate("Vector2().rotate()", "Vector2.rotate()");
+    Vector2.rotate(this, rad, this);
+    return this
+  }
+  /**
+   * Divides this vector with a scalar.
+   * 
+   * @deprecated
+   * @param {number} n 
+   * @returns {this}
+   */
+  divide(n) {
+    deprecate("Vector2().divide()", "Vector2.divide()");
+    this.multiply(1 / n);
+    return this
+  }
+  /**
+   * Checks to see if this vector is equal to
+   * another vector.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {boolean}
+   */
+  equals(v) {
+    deprecate("Vector2().equals()", "Vector2.equals()");
+    return Vector2.equal(this, v)
+  }
+  /**
+   * Checks if the vector length is zero.
+   * 
+   * @deprecated
+   * @returns {boolean}
+   */
+  equalsZero() {
+    deprecate("Vector2().equalsZero()", "Vector2.equalsZero()");
+    return Vector2.equalsZero(this)
+  }
+  /**
+   * Negates the values of this vector.
+   * 
+   * @deprecated
+   * @returns {this}
+   */
+  reverse() {
+    deprecate("Vector2().reverse()", "Vector2.reverse()");
+    Vector2.reverse(this, this);
+    return this
+  }
+  /**
+   * @param {Vector_like} v
+   */
+  static magnitudeSquared(v) {
+    return v.y ** 2 + v.x ** 2
+  }
+  /**
+   * @param {Vector_like} v
+   */
+  static magnitude(v) {
+    return Math.sqrt(Vector2.magnitudeSquared(v));
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} length
+   */
+  static setMagnitude(v, length, out = new Vector2()) {
+    Vector2.normalize(v, out);
+    Vector2.multiplyScalar(v, length, out);
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static distanceTo(v1, v2) {
+    obj.x = v1.x - v2.x;
+    obj.y = v1.y - v2.y;
+    return Vector2.magnitude(obj)
+  }
+  /**
+   * Calculates length squared of this vector to another vector
+   * 
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static distanceToSquared(v1, v2) {
+    obj.x = v1.x - v2.x;
+    obj.y = v1.y - v2.y;
+    return Vector2.magnitudeSquared(obj)
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static add(v1, v2, out = new Vector2()) {
+    out.x = v1.x + v2.x;
+    out.y = v1.y + v2.y;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static addScalar(v1, n, out = new Vector2()) {
+    out.x = v1.x + n;
+    out.y = v1.y + n;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static sub(v1, v2, out = new Vector2()) {
+    out.x = v1.x - v2.x;
+    out.y = v1.y - v2.y;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static subScalar(v1, n, out = new Vector2()) {
+    out.x = v1.x - n;
+    out.y = v1.y - n;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static multiply(v1, v2, out = new Vector2()) {
+    out.x = v1.x * v2.x;
+    out.y = v1.y * v2.y;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static multiplyScalar(v1, n, out = new Vector2()) {
+    out.x = v1.x * n;
+    out.y = v1.y * n;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static divide(v1, v2, out = new Vector2()) {
+    out.x = v1.x / v2.x;
+    out.y = v1.y / v2.y;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static divideScalar(v1, n, out = new Vector2()) {
+    return Vector2.multiplyScalar(v1, 1 / n, out)
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static dot(v1, v2) {
+    return v1.x * v2.x + v1.y * v2.y
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static cross(v1, v2) {
+    return v1.x * v2.y - v1.y * v2.x
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} out
+   */
+  static crossScalar(v1, n, out = new Vector2()) {
+    out.x = v1.y * -n;
+    out.y = v1.x * n;
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} [out=new Vector2()] 
+   */
+  static normalize(v, out = new Vector2()) {
+    const length = Vector2.magnitude(v);
+    if (length == 0) return out
+    out.x = v.x / length;
+    out.y = v.y / length;
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static equal(v1, v2) {
+    return v1.x === v2.x && v1.y === v2.y
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static absEqual(v1, v2) {
+    return (
+      Math.abs(v1.x) === Math.abs(v2.x) ||
+      Math.abs(v1.y) === Math.abs(v2.y)
+    )
+  }
+  /**
+   * @param {Vector_like} v
+   */
+  static equalsZero(v) {
+    return v.x === 0 && v.y === 0
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} out
+   */
+  static normal(v, out = new Vector2()) {
+    return Vector2.set(out, -v.y, v.x);
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} angle
+   * @param {Vector_like} out
+   */
+  static rotate(v, angle, out = new Vector2()) {
+    return Vector2.rotateFast(v, Math.cos(angle), Math.sin(angle), out)
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} cos
+   * @param {number} sin
+   * @param {Vector_like} out
+   */
+  static rotateFast(v, cos, sin, out = new Vector2()) {
+    const x = v.x;
+    out.x = x * cos - v.y * sin;
+    out.y = x * sin + v.y * cos;
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} [out=new Vector2()] 
+   */
+  static copy(v, out = new Vector2()) {
+    out.x = v.x;
+    out.y = v.y;
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} x
+   * @param {number} y
+   */
+  static set(v, x, y) {
+    v.x = x;
+    v.y = y;
+    return v
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} [out=new Vector2()] 
+   */
+  static reverse(v, out = new Vector2()) {
+    return Vector2.multiplyScalar(v, -1, out)
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} normal
+   * @param {Vector_like} [out]
+   */
+  static reflect(v, normal, out = new Vector2()) {
+    const multiplier = Vector2.dot(v, normal) * 2;
+    out.x = normal.x * multiplier - v.x;
+    out.y = normal.y * multiplier - v.y;
+
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} min
+   * @param {number} max
+   * @param {Vector_like} out
+   */
+  static clampMagnitude(v, min, max, out) {
+    if (Vector2.equalsZero(v)) return Vector2.copy(v, out)
+    let length = Vector2.magnitude(v);
     if (length > max)
-      return this.multiply(max / length)
+      return Vector2.multiplyScalar(v, max / length, out)
     if (length < min)
-      return this.multiply(min / length)
-    return this
-  }
-
-  toJson() {
-    return this
-  }
-  fromJson(obj) {
-    this.x = obj.x;
-    this.y = obj.y;
-  }
-
-  [Symbol.iterator] = function*() {
-    yield this.x;
-    yield this.y;
+      return Vector2.multiplyScalar(v, min / length, out)
+    return Vector2.copy(v, out)
   }
   /**
    * Gets the angle (in degrees) between two
@@ -2136,8 +934,8 @@ class Vector2$1 {
    * @returns {number}
    */
   static getAbsDegBtwn(v1, v2) {
-    let a = v1.cross(v2);
-    let deg = Vector2$1.getDegBtwn(v1, v2);
+    let a = Vector2.cross(v1,v2);
+    let deg = Vector2.getDegBtwn(v1, v2);
     return a < 0 ? deg : 360 - deg
   }
   /**
@@ -2147,10 +945,11 @@ class Vector2$1 {
    * @param { Vector2 } v2 end of the angle
    * @returns {number}
    **/
-  static getAbsRadBtwn(v1, v2) {
-    let a = v1.cross(v2);
-    let deg = Vector2$1.getDegBtwn(v1, v2);
-    return a < 0 ? deg : 360 - deg
+  static getAbsAngleBetween(v1, v2) {
+    const a = Vector2.cross(v1, v2);
+    const deg = Vector2.getAngleBetween(v1, v2);
+
+    return a < 0 ? deg : Math.PI * 2 - deg
   }
   /**
    * Gets the angle (in radians) between two
@@ -2160,8 +959,8 @@ class Vector2$1 {
    * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
-  static getRadBtwn(v1, v2) {
-    return Math.acos(v1.dot(v2) / (v1.magnitude() * v2.magnitude()))
+  static getAngleBetween(v1, v2) {
+    return Math.acos(Vector2.dot(v1, v2) / (Vector2.magnitude(v1) * Vector2.magnitude(v2)))
   }
   /**
    * Gets the angle (in degrees) between two
@@ -2172,77 +971,63 @@ class Vector2$1 {
    * @returns {number}
    */
   static getDegBtwn(v1, v2) {
-    return Vector2$1.getRadBtwn(v1, v2) * 180 / Math.PI
+    return Vector2.getAngleBetween(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
    * given angle starting from the positive x axis.
    * 
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
-   * @param { Vector2} [target] Vector2 to store results in.
+   * @param { Vector2} [out] Vector2 to store results in.
    * @returns { Vector2}
    */
-  static fromRad(radian, target = new Vector2$1()) {
-    return target.set(Math.cos(radian), Math.sin(radian))
-  }
-  /**
-   * Returns a unit vector pointing in the
-   * given angle from the positive x axis
-   * 
-   * @param {number} degree angle in radians from `0°` to `360°`
-   * @param { Vector2} [target] Vector2 to store results in.
-   * @returns { Vector2}
-   */
-  static fromDeg(degree, target) {
-    return Vector2$1.fromRad(degree * Math.PI / 180, target)
+  static fromAngle(radian, out = new Vector2()) {
+    Vector2.set(out, Math.cos(radian), Math.sin(radian));
+    return out
   }
   /**
    * Generates a new unit Vector2 in a random direction
    * 
-   * @param { Vector2} [target]
+   * @param { Vector2} [out]
    * @returns { Vector2}
    */
-  static random(target) {
-    return Vector2$1.fromRad(Math.random() * TWO_PI, target)
+  static random(out) {
+    return Vector2.fromAngle(Math.random() * TWO_PI, out)
   }
   /**
    * Returns a Vector2 that has been lerped between v1 and v2
    * @param { Vector2} v1 the vector to lerp from
    * @param { Vector2} v2 the vector to lerp from
    * @param {number} t a value from 0 to 1 to scale the new Vector2 between v1 and v2
-   * @param { Vector2} [target] the vector to store results into
+   * @param { Vector2} [out] the vector to store results into
    * 
    * @returns { Vector2}
    */
-  static lerp(v1, v2, t, target = new Vector2$1()) {
-    target = target || new Vector2$1();
-    return target.set(
+  static lerp(v1, v2, t, out = new Vector2()) {
+    Vector2.set(
+      out,
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
-    )
+    );
+    return out
   }
-
-  /**
-   * Returns the angle in degrees between the positive x-axis and the vector.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  static toDeg(v) {
-    return Vector2$1.toRad(v) / Math.PI * 180
-  }
-
   /**
    * Returns the angle in radians between the positive x-axis and the vector.
    * 
    * @param { Vector2} v
    * @returns {number}
    */
-  static toRad(v) {
+  static toAngle(v) {
     let a = Math.atan2(v.y, v.x);
     return a < 0 ? TWO_PI + a : a
   }
-
+  /**
+   * @this {Vector2}
+   */
+  [Symbol.iterator] = function*() {
+    yield this.x;
+    yield this.y;
+  }
   /**
    * A vector whose x and y values will remain 0.
    * 
@@ -2250,10 +1035,12 @@ class Vector2$1 {
    * @readonly
    * @type { Vector2}
    */
-  static ZERO = Object.freeze(new Vector2$1())
-
+  static ZERO = Object.freeze(new Vector2())
 }
-class Vector extends Vector2$1 {
+/**
+ * @deprecated
+ */
+class Vector extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
@@ -2264,7 +1051,10 @@ class Vector extends Vector2$1 {
   }
 }
 
-class Vec2 extends Vector2$1 {
+/**
+ * @deprecated
+ */
+class Vec2 extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
    * @param {number} y the y coordinate of the vector
@@ -2284,43 +1074,14 @@ class Angle {
   /**
    * Orientation in radians.
    * 
-   * @private
-   * @type number
+   * @type {number}
    */
-  _value = 0
+  value = 0
   /**
-   * Cosine of the angle.
-   * 
-   * @private
-   * @type number
+   * @param {number} [rad=0] angle in radians.
    */
-  _cos = 0
-  /**
-   * Cosine of the angle.
-   * 
-   * @private
-   * @type number
-   */
-  _sin = 0
-  /**
-   * @param {number} [deg=0] Orientation in degrees.
-   */
-
-  //TODO - Change this to radians instead
-  constructor(deg = 0) {
-    this.value = deg * Math.PI/180;
-  }
-  /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "angle"
+  constructor(rad = 0) {
+    this.value = rad;
   }
   /**
    * The orientation in degrees.
@@ -2330,89 +1091,37 @@ class Angle {
     deprecate("Angle.degree");
     this.value = x * Math.PI / 180;
   }
-  get _rad(){
-    return this._value
-  }
-  set _rad(x){
-    this._value = x;
-  }
-  get _deg(){
-    return this.value * 180/Math.PI
-  }
-  set _deg(x){
-    this.value = x * Math.PI/180;
-  }
   /**
    * The orientation in radians.
    * 
    * @deprecated
    */
   set radian(x) {
-    deprecate("Angle.radian", "Angle.value");
+    deprecate("Angle().radian", "Angle().value");
     this.value = x;
   }
   get radian() {
-    deprecate("Angle.radian", "Angle.value");
+    deprecate("Angle().radian", "Angle().value");
     return this.value
   }
   get degree() {
-    deprecate("Angle.degree");
+    deprecate("Angle().degree");
     return this.value * 180/Math.PI
-  }
-  /**
-   * The angle in radians.
-   * @type number
-   */
-  get value() {
-    return this._value
-  }
-  set value(x) {
-    this._value = x;
-    this._cos = Math.cos(x);
-    this._sin = Math.sin(x);
-  }
-  /**
-   * @type number
-   */
-  get cos() {
-    return this._cos
-  }
-  /**
-   * @type number
-   */
-  get sin() {
-    return this._sin
   }
   /**
    * Copies the orientation of another angle.
    * 
    * @param {Angle} angle
    */
-  copy(angle) {
+  static copy(angle) {
     this.value = angle.value;
-  }
-
-  fromJSON(obj) {
-    this.value = obj.val;
-  }
-  /**
-   * @returns {{
-     deg: number,
-     type:string | number
-   }}
-   */
-  toJson() {
-    return {
-      val: this.value,
-      type: this.CHAOS_OBJ_TYPE
-    }
   }
 }
 
 /**
  * A class that is used to transform positions through rotation, scaling and translation.
  */
-class Matrix2 {
+class Matrix3x2 {
   /**
    *  @param {number} [a=1]
    *  @param {number} [b=0]
@@ -2420,7 +1129,7 @@ class Matrix2 {
    *  @param {number} [d=1]
    *  @param {number} [e=0]
    *  @param {number} [f=0]
-  */
+   */
   constructor(a = 1, b = 0, c = 0, d = 1, e = 0, f = 0) {
 
     this.a = a;
@@ -2431,6 +1140,7 @@ class Matrix2 {
     this.f = f;
   }
   /**
+   * @deprecated
    * @param {number} x
    * @param {number} y
    * @param {number} scaleX
@@ -2440,25 +1150,20 @@ class Matrix2 {
    * @returns this
    */
   setFromTransform(x, y, scaleX, scaleY, rotation) {
-    let cos = Math.cos(rotation);
-    let sin = Math.sin(rotation);
-
-    this.a = cos * scaleX;
-    this.b = sin * scaleX;
-    this.c = -sin * scaleY;
-    this.d = cos * scaleY;
-    this.e = x;
-    this.f = y;
+    deprecate("Matrix3x2().setFromTransform()","Matrix3x2.setFromTransform()");
+    Matrix3x2.setFromTransform(this, x, y, rotation, scaleX, scaleY);
     return this;
-  };
+  }
   /**
    * Multiplies with another matrix,
    *  A * B = C, where B is this matrix
    * 
-   * @param {Matrix2} m
+   * @deprecated
+   * @param {Matrix3x2} m
    * @returns this
    */
   prepend(m) {
+    deprecate("Matrix3x2().prepend()","Matrix3x2.multiply()");
     let x = this.e;
     let a1 = this.a;
     let c1 = this.c;
@@ -2474,10 +1179,12 @@ class Matrix2 {
    * Multiplies with another matrix,
    *  A * B = C, where A is this matrix
    * 
-   * @param {Matrix2} m
+   * @deprecated
+   * @param {Matrix3x2} m
    * @returns {this}
    */
   append(m) {
+    deprecate("Matrix3x2().append()","Matrix3x2.multiply()");
     let a1 = this.a;
     let b1 = this.b;
     let c1 = this.c;
@@ -2491,27 +1198,14 @@ class Matrix2 {
     return this;
   }
   /**
-   * Makes a matrix to be an identity matrix.
-   * 
-   * @returns this
-   */
-  identity() {
-    this.a = 1;
-    this.b = 0;
-    this.c = 0;
-    this.d = 1;
-    this.e = 0;
-    this.f = 0;
-    return this;
-  };
-  /**
    * Rotates the matrix by the given angle.
    * 
+   * @deprecated
    * @param {number} radians
    * @returns this
    */
   rotate(radians) {
-
+    deprecate("Matrix3x2().rotate()","Matrix3x2.rotate()");
     let cos = Math.cos(radians);
     let sin = Math.sin(radians);
     let a1 = this.a;
@@ -2526,13 +1220,32 @@ class Matrix2 {
     return this;
   };
   /**
+   * Makes a matrix to be an identity matrix.
+   * 
+   * @deprecated
+   * @returns this
+   */
+  identity() {
+    deprecate("Matrix3x2().identity()","Matrix3x2.identity()");
+    
+    this.a = 1;
+    this.b = 0;
+    this.c = 0;
+    this.d = 1;
+    this.e = 0;
+    this.f = 0;
+    return this;
+  };
+  /**
    * Translates a matrix by a given amount.
    * 
+   * @deprecated
    * @param {number} x
    * @param {number} y
    * @returns this
    */
   translate(x, y) {
+    deprecate("Matrix3x2().translate()","Matrix3x2.translate()");
     this.e += x;
     this.f += y;
     return this;
@@ -2540,11 +1253,13 @@ class Matrix2 {
   /**
    * Scales a matrix by a given amount.
    * 
+   * @deprecated
    * @param {number} x
    * @param {number} y
    * @returns this
    */
   scale(x, y) {
+    deprecate("Matrix3x2().scale()","Matrix3x2.scale()");
     this.a *= x;
     this.d *= y;
     return this;
@@ -2552,10 +1267,12 @@ class Matrix2 {
   /**
    * Transforms the given vector.
    * 
+   * @deprecated
    * @param { Vector2} v
    */
   transform(v) {
-    let x = v.x;
+    deprecate("Matrix3x2().transform()","Matrix3x2.transformVector2()");
+    const x = v.x;
 
     v.x = this.a * x + this.c * v.y + this.e;
     v.y = this.b * x + this.d * v.y + this.f;
@@ -2564,9 +1281,11 @@ class Matrix2 {
   /**
    * Inverts the matrix.
    *
+   * @deprecated
    * @returns this
    */
   invert() {
+    deprecate("Matrix3x2().invert()","Matrix3x2.invert()");
     let a = this.a;
     let b = this.b;
     let c = this.c;
@@ -2580,14 +1299,16 @@ class Matrix2 {
     this.e = (c * this.f - d * x) / n;
     this.f = -(a * this.f - b * x) / n;
     return this;
-  };
+  }
   /**
    * Copies a matrix into this matrix.
    * 
-   * @param {Matrix2} m
+   * @deprecated
+   * @param {Matrix3x2} m
    * @returns this
    */
   copy(m) {
+    deprecate("Matrix3x2().copy()","Matrix3x2.copy()");
     this.a = m.a;
     this.b = m.b;
     this.c = m.c;
@@ -2599,21 +1320,172 @@ class Matrix2 {
   /**
    * Creates a new matrix,fills its values with this ones and returns the former.
    * 
-   * @returns Matrix2
+   * @deprecated
+   * @returns Matrix3x2
    */
   clone() {
-    return new Matrix2().copy(this);
+    deprecate("Matrix3x2().clone()","Matrix3x2.copy()");
+    return new Matrix3x2().copy(this);
   }
   /**
    * Deeply checks if a matrix is equal to another.
    * 
-   * @param {Matrix2} matrix
+   * @deprecated
+   * @param {Matrix3x2} matrix
    * @returns boolean
    */
   equals(matrix) {
+    deprecate("Matrix3x2().equals()","Matrix3x2.equals()");
     return (this.a === matrix.a && this.b === matrix.b && this.c === matrix.c && this.d === matrix.d && this.e === matrix.e && this.f === matrix.f);
   }
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {number} x
+   * @param {number} y
+   * @param {number} angle
+   * @param {number} scaleX
+   * @param {number} scaleY
+   */
+  static setFromTransform(matrix, x, y, angle, scaleX, scaleY) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
 
+    matrix.a = cos * scaleX;
+    matrix.b = sin * scaleX;
+    matrix.c = -sin * scaleY;
+    matrix.d = cos * scaleY;
+    matrix.e = x;
+    matrix.f = y;
+
+    return matrix
+  }
+  /**
+   * @param {Matrix3x2} m1
+   * @param {Matrix3x2} m2
+   */
+  static multiply(m1, m2, out = new Matrix3x2()) {
+    const a1 = m1.a;
+    const b1 = m1.b;
+    const c1 = m1.c;
+    const d1 = m1.d;
+
+    out.a = m2.a * a1 + m2.b * c1;
+    out.b = m2.a * b1 + m2.b * d1;
+    out.c = m2.c * a1 + m2.d * c1;
+    out.d = m2.c * b1 + m2.d * d1;
+    out.e = m2.e * a1 + m2.f * c1 + m1.e;
+    out.f = m2.e * b1 + m2.f * d1 + m1.f;
+
+    return out
+  }
+  static identity(out = new Matrix3x2()) {
+    out.a = 1;
+    out.b = 0;
+    out.c = 0;
+    out.d = 1;
+    out.e = 0;
+    out.f = 0;
+
+    return out
+  }
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {number} angle
+   */
+  static rotate(matrix, angle, out = new Matrix3x2()) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const a1 = matrix.a;
+    const c1 = matrix.c;
+    const x = matrix.e;
+
+    out.a = a1 * cos - matrix.b * sin;
+    out.b = a1 * sin + matrix.b * cos;
+    out.c = c1 * cos - matrix.d * sin;
+    out.d = c1 * sin + matrix.d * cos;
+    out.e = x * cos - matrix.f * sin;
+    out.f = x * sin + matrix.f * cos;
+
+    return out;
+  };
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {any} x
+   * @param {any} y
+   */
+  static translate(matrix, x, y, out = new Matrix3x2()) {
+    out.a = matrix.a;
+    out.b = matrix.b;
+    out.c = matrix.c;
+    out.d = matrix.d;
+    out.e = matrix.e + x;
+    out.f = matrix.f + y;
+
+    return out;
+  }
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {number} x
+   * @param {number} y
+   */
+  static scale(matrix, x, y, out = new Matrix3x2()) {
+    out.a = matrix.a * x;
+    out.b = matrix.b;
+    out.c = matrix.c;
+    out.d = matrix.d * y;
+    out.e = matrix.e;
+    out.f = matrix.f;
+
+    return out;
+  };
+  /**
+   * @param {Matrix3x2} matrix
+   * @param {Vector_like} v
+   */
+  static transformVector2(matrix, v, out = new Vector2()) {
+    const x = v.x;
+
+    out.x = matrix.a * x + matrix.c * v.y + matrix.e;
+    out.y = matrix.b * x + matrix.d * v.y + matrix.f;
+
+    return out;
+  }
+  /**
+   * @param {Matrix3x2} matrix
+   */
+  static invert(matrix, out = new Matrix3x2()) {
+    const a = matrix.a;
+    const b = matrix.b;
+    const c = matrix.c;
+    const d = matrix.d;
+    const x = matrix.e;
+    const n = a * d - b * c;
+
+    out.a = d / n;
+    out.b = -b / n;
+    out.c = -c / n;
+    out.d = a / n;
+    out.e = (c * matrix.f - d * x) / n;
+    out.f = -(a * matrix.f - b * x) / n;
+
+    return out;
+  };
+  /**
+   * @param {Matrix3x2} matrix
+   */
+  static copy(matrix, out = new Matrix3x2()) {
+    out.a = matrix.a;
+    out.b = matrix.b;
+    out.c = matrix.c;
+    out.d = matrix.d;
+    out.e = matrix.e;
+    out.f = matrix.f;
+
+    return out;
+  }
+  /**
+   * @this {Matrix3x2}
+   */
   [Symbol.iterator] = function*() {
     yield this.a;
     yield this.b;
@@ -2891,15 +1763,15 @@ const Interpolation = {
     return (p1 - p0) * t + p0
   },
   //Todo - remove this Bernstein and Factorial.
-  Bernstein: function(n, i) {
-    const fc = Interpolation.Utils.Factorial;
+  Bernstein: function(/** @type {number} */ n, /** @type {number} */ i) {
+    const fc = Interpolation.Factorial;
 
     return fc(n) / fc(i) / fc(n - i)
   },
   Factorial: (function() {
     const a = [1];
 
-    return function(n) {
+    return function(/** @type { number} */ n) {
       let s = 1;
 
       if (a[n]) {
@@ -2931,75 +1803,166 @@ const Interpolation = {
 
     return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1
   },
-};
-
-/**
- * This module is used to check if bounds of a body overlap
- */
-const Overlaps = {
   /**
-   * Checks if two AABB overlap
-   * 
-   * @param {BoundingBox} a
-   * @param {BoundingBox} b
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} t
    */
-  AABBColliding(a, b) {
-    return (
-      a.min.x <= b.max.x &&
-      a.max.x >= b.min.x &&
-      a.min.y <= b.max.y &&
-      a.max.y >= b.min.y
-    )
-  },
-  /**
-   * Checks if two BoundingCircles overlap
-   * 
-   * @param {BoundingCircle} a
-   * @param {BoundingCircle} b
-   */
-  boundSpheresColliding(a, b) {
-    const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
-      (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
-    return distance < a.r * a.r + b.r * b.r;
-  },
-    /**
-     * Checks if An AABB and a CircleBound overlap
-     * 
-     * @param {BoundingBox} a
-     * @param {BoundingCircle} b
-     */
-  AABBvsSphere(a, b) {
-    const x = Math.max(a.min.x, Math.min(b.pos.x, a.max.x));
-    const y = Math.max(a.min.y, Math.min(b.pos.y, a.max.y));
-    const distance =
-      (x - b.pos.x) * (x - b.pos.x) +
-      (y - b.pos.y) * (y - b.pos.y);
-
-    return distance < b.r * b.r;
+  cosine(p0, p1, t) {
+    const c = (1 - Math.cos(t * 3.1415927)) * .5;
+    return (1 - c) * p0 + c * p1
   }
 };
 
 /**
- * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+ * Checks if two AABB overlap
+ * 
+ * @param {BoundingBox} a
+ * @param {BoundingBox} b
  */
-class BoundingBox extends Component {
+function AABBColliding(a, b) {
+  return (
+    a.min.x <= b.max.x &&
+    a.max.x >= b.min.x &&
+    a.min.y <= b.max.y &&
+    a.max.y >= b.min.y
+  )
+}
+/**
+ * Checks if two BoundingCircles overlap
+ * 
+ * @param {BoundingCircle} a
+ * @param {BoundingCircle} b
+ */
+function boundSpheresColliding(a, b) {
+  const distance = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
+    (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
+  return distance < a.r * a.r + b.r * b.r;
+}
+/**
+ * Checks if An AABB and a CircleBound overlap
+ * 
+ * @param {BoundingBox} a
+ * @param {BoundingCircle} b
+ */
+function AABBvsSphere(a, b) {
+  const x = Math.max(a.min.x, Math.min(b.pos.x, a.max.x));
+  const y = Math.max(a.min.y, Math.min(b.pos.y, a.max.y));
+  const distance =
+    (x - b.pos.x) * (x - b.pos.x) +
+    (y - b.pos.y) * (y - b.pos.y);
+
+  return distance < b.r * b.r;
+}
+/**
+ * Checks if any AABB or/and a BoundingCircle overlap
+ * 
+ * @param {BoundingBox | BoundingCircle} bound1
+ * @param {BoundingCircle | BoundingBox} bound2
+ */
+function boundsColliding(bound1, bound2) {
+  if (bound1.type === BoundType.BOX && bound2.type === BoundType.BOX)
+    // @ts-ignore
+    return AABBColliding(bound1, bound2)
+  if (bound1.type === BoundType.CIRCLE && bound2.type === BoundType.CIRCLE)
+    // @ts-ignore
+    return boundSpheresColliding(bound1, bound2)
+  if (bound1.type === BoundType.BOX)
+    // @ts-ignore
+    return AABBvsSphere(bound2, bound1)
+  // @ts-ignore
+  return AABBvsSphere(bound1, bound2)
+}
+
+const BoundType = {
+  BOX: 0,
+  CIRCLE: 1,
+};
+
+/**
+ * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+ */
+class BoundingCircle {
+  type = BoundType.CIRCLE
   /**
    * 
-   * @type Vector_like
+   * @type {number}
    */
-  pos = null
+  r = 0
+  /**
+   * 
+   * @type {Vector_like}
+   */
+  pos = { x: 0, y: 0 }
+  /**
+   * @param {number} [r=0]
+   */
+  constructor(r = 0) {
+    this.r = r;
+  }
+  /**
+   * 
+   * @deprecated
+   * Checks to see if this intersects with another bounding box
+   * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
+   **/
+  intersects(bound) {
+    deprecate("BoundingCircle().intersects()", "boundsColliding()");
+    if (bound.type === BoundType.CIRCLE)
+      // @ts-ignore
+      return boundSpheresColliding(this, bound)
+    // @ts-ignore
+    return AABBvsSphere(bound, this)
+  }
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  translate(x, y) {
+    deprecate("BoundingCircle().translate()", "BoundingCircle.translate()");
+    this.pos.x += x;
+    this.pos.y += y;
+  }
+  /**
+   * @param {BoundingCircle} bound
+   * @param {any} x
+   * @param {any} y
+   */
+  static translate(bound, x, y, out = new BoundingCircle()) {
+    out.pos.x = bound.pos.x + x;
+    out.pos.y = bound.pos.y + y;
+    
+    return out
+  }
+  /**
+   * @param {BoundingCircle} bound
+   */
+  static copy(bound, out = new BoundingCircle()) {
+    out.pos.x = bound.pos.x;
+    out.pos.y = bound.pos.y;
+    out.r = bound.r;
+
+    return out
+  }
+}
+
+/**
+ * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+ */
+class BoundingBox {
+  type = BoundType.BOX
   /**
    * The upper limit of the bounding box
    * 
-   * @type Vector_like
+   * @type {Vector_like}
    */
-  max = null
+  max
   /**
    * The lower limit of the bounding box
    * 
-   * @type Vector_like
+   * @type {Vector_like}
    */
-  min = null
+  min
   /**
    * @param {number} [minX=0]
    * @param {number} [minY=0]
@@ -3007,11 +1970,6 @@ class BoundingBox extends Component {
    * @param {number} [maxY=0]
    */
   constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
-    super();
-    this.pos = {
-      x: 0,
-      y: 0
-    };
     this.max = {
       x: maxX,
       y: maxY
@@ -3028,218 +1986,81 @@ class BoundingBox extends Component {
    * @returns boolean
    **/
   intersects(bound) {
-    if (bound.r)
-      return Overlaps.AABBvsSphere(this, bound)
-    return Overlaps.AABBColliding(this, bound)
+    deprecate("BoundingBox().intersects()", "boundsColliding()");
+    if (bound.type === BoundType.CIRCLE)
+      // @ts-ignore
+      return AABBvsSphere(this, bound)
+    // @ts-ignore
+    return AABBColliding(this, bound)
   }
   /**
-   * Calculates the bounds of the body
-   * 
-   * @param {Body} body Body to calculate max and min from
-   * @param {Number} padding increases the size of the bounds
+   * @deprecated
+   * @param {number} x
+   * @param {number} y
    */
-  calculateBounds(body, padding = 0) {
-    let minX = Number.MAX_SAFE_INTEGER,
-      minY = Number.MAX_SAFE_INTEGER,
-      maxX = -Number.MAX_SAFE_INTEGER,
-      maxY = -Number.MAX_SAFE_INTEGER;
-
-    if (body.shapes.length == 0) {
-      this.min.x = body.position.x;
-      this.max.x = body.position.x;
-      this.min.y = body.position.y;
-      this.max.y = body.position.y;
-      this.pos.x = body.position.x;
-      this.pos.y = body.position.y;
-      return
-    }
-    for (var i = 0; i < body.shapes.length; i++) {
-      let shape = body.shapes[i];
-      if (shape.type == 0) {
-        let idx = body.position.x - shape.radius,
-          idy = body.position.y - shape.radius,
-          mdx = body.position.x + shape.radius,
-          mdy = body.position.y + shape.radius;
-        if (!minX || idx < minX) minX = idx;
-        if (!maxX || mdx > maxX) maxX = mdx;
-        if (!minY || idy < minY) minY = idy;
-        if (!maxY || mdy > maxY) maxY = mdy;
-        continue
-      }
-      for (var j = 0; j < shape.vertices.length; j++) {
-        let vertex = shape.vertices[j];
-        if (vertex.x < minX) minX = vertex.x;
-        if (vertex.x > maxX) maxX = vertex.x;
-        if (vertex.y < minY) minY = vertex.y;
-        if (vertex.y > maxY) maxY = vertex.y;
-      }
-    }
-    this.min.x = minX - padding;
-    this.max.x = maxX + padding;
-    this.min.y = minY - padding;
-    this.max.y = maxY + padding;
-    this.pos.x = body.position.x;
-    this.pos.y = body.position.y;
-  }
-  /**
-   * Translates this bound to the given position.
-   * 
-   * @param { Vector2} pos
-   */
-  update(pos) {
-    let dx = pos.x - this.pos.x;
-    let dy = pos.y - this.pos.y;
-
-    this.pos.x = pos.x;
-    this.pos.y = pos.y;
-    this.min.x += dx;
-    this.max.x += dx;
-    this.min.y += dy;
-    this.max.y += dy;
+  translate(x, y) {
+    deprecate("BoundingBox().translate()", "BoundingBox.translate()");
+    return BoundingBox.translate(this,x,y,this)
   }
   /**
    * Deep copies a bounding box to a new one.
    * 
-   * @returns BoundingBox
+   * @deprecated
+   * @returns {BoundingBox}
    */
   clone() {
-    return new BoundingBox(this.min.x, this.min.y, this.max.x, this.max.y)
+    deprecate("BoundingBox().clone()", "BoundingBox.copy()");
+    return BoundingBox.copy(this)
   }
   /**
    * Deep copies another bounding box.
    * 
+   * @deprecated
    * @param {BoundingBox} bounds
    */
   copy(bounds) {
-    this.pos.x = bounds.pos.x;
-    this.pos.y = bounds.pos.y;
-    this.min.x = bounds.min.x;
-    this.min.y = bounds.min.y;
-    this.max.x = bounds.max.x;
-    this.max.y = bounds.max.y;
+    deprecate("BoundingBox().copy()", "BoundingBox.copy()");
+    BoundingBox.copy(bounds,this);
   }
-  toJson() {
-    return {
-      posX: this.pos.x,
-      posY: this.pos.y,
-      minX: this.min.x,
-      minY: this.min.y,
-      maxX: this.max.x,
-      maxY: this.max.y,
-    }
+  /**
+   * @param {BoundingBox} bound
+   */
+  static copy(bound,out = new BoundingBox()){
+    out.min.x = bound.min.x;
+    out.min.y = bound.min.y;
+    out.max.x = bound.max.x;
+    out.max.y = bound.max.y;
+    
+    return out
   }
-  fromJson(obj) {
-    this.pos.x = obj.posX;
-    this.pos.y = obj.posY;
-    this.min.x = obj.minX;
-    this.min.y = obj.minY;
-    this.max.x = obj.maxX;
-    this.max.y = obj.maxY;
+  /**
+   * @param {BoundingBox} bound
+   * @param {number} x
+   * @param {number} y
+   */
+  static translate(bound, x, y, out = new BoundingBox()) {
+    out.min.x = bound.min.x + x;
+    out.min.y = bound.min.y + y;
+    out.max.x = bound.max.x + x;
+    out.max.y = bound.max.y + y;
+    
+    return out
   }
   /**
    * Combines two bounds to create a new one that covers the previous two.
    * 
    * @param {BoundingBox} bound1 
    * @param {BoundingBox} bound2 
-   * @param {BoundingBox} target Bound to store results into.
+   * @param {BoundingBox} out Bound to store results into.
    * @returns BoundingBox
    */
-  static union(bound1, bound2, target) {
-    target = target || new BoundingBox();
-
-    target.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x;
-    target.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y;
-    target.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x;
-    target.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y;
-    return target
-  }
-}
-
-/**
- * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
- */
-class BoundingCircle {
-  /**
-   * 
-   * @type number
-  */
-  r = 0
-  /**
-   * 
-   * @type Vector_like
-  */
-  pos = null
-  /**
-   * @param {number} [r=0]
-   */
-  constructor(r = 0) {
-    this.r = r;
-    this.pos = { x: 0, y: 0 };
-  }
-  /**
-   * 
-   * Checks to see if this intersects with another bounding box
-   * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
-   **/
-  intersects(bound) {
-    if (bound.r)
-      return Overlaps.boundSpheresColliding(this, bound)
-    return Overlaps.AABBvsSphere(bound, this)
-  }
-  /**
-   * Calculates the bounds of the body
-   * 
-   * @param {Body} body Body to calculate max and min from
-   * @@param {Number} padding increases the size of the bounds
-   */
-  calculateBounds(body, padding = 0) {
-    let radsq = 0,
-      shape,
-      vertices,
-      tmp;
-    for (var i = 0; i < body.shapes.length; i++) {
-      shape = body.shapes[i];
-      if (shape.radius) {
-        tmp = shape.radius * shape.radius;
-        if (tmp > radsq) radsq = tmp;
-        continue
-      }
-      for (var j = 0; j < body.shapes[i].vertices.length; j++) {
-        vertices = body.shapes[i].vertices;
-        for (var j = 0; j < vertices.length; j++) {
-          tmp = vertices[j].distanceToSquared(body.position);
-          if (tmp > radsq) radsq = tmp;
-        }
-        
-      }
-    }
-    this.pos.x = body.position.x;
-    this.pos.y = body.position.y;
-    this.r = Math.sqrt(radsq);
-  }
-  /**
-   * Translates this bound to the given position.
-   * 
-   * @param {Vector_like} pos
-   */
-  update(pos) {
-    //let dx = pos.x - this.pos.x
-    //let dy = pos.y - this.pos.y
-
-    this.pos.x = pos.x;
-    this.pos.y = pos.y;
-  }
-  toJson(){
-    return {
-      posX:this.pos.x,
-      posY:this.pos.y,
-      r:this.r
-    }
-  }
-  fromJson(obj){
-    this.pos.x = obj.posX;
-    this.pos.y = obj.posY;
-    this.r = obj.r;
+  static union(bound1, bound2, out = new BoundingBox()) {
+    out.max.x = bound1.max.x > bound2.max.x ? bound1.max.x : bound2.max.x;
+    out.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y;
+    out.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x;
+    out.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y;
+    
+    return out
   }
 }
 
@@ -3247,7 +2068,6 @@ class BoundingCircle {
  * A color manipulation class.
  */
 class Color {
-
   /**
    * @param {number} [r=0] - red component [0 .. 255]
    * @param {number} [g=0] - green component [0 .. 255]
@@ -3257,8 +2077,8 @@ class Color {
   constructor(r = 0, g = 0, b = 0, alpha = 1.0) {
     this.set(r, g, b, alpha);
   }
-
   /**
+   * @deprecate
    * Set this color to the specified value.
    * @param {number} r - red component [0 .. 255]
    * @param {number} g - green component [0 .. 255]
@@ -3267,36 +2087,39 @@ class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   set(r, g, b, alpha = 1.0) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.a = alpha;
-    return this;
+    deprecate("Color().set()", "Color.set()");
+    return Color.set(this, r, g, b, alpha)
   }
-
   /**
+   * @deprecate
    * Create a new copy of this color object.
    * @returns {Color} Reference to the newly cloned object
    */
   clone() {
-    return new Color().copy(this);
+    deprecate("Color().clone()", "Color.copy()");
+    return Color.copy(this);
   }
-
   /**
+   * @deprecate
    * Copy a color object or CSS color into this one.
-   * @param {Color|string} color
+   * @param {Color} color
    * @returns {Color} Reference to this object for method chaining
    */
   copy(color) {
-    this.set(color.r, color.g, color.b, color.a);
-  }
+    deprecate("Color().copy()", "Color.copy()");
 
+    return Color.copy(color, this)
+  }
   /**
    * Blend this color with the given one using addition.
+   * 
+   * @deprecated
    * @param {Color} color
    * @returns {Color} Reference to this object for method chaining
    */
   add(color) {
+    deprecate("Color().add()", "Color.add()");
+
     this.r = clamp(this.r + color.r, 0, 255);
     this.g = clamp(this.g + color.g, 0, 255);
     this.b = clamp(this.b + color.b, 0, 255);
@@ -3304,13 +2127,16 @@ class Color {
 
     return this;
   }
-
   /**
    * Darken this color value by 0..1
+   * 
+   * @deprecated
    * @param {number} scale
    * @returns {Color} Reference to this object for method chaining
    */
   darken(scale) {
+    deprecate("Color().darken()", "Color.darken()");
+
     scale = clamp(scale, 0, 1);
     this.r *= scale;
     this.g *= scale;
@@ -3318,28 +2144,16 @@ class Color {
 
     return this;
   }
-
-  /**
-   * Linearly interpolate between this color and the given one.
-   * @param {Color} color
-   * @param {number} alpha - with alpha = 0 being this color, and alpha = 1 being the given one.
-   * @returns {Color} Reference to this object for method chaining
-   */
-  lerp(color, alpha) {
-    alpha = clamp(alpha, 0, 1);
-    this.r += (color.r - this.r) * alpha;
-    this.g += (color.g - this.g) * alpha;
-    this.b += (color.b - this.b) * alpha;
-
-    return this;
-  }
-
   /**
    * Lighten this color value by 0..1
+   * 
+   * @deprecated
    * @param {number} scale
    * @returns {Color} Reference to this object for method chaining
    */
   lighten(scale) {
+    deprecate("Color().lighten()", "Color.lighten()");
+
     scale = clamp(scale, 0, 1);
     this.r = clamp(this.r + (1 - this.r) * scale, 0, 1);
     this.g = clamp(this.g + (1 - this.g) * scale, 0, 1);
@@ -3347,14 +2161,33 @@ class Color {
 
     return this;
   }
+  /**
+   * Linearly interpolate between this color and the given one.
+   * @deprecated
+   * @param {Color} color
+   * @param {number} alpha - with alpha = 0 being this color, and alpha = 1 being the given one.
+   * @returns {Color} Reference to this object for method chaining
+   */
+  lerp(color, alpha) {
+    deprecate("Color().lerp()", "Color.lerp()");
 
+    alpha = clamp(alpha, 0, 1);
+    this.r += (color.r - this.r) * alpha;
+    this.g += (color.g - this.g) * alpha;
+    this.b += (color.b - this.b) * alpha;
+
+    return this;
+  }
   /**
    * Generate random r,g,b values for this color object
+   * @deprecated
    * @param {number} [min=0] - minimum value for the random range
    * @param {number} [max=255] - maxmium value for the random range
    * @returns {Color} Reference to this object for method chaining
    */
   random(min = 0, max = 255) {
+    deprecate("Color().random()", "Color.random()");
+
     if (min < 0) {
       min = 0;
     }
@@ -3369,9 +2202,12 @@ class Color {
       this.a
     );
   }
-
-
+  /**
+   * @param {number[]} array
+   */
   toArray(array, offset = 0) {
+    deprecate("Color().toArray()");
+
     array[offset] = this.r;
     array[offset + 1] = this.g;
     array[offset + 2] = this.b;
@@ -3379,7 +2215,1236 @@ class Color {
 
     return array
   }
+  static random(min = 0, max = 255, out = new Color()) {
+    return Color.set(
+      out,
+      rand(min, max),
+      rand(min, max),
+      rand(min, max)
+    );
+  }
+  /**
+   * @param {Color} color
+   * @param {number} r
+   * @param {number} g
+   * @param {number} b
+   */
+  static set(color, r, g, b, a = 1.0) {
+    color.r = r;
+    color.g = g;
+    color.b = b;
+    color.a = a;
+    return color;
+  }
+  /**
+   * @param {Color} color
+   */
+  static copy(color, out = new Color()) {
+    return Color.set(out, color.r, color.g, color.b, color.a)
+  }
+  /**
+   * @param {Color} color1
+   * @param {Color} color2
+   */
+  static add(color1, color2, out = new Color()) {
+    out.r = clamp(color1.r + color2.r, 0, 255);
+    out.g = clamp(color1.g + color2.g, 0, 255);
+    out.b = clamp(color1.b + color2.b, 0, 255);
+    out.a = (color1.a + color2.a) / 2;
+
+    return out;
+  }
+  /**
+   * @param {Color} color1
+   * @param {Color} color2
+   */
+  static sub(color1, color2, out = new Color()) {
+    out.r = clamp(color1.r - color2.r, 0, 255);
+    out.g = clamp(color1.g - color2.g, 0, 255);
+    out.b = clamp(color1.b - color2.b, 0, 255);
+    out.a = (color1.a + color2.a) / 2;
+
+    return out;
+  }
+  /**
+   * @param {Color} color
+   * @param {number} scale
+   */
+  static darken(color, scale, out = new Color()) {
+    scale = clamp(scale, 0, 1);
+
+    out.r = color.r * scale;
+    out.g = color.g * scale;
+    out.b = color.b * scale;
+    out.a = color.a;
+    return this;
+  }
+  /**
+   * @param {Color} color
+   * @param {number} scale
+   */
+  static lighten(color, scale, out = new Color()) {
+    scale = clamp(scale, 0, 1);
+    out.r = clamp(color.r + (1 - color.r) * scale, 0, 1);
+    out.g = clamp(color.g + (1 - color.g) * scale, 0, 1);
+    out.b = clamp(color.b + (1 - color.b) * scale, 0, 1);
+
+    return out;
+  }
+  /**
+   * @param {Color} color1
+   * @param {Color} color2
+   * @param {number} t
+   */
+  static lerp(color1, color2, t, out = new Color()) {
+    out.r += color1.r + (color1.r - color2.r) * t;
+    out.g += color1.g + (color1.g - color2.g) * t;
+    out.b += color1.b + (color1.b - color2.b) * t;
+    out.a = color1.a + (color1.a - color2.a) * t;
+
+    return out
+  }
 }
+
+/**
+ * Handles time management for the game.
+ */
+class Clock {
+  /**
+   * Last time the clock was updated
+   * 
+   * @private
+   * @type number
+   */
+  lastcall = 0
+  /**
+   * Difference between the last call in the last frame and current call.
+   * 
+   * @type number 
+   */
+  dt = 0
+  /**
+   * Updates the clock
+   * @deprecated
+   * @param {number} [accumulate]
+   */
+  update(accumulate = performance.now()) {
+    deprecate("Clock().update()","Clock.update()");
+    return Clock.update(this, accumulate)
+  }
+  /*getFrameRate(){
+    return 1/(this.dt/1000)
+  }
+  getRoundedFrameRate(){
+    return Math.round(this.getFrameRate())
+  }*/
+  /**
+   * Updates the clock
+   * 
+   * @param {Clock} clock
+   * @param {number} [accumulate]
+   */
+  static update(clock,accumulate = performance.now()) {
+    clock.dt = accumulate - clock.lastcall;
+    clock.lastcall = accumulate;
+
+    return clock.dt / 1000
+  }
+}
+
+class Noise {
+  /**
+   * @param {number} seed
+   */
+  constructor(seed = rand() * Number.MAX_SAFE_INTEGER) {
+    this.seed = seed;
+  }
+  /**
+   * @param {number} x
+   */
+  get1D(x) {
+    x += this.seed;
+    x = BigInt((x << 13) ^ x);
+    x = (x * (x * x * 15731n + 789221n) + 1376312589n);
+    x = parseInt(x.toString(2).slice(-31), 2);
+    return 1.0 - x / 1073741824
+  }
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  get2D(x, y) {
+    const intX = Math.floor(x);
+    const intY = Math.floor(y);
+
+    const tx = x - intX;
+    const ty = y - intY;
+
+    const a = this.get1D(intX + intY);
+    const b = this.get1D(intX + 1 + intY);
+
+    const c = this.get1D(intX + intY + 1);
+    const d = this.get1D(intX + 1 + intY + 1);
+    return Interpolation.cosine(
+      Interpolation.cosine(a, b, tx),
+      Interpolation.cosine(c, d, ty),
+      ty
+    )
+  }
+}
+
+/**
+ * @template T
+ * An extendable object pool for optimizing performance.
+ */
+
+class Pool {
+  /**
+   * List of objects
+   * 
+   * @type T[]
+  */
+  _pool = []
+  /**
+   * @param {number} number Number of objects to create at the initialization.
+   * @param {()=>T} create 
+   */
+  constructor(number = 100,create) {
+    this._create = create;
+    for (var i = 0; i < number; i++) {
+      this._pool.push(this._create());
+    }
+  }
+  /**
+   * The number of objects available in the pool.
+   * 
+   * @type {number}
+  */
+  get size() {
+    return this._pool.length
+  }
+  set size(x) {
+    let d = this._pool.length - x;
+    if (d < 0) {
+      for (var i = d; i < 0; i++) {
+        this._pool.push(this._create());
+      }
+      return
+    }
+    if (d > 0) {
+      for (var i = d; i > 0; i--) {
+        this._pool.pop();
+      }
+      return
+    }
+  }
+  /**
+   * Gives an object ownership.
+   * 
+   * @returns {T}
+   */
+  give() {
+    const p = this._pool.pop();
+    if (p) return p
+    return this._create()
+  }
+  /**
+   * Takes an object's ownership.
+   * Do not use the taken object and remove all references of it outside otherwise you will get some wierd behaviour.
+   * 
+   * @param {T} obj
+   */
+  take(obj) {
+    this._pool.push(obj);
+  }
+  /**
+   * Creates a new object.
+   * 
+   * @protected
+   * @returns T
+  */
+  create() {
+    return {}
+  }
+}
+
+/**
+ * @template T
+ */
+class IndexedList {
+  /**
+   * @private
+   * @type {Map<string,number>}
+   */
+  _keys = new Map()
+  /**
+   * @type {string[]}
+   */
+  _actualKeys = []
+  /**
+   * @private 
+   * @type {T[]}
+   */
+  _list = []
+  /**
+   * @param {string} name
+   */
+  get(name) {
+    const index = this._keys.get(name);
+    if(!index)return undefined
+    return this._list[index]
+  }
+  /**
+   * @param {string} name
+   * @param {T} value
+   */
+  set(name, value) {
+    this._keys.set(name, this._list.length);
+    this._list.push(value);
+    this._actualKeys.push(name);
+  }
+  /**
+   * @param {string} name
+   */
+  remove(name) {
+    const index = this._keys.get(name);
+    if(!index)return
+    this._actualKeys.splice(index, 1);
+    this._list.splice(index, 1);
+    this._keys.delete(name);
+  }
+  /**
+   * @returns {string[]}
+   */
+  keys() {
+    return this._actualKeys
+  }
+  /**
+   * @returns {T[]}
+   */
+  values() {
+    return this._list
+  }
+  /**
+   * @param {string} name
+   */
+  has(name) {
+    return this._keys.has(name)
+  }
+}
+
+/**
+ * This is a container to hold components,tags and event handlers.
+ * 
+ * @class
+ * @public
+ */
+class Entity {
+  /**
+   * @internal
+   * @type {number}
+  */
+  index = -1
+  /**
+   * @internal
+   * @type {number}
+   */
+  archIndex = -1
+  /**
+   * @type {string}
+   */
+  get CHAOS_OBJ_TYPE() {
+    return "entity"
+  }
+  /**
+   * @type {string}
+   */
+  get CHAOS_CLASSNAME() {
+    return this.constructor.name.toLowerCase()
+  }
+}
+
+let tmpID = 0;
+
+/**
+ * Appends the second array to the first.
+ * 
+ * @memberof Utils
+ * @template T
+ * @param {T[]} arr1
+ * @param {T[]} arr2
+ */
+function appendArr(arr1, arr2) {
+  for (var i = 0; i < arr2.length; i++) {
+    arr1.push(arr2[i]);
+  }
+}
+/**
+ * Clears an array
+ * 
+ * @memberof Utils
+ * @template T
+ * @param {T[]} arr
+ */
+function clearArr(arr) {
+  for (var i = arr.length; i > 0; i--) {
+    arr.pop();
+  }
+}
+/**
+ * Removes a number of items at the end of an array
+ * 
+ * @memberof Utils
+ * @template T
+ * @param {T[]} arr
+ * @param {number} number
+ */
+function popArr(arr, number) {
+  let length = arr.length;
+  for (var i = length; i > length - number; i--) {
+    arr.pop();
+  }
+}
+/**
+ * Removes an element by its index from an array
+ * 
+ * @memberof Utils
+ * @template T
+ * @param {T[]} arr
+ * @param {number} index
+ */
+function removeElement(arr, index) {
+  if (index == -1) return null
+  if (arr.length - 1 == index) return arr.pop()
+  const temp2 = arr.pop();
+  if(!temp2)return 
+  arr[index] = temp2;
+  return
+}
+/**
+ * Generates a unique id when called
+ * 
+ * @memberof Utils
+ */
+function generateID() {
+  return (tmpID += 1)
+}
+
+/**
+ * Todo - Fix this function to add all props if no props param is given
+ * Mixes the properties and methods required by an object from another object.
+ * 
+ *  @param {*} from the object constructor function to add methods from.
+ * @param {*} to the object constructor function to add methods to.
+ * @param {string[]} [props]
+ */
+function mixin(from, to, props = []) {
+  for (let name of props) {
+    to[name] = from[name];
+  }
+}
+
+var common = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  appendArr: appendArr,
+  clearArr: clearArr,
+  generateID: generateID,
+  mixin: mixin,
+  popArr: popArr,
+  removeElement: removeElement
+});
+
+class Perf{
+  _start = 0
+  _time = 0
+  start(){
+    this._start = performance.now();
+  }
+  end(){
+    this._time = performance.now() - this._start;
+    return this._time
+  }
+  fps(){
+    return 1000/this._time
+  }
+}
+
+class Archetype {
+  /**
+   * @type {Entity[]}
+   */
+  entities = []
+  /**
+   * @type {Map<string,any>}
+   */
+  components = new Map()
+  /**
+   * @type {string[]}
+   */
+  keys = []
+  constructor() {
+    this.components.set("entity",this.entities);
+  }
+  /**
+   * @param {Entity} entity
+   * @param {{[x:string]:any}} components
+   */
+  insert(entity,components) {
+    if (entity.index !== -1)
+      return warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
+    for (let i = 0; i < this.keys.length; i++) {
+      this.components.get(this.keys[i]).push(components[this.keys[i]]);
+    }
+    this.entities.push(entity);
+    entity.index = this.entities.length - 1;
+    return this.entities.length - 1
+  }
+  /**
+   * @param {Entity} entity
+   */
+  remove(entity) {
+    const index = entity.index;
+    for (let name in this.keys) {
+      removeElement(
+        this.components.get(name),
+        index
+      );
+    }
+    removeElement(
+      this.entities,
+      index
+    );
+    if (index !== this.entities.length)
+      this.entities[index].index = index;
+    entity.index = -1;
+  }
+  /**
+   * @param {Entity} entity
+   * @param {{[x:string] : any}} compnames
+   */
+  get(entity,compnames) {
+    const comp = [];
+    for (let i = 0; i < compnames.length; i++) {
+      const list = this.getComponentLists(compnames[i]);
+      if (list == void 0) {
+        comp.push(null);
+        continue
+      }
+      comp.push(
+        list[entity.index]
+      );
+    }
+    return comp
+  }
+  /**
+   * @param {string} name
+   * @param {any[]} list
+   */
+  setComponentList(name,list) {
+    this.components.set(name,list);
+    this.keys.push(name);
+  }
+  /**
+   * @param {string} name
+   */
+  getComponentLists(name) {
+    return this.components.get(name)
+  }
+  /**
+   * @param {string} name
+   */
+  hasComponentList(name) {
+    return this.components.has(name)
+  }
+}
+class NaiveArchTypeTable {
+  /**
+   * @type {Archetype[]}
+   */
+  list = []
+  constructor() { }
+  /**
+   * @private
+   * @param {{[x:string] : any}} comps
+   */
+  _createArchetype(comps) {
+    const archetype = new Archetype();
+    for (let i = 0; i < comps.length; i++) {
+      archetype.setComponentList(comps[i],[]);
+    }
+    return this.list.push(archetype) - 1
+  }
+  /**
+   * @private
+   * @param {Archetype} archetype
+   * @param {{[x:string] : any}} comps
+   */
+  _ArcheTypeHasOnly(archetype,comps) {
+    if (comps.length !== archetype.components.size - 1) return false
+    for (let i = 0; i < comps.length; i++) {
+      if (!archetype.components.has(comps[i])) return false
+    }
+    return true
+  }
+  /**
+   * @private
+   * @param {string[]} comps
+   */
+  _getArchetype(comps) {
+    for (let i = 0; i < this.list.length; i++) {
+      if (this._ArcheTypeHasOnly(this.list[i],comps)) {
+        return i
+      }
+    }
+    return -1
+  }
+  /**
+   * @private
+   * @param {string | any[]} comps
+   */
+  _getArchetypes(comps) {
+    const filtered = [];
+    for (let i = 0; i < this.list.length; i++) {
+      let hasComponents = true;
+      for (let j = 0; j < comps.length; j++) {
+        if (!this.list[i].hasComponentList(comps[j])) {
+          hasComponents = false;
+          break
+        }
+      }
+      if (hasComponents)
+        filtered.push(this.list[i]);
+    }
+    return filtered
+  }
+  /**
+   * @param {Entity} entity
+   * @param {{[x:string] : any}} components
+   */
+  insert(entity,components) {
+    const keys = [];
+    for (let name in components) {
+      keys.push(name);
+    }
+    let index =
+      this._getArchetype(keys);
+    index = index === -1 ? this._createArchetype(keys) : index;
+    this.list[index].insert(entity,components);
+    entity.archIndex = index;
+  }
+  /**
+   * @param {Entity} entity
+   */
+  remove(entity) {
+    this.list[entity.archIndex].remove(entity);
+  }
+  /**
+   * @param {Entity} entity
+   * @param {string[]} compnames
+   */
+  get(entity,compnames) {
+    if (entity.index === -1) return
+    return this.list[entity.archIndex].get(entity,compnames)
+  }
+  /**
+   * @param {string[]} compnames
+   * @param {any[]} out 
+   */
+  query(compnames,out = []) {
+    let archetypes = this._getArchetypes(compnames);
+    for (let i = 0; i < compnames.length; i++) {
+      out[i] = [];
+    }
+    for (let i = 0; i < compnames.length; i++) {
+      for (let j = 0; j < archetypes.length; j++) {
+        /** @type {[]}*/
+        const bin = archetypes[j].getComponentLists(compnames[i]);
+        out[i].push(bin);
+        /*for (let k = 0; k < bin.length; k++) {
+          out[i].push(bin[k])
+        }*/
+      }
+    }
+    return out
+  }
+  clear() {
+    this.list = [];
+  }
+}
+
+/**
+ * This class manages all events by a game manager.
+ * When adding a handler to an event with another handler,the latter will not be overriden,rather,the former will be added to complement the latter.
+ */
+class EventDispatcher {
+  /**
+   * A dictionary of callback functions
+   * 
+   * @private
+   * @type Object<string,function[]>
+   */
+  handlers = {}
+  /**
+   * @private
+   * @type Object<string,any>
+  */
+  events = {}
+  /**
+   * This fires all event handlers of a certain event.
+   * 
+   * @param {string} n the name of event fired.
+   * @param {any} data The payload of the event.
+   */
+  trigger(n, data) {
+    this.addEvent(n,data);
+    if (n in this.handlers)
+      this.handlers[n].forEach(h => h(data));
+  }
+  /**
+   * Adds an event handler to an event dispatcher.
+   * 
+   * @param {string} name name of the event.
+   * @param {EventHandlerFunc} handler Function to be called when the event is triggered.
+   */
+  add(name, handler) {
+    if (name in this.handlers) {
+      this.handlers[name].push(handler);
+      return
+    }
+    this.handlers[name] = [handler];
+  }
+  /**
+   * @param {string} n
+   * @param {any} data
+   */
+  addEvent(n,data){
+    this.events[n] = data;
+  }
+  /**
+   * @param {string} n
+   */
+  getEvent(n){
+    return this.events[n]
+  }
+  clear(){
+    for (const name in this.events) {
+      delete this.events[name];
+    }
+  }
+}
+
+/**
+ * @callback EventHandlerFunc
+ * @param {any} data 
+ * 
+ * @returns {void}
+*/
+
+/**
+ * This handles events created by the DOM.
+ */
+class DOMEventHandler {
+  /**
+   * A dictionary of callback functions
+   * 
+   * @private
+   * @type {Record<string,function[]>}
+   */
+  handlers = {}
+  /**
+   * A dictionary of the main callback functions
+   * 
+   * @private
+   * @type Object<keyof DocumentEventMap,function>
+   */
+  _evHandlers = {}
+  /**
+   * Adds an eventlistener.
+   * 
+   * @param {keyof DocumentEventMap} e Name of the DOMEvent.
+   * @param {function} h The eventlistener.
+   */
+  add(e, h) {
+    if (this.handlers[e])
+      return this.handlers[e].push(h)
+    this.handlers[e] = [h];
+    let listener = (/** @type {Event} */ event) => {
+      let handlers = this.handlers[e];
+      for (var i = 0; i < handlers.length; i++) {
+        handlers[i](event);
+      }
+    };
+    document.addEventListener(e, listener);
+    this._evHandlers[e] = listener;
+  }
+  /**
+   * Removes an eventlistener.
+   * 
+   * @param {keyof DocumentEventMap} e Name of the DOMEvent.
+   * @param {function} h The eventlistener.
+   */
+  remove(e, h) {
+    this.handlers[e].splice(this.handlers[e].indexOf(h), 1);
+    if (!this.handlers[e].length)
+      this.disposeEvent(e);
+  }
+  /**
+   * Removes all eventlisteners of an event.
+   * 
+   * @param {keyof DocumentEventMap} e Name of the DOMEvent.
+   */
+  disposeEvent(e) {
+    document.removeEventListener(e, this._evHandlers[e]);
+    delete this.handlers[e];
+    delete this._evHandlers[e];
+  }
+  /**
+   * Clears all eventlisteners of every event registered.
+   */
+  clear() {
+    for (const ev in this.handlers) {
+      // @ts-ignore
+      this.disposeEvent(ev);
+    }
+  }
+  /* 
+  Donno why this is here,but i do know past me has a reason for this being here.
+  Ill leave it for now.
+  */
+  init() {}
+}
+
+/**
+ * This provides a way to fire off an entity's collision event handler registered to it.
+ * 
+ * @param {Manifold[]} clmds an array of collision manifolds
+*/
+function defaultCollisionHandler(clmds) {
+  let a, b;
+  for (let i = 0; i < clmds.length; i++) {
+    a = clmds[i].bodyA.entity.getHandler("collision");
+    b = clmds[i].bodyB.entity.getHandler("collision");
+
+    if (a) a(
+      clmds[i].bodyA.entity,
+      clmds[i].bodyB.entity,
+      clmds[i]
+    );
+    if (b) b(
+      clmds[i].bodyB.entity,
+      clmds[i].bodyA.entity,
+      clmds[i]
+    );
+  }
+}
+
+/**
+ * This provides a way to fire off an entity's precollision event handler registered to it
+ * 
+ * @param {CollisionPair[]} clmds an array of collision manifolds
+*/
+function defaultPrecollisionHandler(clmds) {
+  let a, b;
+  for (let i = 0; i < clmds.length; i++) {
+    a = clmds[i].a.entity.getHandler("precollision");
+    b = clmds[i].b.entity.getHandler("precollision");
+
+    if (a) a(
+      clmds[i].a.entity,
+      clmds[i].b.entity,
+      clmds[i]
+    );
+    if (b) b(
+      clmds[i].b.entity,
+      clmds[i].a.entity,
+      clmds[i]
+    );
+  }
+}
+
+/**@enum {string}*/
+const Events = {
+  COLLISION : "collision",
+  PRECOLLISION : "precollision",
+  PREUPDATE : "preupdate",
+  POSTUPDATE : "postupdate",
+   UPDATE : "postupdate",  
+   INITIALIZE : "init",
+   ADD : "add",
+   REMOVE : "remove",
+   PAUSE : "pause",
+   PLAY : "play"
+};
+
+/**
+ * @template T
+ */
+class Signal {
+  /**
+   * @type {signalListener<T>[]}
+   */
+  _listeners = []
+  /**
+   * @type {T}
+   */
+  _value
+  /**
+   * @param {T} value
+   */
+  constructor(value) {
+    this._value = value;
+  }
+  /**
+   * @type {T}
+   */
+  get value() {
+    return this._value
+  }
+  set value(x) {
+    this._value = x;
+    for (var i = 0; i < this._listeners.length; i++) {
+      this._listeners[i](this.value);
+    }
+  }
+  /**
+   * @param {signalListener<T>} listener
+   * @param {boolean} callOnce
+   */
+  addListener(listener, callOnce = false) {
+    this._listeners.push(listener);
+  }
+  /**
+   * @param {signalListener<T>} listener
+   */
+  removeListener(listener) {
+    for (var i = 0; i < this._listeners.length; i++) {
+      if (this._listeners[i] == listener)
+        return this._detach(i)
+    }
+  }
+  /**
+   * @private
+   * @param {number} bindingIndex
+   */
+  _detach(bindingIndex) {
+    this._listeners.splice(bindingIndex, 1);
+  }
+}
+
+/**
+ * @template T
+ * @callback signalListener
+ * @param {T} value
+ * @returns {void}
+ */
+
+/**
+ * @template T
+ */
+class Query {
+  /**
+   * @type {string[]}
+   */
+  type = []
+  /**
+   * @type {number}
+   */
+  number = 0
+  /**
+   * @type {T | null}
+   */
+  components = null
+  /**
+   * @param {string[]} componentTypes
+   */
+  constructor(...componentTypes) {
+    this.type = componentTypes;
+    this.number = componentTypes.length;
+  }
+  raw() {
+    return this.components
+  }
+  /**
+   * @param {(comp:T)=>void} callback
+  */
+  each(callback) {
+    const components = new Array(this.number);
+    if(!this.components)return
+    // @ts-ignore
+    for (let i = 0; i < this.components[i].length; i++) {
+      for (let j = 0; j < this.number; j++)
+        // @ts-ignore
+        components[j] = this.components[j][i];
+      // @ts-ignore
+      callback(...components);
+    }
+  }
+}
+
+/**
+ * @typedef {import("typescript").TupleType} Tuple
+ */
+
+class Manager {
+  /**
+   * RAF number of current frame.Used for pausing the manager.
+   * 
+   * @private
+   * @type {number}
+   */
+  _rafID = 0
+  /**
+   * @private
+   */
+  _table = new NaiveArchTypeTable()
+  /**
+   * 
+   * @private
+   * @type {SystemFunc[]}
+   */
+  _systems = []
+  /**
+   * 
+   * @private
+   * @type {boolean}
+   */
+  _initialized = false
+  /**
+   * @private
+   * @type {Record<string,any>}
+   */
+  _resources = {}
+  /**
+   * Whether or not the manager is playing.
+   * 
+   * @type {boolean}
+   */
+  playing = false
+  /**
+   * 
+   * @private
+   * @type {Clock}
+   */
+  clock = new Clock()
+  /**
+   * 
+   * @private
+   * @type {number}
+   */
+  _accumulator = 0
+  /**
+   * Ideal framerate of the manager.Not implemented corrretly.
+   * TODO correct it
+   * 
+   * @type {number}
+   */
+  frameRate = 0
+  /**
+   * @readonly
+   * @type {EventDispatcher}
+   */
+  events = new EventDispatcher()
+  /**
+   * @private
+   * @param {number} accumulate
+   */
+  _update = accumulate => {
+    const dt = Clock.update(this.clock, accumulate);
+
+    if (this._accumulator < this.frameRate) {
+      this._accumulator += dt;
+      this.RAF();
+      return
+    }
+    this.events.trigger("updateStart", dt);
+    this.update(dt);
+    this._accumulator = 0;
+    this.events.trigger("update", dt);
+    this.events.trigger("updateEnd", dt);
+    this.RAF();
+  }
+  /**
+   * Creates a new instance of Manager class
+   * @param {ManagerOptions} options
+   **/
+  constructor(options = {
+    autoplay: true
+  }) {
+    options = Object.assign({
+      autoplay: true,
+    }, options);
+    this.init();
+    if (options.autoplay) this.play();
+  }
+  /**
+   * This initializes the manager.
+   * No need to call this function directly.
+   * This is called after the preloader finishes loading all its files.
+   * 
+   */
+  init() {
+    this.events.trigger("init", this);
+    this._initialized = true;
+    if (this.playing) this.play();
+  }
+
+  /**
+   * Adds an entity to the manager and initializes it.
+   * 
+   * @param {Record<string,any>} components The entity to add
+   */
+  create(components) {
+    const entity = new Entity();
+
+    this._table.insert(entity, components);
+    this.events.trigger("add", {
+      entity,
+      components
+    });
+    return entity
+  }
+  /**
+   * Removes an entity from the manager.
+   * Note that this doesn't destroy the entity, only removes it and its components from the manager.
+   * To destroy the entity,use `Entity.destroy()` method.
+   * 
+   * @param {Entity} entity The entity to remove
+   */
+  remove(entity) {
+    this.events.trigger("remove", entity);
+    this._table.remove(entity);
+  }
+  /**
+   * @template T
+   * @param {Entity} entity
+   * @param { string[]  } compNames
+   * @returns {T}
+   */
+  get(entity, ...compNames) {
+    // @ts-ignore
+    return this._table.get(entity, compNames)
+  }
+  /**
+   * @template T
+   * @param {Entity} entity
+   * @param { T } components
+   */
+  set(entity, components) {
+    throw "not implemented yet"
+  }
+  /**
+   * @template T
+   * @param { string[]  } compNames
+   * @returns {Query<T>}
+   */
+  query(...compNames) {
+    const query = new Query(...compNames);
+    query.components = this._table.query(compNames);
+    return query
+  }
+  /**
+   * @param {string} name
+   */
+  queryEvent(name) {
+    return this.events.getEvent(name)
+  }
+  /**
+   * @template T
+   * @param {string} name
+   * @returns {T}
+   */
+  getResource(name) {
+    return this._resources[name]
+  }
+  /**
+   * @template T
+   * @param {string} name
+   * @param {T} resource
+   */
+  setResource(name, resource) {
+    this._resources[name] = resource;
+  }
+  /**
+   * This removes all of the entities and components from the manager
+   */
+  clear() {
+    this.events.trigger("clear", this);
+    this._table.clear();
+  }
+  /**
+   * This method requests an animation frame from the browser
+   * 
+   * @private
+   */
+  RAF() {
+    this._rafID = requestAnimationFrame(this._update);
+  }
+  /**
+   * This starts up the update loop of the manager
+   */
+  play() {
+    if (!this._initialized) {
+      this.playing = true;
+      return
+    }
+    this.RAF();
+    this.events.trigger("play", this);
+  }
+  /**
+   * This stops the update loop of the manager
+   */
+  pause() {
+    if (!this._initialized) {
+      this.playing = false;
+      return
+    }
+    cancelAnimationFrame(this._rafID);
+    this.events.trigger("pause", this);
+  }
+  /**
+   * Marches the update loop forward,updating
+   * the systems
+   * You shouldn't mess with this/call it or everything will explode with undetectable Loggerors.
+   * 
+   * @private
+   */
+  update(dt = 0.016) {
+    const systems = this._systems;
+    this.setResource("delta",dt);
+    for (let i = 0; i < systems.length; i++) {
+      systems[i](this);
+    }
+  }
+  /**
+   * Used to register a system
+   *
+   * @param {SystemFunc} sys The system to be addad
+   * 
+   */
+  registerSystem(sys) {
+    this._systems.push(sys);
+  }
+  /**
+   * @param {Plugin} plugin
+  */
+  registerPlugin(plugin){
+    plugin.register(this);
+  }
+}
+
+/**
+ * @callback SystemFunc
+ * @param {Manager} manager
+ * @returns {void}
+ */
+/**
+ * @typedef ManagerOptions
+ * @property {boolean} autoplay
+ */
+ /**
+  * @typedef Plugin
+  * @property {SystemFunc} register
+ */
 
 /**
  * Component responsible for animations.
@@ -3403,17 +3468,17 @@ class Tween {
    * @type {T}
    * @private
    */
-  _to = null
+  _to
   /**
    * @type {T}
    * @private
    */
-  _from = null
+  _from
   /**
    * @type {T}
    * @private
    */
-  _into = null
+  _into
   /**
    * @type {LerpFunc}
    * @private
@@ -3430,26 +3495,24 @@ class Tween {
    */
   _timeTaken = 0
   /**
-   * @type {TweenUpdate}
+   * @type {TweenUpdate<T>}
    * @private
    */
   _updateFunc = NoUpdateThrow
   /**
-   * @type {Tween}
+   * @type {Tween<T> | null}
    * @private
    */
   _next = null
   /**
-   *@param {T} into
+   * @param {T} into
+   * @param {T} to
+   * @param {T} from
    */
-  constructor(into) {
+  constructor(to,from,into) {
     this._into = into;
-  }
-  /**
-   * @param {Entity} entity
-   */
-  init(entity) {
-    this.play();
+    this._to = to;
+    this._from = from;
   }
   /**
    * @param {T} x
@@ -3466,7 +3529,7 @@ class Tween {
     return this
   }
   /**
-   * @param {T} t
+   * @param {number} t
    */
   duration(t) {
     this._duration = t;
@@ -3484,7 +3547,7 @@ class Tween {
     this.active = false;
   }
   /**
-   * @param {TweenUpdate} callback
+   * @param {TweenUpdate<T>} callback
    */
   onUpdate(callback) {
     this._updateFunc = callback;
@@ -3493,49 +3556,51 @@ class Tween {
   /**
    * @param {EasingFunc} callback
    */
-  easing(func) {
-    this._easingFunction = func;
+  easing(callback) {
+    this._easingFunction = callback;
     return this
   }
   /**
    * @param {LerpFunc} callback
    */
-  interpolant(func) {
-    this._interpolationFunc = func;
+  interpolant(callback) {
+    this._interpolationFunc = callback;
     return this
   }
   /**
+   * @template U
+   * @param {Tween<U>} tween
    * @param {number} dt
    */
-  update(dt) {
-    if (!this.active) return
+  static update(tween,dt) {
+    if (!tween.active) return
 
-    this._timeTaken += dt;
-    if (this._timeTaken >= this._duration) {
-      if (this._next !== void 0) {
-        this.stop();
-        this._next.play();
+    tween._timeTaken += dt;
+    if (tween._timeTaken >= tween._duration) {
+      if (tween._next) {
+        tween.stop();
+        tween._next.play();
       }
-      if (this._repeat) {
-        this._timeTaken = 0;
+      if (tween._repeat) {
+        tween._timeTaken = 0;
       } else {
-        this._timeTaken = this._duration;
-        this.active = false;
+        tween._timeTaken = tween._duration;
+        tween.active = false;
       }
     }
-    let t = this._easingFunction(
-      this._timeTaken / this._duration
+    let t = tween._easingFunction(
+      tween._timeTaken / tween._duration
     );
-    this._updateFunc(
-      this._interpolationFunc,
-      this._to,
-      this._from,
+    tween._updateFunc(
+      tween._interpolationFunc,
+      tween._to,
+      tween._from,
       t,
-      this._into
+      tween._into
     );
   }
   /**
-   * @param {Tween} next
+   * @param {Tween<T>} next
    */
   chain(next) {
     this._next = next;
@@ -3543,26 +3608,29 @@ class Tween {
   }
 }
 /**
- * @template T
- * @type {TweenUpdate}
+ * @type {TweenUpdate<Vector2>}
  */
 function Vector2Update(lerpFunc, to, from, t, into) {
+  console.log(t);
   into.x = lerpFunc(from.x, to.x, t);
   into.y = lerpFunc(from.y, to.y, t);
 }
 /**
  * @template T
- * @type {TweenUpdate}
+ * 
+ * @type {TweenUpdate<T>}
  */
 function Vector3Update(lerpFunc, to, from, t, into) {
+  // @ts-ignore
   into.x = lerpFunc(from.x, to.x, t);
+  // @ts-ignore
   into.y = lerpFunc(from.y, to.y, t);
+  // @ts-ignore
   into.z = lerpFunc(from.z, to.z, t);
 }
 
 /**
- * @template T
- * @type {TweenUpdate}
+ * @type {TweenUpdate<Color>}
  */
 function ColorUpdate(lerpFunc, to, from, t, into) {
   into.r = lerpFunc(from.r, to.r, t);
@@ -3571,22 +3639,21 @@ function ColorUpdate(lerpFunc, to, from, t, into) {
   into.a = lerpFunc(from.a, to.a, t);
 }
 /**
- * @template T
- * @type {TweenUpdate}
+ *
+ * @type {TweenUpdate<Angle>}
  */
 function AngleUpdate(lerpFunc, to, from, t, into) {
-  into.rad = lerpFunc(from.rad, to.rad, t);
+  into.value = lerpFunc(from.value, to.value, t);
 }
 /**
- * @template T
- * @type {TweenUpdate}
+ * @type {TweenUpdate<any>}
  */
 function NoUpdateThrow(lerpFunc, to, from, t, into) {
   throw "The Tween does not have a valid onUpdate callback."
 }
 
 /**
- * @template {T}
+ * @template T
  * @callback TweenUpdate
  * @param {LerpFunc} lerpFunc
  * @param {T} to
@@ -3605,98 +3672,123 @@ function NoUpdateThrow(lerpFunc, to, from, t, into) {
  * @returns {number}
  */
 
+/**
+ * @template T
+ */
+class TweenPlugin {
+  /**
+   * @param {any} name
+   */
+  constructor(name) {
+    if (!name) throws("A `TweenPlugin` should be given a name to avoid conflict with other `TweenPlugin`s");
+    this.name = name;
+  }
+  /**
+   * @param {{ setResource: (arg0: any, arg1: never[]) => void; registerSystem: (arg0: (manager: any) => void) => void; }} manager
+   */
+  register(manager) {
+    const name = this.name;
+    manager.setResource(name, []);
+    manager.registerSystem(manager => {
+      const dt = manager.getResource("delta");
+      const tweens = manager.getResource(name);
+
+      for (let i = 0; i < tweens.length; i++) {
+        Tween.update(tweens[i], dt);
+      }
+    });
+  }
+}
+/**
+ * @typedef TweenPluginOptions
+ * @property {string} name
+ */
+
 class Geometry {
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  vertices = null
+  vertices
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  normals = null
+  normals
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  _dynNormals = null
+  _dynNormals
   /**
    * @param { Vector2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices;
-    this.normals = this.calcFaceNormals();
-    this._dynNormals = this.normals.map(e => e.clone());
+    this.normals = Geometry.calcFaceNormals(vertices);
+    // @ts-ignore
+    this._dynNormals = this.normals.map(e => Vector2.copy(e));
   }
+
   /**
-   * @type string
+   * @param {Geometry} geometry
+   * @param {number} angle
+   * @param {Vector2[]} out
    */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "geometry"
-  }
-  /**
-   * @param {number} rad
-   * @param {Vector2[]} target
-   */
-  getNormals(rad, target) {
-    target = target || [];
-    for (var i = 0; i < this.normals.length; i++) {
-      target.push(this._dynNormals[i].copy(this.normals[i]).rotate(rad));
+  static getNormals(geometry, angle, out = []) {
+    for (let i = 0; i < geometry.normals.length; i++) {
+      const normal = Vector2.rotate(geometry.normals[i], angle);
+      // @ts-ignore
+      out.push(normal);
     }
-    return target
+    return out
   }
   /**
-   * @private
-   * @returns Vector2[]
+   * @param {Vector2[]} vertices
+   * @returns {Vector2[]}
    */
-  calcFaceNormals() {
-    const axes = [],
-      { vertices } = this;
-    for (var i = 0; i < vertices.length; i++) {
-      let axis = vertices[i >= vertices.length ? vertices.length - 1 : i]
-        .clone()
-        .sub(vertices[i + 1 >= vertices.length ? 0 : i + 1]).normal();
-      for (var j = 0; j < axes.length; j++) {
-        if (axis.equals(axes[j]) || axis.clone().reverse().equals(axes[j])) {
-          axis = null;
-          break
-        }
-      }
-      if (!axis) continue
-      axes.push(axis);
+  static calcFaceNormals(vertices) {
+    const axes = [];
+    let previous = vertices[vertices.length - 1];
+    for (let i = 0; i < vertices.length; i++) {
+      const current = vertices[i];
+      const axis = Vector2.sub(previous, current);
+      Vector2.normal(axis, axis);
+      Vector2.normalize(axis, axis);
+
+      previous = current;
+      // @ts-ignore
+      if (!checkifEquals(axis, axes))
+        axes.push(axis);
     }
+    // @ts-ignore
     return axes
   }
   /**
-   * @param {number} n
-   * @param { Vector2[]} vertices
-   * @param { Vector2} pos
-   * @param {number} rad
+   * @param {Vector2[]} vertices
+   * @param {Vector2} pos
+   * @param {number} angle
+   * @param {Vector2} scale
+   * @param {Vector2[]} out
    */
-  transform(vertices, pos, rad, n) {
-    for (let i = 0; i < this.vertices.length; i++) {
-      let vertex = vertices[i];
-      vertex.copy(this.vertices[i]);
-      vertex.rotate(rad);
-      vertex.multiply(n);
-      vertex.add(pos);
+  static transform(vertices, pos, angle, scale, out) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    for (let i = 0; i < vertices.length; i++) {
+      const vertex = out[i];
+      Vector2.rotateFast(vertices[i], cos, sin, vertex);
+      Vector2.multiply(vertex, scale, vertex);
+      Vector2.add(vertex, pos, vertex);
     }
   }
-  toJson(){
-    let obj = {
-      vertices:this.vertices.map((v)=>v.toJson())
-    };
-    return obj
-  }
-  fromJson(obj){
-    this.vertices = obj.vertices.map(v=>new Vector2().fromJson(v));
-    this.normals = this.calcFaceNormals();
-    this._dynNormals = this.normals.map(e => e.clone());
-  }
+}
+
+/**
+ * @param {Vector2} axis
+ * @param {Vector2[]} axes
+ */
+function checkifEquals(axis, axes) {
+  for (let i = 0; i < axes.length; i++)
+    if (Vector2.absEqual(axis, axes[i]))
+      return true
+  return false
 }
 
 /**@enum {number}*/
@@ -3712,34 +3804,38 @@ const ObjType = Object.freeze({
 });
 /**@enum {number}*/
 const BodyType = Object.freeze({
-  DYNAMIC:2,
-  KINEMATIC:1,
-  STATIC:0
+  DYNAMIC: 2,
+  KINEMATIC: 1,
+  STATIC: 0
 });
 
 //Default settings 
 const Settings = {
+
   //For the world
-  posDampen: 0.80,
+  posDampen: 0.3,
   linearDamping: 0.001,
   angularDamping: 0.001,
   velocitySolverIterations: 10,
-  fixedFrameRate: 0.016,
-  
+  fixedFrameRate: 1 / 60,
+  penetrationSlop: 0.1,
+  positionCorrection: true,
+  warmStarting: false,
+  impulseAccumulation: false,
+  separationTolerance: 0.1,
+
   //For all bodies
+  type: BodyType.DYNAMIC,
   mass: 1,
   restitution: 0.6,
-  staticFriction: 0.4,
-  kineticFriction: 0.2,
-  boundPadding : 0,
+  staticFriction: 1,//0.4,
+  kineticFriction: 0.5,//0.2,
+  boundPadding: 0,
   allowSleep: false,
   aabbDetectionOnly: false,
   collisionResponse: true,
-  autoUpdateBound: true,
-  type:BodyType.DYNAMIC
+  autoUpdateBound: true
 };
-
-let tmp1$d = new Vector2$1();
 
 /**
  * This class makes a body tangible
@@ -3749,147 +3845,174 @@ class Shape {
   /**
    * Used to determine what type of shape this is.
    * 
-   * @type number
+   * @type {number}
    * @readonly
    */
   type = ShapeType.POLYGON
   /**
-   * The offset angle of this shape from this body's angle.
-   * 
-   * @type number
+   * @type {number}
    */
-  offAngle = 0
-  /**
-   * The offset position of this shape from this body's position.
-   * 
-   * @type Vector2
-   */
-  offPosition = null
+  angle = 0
   /**
    * The vertices describing the shape.
    * 
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  vertices = null
+  vertices
   /**
    * Keeps the original normals and vertices of this shape
    * 
-   * @type Geometry
+   * @type {Geometry}
    */
-  geometry = null
+  geometry
 
   /**
    * @param { Vector2[]} vertices The vertices of the shape in local space coordinates.
-   * @param { Vector2} [offset=vector] offset position relative to parent body
-   * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vector2$1(), offsetAngle = 0) {
-    this.offPosition = offset;
-    this.offAngle = offsetAngle * Math.PI / 180;
-    this.vertices = vertices.map(v => v.clone());
+  constructor(vertices) {
+    // @ts-ignore
+    this.vertices = vertices.map(v => Vector2.copy(v));
     this.geometry = new Geometry(vertices);
   }
   /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "shape"
-  }
-  /**
-   * The area occupied by a shape.
-   * @type number
-   */
-  get area() {
-    return 0
-  }
-  /**
    * Returns the normals of the faces when rotated.
-   * 
    * @param {Shape} shape
-   * @param { Vector2[]} [target=[]] An array where results are stored.
-   * @returns { Vector2[]}
+   * @param {Shape} refshape
+   * @param {Vector2[]} [out] An array where results are stored.
+   * @returns {Vector2[]}
    */
-  getNormals(shape, target) {
-    return this.geometry.getNormals(this.angle, target)
+  static getNormals(shape, refshape, out = []) {
+    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, out)
+    let vertex = null;
+    if (refshape.type === Shape.POLYGON)
+      vertex = getNearVertex(shape.vertices[0], shape.vertices);
+    if (!vertex)
+      vertex = refshape.vertices[0];
+    const normal = Vector2.copy(vertex);
+    Vector2.sub(normal, shape.vertices[0], normal);
+    Vector2.normalize(normal, normal);
+    // @ts-ignore
+    out.push(normal);
+
+    return out
   }
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param { Vector2} position the world position of the body
+   * @template {Shape} T
+   * @param {T} shape
+   * @param {Vector2} position the world position of the body
    * @param {number} angle the orientation of body
-   * @param {number} scale the scale of the body
+   * @param {Vector2} scale the scale of the body
    */
-  update(position, angle, scale) {
-    this.angle = this.offAngle + angle;
-    this.geometry.transform(this.vertices, tmp1$d.copy(position).add(this.offPosition), this.angle, 1 , position);
+  static update(shape, position, angle, scale) {
+    shape.angle = angle;
+    if (shape.type === ShapeType.CIRCLE) {
+      Vector2.copy(position, shape.vertices[0]);
+      return
+    }
+    Geometry.transform(
+      shape.geometry.vertices,
+      position,
+      angle,
+      scale,
+      shape.vertices
+    );
   }
 
   /**
    * Returns the world coordinates of the vertices.
-   * 
-   * @param { Vector2} axis
-   * @param { Vector2[]} target 
-   * @returns { Vector2[]}
+   * @template {Shape} T
+   * @param {T} shape
+   * @param { Vector2 } axis
+   * @param { Vector2[] } out
+   * @returns { Vector2[] }
    */
-  getVertices(axis, target) {
-    return this.vertices
-  }
+  static getVertices(shape, axis, out = []) {
+    if (shape.type === Shape.POLYGON)
+      return shape.vertices
 
+    const v1 = Vector2.multiplyScalar(axis, -shape.vertices[1].x);
+    const v2 = Vector2.multiplyScalar(axis, shape.vertices[1].x);
+
+    Vector2.add(v1, shape.vertices[0], v1);
+    Vector2.add(v2, shape.vertices[0], v2);
+    
+    // @ts-ignore
+    out[0] = v1;
+    // @ts-ignore
+    out[1] = v2;
+
+    return out
+  }
+  /**
+   * TODO - Actually implement this
+   * @param {Shape} shape
+   */
+  static getArea(shape){
+    if(shape.type === Shape.POLYGON){
+      return 0
+    }
+    return 0
+  }
   /**
    * Calculates the inertia of a given shape.
    * 
-   * @virtual
+   * @param {Shape} shape
+   * @param {number} mass
    * @returns {number}
    */
-  static calcInertia() {
-    throw new Error("Implement in the children classes")
-  }
-  toJson() {
-    let obj = {
-      type: this.CHAOS_OBJ_TYPE,
-      geometry: this.geometry.toJson(),
-      shapwType: this.type,
-      offset: this.offPosition.toJson(),
-      offAngle: this.offAngle
-    };
-    return obj
-  }
-  fromJson(obj) {
-    this.offAngle = obj.offAngle;
-    this.offPosition = obj.offset;
-    this.geometry.fromJson(obj.geometry);
-    this.vertices = this.geometry.vertices.map(v => v.clone());
+  static calcInertia(shape, mass) {
+    const vertices = shape.vertices;
+    if (shape.type === Shape.CIRCLE) {
+      const radius = vertices[1].x;
+      return mass * (radius * radius) * 0.5
+    }
+    const vertexCount = vertices.length;
+    let numerator = 0.0;
+    let denominator = 0.0;
+    let i = vertexCount - 1;
+    for (let j = 0; j < vertexCount; ++j) {
+      const v1 = vertices[i];
+      const v2 = vertices[j];
+      const crs = Math.abs(Vector2.cross(v1, v2));
+      numerator += crs * (Vector2.dot(v2, v2) + Vector2.dot(v1, v2) + Vector2.dot(v1, v1));
+      denominator += crs;
+      i = j;
+    }
+    return mass * numerator / (denominator * 6.0)
   }
   static CIRCLE = 0
   static POLYGON = 1
 }
 
-class Line extends Shape {
-  /**
-   * @type number
-  */
-  length = 0
-  /**
-   * @param {number} length
-   * @param { Vector2} offset
-   * @param {number} offsetAngle
-  */
-  constructor(length,offset,offsetAngle) {
-    let start = new Vector2$1(1).multiply(length / 2),
-      end = new Vector2$1(1).multiply(-length / 2);
-    super([start, end],offset,offsetAngle);
-    this.length = length;
+/**
+ * @param {Vector2} position
+ * @param {Vector2[]} vertices
+ */
+function getNearVertex(position, vertices) {
+  let vertex = Vector2.ZERO;
+  let min = -Infinity;
+  for (let i = 0; i < vertices.length; i++) {
+    const a = Vector2.distanceToSquared(vertices[i], position);
+    if (min > a) {
+      vertex = vertices[i];
+      min = a;
+    }
   }
+  return vertex
 }
 
-let _vec1 = new Vector2$1();
-let _vec2 = new Vector2$1();
+class Line extends Shape {
+  /**
+   * @param {number} length
+   */
+  constructor(length) {
+    const start = new Vector2(length / 2);
+    const end = new Vector2(-length / 2);
+    super([start, end]);
+  }
+}
 
 /**
  * A circular shape.
@@ -3898,141 +4021,46 @@ let _vec2 = new Vector2$1();
  * @augments Shape
  */
 class Circle extends Shape {
-  angle = 0
-  radius = 0
+  type = Shape.CIRCLE
   /**
    * @param {number} radius 
-   * @param { Vector2} offset Positional offset from the body center.
-   *  @param {number} offsetAngle Angular offset from the body center.
    */
-  constructor(radius, offset, offsetAngle) {
-
-    //the first vertex is position 
-    super([], offset, offsetAngle);
-    this.vertices = [new Vector2$1(), new Vector2$1(), new Vector2$1()];
-    this.radius = radius;
-    this.type = Shape.CIRCLE;
+  constructor(radius) {
+    //the first vertex is position
+    //the second vertex x-position is radius
+    //
+    super([
+      new Vector2(),
+      new Vector2(radius, radius)
+    ]);
   }
   get position() {
     return this.vertices[0]
   }
-  /**
-   * @inheritdoc
-   * @param {number} mass
-   * @param {number} radius 
-   */
-  static calcInertia(mass, radius) {
-    return mass * (radius * radius) / 4
+  get radius() {
+    return this.vertices[1].x
   }
-  /**
-   * @inheritdoc
-   * 
-   * @param { Vector2} axis
-   * @param { Vector2[]} out 
-   * @returns { Vector2[]}
-   */
-  getVertices(axis, out) {
-    let target = out || [];
-    let v1 = _vec1.copy(axis).multiply(-this.radius).add(this.position);
-    let v2 = _vec2.copy(axis).multiply(this.radius).add(this.position);
-    target[0] = v1.clone();
-    target[1] = v2.clone();
-    return target
-  }
-  /**
-   * 
-   * @param {Shape} shape 
-   * @param { Vector2[]} [target=[]] target
-   * @returns Array< Vector2>
-   */
-  getNormals(shape, target = []) {
-    let min = null,
-      vertex = null;
-    for (let i = 0; i < shape.vertices.length; i++) {
-      let a = this.position.distanceToSquared(shape.vertices[i]);
-      if (!min || min > a) {
-        vertex = shape.vertices[i];
-        min = a;
-      }
-    }
-    if (!vertex) vertex = shape.position;
-    target.push(_vec1.copy(vertex).sub(this.position).normalize().clone());
-    return target
-  }
-  /**
-   * @inheritdoc
-   * 
-   * @param { Vector2} position
-   * @param {number} angle
-   * @param {number} scale 
-   */
-  update(position, angle, scale) {
-    this.position.copy(position).add(this.offPosition);
-    this.angle = this.offAngle + angle;
+  set radius(x) {
+    //this.vertices[1].x = x
   }
   get area() {
     return Math.PI * this.radius * this.radius
-  }
-  toJson() {
-    let obj = {
-      radius: this.radius,
-      offset: this.offPosition,
-      offAngle: this.offAngle,
-      shapeType: this.type,
-      type: this.CHAOS_OBJ_TYPE
-    };
-    return obj
-  }
-  fromJson(obj) {
-    return new Circle(
-      obj.radius,
-      new Vector2$1().fromJson(obj.offset),
-      obj.offAngle
-    )
   }
 }
 
 class Rectangle extends Shape {
   /**
-   * @type number
-   */
-  height = 0
-  /**
-   * @type number
-   */
-  width = 0
-  /**
    * @param {number} width
    * @param {number} height
-   * @param { Vector2} offset Positional offset from the body center.
-   *  @param {number} offsetAngle Angular offset from the body center.
    */
-  constructor(width, height, offset, offsetAngle) {
-    let v1 = new Vector2$1(-width / 2, -height / 2);
-    let v2 = new Vector2$1(-width / 2, height / 2);
-    let v3 = new Vector2$1(width / 2, height / 2);
-    let v4 = new Vector2$1(width / 2, -height / 2);
-    super([v1, v2, v3, v4], offset, offsetAngle);
-    this.height = height;
-    this.width = width;
+  constructor(width, height) {
+    let v1 = new Vector2(-width / 2, -height / 2);
+    let v2 = new Vector2(-width / 2, height / 2);
+    let v3 = new Vector2(width / 2, height / 2);
+    let v4 = new Vector2(width / 2, -height / 2);
+    super([v1, v2, v3, v4]);
   }
-  /**
-   * @inheritdoc
-   * @param {number} mass of the body
-   * @param {number} width
-   * @param {number} height
-   * @returns number
-   */
-  static calcInertia(mass, width, height) {
-    return mass * (sq(width) + sq(height)) / 12
-  }
-  get area() {
-    return this.width * this.height
-  }
-
 }
-
-let tmp1$c = new Vector2$1();
 
 /**
  * A triangular shape.
@@ -4044,190 +4072,22 @@ class Triangle extends Shape {
    * @param {number} base Length of one side.
    * @param {number} height Length of a second side.
    * @param {number} angle The angle between the two sides.
-   * @param { Vector2} offset Positional offset from the body center.
-   * @param {number} offsetAngle Angular offset from the body center.
    */
-  constructor(base, height, angle, offset, offsetAngle) {
-    let l1 = new Vector2$1().set(1, 0).multiply(base);
-    let l2 = Vector2$1.fromRad(angle).multiply(height/Math.sin(angle));
-    let center = tmp1$c.set((l1.x + l2.x) / 3, l2.y / 3);
+  constructor(base, height, angle) {
+    angle = clamp(angle,1,179);
+    
+    const l1 = new Vector2(base);
+    const l2 = Vector2.fromAngle(angle);
+    Vector2.multiplyScalar(l2,-height / Math.sin(angle),l2);
+    
+    const center = new Vector2(-(l1.x + l2.x) / 3,-l2.y / 3);
     super([
-      new Vector2$1().sub(center),
-      l1.sub(center),
-      l2.sub(center)
-    ], offset, offsetAngle);
-  }
-  /**
-   * @param {number} mass
-   * @param {number} base
-   * @param {number} height
-   * @param {number} angle
-  */
-  static calcInertia(mass,base,height,angle){
-    return 0.5 * mass * base * height * (1 - 2/3 * (1 - (Math.cos(2 * angle * 180/Math.PI))/2))
-  }
-}
-
-/**
- * Component to hold the bounds of an entity.
- * 
- */
-class Bound$1 extends Component {
-  /**
-   * The actual bounds.Used for collision detection.
-   * 
-   * @type BoundingBox | BoundingCircle
-   */
-  bounds = new BoundingBox()
-  toJson(){
-    return {
-      bounds:this.bounds.toJson()
-    }
-  }
-  fromJson(obj){
-    this.bpunds.fromJson(obj.bounds);
-  }
-}
-
-/**
- * Holds transformation info of an entity 
- * 
- */
-class Transform$1 extends Component{
-  /**
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
-   * @returns 
-   */
-  constructor(x,y,a){
-    super();
-    this.position = new Vector2$1(x,y);
-    this.orientation = new Angle(a);
-  }
-  init(){}
-  toJson(){
-    return {
-      position: this.position.toJson(),
-      orientation:this.orientation.toJson()
-    }
-  }
-  fromJson(obj){
-    this.position.fromJson(obj.position);
-    this.orientation.fromJson(obj.orientation);
-  }
-}
-
-/**
- * Component to hold requirements for an entity to move.
- * 
- */
-class Movable$1 extends Component {
-  /**
-   * @type {Transform}
-  */
-  transform = null
-  /**  * 
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
-   * @returns {Entity}
-   */
-  constructor(x, y, a) {
-    super();
-    this.velocity = new Vector2$1(x, y);
-    this.rotation = new Angle(a);
-    this.acceleration = new Vector2$1();
-    this.torque = new Angle();
-  }
-  /**
-   * @inheritdoc
-  */
-  init(entity) {
-    this.requires(entity, "transform");
-    if (!this.transform)
-      this.transform = entity.get("transform");
-  }
-  toJson() {
-    return {
-      velocity: this.velocity.toJson(),
-      rotation: this.rotation.toJson(),
-      acceleration: this.acceleration.toJson()
-    }
-  }
-  fromJson(obj) {
-    this.velocity.fromJson(obj.velocity);
-    this.rotation.fromJson(obj.rptatjon);
-    this.acceleration.fromJson(obj.acceleration);
-  }
-}
-
-class Intergrator extends System {
-  /**
-   * @type {boolean}
-   */
-  active = false
-  /**
-   * @type {typeof EulerSolver.solve}
-   */
-  solver = EulerSolver.solve
-  /**
-   * @type {Movable}
-   */
-  objects = []
-  constructor() {
-    super();
-  }
-  /**
-   * @inheritdoc
-   */
-  init(manager) {
-    const world = manager.getSystem("world");
-    if (world) world.enableIntergrate = false;
-    this.active = true;
-
-    manager.setComponentList("movable", this.objects);
-  }
-  /**
-   * @inheritdoc
-   */
-  update(dt) {
-    for (let i = 0; i < this.objects.length; i++) {
-      if (this.objects[i] == void 0) return
-      this.solver(
-        this.objects[i].transform,
-        this.objects[i],
-        dt
-      );
-    }
-  }
-}
-const a = new Vector2$1();
-/**
- * Semi implicit euler integration.
- * More stable than explicit euler intergration.
- */
-class EulerSolver {
-  /**
-   * @param {Transform} transform
-   * @param {Movable} movable
-   * @param {number} dt
-   */
-  static solve(transform, movable, dt) {
-    const position = transform.position;
-    const velocity = movable.velocity;
-    const acceleration = movable.acceleration;
-    const orientation = transform.orientation;
-    const rotation = movable.rotation;
-    const torque = movable.torque;
-
-    velocity.add(acceleration.multiply(dt));
-    a.copy(velocity);
-    position.add(a.multiply(dt));
-    rotation.value += torque.value * dt;
-    orientation.value += rotation.value * dt;
-    acceleration.set(0, 0);
-    torque.value = 0;
+      center,
+      // @ts-ignore
+      Vector2.add(l1,center,l1),
+      // @ts-ignore
+      Vector2.add(l2,center,l2)
+    ]);
   }
 }
 
@@ -4235,98 +4095,54 @@ class EulerSolver {
  * Holds information needed for collision detection and response.
  * 
  */
-class Body extends Component {
+class Body2D {
   /**
    * Unique identification of a body.
    * 
-   * @type number
+   * @readonly
+   * @type {number}
    */
   id = generateID()
-  _transform = new Transform$1()
-  _movable = new Movable$1()
-  _mass = 1
-  /**
-   * Rotational inertia of the body.
-   * 
-   * @private
-   * @type number
-   */
-  _inertia = 1
-  /**
-   * Type of the body e.g Dynamic, Kinematic or Static.
-   * 
-   * @private
-   * @type number
-   */
-  _type = 0
-  /**
-   * Anchors of the body in local space.
-   * 
-   * @private
-   * @type Vector2[]
-   */
-  _localanchors = []
-  /**
-   * The original anchors of the body in local space.
-   * 
-   * @private
-   * @type Vector2[]
-   */
-  anchors = []
-  /**
-   * Position of a body in the last frame..
-   * 
-   * @type Vector2
-   */
-  lastPosition = new Vector2$1()
   /**
    * Inverse mass of the body.
    * 
-   * @type number
+   * @type {number}
    */
   inv_mass = 0
   /**
    * Inverse inertia of the body.
    * 
-   * @type number
+   * @type {number}
    */
   inv_inertia = 0
   /**
    * The bounciness of the body between 0 and 1.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.restitution
    */
   restitution = Settings.restitution
   /**
    * The friction of the body between 0 and 1 that affects it before it moves.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.staticFriction
    */
   staticFriction = Settings.staticFriction
   /**
    * The friction of the body between 0 and 1that affects it after it moves.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.kineticFriction
    */
   kineticFriction = Settings.kineticFriction
   /**
    * The padding of the body's bounds.
    * 
-   * @type number
+   * @type {number}
    * @default Settings.boundPadding
    */
   boundPadding = Settings.boundPadding
-  /**
-   * The index of the body in its manager.
-   * 
-   * @package
-   * @type number
-   * @default -1
-   */
-  index = -1
   /**
    * Used to describe how bodies will collide with each other.
    * Bodies in the same layer or layer 0 will always collide with each other unless they are in different groups.
@@ -4340,73 +4156,53 @@ class Body extends Component {
     group: 0
   }
   /**
-   * Object containing the body
+   * The shape of the body.
    * 
-   * @type Entity | null
+   * @readonly
+   * @type {Shape}
    */
-  entity = null
-  /**
-   * World space bounds of a body.
-   * 
-   * @type BoundingBox | BoundingCircle | null
-   */
-  bounds = null
-  /**
-   * Shapes a body is comprised of.
-   * 
-   * @type Shape[]
-   */
-  shapes = null
-  /**
-   * Client of the body inside a broadphase.
-   * 
-   * @package
-   * @type Object | null
-   */
-  client = null
+  shape
   /**
    * Whether the body should sleep when at rest or not.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.allowSleep
    */
   allowSleep = Settings.allowSleep
   /**
    * If the body is asleep or not.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   sleeping = false
   /**
    * Whether the body should detect collisions with bounds only.If true,no collision response will occur.Precollision event only will be fired.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.aabbDetectionOnly
    */
   aabbDetectionOnly = Settings.aabbDetectionOnly
   /**
    * Whether the body should respond to collisions.If false,no collision response will occur but collision events will still be fired.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.collisionResponse
    */
   collisionResponse = Settings.collisionResponse
   /**
    * Whether or not the bounds should be automatically updated.
    * 
-   * @type boolean
+   * @type {boolean}
    * @default Settings.autoUpdateBound
    */
   autoUpdateBound = Settings.autoUpdateBound
   /**
-   * @param {Shape[]} shapes
+   * @param {Shape} shape
    */
-  constructor(...shapes) {
-    super();
-    this.type = Settings.type;
-    this.shapes = shapes;
-    this.mass = 1;
-    this.inertia = 1;
+  constructor(shape) {
+    Body2D.setType(this,Settings.type);
+    this.shape = shape;
+    Body2D.setMass(this,1);
   }
   /**
    * Type of a body.It includes the static and dynamic for now.
@@ -4414,657 +4210,254 @@ class Body extends Component {
    * Dynamic bodies move and respond to collisions.
    * Kinematic bodies move but do not respond to collisions.
    * 
+   * @deprecated
    * @example
-   * let body = new Body()
-   * body.type = Body.STATIC
+   * @type {number}
+   * let body = new Body2D()
+   * body.type = Body2D.STATIC
    * 
    */
   set type(x) {
-    if (x === Body.STATIC || x === Body.KINEMATIC) this.mass = 0;
-    this._type = x;
+    deprecate("Body2D().type","Body2D.setType()");
+    if (x === Body2D.STATIC) this.mass = 0;
   }
   get type() {
-    return this._type
+    deprecate("Body2D().type");
+    return 0
   }
   /**
-   * Used to determine what it is in a world.
-   * 
-   * @package
-   * @type number 
-   */
-  get physicsType() {
-    return ObjType.BODY
-  }
-  /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "body"
-  }
-  /**
-   * Acceleration of a body
-   * 
-   * @type Vector2
-   */
-  get acceleration() {
-    return this._movable.acceleration
-  }
-  set acceleration(x) {
-    this._movable.acceleration.copy(x);
-  }
-  /**
-   * Velocity of a body
-
-   * @type Vector2
-   */
-  get velocity() {
-    return this._movable.velocity
-  }
-  set velocity(x) {
-    this._movable.velocity.copy(x);
-  }
-  /**
-   * Rotation of a body
-   * 
-   * @type Angle
-   */
-  get rotation() {
-    return this._movable.rotation
-  }
-  set rotation(x) {
-    this._movable.rotation.copy(x);
-  }
-  /**
-   * Orientation of a body in degrees.
-   * 
-   * @type number
-   */
-  set angle(angle) {
-    this.orientation.value = degToRad(angle);
-  }
-  get angle() {
-    return radToDeg(this.orientation.value)
-  }
-  /**
-   * Mass of a body.
-   * 
-   * @type number
+   * @deprecated
+   * @type {number} 
    */
   set mass(x) {
-    this._mass = x;
+    deprecate("Body2D().mass");
     this.inv_mass = x === 0 ? 0 : 1 / x;
-    if (x == 0) this.inertia = 0;
+    this.inv_inertia = 1 / Shape.calcInertia(this.shape,this.mass);
   }
   get mass() {
-    return this._mass
+    deprecate("Body2D().mass");
+    return 1 / this.inv_mass
   }
   /**
    * Density of a body.
    *
-   * @type number
+   * @deprecated
+   * @type {number}
    */
   set density(x) {
-    let area = 0;
-    for (var i = 0; i < this.shapes.length; i++) {
-      area += this.shapes[i].area;
-    }
-    this.mass = x * area * 0.01;
+    deprecate("Body2D().density");
+    const area = Shape.getArea(this.shape);
+    this.inv_mass = 1 / (x * area);
   }
   get density() {
-    let area = 0;
-    for (var i = 0; i < this.shapes.length; i++) {
-      area += this.shapes[i].area;
-    }
-    return 100 * this.mass / area
+    deprecate("Body2D().density");
+    const area = Shape.getArea(this.shape);
+    return this.inv_mass * 1 / area
   }
   /**
    * Rotational inertia of a body.
    * 
+   * @deprecated
    * @type number
    */
   set inertia(x) {
-    this._inertia = x;
+    deprecate("Body2D().inertia");
     this.inv_inertia = x == 0 ? 0 : 1 / x;
   }
   get inertia() {
-    return this._inertia
-  }
-  /**
-   * World space position of a body
-   * 
-   * @type Vector2
-   */
-  get position() {
-    return this._transform.position
-  }
-  set position(x) {
-    this._transform.position.copy(x);
-  }
-  /**
-   * Orientation of a body
-   * 
-   * @type Angle
-   */
-  set orientation(r) {
-    this._transform.orientation.copy(r);
-  }
-  get orientation() {
-    return this._transform.orientation
-  }
-  /**
-   * Angular velocity of a body in degrees
-   * 
-   * @type number 
-   */
-  get angularVelocity() {
-    return radToDeg(this.rotation.value)
-  }
-  set angularVelocity(x) {
-    this.rotation.value = degToRad(x);
-  }
-  /**
-   * Torque of a body in degrees
-   * 
-   * @type number 
-   */
-  get torque() {
-    return this._movable.torque
-  }
-  set torque(x) {
-    this._movable.torque.copy(x);
-  }
-  /**
-   * Angular acceleration of a body in degrees
-   * 
-   * @type number 
-   */
-  get angularAcceleration() {
-    return radToDeg(this._movable.torque.value)
-  }
-  set angularAcceleration(x) {
-    this._movable.torque.value = degToRad(x);
+    deprecate("Body2D().inertia");
+    return 1 / this.inv_inertia
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
    * 
+   * @deprecated
    * @param { Vector2} v The anchor arm
    * @returns {number}
    */
   setAnchor(v) {
-    this.anchors.push(new Vector2$1(v.x, v.y));
-    return this._localanchors.push(v) - 1
+    deprecate("Ball().setAnchor()");
+    return 0
   }
   /**
    * Gets an anchor in its local space coordinate form.
    * Treat the returned value as read-only.
    * 
+   * @deprecated
    * @param {number} index the position of the
    * @returns { Vector2}
    */
   getAnchor(index) {
-    return this.anchors[index]
+    deprecate("Ball().getAnchor()");
+    return new Vector2()
   }
   /**
    * Returns a rotated anchor relative to the body.
    * 
+   * @deprecated
    * @param {number} index The position of the anchor.
-   * @param { Vector2} [target= Vector2] Vector2 to store results in.
-   * @returns { Vector2}
+   * @param {Vector2} [target] Vector2 to store results in.
+   * @returns {Vector2}
+   * @param {number} angle
    */
-  getLocalAnchor(index, target = new Vector2$1()) {
-    return target.copy(this._localanchors[index]).rotate(this.orientation.value)
+  getLocalAnchor(index,angle,target = new Vector2()) {
+    deprecate("Ball().getLocalAnchor()");
+    return target
   }
   /**
-   * Applies a force to a body affecting its direction of travel and rotation.
+   * Calculates the bounds of the body
    * 
-   * @param { Vector2} force The force to be applied.
-   * @param { Vector2} [arm = Vector2] The collision arm.
+   * @param {BoundingBox} bound
+   * @param {Body2D} body Body2D to calculate max and min from
+   * @param {Number} padding increases the size of the bounds
    */
-  applyForce(force, arm = Vector2$1.ZERO) {
-    this.acceleration.add(force.multiply(this.inv_mass));
-    this.torque.value += arm.cross(force) * this.inv_inertia;
-  }
-  /**
-   * Applies a force to a body affecting its direction of travel and rotation.
-   * 
-   * @param { Vector2} impulse The force to be applied.
-   * @param { Vector2} [arm = Vector2] The collision arm.
-   */
-  applyImpulse(impulse, arm = Vector2$1.ZERO) {
-    this.velocity.add(impulse.multiply(this.inv_mass));
-    this.rotation.value += arm.cross(impulse) * this.inv_inertia;
-  }
-  /**
-   * Initializes the body to its given.Called by the world or an entity manager.
-   * 
-   * @param { Entity } [entity]
-   * @param {boolean} [composited=false]
-   */
-  init(entity, composited = false) {
-    this.entity = entity;
-    if (composited || entity == void 0) {
-      this.bounds = new BoundingBox();
-      if (entity != void 0) {
-        this._movable.transform = this._transform;
-        entity.manager.addComponent("transform", this._transform);
-        entity.manager.addComponent("movable", this._movable);
+  static calculateBounds(body,bound,padding = 0) {
+    let minX = Number.MAX_SAFE_INTEGER,
+      minY = Number.MAX_SAFE_INTEGER,
+      maxX = -Number.MAX_SAFE_INTEGER,
+      maxY = -Number.MAX_SAFE_INTEGER;
+
+    const shape = body.shape;
+    if (shape.type == Shape.CIRCLE) {
+      const position = shape.vertices[0];
+      const radius = shape.vertices[1].x;
+      const idx = position.x - radius,
+        idy = position.y - radius,
+        mdx = position.x + radius,
+        mdy = position.y + radius;
+      if (!minX || idx < minX) minX = idx;
+      if (!maxX || mdx > maxX) maxX = mdx;
+      if (!minY || idy < minY) minY = idy;
+      if (!maxY || mdy > maxY) maxY = mdy;
+    } else {
+      for (let j = 0; j < shape.vertices.length; j++) {
+        let vertex = shape.vertices[j];
+        if (vertex.x < minX) minX = vertex.x;
+        if (vertex.x > maxX) maxX = vertex.x;
+        if (vertex.y < minY) minY = vertex.y;
+        if (vertex.y > maxY) maxY = vertex.y;
       }
-      this.update();
-      return
     }
-    this.requires(entity, "transform", "movable", "bounds");
-
-    let transform = entity.get("transform");
-    let bounds = entity.get("bounds").bounds;
-    let move = entity.get("movable");
-    this._transform = transform;
-    this._movable = move;
-    this.bounds = bounds;
-
-    this.update();
+    bound.min.x = minX - padding;
+    bound.max.x = maxX + padding;
+    bound.min.y = minY - padding;
+    bound.max.y = maxY + padding;
   }
-
   /**
-   * This updates the world coordinates of shapes, anchors and bounds.
+   * This updates the world coordinates of shape and bounds.
+   * @param {Body2D} body
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {BoundingBox} bounds
    */
-  update() {
-    for (var i = 0; i < this.shapes.length; i++) {
-      this.shapes[i].update(this.position, this.orientation.value);
-    }
-    for (var i = 0; i < this.anchors.length; i++) {
-      this.anchors[i].copy(this._localanchors[i]).rotate(this.orientation.value); //.add(this.position)
-    }
-    if (this.autoUpdateBound)
-      this.bounds.calculateBounds(this, this.boundPadding);
-    this.bounds.update(this.position);
-    //this.angle = this.angle > 360 ? this.angle - 360 : this.angle < 0 ? 360 + this.angle : this.angle
-  }
-
-  destroy() {
-    this.entity.manager.removeComponent("movable", this._movable);
-  }
-  toJson() {
-    let obj = {
-      id: this.id,
-      position: this.position.toJson(),
-      velocity: this.velocity.toJson(),
-      acceleration: this.acceleration.toJson(),
-      orientation: this.orientation.toJson(),
-      rotation: this.rotation.toJson(),
-      shapes: [],
-      anchors: [],
-      collisionResponse: this.collisionResponse,
-      allowSleep: this.allowSleep,
-      type: this.CHAOS_OBJ_TYPE,
-      phyType: this.type,
-      mass: this.mass,
-      inertia: this.inertia,
-      autoUpdateBound: this.autoUpdateBound,
-      boundPadding: this.boundPadding,
-      aabbDetectionOnly: this.aabbDetectionOnly,
-      mask: this.mask
-    };
-    this.anchors.forEach((a) => {
-      obj.anchors.push(a);
-    });
-    this.shapes.forEach((a) => {
-      obj.shapes.push(a.toJson());
-    });
-    return obj
+  static update(body,position,orientation,scale,bounds) {
+    Shape.update(body.shape,position,orientation,scale);
+    if (body.autoUpdateBound)
+      Body2D.calculateBounds(body,bounds);
   }
   /**
-   * @@param {Shape} shape
+   * @param {Body2D} body
+   * @param {number} mass
    */
-  addShape(shape) {
-    this.shapes.push(shape);
-  }
-  fromJson(obj) {
-    let shapes = [];
-    obj.shapes.forEach((shape) => {
-      shapes.push(Shape.fromJson(shape));
-    });
-    let body = this;
-    body.shapes = shapes;
-    body.acceleration = obj.acceleration;
-    body.velocity = obj.velocity;
-    body.position = pbj.position;
-    body.rotation = obj.rotation;
-    body.orientation = obj.orientation;
-    body.mass = obj.mass;
-    body.inertia = obj.inertia;
-    body.type = obj.phyType;
-    body.allowSleep = obj.allowSleep;
-    body.aabbDetectionOnly = obj.aabbDetectionOnly;
-    body.collisionResponse = obj.collisionResponse;
-    body.autoUpdateBound = obj.autoUpdateBound;
-    body.id = obj.id;
-    body.mask = obj.mask;
-    obj.anchors.forEach((v) => {
-      body.setAnchor(new Vector2$1().fromJson(v));
-    });
+  static setMass(body,mass) {
+    body.inv_mass = mass === 0 ? 0 : 1 / mass;
+    Body2D.setInertia(body,Shape.calcInertia(body.shape,mass));
   }
   /**
-   *Body type that dictates a body cannot move nor respond to collisions.
+   * @param {Body2D} body
+   * @param {number} inertia
+   */
+  static setInertia(body,inertia) {
+    body.inv_inertia = inertia === 0 ? 0 : 1 / inertia;
+  }
+  /**
+   * @param {Body2D} body
+   * @param {number} type
+   */
+  static setType(body,type) {
+    if (type !== Body2D.STATIC) return
+    body.inv_mass = 0;
+    body.inv_inertia = 0;
+  }
+  /**
+   * @param {Body2D} body
+   * @param {number} density
+   */
+  static setDensity(body,density) {
+    const area = Shape.getArea(body.shape);
+    Body2D.setMass(body,density * area);
+  }
+  /**
+   *Body2D type that dictates a body cannot move nor respond to collisions.
    * 
-   * @static
-   * @type number*/
-  static STATIC = ObjType.STATIC
-  /**
-   * Body type that dictates a body can move but not respond to collisions.
-   * 
-   * @static
-   * @type number
+   * @readonly
+   * @type {number}
    */
-  static KINEMATIC = ObjType.KINEMATIC
+  static STATIC = 0
   /**
-   * Body type that dictates a body can move and respond to collisions.
+   * Body2D type that dictates a body can move and respond to collisions.
    * 
-   * @static
-   * @type number
+   * @readonly
+   * @type {number}
    */
-  static DYNAMIC = ObjType.DYNAMIC
+  static DYNAMIC = 2
+}
+
+/**
+ * Todo - Remove in version 1.0.0
+ * @deprecated
+ */
+class Body extends Body2D {
+  /**
+   * @inheritdoc
+   * @param {Shape} shape
+   */
+  constructor(shape) {
+    deprecate("Body()","Body2D()");
+    super(shape);
+  }
 }
 
 /**
  * A body with a circle shape on it.
  * 
- * @augments Body
+ * @augments Body2D
  */
-class Ball extends Body {
+class Ball extends Body2D {
   /**
    * @param {number} radius
-  */
+   */
   constructor(radius) {
     super(new Circle(radius));
-    this.inertia = Circle.calcInertia(this.mass, radius);
-  }
-  /**
-   * @inheritdoc
-   * @type number 
-   */
-  get mass() {
-    return this._mass
-  }
-  set mass(x) {
-    this._mass = x;
-    this.inv_mass = x === 0 ? 0 : 1 / x;
-    this.inertia = Circle.calcInertia(this.mass, this.shapes[0].radius);
   }
 }
 
 /**
  * A body with a rectangle shape on it.
  * 
- * @augments Body
-*/
-class Box extends Body {
+ * @augments Body2D
+ */
+class Box extends Body2D {
   /**
    * @param {number} w
    * @param {number} h
-  */
-  constructor(w,h) {
-    super(new Rectangle(w,h));
-    this.inertia = Rectangle.calcInertia(this._mass,w,h);
-    
-  }
-  /**
-   * @inheritdoc
-   * @type number 
-  */
-  set mass(x){
-    this._mass = x;
-    this.inv_mass = x === 0 ? 0 : 1 / x;
-    this.inertia = Rectangle.calcInertia(x,this.shapes[0].width,this.shapes[0].height);
-  }
-  get mass(){
-    return this._mass
+   */
+  constructor(w, h) {
+    super(new Rectangle(w, h));
   }
 }
 
-/**
- * Holds a group of related bodies and constraints.
- */
-class Composite extends Component {
+class Trigon extends Body2D {
   /**
-   * Entity this belongs to.
+   * @param {number} base
+   * @param {number} height
+   * @param {number} angle Angle in radians
    * 
-   * @type Entity | null
    */
-  entity = null
-  /**
-   * List of bodies contained.
-   *
-   * @type Body[]
-   */
-  bodies = []
-  /**
-   * List of bodies contained.
-   *
-   * @type Constraint[]
-   */
-  constraints = []
-  /**
-   * Used to determine what it is in a world.
-   * 
-   * @package
-   * @type number 
-   */
-  get physicsType() {
-    return ObjType.COMPOSITE
+  constructor(base, height, angle = Math.PI / 3) {
+    super(new Triangle(base, height, angle));
   }
-  /**
-   * Initializes the body to its given.Called by the world or an entity manager.
-   * 
-   * @param {Entity | null} entity
-   * @param {boolean} composited
-   */
-  init(entity) {
-    this.bodies.forEach(e => {
-      e.init(entity, true);
-    });
-    this.requires(entity, "transform");
-
-  }
-  /**
-   * @param {Constraint | Body} object
-   */
-  add(object) {
-    if (object.physicsType === ObjType.CONSTRAINT)
-      return this.constraints.push(object)
-    if (object.physicsType === ObjType.BODY)
-      this.bodies.push(object);
-  }
-  /**
-   * This updates the world coordinates of shapes, anchors and bounds.
-   */
-  update() {
-    this.lastPosition.copy(this.position);
-  }
-  /**
-   * Acceleration of a body
-   * 
-   * @type Vector2
-   */
-  get acceleration() {
-    let acceleration = new Vector2$1();
-    for (var i = 0; i < this.bodies.length; i++) {
-      acceleration.copy(this.bodies[i].acceleration);
-    }
-    return acceleration.divide(this.bodies.length)
-  }
-  set acceleration(x) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].acceleration = x;
-    }
-  }
-  /**
-   * Velocity of a body
-   * 
-   * @type Vector2
-   */
-  get velocity() {
-    let velocity = new Vector2$1();
-
-    for (var i = 0; i < this.bodies.length; i++) {
-      velocity.add(this.bodies[i].velocity);
-    }
-    return velocity.divide(this.bodies.length)
-  }
-  set velocity(x) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].velocity.copy(x);
-    }
-  }
-  /**
-   * Orientation of a body in degrees.
-   * 
-   * @type number
-   */
-  get angle() {
-    let angle = 0;
-    for (var i = 0; i < this.bodies.length; i++) {
-      angle += this.bodies[i].angle;
-    }
-  }
-  set angle(angle) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].angle = x;
-    }
-  }
-
-  /**
-   * Mass of a body.
-   * 
-   * @type number
-   */
-  set mass(x) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].mass = x;
-    }
-  }
-  get mass() {
-    let mass = 0;
-    for (var i = 0; i < this.bodies.length; i++) {
-      mass += this.bodies[i].mass;
-    }
-    return mass
-  }
-  set type(x) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].type = x;
-    }
-  }
-  get type() {
-    return this.bodies[0]?.type
-  }
-  /**
-   * Density of a body.
-   * 
-   * @type number
-   */
-  set density(x) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].density = x;
-    }
-  }
-  get density() {
-    let density = 0;
-    for (var i = 0; i < this.bodies.length; i++) {
-      density += this.bodies[i].density;
-    }
-    return density / this.bodies.length
-  }
-  /**
-   * Position of a body
-   * 
-   * @type Vector2
-   */
-  get position() {
-    let position = new Vector2$1();
-    for (var i = 0; i < this.bodies.length; i++) {
-      position.add(this.bodies[i].position);
-    }
-    return position
-  }
-  set position(x) {
-    let dp = x.clone().sub(this.position);
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].position.add(dp);
-    }
-  }
-  /**
-   * Orientation of a body
-   * 
-   * @type Angle
-   */
-  set orientation(r) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].orientation.copy(r);
-    }
-  }
-  get orientation() {
-    let ang = 0;
-    for (var i = 0; i < this.bodies.length; i++) {
-      ang += this.bodies[i].orientation;
-    }
-    return ang / this.bodies.length
-  }
-  /**
-   * Angular velocity of a body.
-   * 
-   * @type number
-   */
-  get angularVelocity() {
-    let ang = 0;
-    for (var i = 0; i < this.bodies.length; i++) {
-      ang += this.bodies[i].angularVelocity;
-    }
-    return ang / this.bodies.length
-  }
-  set angularVelocity(x) {
-    for (var i = 0; i < this.bodies.length; i++) {
-      this.bodies[i].angularVelocity = x;
-    }
-  }
-  destroy() {
-    this.bodies.forEach(b => {
-      b.destroy();
-    });
-  }
-}
-
-class Trigon extends Body {
-    /**
-     * @param {number} base
-     * @param {number} height
-     * @param {number} angle Angle in radians
-     * 
-    */
-    constructor(base, height, angle = Math.PI/3) {
-        super(new Triangle(base, height, angle));
-        this.inertia = Triangle.calcInertia(this.mass, base, height, angle);
-        this.base = base;
-        this.height = height;
-        this.bangle = angle;
-    }
-    /**
-     * @inheritdoc
-     * @type number 
-     */
-    get mass() {
-        return this._mass
-    }
-    set mass(x) {
-        this._mass = x;
-        this.inv_mass = x === 0 ? 0 : 1 / x;
-        this.inertia = Triangle.calcInertia(this.mass, this.base, this.height,this.bangle);
-    }
 }
 
 /**
@@ -5084,11 +4477,11 @@ class Constraint {
    */
   localB = null
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   body1 = null
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   body2 = null
   /**:
@@ -5100,16 +4493,16 @@ class Constraint {
    */
   dampening = 0.03
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param { Vector2} localA
    * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     this.body1 = body1;
     this.body2 = body2;
-    this.localA = localA || new Vector2$1();
-    this.localB = localB || new Vector2$1();
+    this.localA = localA || new Vector2();
+    this.localB = localB || new Vector2();
   }
   /**
    * Determine type of object this is in the world.
@@ -5121,23 +4514,11 @@ class Constraint {
     return ObjType.CONSTRAINT
   }
   /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "constraint"
-  }
-  /**
    * Will refactor this out later.
    * 
    * @protected
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {number} dt
    */
   behavior(body1, body2, dt) {
@@ -5151,46 +4532,21 @@ class Constraint {
   update(dt) {
     this.behavior(this.body1, this.body2, dt);
   }
-  toJson() {
-    return {
-      body1: this.body1.id,
-      body2: this.body2.id,
-      localA: this.localA.toJson(),
-      localB: this.localB.toJson(),
-      stiffness: this.stiffness,
-      dampening: this.dampening,
-      type: this.CHAOS_OBJ_TYPE
-    }
-  }
-  fromJson(obj, world) {
-    let bod1 = world.getById(obj.body1);
-    let bod2 = world.getById(obj.body2);
-
-    let constraint = new Constraint(
-      bod1,
-      bod2,
-      new Vector2$1().fromJson(obj.localA),
-      new Vector2$1().fromJson(obj.localB)
-    );
-    constraint.stiffness = obj.stiffness;
-    constraint.dampening = obj.dampening;
-    return constraint
-  }
 }
 
-let tmp1$b = new Vector2$1(),
-  tmp2$8 = new Vector2$1(),
-  tmp3$4 = new Vector2$1(),
-  tmp4$4 = new Vector2$1(),
-  tmp5$3 = new Vector2$1();
+let tmp1$7 = new Vector2(),
+  tmp2$4 = new Vector2(),
+  tmp3$2 = new Vector2(),
+  tmp4$2 = new Vector2(),
+  tmp5$2 = new Vector2();
 
 /**
  * This constraint is stronger than a spring in the sense that it will not oscilate as such as a spring constraint.
  */
 class DistanceConstraint extends Constraint {
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param { Vector2} localA
    * @param { Vector2} localB
    */
@@ -5204,15 +4560,15 @@ class DistanceConstraint extends Constraint {
   /**
    * @inheritdoc
    * 
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {number} dt
   */
   behavior(body1, body2,dt) {
-    let arm1 = tmp1$b.copy(this.localA),
-      arm2 = tmp2$8.copy(this.localB),
-      pos1 = tmp3$4.copy(body1.position).add(arm1),
-      pos2 = tmp4$4.copy(body2.position).add(arm2),
+    let arm1 = tmp1$7.copy(this.localA),
+      arm2 = tmp2$4.copy(this.localB),
+      pos1 = tmp3$2.copy(body1.position).add(arm1),
+      pos2 = tmp4$2.copy(body2.position).add(arm2),
       dist = pos1.sub(pos2),
       magnitude = dist.magnitude();
 
@@ -5223,40 +4579,40 @@ class DistanceConstraint extends Constraint {
       force = dist.multiply(difference * this.stiffness * this.dampening),
       massTotal = body1.inv_mass + body2.inv_mass;
       //inertiaTotal = body1.inv_inertia + body2.inv_inertia
-    tmp4$4.copy(force);
+    tmp4$2.copy(force);
     force.divide(massTotal * 2);
 
-    body1.velocity.add(tmp5$3.copy(force).multiply(-body1.inv_mass).divide(dt));
-    body2.velocity.add(tmp5$3.copy(force).multiply(body2.inv_mass).divide(dt));
+    body1.velocity.add(tmp5$2.copy(force).multiply(-body1.inv_mass).divide(dt));
+    body2.velocity.add(tmp5$2.copy(force).multiply(body2.inv_mass).divide(dt));
 
-    body1.position.add(tmp5$3.copy(force).multiply(-body1.inv_mass));
-    body2.position.add(tmp5$3.copy(force).multiply(body2.inv_mass));
+    body1.position.add(tmp5$2.copy(force).multiply(-body1.inv_mass));
+    body2.position.add(tmp5$2.copy(force).multiply(body2.inv_mass));
 
-    body1.rotation.value += tmp4$4.cross(arm1) * body1.inv_inertia;
-    body2.rotation.value += tmp4$4.cross(arm2) * -body2.inv_inertia;
+    body1.rotation.value += tmp4$2.cross(arm1) * body1.inv_inertia;
+    body2.rotation.value += tmp4$2.cross(arm2) * -body2.inv_inertia;
   }
 }
 
-let tmp1$a = new Vector2$1(),
-  tmp2$7 = new Vector2$1(),
-  tmp3$3 = new Vector2$1(),
-  tmp4$3 = new Vector2$1(),
-  tmp5$2 = new Vector2$1(),
-  zero = new Vector2$1();
+let tmp1$6 = new Vector2(),
+  tmp2$3 = new Vector2(),
+  tmp3$1 = new Vector2(),
+  tmp4$1 = new Vector2(),
+  tmp5$1 = new Vector2(),
+  zero = new Vector2();
  /**
   * A constraint that acts like a spring between two bodies
  */
 class SpringConstraint extends Constraint {
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param { Vector2} localA
    * @param { Vector2} localB
    */
   constructor(body1, body2, localA, localB) {
     super(body1, body2);
-    this.localA = new Vector2$1().copy(localA || zero);
-    this.localB = new Vector2$1().copy(localB || zero);
+    this.localA = new Vector2().copy(localA || zero);
+    this.localB = new Vector2().copy(localB || zero);
     this.fixed = !body1.mass || !body2.mass;
     this.dampening = 1;
     this.maxDistance = 100;
@@ -5265,15 +4621,15 @@ class SpringConstraint extends Constraint {
     /**
    * @inheritdoc
    * 
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {number} dt
   */
   behavior(body1, body2, dt) {
-    let arm1 = tmp1$a.copy(this.localA),
-      arm2 = tmp2$7.copy(this.localB),
-      pos1 = tmp3$3.copy(body1.position).add(arm1),
-      pos2 = tmp4$3.copy(body2.position).add(arm2),
+    let arm1 = tmp1$6.copy(this.localA),
+      arm2 = tmp2$3.copy(this.localB),
+      pos1 = tmp3$1.copy(body1.position).add(arm1),
+      pos2 = tmp4$1.copy(body2.position).add(arm2),
       dist = pos1.sub(pos2),
       magnitude = dist.magnitude();
 
@@ -5285,191 +4641,13 @@ class SpringConstraint extends Constraint {
       massTotal = body1.inv_mass + body2.inv_mass,
       inertiaTotal = body1.inv_inertia + body2.inv_inertia;
       force.divide(massTotal + inertiaTotal);
-      body1.velocity.add(tmp5$2.copy(force).multiply(-body1.inv_mass));
-      body2.velocity.add(tmp5$2.copy(force).multiply(body2.inv_mass));
+      body1.velocity.add(tmp5$1.copy(force).multiply(-body1.inv_mass));
+      body2.velocity.add(tmp5$1.copy(force).multiply(body2.inv_mass));
       
       body1.rotation.value += force.cross(arm1) * body1.inv_inertia;
       body2.rotation.value += force.cross(arm2) * -body2.inv_inertia;
   }
 }
-
-new Vector2$1();
-
-let position = new Vector2$1();
-let acceleration = new Vector2$1();
-let velocity = new Vector2$1();
-
-/**
- * Verlet intergration.
- * Used so that constraints can be stable at little performance cost.
- */
-class VerletSolver {
-  /**
-   * @param {Body} body
-   * @param {number} dt
-   */
-  static solve(body, dt) {
-    acceleration.copy(body.acceleration).multiply(dt * 0.5);
-    velocity.copy(body.velocity);
-    position.copy(body.position);
-    body.acceleration.set(0, 0);
-    body.velocity.add(acceleration);
-    position.add(velocity.multiply(dt)).add(acceleration.multiply(dt));
-    body.velocity.add(acceleration);
-    body.position = position;
-    body.angularVelocity += body.angularAcceleration * dt * 0.5;
-    body.angle += body.angularVelocity * dt;
-    body.angularVelocity += body.angularAcceleration * dt * 0.5;
-    body.torque.value = 0;
-  }
-}
-
-let tmp1$9 = new Vector2$1(),
-  tmp2$6 = new Vector2$1(),
-  tmp3$2 = new Vector2$1(),
-  tmp4$2 = new Vector2$1(),
-  tmp5$1 = new Vector2$1();
-
-/**
- * Solves for impulse along collision tangent for a given body pair.
-*/
-const FrictionSolver = {
-  /***/
-  solve(manifold) {
-    let { bodyA: a, bodyB: b, ca1, ca2, impulse } = manifold;
-    let { axis } = manifold.contactData;
-    if (impulse <= 0) return
-    let a$va = tmp1$9.set(ca1.y * -a.rotation.value, ca1.x * a.rotation.value);
-    let a$vb = tmp2$6.set(ca2.y * -b.rotation.value, ca2.x * b.rotation.value);
-    let va = tmp3$2.copy(a.velocity).add(a$va);
-    let vb = tmp4$2.copy(b.velocity).add(a$vb);
-    let relVel = va.sub(vb);
-    if (relVel.magnitudeSquared() === 0)
-      return
-    let tangent = axis.normal(1, tmp4$2);
-    tangent = tangent.multiply(tangent.dot(relVel));
-    if (tangent.magnitudeSquared() === 0) return
-    tangent.normalize();
-
-    let relV = tangent.dot(relVel);
-
-    let sf = Math.min(a.staticFriction, b.staticFriction);
-    let kf = Math.min(a.kineticFriction, b.kineticFriction);
-    let j = -relV / (
-      (a.inv_mass + b.inv_mass) +
-      sq((ca1.dot(tangent)) * a.inv_inertia + sq(ca2.dot(tangent)) * b.inv_inertia)
-    );
-
-    let jt;
-    if (Math.abs(j) <= impulse * sf) {
-      jt = tangent.multiply(j);
-
-    } else {
-      jt = tangent.multiply(j * kf);
-    }
-
-    manifold.velA.add(tmp5$1.copy(jt).multiply(a.inv_mass));
-    manifold.velB.add(tmp5$1.copy(jt).multiply(-b.inv_mass));
-    manifold.rotA += ca1.cross(jt) * a.inv_inertia;
-    manifold.rotB += ca2.cross(jt) * -b.inv_inertia;
-  }
-};
-
-let v = { x: 0, y: 0 };
-
-let velocityLimit = 1;
-let angularVelocityLimit = 1;
-let impulselimit = 0.8;
-
-/**
- * Determines if the body pair should be put to sleep.
-*/
-const ContactSolver = {
-  solve(a, b, impulse, contactNo) {
-    if (contactNo == 2) {
-      if (Math.abs(a.angularVelocity) > angularVelocityLimit) a.angularVelocity = 0;
-      if (Math.abs(b.angularVelocity) > angularVelocityLimit) b.angularVelocity = 0;
-    }
-    if (impulse > impulselimit) return
-    if (a.velocity.magnitude() > velocityLimit && Math.abs(a.angularVelocity) > angularVelocityLimit) return
-    if (b.velocity.magnitude() > velocityLimit && Math.abs(b.angularVelocity) > angularVelocityLimit) return
-    if (!a.allowSleep || !b.allowSleep)
-      return
-    a.sleeping = true;
-    a.velocity = v;
-    a.acceleration = v;
-    b.sleeping = true;
-    b.velocity = v;
-    b.acceleration = v;
-  }
-};
-
-const tmp1$8 = new Vector2$1(),
-  tmp2$5 = new Vector2$1();
-let dampen = Settings.posDampen;
-
-/**
- * Solves the interpenetration of bodies.
-*/
-const PenetrationSolver = {
-  solve(manifold, inv_dt) {
-    let { bodyA, bodyB, ca1, ca2 } = manifold;
-    let { axis, overlap } = manifold.contactData;
-
-    const dampened = overlap * dampen;
-    const a = dampened / (bodyA.inv_mass + bodyB.inv_mass + sq(ca1.cross(axis)) * bodyA.inv_inertia + sq(ca2.cross(axis)) * bodyB.inv_inertia);
-    let jp = tmp2$5.copy(axis).multiply(a);
-    bodyA.velocity.add(tmp1$8.copy(jp).multiply(bodyA.inv_mass * inv_dt));
-    bodyB.velocity.add(tmp1$8.copy(jp).multiply(-bodyB.inv_mass * inv_dt));
-    bodyA.rotation.value += ca1.cross(jp) * bodyA.inv_inertia * inv_dt;
-    bodyB.rotation.value += ca2.cross(jp) * -bodyB.inv_inertia * inv_dt;
-    manifold.contactData.lastOverlap = overlap;
-  }
-};
-
-let tmp1$7 = new Vector2$1(),
-  tmp2$4 = new Vector2$1(),
-  tmp3$1 = new Vector2$1(),
-  tmp4$1 = new Vector2$1();
-
-/**
- * Solves for the collision normal impulse of a given body pair.
-*/
-const ImpulseSolver = {
-  solve(manifold) {
-    let { bodyA, bodyB, ca1, ca2, restitution } = manifold;
-    let { axis } = manifold.contactData;
-    let a$va = tmp1$7.set(ca1.y * -bodyA.rotation.value, ca1.x * bodyA.rotation.value);
-    let a$vb = tmp2$4.set(ca2.y * -bodyB.rotation.value, ca2.x * bodyB.rotation.value);
-    let va = tmp3$1.copy(bodyA.velocity).add(a$va);
-    let vb = tmp4$1.copy(bodyB.velocity).add(a$vb);
-    let vp = va.sub(vb);
-    let vp_p = axis.dot(vp);
-
-    if (vp_p >= 0) {
-      manifold.impulse = 0;
-      return
-    }
-    ////this used to be -(1 + restitution) but when i changed it,stability ensued.
-    //i think the reason of the previous instability is because i changed the penetration solver to be impulse based from position based.
-    //so.. i came back to that....
-    let j = -(restitution) * vp_p / (
-      (bodyA.inv_mass + bodyB.inv_mass) +
-      sq(ca1.cross(axis)) * bodyA.inv_inertia +
-      sq(ca2.cross(axis)) * bodyB.inv_inertia);
-
-    let jn = axis.clone().multiply(j);
-    let ang1 = ca1.cross(jn) * bodyA.inv_inertia;
-    let ang2 = ca2.cross(jn) * -bodyB.inv_inertia;
-    let vel1 = jn.clone().multiply(bodyA.inv_mass);
-    let vel2 = jn.clone().multiply(-bodyB.inv_mass);
-    manifold.velA.copy(vel1);
-    manifold.velB.copy(vel2);
-    manifold.rotA = ang1;
-    manifold.rotB = ang2;
-    manifold.impulse = j;
-  }
-};
 
 /**
  * This is an abstract class that extended to classes that are used to filter out unnecessary collision checks to boost performance.
@@ -5481,1091 +4659,947 @@ const ImpulseSolver = {
  */
 class Broadphase {
   /**
+   * @param {Entity[][]} _bodies
+   * @param {BoundingBox[][]} _bounds
+   */
+  update(_bodies,_bounds) {}
+  /**
+   * Gets all possibly colliding pairs.
+   * 
+   * @param {CollisionPair[]} _target Empty array to store results.
+   * @returns {CollisionPair[]}
+   */
+  getCollisionPairs(_target) {return _target}
+
+  /**
+   * Returns bodies that are within the given bound.
+   * 
+   * @param {Bounds} _bounds Region to check in.
+   * @param {Entity[]} _target Empty array to store results.
+   * @returns {Entity[]}
+   */
+  query(_bounds, _target) {return _target}
+}
+
+/**
+ * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
+ */
+class NaiveBroadphase extends Broadphase {
+  /**
+   * @private
+   * @type {Entity[]}
+   */
+  entities = []
+  /**
+   * @private
+   * @type {BoundingBox[]}
+   */
+  bounds = []
+  /**
+   * @inheritdoc
+   * @param {BoundingBox} bound Region to check in.
+   * @param {Entity[]} target Empty array to store results.
+   * @returns {Entity[]}
+   */
+  query(bound,target = []) {
+    for (let i = 0; i < this.entities.length; i++)
+      if (boundsColliding(bound,this.bounds[i]))
+        target.push(this.entities[i]);
+    return target
+  }
+  /**
+   * @param {Entity[][]} entities 
+   * @param {BoundingBox[][]} bounds
+   */
+  update(entities,bounds) {
+    this.entities = entities.reduce((a,b) => a.concat(b),[]);
+    this.bounds = bounds.reduce((a,b) => a.concat(b),[]);
+  }
+  /**
+   * @inheritdoc
+   * @param {CollisionPair[]} target Empty array to store results.
+   * @returns {CollisionPair[]}
+   */
+  getCollisionPairs(target = []) {
+    const { entities,bounds } = this;
+    for (let i = 0; i < entities.length; i++) {
+      for (let j = i + 1; j < entities.length; j++) {
+        if (!boundsColliding(bounds[i],bounds[j]))
+          continue
+        target.push({
+          a: entities[i],
+          b: entities[j]
+        });
+      }
+    }
+    return target
+  }
+}
+
+/**
+ * Component to hold requirements for an entity to move.
+ * 
+ */
+class Movable {
+  /**
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
+   */
+  constructor(x = 0, y = 0, a = 0) {
+    this.velocity = new Vector2(x, y);
+    this.rotation = a;
+    this.acceleration = new Vector2();
+    this.torque = 0;
+  }
+  /**
+   * Applies a force to a body affecting its direction of travel and rotation.
+   * @param {Vector2} force The force to be applied.
+   * @param {Vector2} [arm] The collision arm.
+   * @param {number} inv_mass
+   * @param {number} inv_inertia
+   */
+  applyForce(force, inv_mass, inv_inertia, arm = Vector2.ZERO) {
+    Vector2.set(
+      this.acceleration,
+      this.acceleration.x + force.x * inv_mass,
+      this.acceleration.y + force.y * inv_mass
+    );
+    this.torque += Vector2.cross(arm,force) * inv_inertia;
+  }
+  /**
+   * Applies a force to a body affecting its direction of travel and rotation.
+   * @param {Vector2} impulse The force to be applied.
+   * @param {Vector2} [arm] The collision arm.
+   * @param {number} inv_mass
+   * @param {number} inv_inertia
+   */
+  applyImpulse(impulse, inv_mass, inv_inertia, arm = Vector2.ZERO) {
+    Vector2.set(
+      this.velocity,
+      this.velocity.x + impulse.x * inv_mass,
+      this.velocity.y + impulse.y * inv_mass
+    );
+    this.rotation += Vector2.cross(arm,impulse) * inv_inertia;
+  }
+}
+
+/**
+ * @template T
+ */
+class CollisionManifold {
+  /**
+   * @type {T}
+   */
+  entityA
+  /**
+   * @type {T}
+   */
+  entityB
+  /**
+   * @type {CollisionData}
+   */
+  contactData = new CollisionData()
+  /**
+   * @type {number[]}
+   */
+  impulse = [0.0,0.0]
+  /**
+   * @type {number[]}
+   */
+  tImpulse = [0.0,0.0]
+  /**
+   * @type {number[]}
+   */
+  nbias = [0.0,0.0]
+  /**
+   * @type {Jacobian[]}
+   */
+  nJacobian = [new Jacobian(),new Jacobian()]
+  /**
+   * @type {Jacobian[]}
+   */
+  tJacobian = [new Jacobian(),new Jacobian()]
+  /**
+   * @type {number}
+   */
+  restitution = 0
+  /**
+   * @type {number}
+   */
+  staticFriction = 0
+  /**
+   * @type {number}
+   */
+  kineticFriction = 0
+  effectiveMass = [0,0]
+  nLambda = [0,0]
+  tLambda = [0,0]
+  /**
+   * @param {T} a
+   * @param {T} b
+   */
+  constructor(a,b) {
+    this.entityA = a;
+    this.entityB = b;
+  }
+  /**
+   * @template T
+   * @param {CollisionManifold<T>} manifold
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   */
+  static warmstart(manifold,movableA,movableB,bodyA,bodyB) {
+    const { contactNo } = manifold.contactData;
+
+    for (let i = 0; i < contactNo; i++) {
+      CollisionManifold.applyImpulse(
+        manifold.tJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.tLambda[i]
+      ); /***/
+      CollisionManifold.applyImpulse(
+        manifold.nJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.nLambda[i]
+      );
+
+    }
+  }
+  /**
+   * @template T
+   * @param {Jacobian} jacobian
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   * @param {number} lambda
+   */
+  static applyImpulse(jacobian,movableA,movableB,bodyA,bodyB,lambda) {
+    const velA = movableA.velocity;
+    const velB = movableB.velocity;
+    const va = Vector2.multiplyScalar(jacobian.va,bodyA.inv_mass * lambda);
+    const vb = Vector2.multiplyScalar(jacobian.vb,bodyB.inv_mass * lambda);
+
+    Vector2.add(velA,va,velA);
+    Vector2.add(velB,vb,velB);
+    movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda;
+    movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda;
+  }
+  /**
+   * @template T
+   * @param {CollisionManifold<T>} manifold
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   * @param {Vector_like} positionA
+   * @param {Vector_like} positionB
+   * @param {number} inv_dt
+   */
+  static prepare(manifold,bodyA,bodyB,movableA,movableB,positionA,positionB,inv_dt) {
+    const { axis,overlap,tangent,contactPoints,contactNo } = manifold.contactData;
+
+    for (let i = 0; i < contactNo; i++) {
+      manifold.impulse[i] = 0;
+      manifold.tImpulse[i] = 0;
+      const ca1 = Vector2.sub(contactPoints[i],positionA);
+      const ca2 = Vector2.sub(contactPoints[i],positionB);
+      const va = Vector2.crossScalar(ca1,movableA.rotation);
+      Vector2.add(va,movableA.velocity,va);
+      const vb = Vector2.crossScalar(ca2,movableB.rotation);
+      Vector2.add(vb,movableB.velocity,vb);
+      const relativeVelocity = Vector2.sub(vb,va,vb);
+
+      manifold.nbias[i] = 0.0;
+      manifold.nJacobian[i].set(
+        axis,
+        Vector2.reverse(axis),
+        Vector2.cross(ca1,axis),
+        -Vector2.cross(ca2,axis)
+      );
+
+      //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
+      manifold.tJacobian[i].set(
+        tangent,
+        Vector2.reverse(tangent),
+        Vector2.cross(ca1,tangent),
+        -Vector2.cross(ca2,tangent)
+      );
+      const normalVelocity = Vector2.dot(axis,relativeVelocity);
+
+      manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop,0.0);
+      manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity,0.0);
+      const k =
+        bodyA.inv_mass +
+        bodyB.inv_mass +
+        manifold.nJacobian[i].wa * bodyA.inv_inertia * manifold.nJacobian[i].wa +
+        manifold.nJacobian[i].wb * bodyB.inv_inertia * manifold.nJacobian[i].wb;
+      manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
+    }
+  }
+  /**
+   * @template T
+   * @param {CollisionManifold<T>} manifold
+   * @param {Movable} movableA
+   * @param {Movable} movableB
+   * @param {Body2D} bodyA
+   * @param {Body2D} bodyB
+   */
+  static solve(manifold,movableA,movableB,bodyA,bodyB) {
+    const { contactNo } = manifold.contactData;
+
+    for (let i = 0; i < contactNo; i++) {
+      const nvaDot = Vector2.dot(
+        manifold.nJacobian[i].va,
+        movableA.velocity
+      );
+      const nvbDot = Vector2.dot(
+        manifold.nJacobian[i].vb,
+        movableB.velocity
+      );
+      const tvaDot = Vector2.dot(
+        manifold.tJacobian[i].va,
+        movableA.velocity
+      );
+      const tvbDot = Vector2.dot(
+        manifold.tJacobian[i].vb,
+        movableB.velocity
+      );
+      const jv = nvaDot +
+        manifold.nJacobian[i].wa * movableA.rotation +
+        nvbDot +
+        manifold.nJacobian[i].wb * movableB.rotation;
+      const jt =
+        tvaDot +
+        manifold.tJacobian[i].wa * movableA.rotation +
+        tvbDot +
+        manifold.tJacobian[i].wb * movableB.rotation;
+      let nLambda = manifold.effectiveMass[i] * -(jv + manifold.nbias[i]);
+      let tLambda = manifold.effectiveMass[i] * -(jt);
+      manifold.impulse[i];
+      manifold.tImpulse[i];
+      {
+        manifold.impulse[i] = Math.max(0.0,nLambda);
+        const maxfriction = manifold.impulse[i] * manifold.kineticFriction;
+        manifold.tImpulse[i] = clamp(tLambda,-maxfriction,maxfriction); //Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
+        //tLambda :
+        //-manifold.impulse[i] * manifold.kineticFriction
+        manifold.nLambda[i] = manifold.impulse[i];
+        manifold.tLambda[i] = manifold.tImpulse[i];
+        //console.log(Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction)
+        //if (Math.abs(manifold.tImpulse[i]) > 3000) throw console.log(manifold, jt)
+      }
+    }
+    for (let i = 0; i < contactNo; i++) {
+
+      CollisionManifold.applyImpulse(
+        manifold.nJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.nLambda[i]
+      );
+      if (manifold.nLambda[i] <= 0) continue
+      CollisionManifold.applyImpulse(
+        manifold.tJacobian[i],
+        movableA,
+        movableB,
+        bodyA,
+        bodyB,
+        manifold.tLambda[i]
+      ); /***/
+    }
+  }
+}
+class CollisionData {
+  /**
+   * @type {number}
+   */
+  overlap = 0
+  /**
+   * @type {boolean}
+   */
+  done = false
+  /**
+   * @type {Vector2}
+   */
+  axis = new Vector2()
+  /**
+   * @type {Vector2}
+   */
+  tangent = new Vector2()
+  /**
+   * @type {Vector2[]}
+   */
+  contactPoints = [new Vector2(),new Vector2()]
+  /**
+   * @type {number}
+   */
+  contactNo = 0
+}
+class Jacobian {
+  /**
+   * @type {Vector2}
+   */
+  va = new Vector2()
+  /**
+   * @type {number}
+   */
+  wa = 0
+  /**
+   * @type {Vector2}
+   */
+  vb = new Vector2()
+  /**
+   * @type {number}
+   */
+  wb = 0
+  /**
+   * @param {Vector_like} [va]
+   * @param {Vector_like} [vb]
+   * @param {number} [wa]
+   * @param {number} [wb]
+   */
+  constructor(va,vb,wa,wb) {
+    this.set(va,vb,wa,wb);
+  }
+  /**
+   * @param {Vector_like} [va]
+   * @param {Vector_like} [vb]
+   * @param {number} [wa]
+   * @param {number } [wb]
+   */
+  set(va,vb,wa,wb) {
+    if (va) Vector2.copy(va,this.va);
+    if (vb) Vector2.copy(vb,this.vb);
+    if (wa) this.wa = wa;
+    if (wb) this.wb = wb;
+  }
+}
+
+class NarrowPhase {
+  /**
+   * @param {CollisionPair[]} _contactList
+   * @param {CollisionManifold<Entity>[]} [_clmds]
+   * @returns {CollisionManifold<Entity>[]}
+   * @param {Manager} _manager
+   */
+  getCollisionPairs(_manager,_contactList, _clmds = []) {return _clmds}
+  /**
    * Checks to see if two bodies can proceed to have their bounding boxes checked 
    * 
-   * @param {Body} a
-   * @param {Body} b
+   * @param {Body2D} a
+   * @param {Body2D} b
    */
-  canCollide(a, b) {
-    if (a.mass == 0 && b.mass == 0)
+  static canCollide(a, b) {
+    if (!a.inv_mass && !b.inv_mass )
       return false
     if (
-      (a.mask.group !== 0 && b.mask.group !== 0) &&
+      (a.mask.group && b.mask.group) &&
       a.mask.group == b.mask.group
     ) return false
     if (a.mask.layer && b.mask.layer && a.mask.layer !== b.mask.layer)
       return false
     if (a.sleeping && b.sleeping) return false
-    //console.log(a.mass,b.mass);
     return true
   }
-  /**
-   * Adds a body to the broadphase
-   * 
-   * @param {Body} obj
-   */
-  insert(obj) {}
-  /**
-   * Removes a body from the broadphase
-   * 
-   * @param {Body} obj
-   */
-  remove(obj) {}
-
-  /**
-   * Renders a representation of a broadphase
-   */
-  draw(ctx) {}
-  /**
-   * Updates the internals of the broadphase if needed.
-   * 
-   * @param {Body[]} bodies
-   */
-  update(bodies) {}
-  /**
-   * Gets all possibly colliding pairs.
-   * 
-   * @param {CollisionPair[]} target Empty array to store results.
-   * @returns {CollisionPair[]}
-   */
-  getCollisionPairs(target) {}
-
-  /**
-   * Returns bodies that are within the given bound.
-   * 
-   * @param {Bounds} bounds Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
-   */
-  query(bounds, target) {}
 }
 
-/**
- * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
-*/
-class NaiveBroadphase extends Broadphase {
-  /**
-   * @private
-   * @type Body[]
-  */
-  bodies = null
-  /**
-   * @param {World} world
-  */
-  constructor(world) {
-    super();
-    this.bodies = world.objects;
-  }
-  /**
-   * @inheritdoc
-   * @param {Bounds} bound Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
-  */
-  query(bound, target) {
-    closeObjects = target || [];
-    for (var i = 0; i < this.objects.length; i++) {
-      let ob = this.world.objects[i];
-      if (ob.bounds.intersects(bound) < dist)
-        closeObjects.push(ob);
-    }
-    return closeObjects
-  }
-  /**
-   * @inheritdoc
-   * @param {CollisionPair[]} target Empty array to store results.
-   * @returns {CollisionPair[]}
-  */
-  getCollisionPairs(target) {
-    target = target || [];
-    let bodies = this.bodies,
-      length = bodies.length;
-    for (let i = 0; i < length; i++) {
-      let a = bodies[i];
-      for (let j = i + 1; j < length; j++) {
-        let b = bodies[j];
-        if(!this.canCollide(a,b))continue
-        if (!a.bounds.intersects(b.bounds))
-          continue
-        let list = {
-          a,
-          b
-        };
-        if (a.aabbDetectionOnly || b.aabbDetectionOnly) continue
-        if (!a.shapes.length || !b.shapes.length) continue
-        target.push(list);
-      }
-    }
-    return target
-  }
-
-}
-
-class Client {
-  constructor(body) {
-    this.body = body;
-    this.bounds = body.bounds.clone();
-    this.node = null;
-  }
-}
-
-class Node {
-  /**@type Node[]*/
-  children = []
-  /**@type Body[]*/
-  objects = []
-  /**@type Node*/
-  root = null
-  /**@type Node*/
-  parent = null
-  /**@type boolean*/
-  hasObjects = false
-  /**@type number*/
-  index = -1
-  /**@type Tree*/
-  global = null
-  /**@type Vector_like*/
-  dims = null
-  /**@type number*/
-  depth = -1
-  /**@type {{
-    max:Vector_like,
-    min:Vector_like
-  }}*/
-  bounds = null
-  /**
-   * @param {{
-    max:Vector_like,
-    min:Vector_like
-  }} bounds
-  */
-  constructor(bounds) {
-    this.bounds = bounds;
-    this.dims = {
-      x: this.bounds.max.x - this.bounds.min.x,
-      y: this.bounds.max.y - this.bounds.min.y
-    };
-  }
-  /**
-   * @param {Node} node
-   */
-  add(node) {
-    node.index = this.children.length;
-    this.children.push(node);
-    node.depth = this.depth + 1;
-    node.parent = this;
-    node.global = this.global;
-  }
-  clear() {
-    for (var i = 0; i < this.children.length; i++) {
-      const node = nodes[i];
-
-      this.children.remove(node);
-      node.parent = null;
-      node.global = null;
-    }
-  }
-  /**
-   * @param {number} depth
-   */
-  split(depth = 1) {
-    let w = this.dims.x / 2;
-    let h = this.dims.y / 2;
-    let topLeft = new Node({
-      min: {
-        x: this.bounds.min.x,
-        y: this.bounds.min.y
-      },
-      max: {
-        x: this.bounds.min.x + w,
-        y: this.bounds.min.y + h
-      }
-    });
-    let topRight = new Node({
-      min: {
-        x: this.bounds.min.x + w,
-        y: this.bounds.min.y
-      },
-      max: {
-        x: this.bounds.max.x,
-        y: this.bounds.max.y - h
-      }
-    });
-    let bottomLeft = new Node({
-      min: {
-        x: this.bounds.min.x,
-        y: this.bounds.min.y + h
-      },
-      max: {
-        x: this.bounds.max.x - w,
-        y: this.bounds.max.y
-      }
-    });
-    let bottomRight = new Node({
-      min: {
-        x: this.bounds.min.x + w,
-        y: this.bounds.min.y + h
-      },
-      max: {
-        x: this.bounds.max.x,
-        y: this.bounds.max.y
-      }
-    });
-    this.add(topLeft);
-    this.add(topRight);
-    this.add(bottomLeft);
-    this.add(bottomRight);
-    if (depth <= 1) return
-    this.children.forEach(e => e.split(depth - 1));
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.strokeStyle = "blue";
-    ctx.strokeRect(this.bounds.min.x, this.bounds.min.y, this.dims.x, this.dims.y);
-    ctx.stroke();
-    ctx.closePath();
-  }
-  /**
-   * @return boolean
-   */
-  isLeafNode() {
-    return this.children.length == 0
-  }
-  /**
-   * @return boolean
-   */
-  childrenHaveObj() {
-    return this.children.length > 0 || (
-      this.children[0].hasObjects ||
-      this.children[1].hasObjects ||
-      this.children[2].hasObjects ||
-      this.children[3].hasObjects
-    )
-  }
-  /**
-   * @param {Bounds} bounds
-   * @return boolean
-   */
-  intersects(bounds) {
-    if (bounds.r)
-      return Overlaps.AABBvsSphere(this.bounds, bounds)
-    return Overlaps.AABBColliding(this.bounds, bounds)
-  }
-  /**
-   * @param {Bounds} bounds
-   * @return boolean
-   */
-  contains(bounds) {
-    return (
-      bounds.max.x < this.bounds.max.x &&
-      bounds.max.y < this.bounds.max.y &&
-      bounds.min.x > this.bounds.min.x &&
-      bounds.min.y > this.bounds.min.y
-    )
-  }
-  /**
-   * @inheritdoc
-   * @param {Bounds} bounds
-   * @param {Body[]} [target]
-   * @returns boolean
-   */
-  query(bounds, target = []) {
-    if (!this.intersects(bounds))
-      return target
-    if (!this.isLeafNode()) {
-      for (var i = 0; i < this.children.length; i++) {
-        this.children[i].query(bounds, target);
-      }
-    }
-    for (var i = 0; i < this.objects.length; i++) {
-      let a = this.objects[i];
-      if (a.bounds.intersects(bounds))
-        target.push(a);
-    }
-    return target
-  }
-  /**
-   * @param {Body} obj
-   * @returns boolean
-   */
-  insertObject(obj) {
-    if (!this.contains(obj.bounds))
-      return false
-    if (!this.isLeafNode()) {
-      for (var i = 0; i < this.children.length; i++) {
-        let r = this.children[i].insertObject(obj);
-        if (r) {
-          this.hasObjects = true;
-          return true
-        }
-      }
-    }
-    if (this.contains(obj.bounds)) {
-      this.objects.push(obj);
-      obj.lastPosition.copy(obj.bounds.pos);
-      this.hasObjects = true;
-      return true
-    }
-    return false
-  }
-  /**
-   * @param {Vector_like} position
-   * @returns boolean
-   */
-  isInNode(position) {
-    if (
-      position.x > this.bounds.min.x &&
-      position.y > this.bounds.min.y &&
-      position.x < this.bounds.max.x &&
-      position.y < this.bounds.max.y
-    )
-      return true
-    return false
-  }
-  isRootNode() {
-    return !this.parent
-  }
-  /**
-   * @param {Body} obj
-   */
-  updateObject(obj) {
-    this.removeObject(obj);
-    this.global.insert(obj);
-    return true
-  }
-  /**
-   * @param {Body} obj
-   * @returns boolean
-   */
-  removeObject(obj) {
-    if (!this.isInNode(obj.lastPosition))
-      return false
-    let t = this.objects.indexOf(obj);
-    if (t !== -1) {
-      removeElement(this.objects, t);
-      if (
-        this.objects.length == 0 &&
-        this.childrenHaveObj()
-      ) this.hasObjects = false;
-      return true
-    }
-    if (!this.isLeafNode()) {
-      for (var i = 0; i < this.children.length; i++) {
-
-        let r = this.children[i].removeObject(obj);
-        if (r) {
-          if (
-            this.objects.length == 0 &&
-            this.childrenHaveObj()
-          ) this.hasObjects = false;
-          return true
-        }
-      }
-    }
-    return false
-  }
-  /**
-   * @template T
-   * @param {Traverser} func
-   * @param {T[]} target
-   *  @returns []
-   */
-  traverse(func, target) {
-    if (!this.isLeafNode()) {
-      for (var i = 0; i < 4; i++) {
-        let t = this.children[i].traverse(func, target);
-        if (t != undefined &&
-          (typeof t == "object" && t.length)) return target
-      }
-    }
-    func(this, target);
-    if (this.isRootNode()) {
-      return target
-    }
-  }
-  /**
-   * @param {CollisionPair[]} target
-   * @param {CollisionPair[]} stack
-   */
-  getCollisionPairs(target, stack) {
-    if (!this.hasObjects) return
-    if (!this.isLeafNode()) {
-      appendArr(stack, this.objects);
-      for (var i = 0; i < 4; i++) {
-        this.children[i].getCollisionPairs(target, stack);
-      }
-      popArr(stack, this.objects.length);
-    }
-    let length = stack.length,
-      obLength = this.objects.length,
-      a, b;
-    if (obLength == 0) return
-    for (var i = 0; i < obLength; i++) {
-      for (var j = i + 1; j < obLength; j++) {
-        a = this.objects[i];
-        b = this.objects[j];
-        if (a.index == b.index) continue
-        if (!this.global.canCollide(a, b)) continue
-        if (!a.bounds.intersects(b.bounds))
-          continue
-        target.push({
-          a,
-          b
-        });
-      }
-    }
-
-    for (var i = 0; i < length; i++) {
-      for (var j = 0; j < obLength; j++) {
-        a = stack[i];
-        b = this.objects[j];
-        if (!this.global.canCollide(a, b)) continue
-        if (!a.bounds.intersects(b.bounds))
-          continue
-        target.push({
-          a,
-          b
-        });
-      }
-    }
-
-
-  }
-}
-
-/**
- * This is a bounded broadphase that is used to speed up collision testing on sparse number of objects over a large area.
- * 
- * @extends Broadphase
- */
-class QuadTreeBroadphase extends Broadphase {
-  /**
-   * @param {Bounds} bounds The region it operates on.
-   * @param {number} [maxdepth=3] Maximum number of branches.
-   * 
-   */
-  constructor(bounds, maxdepth = 3) {
-    bounds = bounds || {
-      min: {
-        x: 0,
-        y: 0
-      },
-      max: {
-        x: 1000,
-        y: 1000
-      }
-    };
-    super();
-    this._root = new Node(bounds);
-    this._root.global = this;
-    this._root.depth = 0;
-    this.maxDepth = maxdepth;
-    this.bounds = bounds;
-
-    if (maxdepth) this._root.split(maxdepth);
-  }
-    /**
-     * @private
-     */
-  _insert(client) {
-    client.bounds.copy(client.body.bounds);
-    if (!this._root.contains(obj.bounds))
-      return //console.log("out of bounds");
-    this._root.insertObject(obj);
-  }
-  /**
-   * @inheritdoc
-   * @param {Body} obj
-   */
-  insert(obj) {
-    let client = body.client;
-    if (client == null) {
-      client = body.client = new Client(body);
-    }
-    this._insert(client);
-  }
-  /**
-   * @private
-   */
-  _remove(client) {
-    return this._root.removeObject(obj)
-  }
-  /**
-   * @inheritdoc
-   * @param {Body} obj
-   */
-  remove(obj) {
-    if (obj.client == null) return false
-    return this._remove(obj.client)
-  }
-  /**
-   * @inheritdoc
-   * @param {Body[]} bodies
-   */
-  update(bodies) {
-    for (var i = 0; i < bodies.length; i++) {
-      this._remove(bodies[i].client);
-      this._insert(bodies[i].client);
-    }
-
-  }
-  /**
-   * @inheritdoc
-   * @param {Bounds} bounds Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
-   */
-  query(bounds, target) {
-    this._root.query(bounds, target);
-    return target
-  }
-  /**
-   * A depth first search of the quadtree that applies the given function to its nodes.
-   * 
-   * @param {Traverser} func The function that checks every node unless it returns true.
-   * 
-   */
-  traverse(func) {
-    return this._root.traverse(func)
-  }
-  /**
-   * @inheritdoc
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
-    this._root.traverse(e => {
-      if (e.hasObjects) {
-        e.children.forEach(r => r.draw(ctx));
-      }
-    });
-    ctx.fillStyle = "black";
-  }
-  /**
-   * Resizes a quadtree to a new bound size.
-   * This method should not be used without care.
-   * 
-   * @param {Bounds} bounds
-   * 
-   */
-  recalculateBounds(bounds) {
-    if (!bounds) return
-    let ob = this._root.traverse((e, arr) => {
-      let length = e.objects.length;
-      for (var i = 0; i < length; i++) {
-        arr.push(e.objects[i]);
-      }
-    }, []);
-    this._root = new Node(bounds);
-    this._root.split();
-    ob.forEach(e => {
-      this.insert(ob);
-    });
-  }
-  /**
-   * @inheritdoc
-   * @param {CollisionPair[]} target Empty array to store results.
-   * @returns {CollisionPair[]}
-   */
-  getCollisionPairs(target) {
-    this._root.getCollisionPairs(target, []);
-  }
-}
-
-/**
- * @callback Traverser
- * @param {Node} node
- * @returns {boolean}
- */
-
-const _arr = [],
-  tmp1$6 = {
+const  tmp1$5 = {
     overlap: 0,
     verticesA: null,
     verticesB: null,
-    axis: new Vector2$1(),
+    axis: new Vector2(),
     vertex: null,
     shape: null
   },
-  tmp2$3 = {
+  tmp2$2 = {
     min: 0,
-    max: 0,
-    indexN: 0
+    max: 0
   },
   tmp3 = {
     min: 0,
-    max: 0,
-    indexN: 0
+    max: 0
   },
-  tmp4 = new Vector2$1(),
-  tmp5 = new Vector2$1(),
-  tmp6 = new Vector2$1();
+  tmp4 = new Vector2(),
+  tmp5 = new Vector2();
 
 /**
- * Used for narrowphase collision detection and contact info generation.
+ * Uses the Separation Axis Theorem.
+ * Best when your body shapes have few vertices.
  */
-const SAT = {
+class SATNarrowphase extends NarrowPhase {
   /**
-   * @param {Body} body1
-   * @param {Body} body2
-   * @param {Manifold} manifold
+   * @param {CollisionPair[]} contactList 
+   * @param {Manifold[]} [clmds=[]]
    */
-  shapesInBodyCollided(body1, body2, manifold) {
-    let shapesA = body1.shapes,
-      shapesB = body2.shapes;
-    for (var i = 0; i < shapesA.length; i++) {
-      for (var j = 0; j < shapesB.length; j++) {
-        SAT.shapesCollided(shapesA[i], shapesB[j], manifold);
-      }
+  clmdrecord = new Map()
+  /**
+   * @param {Manager} manager
+   * @param {CollisionPair[]} contactList
+   * @param {CollisionManifold<Entity>[]} [clmds=[]] 
+   */
+  getCollisionPairs(manager, contactList, clmds = []) {
+    for (let i = 0; i < contactList.length; i++) {
+      const { a, b } = contactList[i];
+      const [bodyA] = manager.get(a, "body");
+      const [bodyB] = manager.get(b, "body");
+
+      if (!NarrowPhase.canCollide(bodyA, bodyB)) continue
+      if (bodyA.aabbDetectionOnly || bodyB.aabbDetectionOnly) continue
+
+      bodyA.sleeping = false;
+      bodyB.sleeping = false;
+      const id = bodyA.id > bodyB.id ? bodyA.id + " " + bodyB.id : bodyB.id + " " + bodyA.id;
+      if (!this.clmdrecord.has(id))
+        this.clmdrecord.set(id, new CollisionManifold(a, b));
+      const manifold = this.clmdrecord.get(id);
+      const collisionData = manifold.contactData;
+      collisionData.overlap = -Infinity;
+      collisionData.done = false;
+      SATNarrowphase.shapesInBodyCollided(bodyA, bodyB, collisionData);
+      if (collisionData.overlap < 0 || !collisionData.done) continue
+      manifold.restitution = bodyA.restitution < bodyB.restitution ? bodyA.restitution : bodyB.restitution;
+      manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction;
+      manifold.kineticFriction = bodyA.kineticFriction < bodyB.kineticFriction ? bodyA.kineticFriction : bodyB.kineticFriction;
+      //if (bodyA.collisionResponse && bodyB.collisionResponse)
+      clmds.push(manifold);
     }
+    return clmds
+  }
+  /**
+   * @param {Body2D} body1
+   * @param {Body2D} body2
+   * @param {CollisionData} manifold
+   */
+  static shapesInBodyCollided(body1, body2, manifold) {
+    SATNarrowphase.shapesCollided(body1.shape, body2.shape, manifold);
+    
     if (manifold.overlap < 0) return manifold
-    let body = manifold.dorminantShape,
-      axis = tmp5.copy(manifold.axis),
-      shape1 = manifold.shapes[0],
-      shape2 = manifold.shapes[1];
-    let overload = [];
-    const vertices1 = SAT.findNearSupports(manifold.vertShapeA, axis, []);
-    const vertices2 = SAT.findNearSupports(manifold.vertShapeB, tmp6.copy(axis).reverse(), []);
-    for (var i = 0; i < vertices1.length; i++) {
-      if (SAT.shapeContains(shape2, vertices1[i])) {
-        overload.push(vertices1[i]);
+    
+    Vector2.normal(manifold.axis, manifold.tangent);
+    const contactPoints = manifold.contactPoints;
+    const
+      axis = manifold.axis,
+      shape1 = body1.shape,
+      shape2 = body2.shape;
+    const axisReverse = Vector2.reverse(axis, tmp5);
+    const overload = [];
+    // @ts-ignore
+    const vertices1 = SATNarrowphase.findNearSupports(manifold.vertShapeA, axis, []);
+    // @ts-ignore
+    const vertices2 = SATNarrowphase.findNearSupports(manifold.vertShapeB, axisReverse, []);
+    const balancedOverlap = manifold.overlap / (body1.inv_mass + body2.inv_mass);
+    for (let i = 0; i < vertices2.length; i++) {
+      if (SATNarrowphase.shapeContains(shape1, vertices2[i])) {
+        overload.push(vertices2[i]);
       }
     }
     if (overload.length < 2) {
-      for (var i = 0; i < vertices2.length; i++) {
-        if (SAT.shapeContains(shape1, vertices2[i])) {
-          overload.push(vertices2[i]);
-          if (!overload.length)
-            shape = shape2;
+      for (let i = 0; i < vertices1.length; i++) {
+        if (SATNarrowphase.shapeContains(shape2, vertices1[i])) {
+          overload.push(vertices1[i]);
         }
       }
     }
     //some random error happened when this is not there.
     //Dont know if it isnt there now but i dont want to risk it ¯⁠\⁠_⁠(⁠ツ⁠)⁠_⁠/⁠¯
     if (overload.length == 0) {
-      overload.push(vertices1[0]);
+      overload.push(vertices2[0]);
+    }
+    Vector2.multiplyScalar(axis, -balancedOverlap * body2.inv_mass, tmp4);
+    Vector2.add(tmp4, overload[0], contactPoints[0]);
+    if (overload.length > 1) {
+      Vector2.add(tmp4, overload[1], contactPoints[1]);
     }
 
-    overload = SAT.findNearSupports(overload, axis, []);
-    if (body == shape2) axis.reverse();
-    if (body == shape1) {
-      manifold.verticesA[0] = overload[0];
-      manifold.verticesB[0] = overload[0].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
-      if (overload.length == 2) {
-        manifold.verticesA[1] = overload[1];
-        manifold.verticesB[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
-      }
-    }
-    if (body == shape2) {
-      manifold.verticesA[0] = overload[0].clone()
-        .add(tmp6.copy(axis).multiply(manifold.overlap));
-      manifold.verticesB[0] = overload[0];
-      if (overload.length == 2) {
-        manifold.verticesA[1] = overload[1].clone().add(tmp6.copy(axis).multiply(manifold.overlap));
-        manifold.verticesB[1] = overload[1];
-      }
-    }
-    manifold.contactNo = overload.length;
+    manifold.contactNo =
+      shape1.type === Shape.CIRCLE ||
+      shape2.type === Shape.CIRCLE ?
+      1 : clamp(overload.length, 0, 2);
+
     return manifold
-  },
-  /**
-   * @param {Shape} shape1
-   * @param {Shape} shape2
-   * @param {Object} target
-   */
-  shapesCollided(shape1, shape2, target) {
-    let arr = _arr,
-      boundary;
-    clearArr(arr);
-    shape1.getNormals(shape2, arr);
-    boundary = arr.length;
-    shape2.getNormals(shape1, arr);
-
-    SAT.projectShapesToAxes(shape1, shape2, arr, target, boundary);
-  },
+  }
   /**
    * @param {Shape} shapeA
    * @param {Shape} shapeB
-   * @param { Vector2[]} axes
-   * @param {Manifold} shapeA
-   * @param {number} iu
+   * @param {CollisionData} target
    */
-  projectShapesToAxes(shapeA, shapeB, axes, manifold, iu) {
-    let temp = tmp1$6;
+  static shapesCollided(shapeA, shapeB, target) {
+    /**
+     * @type {Vector2[]}
+     */
+    const arr = [];
+    Shape.getNormals(shapeA, shapeB, arr);
+    Shape.getNormals(shapeB, shapeA, arr);
+    SATNarrowphase.projectShapesToAxes(shapeA, shapeB, arr, target);
+  }
+  /**
+   * @param {Shape} shapeB
+   * @param {Shape} shapeA
+   * @param {Vector_like[]} axes
+   * @param {CollisionData} manifold
+   */
+  static projectShapesToAxes(shapeA, shapeB, axes, manifold) {
+    const temp = tmp1$5;
     temp.vertex = null;
-    temp.body = null;
     temp.overlap = Infinity;
     for (let i = 0; i < axes.length; i++) {
-      let axis = tmp4.copy(axes[i]);
-
-      let verticesA = shapeA.getVertices(axis);
-      let verticesB = shapeB.getVertices(axis);
-      let p1 = SAT.projectVerticesToAxis(verticesA, axis, tmp2$3);
-      let p2 = SAT.projectVerticesToAxis(verticesB, axis, tmp3);
-      let min = p1.max < p2.max ? p1.max : p2.max;
-      let max = p1.min > p2.min ? p1.min : p2.min;
+      const axis = Vector2.copy(axes[i], tmp4);
+      // @ts-ignore
+      const verticesA = Shape.getVertices(shapeA, axis);
+      // @ts-ignore
+      const verticesB = Shape.getVertices(shapeB, axis);
+      const p1 = SATNarrowphase.projectVerticesToAxis(verticesA, axis, tmp2$2);
+      const p2 = SATNarrowphase.projectVerticesToAxis(verticesB, axis, tmp3);
+      const min = p1.max < p2.max ? p1.max : p2.max;
+      const max = p1.min > p2.min ? p1.min : p2.min;
       let overlap = min - max;
       if (overlap < 0) return manifold
-
-      if (p1.max < p2.max) axis.reverse();
+      if (p1.max < p2.max)
+        Vector2.reverse(axis, axis);
       if (
         (p1.max > p2.max && p1.min < p2.min) ||
         (p2.max > p1.max && p2.min < p1.min)
       ) {
-        let max = Math.abs(p1.max - p2.max),
+        const max = Math.abs(p1.max - p2.max),
           min = Math.abs(p1.min - p2.min);
         if (min < max) {
           overlap += min;
         } else {
           overlap += max;
-          axis.reverse();
+          Vector2.reverse(axis, axis);
         }
       }
       if (overlap < temp.overlap) {
+        Vector2.copy(axis, temp.axis);
         temp.overlap = overlap;
-        temp.axis.copy(axis);
-        temp.shape = i <= iu - 1 ? shapeB : shapeA;
-        temp.indexA = p1.indexN;
-        temp.indexB = p2.indexN;
+        // @ts-ignore
         temp.verticesA = verticesA;
+        // @ts-ignore
         temp.verticesB = verticesB;
       }
     }
     if (temp.overlap > manifold.overlap) {
+      Vector2.copy(temp.axis, manifold.axis);
       manifold.overlap = temp.overlap;
-      manifold.axis.copy(temp.axis);
-      manifold.dorminantShape = temp.shape;
-      manifold.shapes[0] = shapeA;
-      manifold.shapes[1] = shapeB;
+      // @ts-ignore
       manifold.vertShapeA = temp.verticesA;
+      // @ts-ignore
       manifold.vertShapeB = temp.verticesB;
-      manifold.indexA = temp.indexA;
-      manifold.indexB = temp.indexB;
       manifold.done = true;
     }
     return manifold
-  },
+  }
   /**
-   * @param { Vector2[]} vertices
-   * @param { Vector2} axis
-   * @param {Object} target
+   * @param {Vector_like[]} vertices
+   * @param {Vector_like} axis
+   * @param {{ min: any; max: any; }} target
    */
-  projectVerticesToAxis(vertices, axis, target) {
+  static projectVerticesToAxis(vertices, axis, target) {
     let min = Infinity,
-      max = -Infinity,
-      nearVertex = null,
-      length = vertices.length;
+      max = -Infinity;
+    const length = vertices.length;
 
     for (let i = 0; i < length; i++) {
-      let point = axis.dot(vertices[i]);
-      if (point < min) {
-        min = point;
-        nearVertex = i;
-      }
-      if (point > max) {
-        max = point;
-      }
+      const point = Vector2.dot(axis, vertices[i]);
+      if (point < min) min = point;
+      if (point > max) max = point;
     }
     target.min = min;
     target.max = max;
-    target.indexN = nearVertex;
     return target
-  },
+  }
   /**
    * @param { Vector2[]} vertices
    * @param { Vector2} axis
    * @param { Vector2[]} target
-   * @param {number} nearVertexIndex
    */
-  findNearSupports(vertices, axis, target = [], nearVertexIndex) {
-    let min = Infinity,
-      nearVertices = target,
-      length = vertices.length;
+  static findNearSupports(vertices, axis, target = []) {
+    let min = Infinity;
 
-    for (let i = 0; i < length; i++) {
-      let point = axis.dot(vertices[i]);
+    for (let i = 0; i < vertices.length; i++) {
+      const point = Vector2.dot(axis, vertices[i]);
       if (
-        Math.abs(point - min) <= 0.1 &&
-        !nearVertices.includes(vertices[i])
+        Math.abs(point - min) <= Settings.separationTolerance &&
+        !target.includes(vertices[i])
       ) {
-        nearVertices.push(vertices[i]);
+        target.push(vertices[i]);
         continue
       }
       if (point < min) {
         min = point;
-        clearArr(nearVertices);
-        nearVertices.push(vertices[i]);
+        clearArr(target);
+        target.push(vertices[i]);
         i = -1;
       }
     }
-    return nearVertices
-  },
+    return target
+  }
   /**
    * @param {Shape} shape
    * @param { Vector2} point
    */
-  shapeContains(shape, point) {
-    if (shape.type == "circle")
-      return SAT.circleContains(shape.position, shape.radius, point)
-    return SAT.verticesContain(shape.vertices, point)
-  },
+  static shapeContains(shape, point) {
+    if (shape.type == Shape.CIRCLE)
+      return SATNarrowphase.circleContains(shape.vertices[0], shape.vertices[1].x, point)
+    return SATNarrowphase.verticesContain(shape.vertices, point)
+  }
   /**
    * @param { Vector2} position
    * @param {number} radius
    * @param { Vector2} point
    */
-  circleContains(position, radius, point) {
-    let dx = point.x - position.x,
+  static circleContains(position, radius, point) {
+    const dx = point.x - position.x,
       dy = point.y - position.y;
     if (dx * dx + dy * dy > radius * radius)
       return false
     return true
-  },
+  }
   /**
    * @param { Vector2[]} vertices
-   * @param {number} point 
+   * @param {Vector2} point 
    */
-  verticesContain(vertices, point) {
-    var pointX = point.x,
+  static verticesContain(vertices, point) {
+    const pointX = point.x,
       pointY = point.y,
-      length = vertices.length,
-      vertex = vertices[length - 1],
-      nextVertex;
+      length = vertices.length;
+    let previous = vertices[length - 1],
+      current;
     if (length < 2) return false
-    for (var i = 0; i < length; i++) {
-      nextVertex = vertices[i];
-      if ((pointX - vertex.x) * (nextVertex.y - vertex.y) +
-        (pointY - vertex.y) * (vertex.x - nextVertex.x) < 0) {
+    for (let i = 0; i < length; i++) {
+      current = vertices[i];
+      if ((pointX - previous.x) * (current.y - previous.y) +
+        (pointY - previous.y) * (previous.x - current.x) < 0) {
         return false;
       }
-      vertex = nextVertex;
+      previous = current;
     }
 
     return true;
   }
-};
+}
 
-class NarrowPhase{
+/**
+ * Holds transformation info of an entity 
+ * 
+ */
+class Transform{
   /**
-   * @type {Map<number,Manifold>}
-  */
-  records = new Map()
-  /**
-   * @param {CollisionPair[]} contactList
-   * @param {Manifold[]} clmds
-   * @returns {Manifold[]}
-  */
-  getCollisionPairs(contactList,clmds){
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
+   */
+  constructor(x = 0,y = 0,a = 0){
+    this.position = new Vector2(x,y);
+    this.orientation = a;
+    this.scale = new Vector2(1,1);
   }
 }
 
 /**
- * Uses the Separation Axis Theorem.
- * Best when your body shapes have few vertices.
+ * @type {IntergratorFunc}
  */
-class SATNarrowPhase extends NarrowPhase {
+function euler(transform, movable, dt) {
+  const position = transform.position;
+  const velocity = movable.velocity;
+  const acceleration = movable.acceleration;
+
+  Vector2.set(
+    velocity,
+    velocity.x + acceleration.x * dt,
+    velocity.y + acceleration.y * dt,
+  );
+  Vector2.set(
+    position,
+    position.x + velocity.x * dt,
+    position.y + velocity.y * dt
+  );
+  Vector2.set(acceleration, 0, 0);
+
+  movable.rotation += movable.torque * dt;
+  transform.orientation += movable.rotation * dt;
+  movable.torque = 0;
+}
+/**
+ * @param {Transform} transform
+ * @param {Movable} movable
+ * @param {number} dt
+ */
+function verlet(transform, movable, dt) {
+  const position = transform.position;
+  const velocity = movable.velocity;
+  const acceleration = movable.acceleration;
+
+  Vector2.multiplyScalar(acceleration, dt * 0.5, acceleration);
+  Vector2.add(velocity, acceleration, velocity);
+  Vector2.set(
+    position,
+    position.x + velocity.x * dt + acceleration.x * dt,
+    position.y + velocity.y * dt + acceleration.y * dt
+  );
+  Vector2.add(velocity, acceleration, velocity);
+  Vector2.set(acceleration, 0, 0);
+
+  movable.rotation += movable.torque * dt * 0.5;
+  transform.orientation += movable.rotation * dt + movable.torque * dt;
+  movable.rotation += movable.torque * dt * 0.5;
+  movable.torque = 0;
+
+}
+
+/**
+ * @callback IntergratorFunc
+ * @param {Transform} transform
+ * @param {Movable} movable
+ * @param {number} dt
+ * @returns {void}
+ */
+
+class Intergrator2DPlugin {
   /**
-   * @param {CollisionPair[]} contactList 
-   * @param {Manifold[]} [clmds=[]]
+   * @param {IntergratorPluginOptions} options
    */
-  getCollisionPairs(contactList, clmds = []) {
-    for (var i = 0; i < contactList.length; i++) {
-      let { a, b } = contactList[i];
-      a.sleeping = false;
-      b.sleeping = false;
-      let id = naturalizePair(a.id, b.id);
-      if (!this.records.has(id))
-        this.records.set(id, {
-          bodyA: a,
-          bodyB: b,
-          contactData: {
-            lastOverlap: 0,
-            overlap: -Infinity,
-            done: false,
-            axis: new Vector2$1(),
-            verticesA: [],
-            verticesB: [],
-            vertShapeA: null,
-            vertShapeB: null,
-            contactNo: 0,
-            shapes: [],
-            indexA: 0,
-            indexB: 0
-          },
-          stmp: -1,
-          impulse: 0,
-          persistent: false,
-          ca1: new Vector2$1(),
-          ca2: new Vector2$1(),
-          restitution: 0,
-          staticFriction: 0,
-          kineticFriction: 0,
-          velA: new Vector2$1(),
-          velB: new Vector2$1(),
-          rotA: 0,
-          rotB: 0
-        });
-      let manifold = this.records.get(id);
-      let collisionData = manifold.contactData;
-      collisionData.overlap = -Infinity;
-      collisionData.done = false;
-      SAT.shapesInBodyCollided(a, b, collisionData);
-      if (collisionData.overlap < 0 || !collisionData.done) continue
-      if (collisionData.contactNo == 2) {
-        Vector2$1.lerp(
-          collisionData.verticesA[0],
-          collisionData.verticesA[1],
-          0.5,
-          manifold.ca1
-        ).sub(a.position);
-        Vector2$1.lerp(
-          collisionData.verticesB[0],
-          collisionData.verticesB[1],
-          0.5,
-          manifold.ca2
-        ).sub(b.position);
-      } else {
-        manifold.ca1.copy(collisionData.verticesA[0]).sub(a.position);
-        manifold.ca2.copy(collisionData.verticesB[0]).sub(b.position);
-      }
-      manifold.restitution = a.restitution < b.restitution ? a.restitution : b.restitution;
-      manifold.staticFriction = a.staticFriction < b.staticFriction ? a.staticFriction : b.staticFriction;
-      manifold.kineticFriction = a.kineticFriction < b.kineticFriction ? a.kineticFriction : b.kineticFriction;
-      if (a.collisionResponse && b.collisionResponse)
-        clmds.push(manifold);
+  constructor(options = {}) {
+    options.intergrator = options.intergrator || "verlet";
+    options.enableDamping = options.enableDamping || false;
+    options.linearDamping = options.linearDamping || 0.01;
+    options.angularDamping = options.angularDamping || 0.01;
+
+    this.options = options;
+  }
+  /**
+   * @param {Manager} manager
+   */
+  register(manager) {
+    if (this.options.enableDamping) {
+      manager.setResource("linearDamping",this.options.linearDamping);
+      manager.setResource("angularDamping",this.options.angularDamping);
+      manager.registerSystem(dampenVelocity);
     }
-    return clmds
+    manager.registerSystem(updateTransformVerlet);
   }
 }
+/**
+ * @param {Manager} manager
+ */
+function dampenVelocity(manager) {
+  const [movables] = manager.query("movable").raw();
+  const linear = 1 - manager.getResource("linearDamping");
+  const angular = 1 - manager.getResource("angularDamping");
+  for (let i = 0; i < movables.length; i++) {
+    for (let j = 0; j < movables[i].length; j++) {
+      const velocity = movables[i][j].velocity;
+      Vector2.multiplyScalar(velocity,linear,velocity);
+      movables[i][j].rotation *= angular;
+    }
+  }
+}
+/**
+ * @param {Manager} manager
+ */
+function updateTransformVerlet(manager) {
+  const [transforms,movables] = manager.query("transform","movable").raw();
+  const dt = 1 / 60;// manager.getResource("delta")
+
+  for (let i = 0; i < transforms.length; i++) {
+    for (let j = 0; j < transforms[i].length; j++) {
+      verlet(
+        transforms[i][j],
+        movables[i][j],
+        dt
+      );
+    }
+  }
+}
+/**
+ * @param {Manager} manager
+ */
+function updateTransformEuler(manager) {
+  const [transforms,movables] = manager.query("transform","movable").raw();
+  const dt = manager.getResource("delta");
+
+  for (let i = 0; i < transforms.length; i++) {
+    for (let j = 0; j < transforms[i].length; j++) {
+      euler(
+        transforms[i][j],
+        movables[i][j],
+        dt
+      );
+    }
+  }
+}
+
+/**
+ * @typedef IntergratorPluginOptions
+ * @property {boolean} [enableDamping]
+ * @property {number} [linearDamping]
+ * @property {number} [angularDamping]
+ * @property {"euler" | "verlet"} [intergrator]
+ */
 
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-class World extends System {
-  /**
-   * Used to check if a manifold is persistent.
-   * 
-   * @type number
-   * @private
-   */
-  count = 0
-  /**
-   * A record of collision manifolds.
-   * 
-   * @type Map<number,Manifold>
-   * @protected
-   */
-  records = new Map()
-  /**
-   * A list of bodies.
-   * 
-   * @type Body[]
-   * @private
-   */
-  objects = []
-  /**
-   * A list of constraints fixed to a static object.
-   * 
-   * @type Constraint[]
-   * @private
-   */
-  fixedConstraits = []
-  /**
-   * A list of constraints fixed to two dynamic bodies.
-   * 
-   * @type Array<Constraint>
-   * @private
-   */
-  constraints = []
-  /**
-   * A value between 0 and 1 used to dampen linear velocity of bodies.
-   * 
-   * @type number
-   */
-  linearDamping = Settings.linearDamping
-  /**
-   * A value between 0 and 1 used to dampen angular velocity of bodies.
-   * 
-   * @type number
-   */
-  angularDamping = Settings.angularDamping
-
-  /**
-   * The number of times to solve for velocity.A high number results in much more stable stacking.
-   * 
-   * @type number
-   */
-  velocitySolverIterations = Settings.velocitySolverIterations
+class World2D {
   /**
    * The collision manifolds that have passed narrowphase and verified to be colliding.
    * 
-   * @type Manifold[]
+   * @type {CollisionManifold<Entity>[]}
    */
   CLMDs = []
   /**
    * The collision manifolds that have passed broadphase and could be colliding
    * 
-   * 
-   * @type CollisionPair[]
+   * @deprecated
+   * @type {CollisionPair[]}
    */
   contactList = []
   /**
    * The gravitational pull of the world.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
-  gravitationalAcceleration = new Vector2$1(0, 0)
+  gravitationalAcceleration = new Vector2(0, 0)
   /**
-   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
+   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World2D.update(),set to this to zero if you want to use the latter as the delta time.
    * 
-   * @type number
+   * @type {number}
    */
   fixedFrameRate = Settings.fixedFrameRate
   /**
-   * 
-   * @type { {lastTimestamp:number,total: number}}
-   * @ignore
-   */
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
-  /**
    * This is a cheap way of determining which pairs of bodies could be colliding.
    * 
-   * @type Broadphase
+   * @type {Broadphase}
    */
-  broadphase = null
+  broadphase
   /**
    * This accurately tests body pairs to check 
    * for collision and outputs a manifold for each body pair.
    * 
-   * @type NarrowPhase
+   * @type {NarrowPhase}
    */
-  narrowphase = null
-  /**
-   * Moves the bodies forward in time.
-   * 
-   * @type {Intergrator}
-   */
-  intergrator = VerletSolver
-  /**
-   * @type boolean
-   * @default true
-   */
-  enableIntergrate = true
-
+  narrowphase
   constructor() {
-    super();
-    this.broadphase = new NaiveBroadphase(this);
-    this.narrowphase = new SATNarrowPhase();
+    this.broadphase = new NaiveBroadphase();
+    this.narrowphase = new SATNarrowphase();
   }
 
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
+   * @deprecated
    * @type { Vector2 }
    */
   get gravity() {
@@ -6574,295 +5608,346 @@ class World extends System {
 
   set gravity(x) {
     if (typeof x === "object") {
-      this.gravitationalAcceleration.copy(x);
+      Vector2.copy(x, this.gravitationalAcceleration);
     } else {
-      this.gravitationalAcceleration.set(0, x);
+      Vector2.set(this.gravitationalAcceleration, 0, x);
     }
   }
 
   /**
-   * @private
+   * 
+   * @param {any} manager
+   * @param {World2D} world
+   * @param {CollisionPair[]} contactList
    */
-  narrowPhase() {
-    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, []);
-  }
-  /*
-   * @private
-   */
-  broadPhase() {
-    this.contactList = [];
-    this.broadphase.getCollisionPairs(this.contactList);
+  static narrowPhase(manager, world, contactList) {
+    return world.narrowphase.getCollisionPairs(manager, contactList)
+
   }
   /**
-   * @private
+   * 
+   * @param {World2D} world
    */
-  collisionDetection() {
-    this.broadPhase();
-    this.narrowPhase();
+  static broadPhase(world) {
+    return world.broadphase.getCollisionPairs([])
   }
   /**
-   * @private
-   * @param {number} dt 
+   * 
+   * @param {any} manager
+   * @param {World2D} world
    */
-  collisionResponse(dt) {
-    let length = this.CLMDs.length,
-      manifold,
-      inv_dt = 1 / dt;
+  static collisionDetection(manager, world) {
+    world.contactList = World2D.broadPhase(world);
+    world.CLMDs = World2D.narrowPhase(manager, world, world.contactList);
+  }
+  /**
+   * 
+   * @param {number} dt
+   * @param {Manager} manager
+   * @param {World2D} world
+   * @param {string | any[]} CLMDs
+   */
+  static collisionResponse(manager, world, CLMDs, dt) {
+    const inv_dt = 1 / dt;
 
-    for (var j = 0; j < this.velocitySolverIterations; j++) {
-      for (let i = 0; i < length; i++) {
-        manifold = this.CLMDs[i];
-        manifold.velA.set(0, 0);
-        manifold.velB.set(0, 0);
-        manifold.rotA = 0;
-        manifold.rotB = 0;
-        ImpulseSolver.solve(manifold);
-        FrictionSolver.solve(manifold);
-      }
-      for (var i = 0; i < length; i++) {
-        manifold = this.CLMDs[i];
-        manifold.bodyA.velocity.add(manifold.velA);
-        manifold.bodyB.velocity.add(manifold.velB);
-        manifold.bodyA.rotation.value += manifold.rotA;
-        manifold.bodyB.rotation.value += manifold.rotB;
-      }
-    }
-
-    for (let i = 0; i < length; i++) {
-      manifold = this.CLMDs[i];
-      PenetrationSolver.solve(manifold, inv_dt);
-    }
-
-    for (let i = 0; i < length; i++) {
-      manifold = this.CLMDs[i];
-      manifold.stmp = this.count;
-      ContactSolver.solve(
-        manifold.bodyA,
-        manifold.bodyB,
-        manifold.impulse,
-        manifold.contactData.contactNo
+    for (let i = 0; i < CLMDs.length; i++) {
+      const manifold = CLMDs[i];
+      const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body");
+      const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body");
+      CollisionManifold.prepare(
+        manifold,
+        bodyA,
+        bodyB,
+        movableA,
+        movableB,
+        transformA.position,
+        transformB.position,
+        inv_dt
       );
     }
-  }
-  /**
-   * @private
-   * @param {number} dt 
-   * @param {number} length 
-   */
-  intergrate(dt, length) {
-    for (var i = 0; i < length; i++) {
-      let a = this.objects[i];
-      if (!a.sleeping)
-        this.intergrator.solve(a, dt);
-      //VerletSolver.solve(a, dt)
-    }
-  }
-  /**
-   * @private
-   * @param {number} length 
-   * @param {number} dt 
-   */
-  applyGravity(length, dt) {
-    for (var i = 0; i < length; i++) {
-      let a = this.objects[i];
-      if (a.mass)
-        a.acceleration.add(this.gravitationalAcceleration);
-      a.velocity.add(a.acceleration.multiply(dt));
-      a.acceleration.set(0, 0);
-    }
-  }
-  /**
-   * @private
-   * @param {number} dt
-   */
-  updateConstraints(dt) {
-    let length = this.constraints.length,
-      fixedlength = this.fixedConstraits.length;
-    for (var i = 0; i < fixedlength; i++) {
-      this.fixedConstraits[i].update(dt);
-    }
-    for (var i = 0; i < length; i++) {
-      this.constraints[i].update(dt);
-    }
-  }
-  /**
-   * @private
-   * @param {number} length 
-   */
-  updateBodies(length) {
-    let ld = 1 - this.linearDamping;
-    let ad = 1 - this.angularDamping;
-    for (var i = 0; i < length; i++) {
-      this.objects[i].update();
-      this.objects[i].velocity.multiply(ld);
-      this.objects[i].angularVelocity = this.objects[i].angularVelocity * ad;
-    }
-  }
-  /**
-   * 
-   * 
-   * @param {Number} delta the time passed between the last call and this call.
-   */
-  update(delta) {
-    this.perf.lastTimestamp = performance.now();
-    let dt = this.fixedFrameRate || delta;
-    let length = this.objects.length;
-    this.CLMDs = [];
+    for (let i = 0; i < Settings.velocitySolverIterations; i++) {
+      for (let i = 0; i < CLMDs.length; i++) {
+        const manifold = CLMDs[i];
+        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body");
+        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body");
 
-    this.applyGravity(length, dt);
-    this.updateBodies(length);
-    this.updateConstraints(dt);
-    this.broadphase.update();
-    this.collisionDetection();
-    this.collisionResponse(dt);
-    this.updateConstraints(dt);
-    if (this.enableIntergrate)
-      this.intergrate(dt, length);
-    this.updateBodies(length);
-    this.count += 1;
-    this.perf.total = performance.now() - this.perf.lastTimestamp;
+        CollisionManifold.solve(
+          manifold,
+          movableA,
+          movableB,
+          bodyA,
+          bodyB
+        );
+      }
+    } /***/
   }
-
   /**
-   * Initializes the manager.
    * 
+   * @param {Vector2} gravity
+   * @param {Movable[][]} movable
+   * @param {Body2D[][]} bodies
+   */
+  static applyGravity(gravity, movable, bodies) {
+    for (var i = 0; i < bodies.length; i++) {
+      for (let j = 0; j < bodies[i].length; j++) {
+        if (bodies[i][j].inv_mass)
+          Vector2.add(
+            movable[i][j].acceleration,
+            gravity,
+            movable[i][j].acceleration
+          );
+      }
+    }
+  }
+  /**
+   * 
+   * @param {Body2D[][]} bodies
+   * @param {Transform[][]} transform
+   * @param {BoundingBox[][]} bounds
+   */
+  static updateBodies(transform, bounds, bodies) {
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = 0; j < bodies[i].length; j++) {
+        Body2D.update(
+          bodies[i][j],
+          transform[i][j].position,
+          transform[i][j].orientation,
+          transform[i][j].scale,
+          bounds[i][j]
+        );
+      }
+    }
+  }
+  /**
+   * @param {World2D} world
+   * @param {Body2D[][]} bodies
+   * @param {Number} dt the time passed between the last call and this call.
    * @param {Manager} manager
+   * @param {Entity[][]} entities
+   * @param {Transform[][]} transform
+   * @param {Movable[][]} movable
+   * @param {BoundingBox[][]} bounds
    */
-  init(manager) {
-    manager.setComponentList("body", this.objects);
-  }
-  /**
-   * Adds an object to the world.
-   * 
-   * @param {Body | Composite | Constraint} object
-   */
-  add(object) {
-    if (object.physicsType == ObjType.BODY) {
-      this.addBody(object);
-    } else if (object.physicsType == ObjType.CONSTRAINT) {
-      this.addConstraint(object);
-    } else if (object.physicsType == ObjType.COMPOSITE) {
-      this.addComposite(object);
-    }
-  }
-  /**
-   * Adds a body to the physics world
-   * @param {Body} body Body to insert to world
-   */
-  addBody(body) {
-    //must update vertices and bounds so that Broadphase works properly
-    body.update();
-    body.index = this.objects.length;
-    this.objects.push(body);
-    this.broadphase.insert(body);
-  }
-  /**
-   * Removes an object from the world
-   * @param {Body | Composite | Constraint} object
-   */
-  remove(object) {
-    object.destroy();
-    if (object.physicsType == ObjType.BODY) {
-      this.removeBody(object);
-    } else if (object.physicsType == ObjType.CONSTRAINT) {
-      this.removeContraint(object);
-    } else if (object.physicsType == ObjType.COMPOSITE) {
-      this.removeComposite(object);
-    }
-  }
-  /**
-   * Removes a body from the physics world
-   * @param {Body} body Body to remove from world
-   * 
-   * @returns Body
-   */
-  removeBody(body) {
-    this.broadphase.remove(body);
-    if (removeElement(this.objects, body.index)) {
-      if (body.index === this.objects.length)
-        return
-      this.objects[body.index].index = body.index;
-    }
-    return body
-  }
-  /**
-   * Adds a constraint to the physics world
-   * @param {Constraint} constraint constaint to add to world
-   */
-  addConstraint(constraint) {
-    if (constraint.fixed) {
-      constraint.index = this.fixedConstraits.length;
-      this.fixedConstraits.push(constraint);
-      return
-    }
-    constraint.index = this.constraints.length;
-    this.constraints.push(constraint);
-  }
-  /**
-   * Removes a constraint from the physics world
-   * @param {Constraint} constraint constaint to add to world
-   * 
-   * @returns Constraint
-   */
-  removeContraint(constraint) {
-    let arr = constraint.fixed ? this.fixedConstraits : this.constraints;
-    let temp = arr.pop();
-    if (constraint.index == arr.length) return constraint
-    arr[constraint.index] = temp;
-    temp.index = constraint.index;
-    constraint.index = -1;
-    return constraint
+  static update(manager, world, entities, transform, movable, bounds, bodies, dt) {
+    /** @type {CollisionManifold<Entity>[]}*/
+    this.CLMDs = [];
+    World2D.applyGravity(world.gravitationalAcceleration, movable, bodies);
+    World2D.updateBodies(transform, bounds, bodies);
+    world.broadphase.update(entities, bounds);
+    World2D.collisionDetection(manager, world);
+    World2D.collisionResponse(manager, world, world.CLMDs, dt);
   }
 
-  /**
-   * Adds a composite to the physics world.
-   * 
-   * @param {Composite} composite composite to add to world
-   */
-  addComposite(composite) {
-    for (var i = 0; i < composite.bodies.length; i++) {
-      this.addBody(composite.bodies[i]);
-    }
-    for (var i = 0; i < composite.constraints.length; i++) {
-      this.addConstraint(composite.constraints[i]);
-    }
-  }
-  /**
-   * Removes a composite from the physics world.
-   * 
-   * @param {Composite} composite composite to remove
-   */
-  removeComposite(composite) {
-    for (var i = 0; i < composite.bodies.length; i++) {
-      this.removeBody(composite.bodies[i]);
-    }
-    for (var i = 0; i < composite.constraints.length; i++) {
-      this.removeContraint(composite.constraints[i]);
-    }
-  }
   /**
    * Searches for objects in a given bounds and returns them.
    * 
+   * @template {Entity} T
    * @param {Bounds} bound the region to search in
-   * @param {Array<Body>} [target = []] an array to store results in
-   * @returns Array<Body>
+   * @param {T[]} [out = []] an array to store results in
+   * @returns {T[]}
    */
-  query(bound, target = []) {
-    this.broadphase.query(bound, target);
-    return target
+  query(bound, out = []) {
+    this.broadphase.query(bound, out);
+    return out
   }
 }
 
-class Camera {
+/**
+ * Todo - Remove in version 1.0.0
+ * @deprecated
+ */
+class World extends World2D {
+  /**
+   * @inheritdoc
+   */
+  constructor() {
+    deprecate("World()", "World2D()");
+    // @ts-ignore
+    super(...arguments);
+  }
+}
+
+class Physics2DPlugin {
+  /**
+   * @param {Physics2DPluginOptions} options
+   */
+  constructor(options = {}) {
+    this.gravity = options.gravity || new Vector2();
+    this.enableGravity = options.enableGravity || true;
+    this.broadphase = new Broadphase2DPlugin(options.broadphase);
+    this.narrowphase = new Narrowphase2DPlugin(options.narrowphase);
+    this.intergrator = new Intergrator2DPlugin(options.intergratorOpt);
+
+  }
+  /**
+   * @param {Manager} manager
+   */
+  register(manager) {
+    if (this.enableGravity) {
+      manager.setResource("gravity",this.gravity);
+      manager.registerSystem(applyGravity);
+    }
+    manager.registerPlugin(this.intergrator);
+    manager.registerSystem(updateBodies);
+    manager.registerPlugin(this.broadphase);
+    manager.registerPlugin(this.narrowphase);
+    manager.registerSystem(collisionResponse);
+  }
+}
+class Broadphase2DPlugin {
+  /**
+   * 
+   * @param {Broadphase} broadphase 
+   */
+  constructor(broadphase = new NaiveBroadphase()) {
+    this.broadphase = broadphase;
+  }
+  /**
+  * @param {Manager} manager
+  */
+  register(manager) {
+    manager.setResource("collisionPairs",[]);
+    manager.setResource("broadphase",this.broadphase);
+    manager.registerSystem(naivebroadphaseUpdate);
+  }
+}
+class Narrowphase2DPlugin {
+  /**
+   * 
+   * @param {NarrowPhase} narrowphase 
+   */
+  constructor(narrowphase = new SATNarrowphase()) {
+    this.narrowphase = narrowphase;
+  }
+  /**
+   * @param {Manager} manager
+   */
+  register(manager) {
+    manager.setResource("contacts",[]);
+    manager.setResource("narrowphase",this.narrowphase);
+
+    if (this.narrowphase instanceof SATNarrowphase) {
+      manager.registerSystem(satNarrowphaseUpdate);
+    }
+  }
+}
+/**
+ * @param {Manager} manager
+ */
+function naivebroadphaseUpdate(manager) {
+  const [entities,bounds] = manager.query("entity","bound").raw();
+  const broadphase = manager.getResource("broadphase");
+  broadphase.update(entities,bounds);
+  const pairs = manager.getResource("collisionPairs");
+  pairs.length = 0;
+  broadphase.getCollisionPairs(pairs);
+}
+/**
+ * @param {Manager} manager
+ */
+function satNarrowphaseUpdate(manager) {
+  const narrowphase = manager.getResource("narrowphase");
+  const pairs = manager.getResource("collisionPairs");
+
+  const contacts = manager.getResource("contacts");
+  contacts.length = 0;
+  narrowphase.getCollisionPairs(manager,pairs,contacts);
+}
+/**
+ * @param {Manager} manager
+ */
+function applyGravity(manager) {
+  const gravity = manager.getResource("gravity");
+  const [bodies,movables] = manager.query("body","movable").raw();
+
+  for (let i = 0; i < bodies.length; i++) {
+    for (let j = 0; j < bodies[i].length; j++) {
+      if (bodies[i][j].inv_mass) {
+        Vector2.add(
+          movables[i][j].acceleration,
+          gravity,
+          movables[i][j].acceleration
+        );
+      }
+    }
+  }
+}
+/**
+ * @param {Manager} manager
+ */
+function updateBodies(manager) {
+  const [transform,bounds,bodies] = manager.query("transform","bound","body").raw();
+
+  for (let i = 0; i < bodies.length; i++) {
+    for (let j = 0; j < bodies[i].length; j++) {
+      Body2D.update(
+        bodies[i][j],
+        transform[i][j].position,
+        transform[i][j].orientation,
+        transform[i][j].scale,
+        bounds[i][j]
+      );
+    }
+  }
+}
+/**
+ * @param {Manager} manager
+ */
+function collisionResponse(manager) {
+  const inv_dt = 1 / manager.getResource("delta");
+  const contacts = manager.getResource("contacts");
+
+  for (let i = 0; i < contacts.length; i++) {
+    const manifold = contacts[i];
+    const [transformA,movableA,bodyA] = manager.get(manifold.entityA,"transform","movable","body");
+    const [transformB,movableB,bodyB] = manager.get(manifold.entityB,"transform","movable","body");
+    CollisionManifold.prepare(
+      manifold,
+      bodyA,
+      bodyB,
+      movableA,
+      movableB,
+      transformA.position,
+      transformB.position,
+      inv_dt
+    );
+  }
+  for (let i = 0; i < Settings.velocitySolverIterations; i++) {
+    for (let j = 0; j < contacts.length; j++) {
+      const manifold = contacts[j];
+      const [movableA,bodyA] = manager.get(manifold.entityA,"movable","body");
+      const [movableB,bodyB] = manager.get(manifold.entityB,"movable","body");
+
+      CollisionManifold.solve(
+        manifold,
+        movableA,
+        movableB,
+        bodyA,
+        bodyB
+      );
+    }
+  } /***/
+}
+
+/**
+ * @typedef Physics2DPluginOptions
+ * @property {boolean} [enableGravity=true]
+ * @property {Vector2} [gravity]
+ * @property {Broadphase} [broadphase]
+ * @property {NarrowPhase} [narrowphase]
+ * @property {import("../intergrator/index.js").IntergratorPluginOptions} [intergratorOpt]
+ */
+
+class Camera2D {
   /**
    * @readonly
-   * @type Transform
+   * @type {Transform}
    */
-  transform = new Transform$1()
+  transform = new Transform()
 
   constructor() { }
   /**
-   * @type Vector2
+   * @type {Vector2}
    */
   get position() {
     return this.transform.position
@@ -6871,6 +5956,15 @@ class Camera {
     this.transform.position.copy(x);
   }
   update() {}
+}
+/**
+ * @deprecated
+*/
+class Camera extends Camera2D{
+  constructor(){
+    super();
+    deprecate("Camera()","Camera2D()");
+  }
 }
 
 /**
@@ -6881,140 +5975,54 @@ class Camera {
  * @see WebGLRenderer
  * @see WebGPURenderer
  */
-class Renderer extends System {
+class Renderer {
   /**
-   * @type number
-   */
-  _rafID = 0
-  /**
-   * Used to throttle the frame rate.
-   * 
-   * @private
-   * @rype number
-   */
-  _accumulator = 0
-  /**
-   * A list of meshes.
-   * 
-   * @type Sprite[]
-   */
-  objects = []
-  /**
-   * Used for monitoring perfomance of the renderer
-   * 
-   */
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
-  /**
-   * @private
    * @type {HTMLCanvasElement}
    */
-  domElement = null
-  /**@type {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext}*/
-  ctx = null
+  domElement
   /**
-   * @type {Camera}
+   * @type {Camera2D}
    */
-  camera = null
+  camera
   /**
-   * @param {CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext} context
    * @param {HTMLCanvasElement} canvas element to draw on
    */
-  constructor(canvas, context) {
-    super();
+  constructor(canvas) {
     this.domElement = canvas;
-    this.ctx = context;
-    this.camera = new Camera(this);
-    this.clock = new Clock();
-  }
-  /**
-   * Instantiates the renderer.
-   * 
-   * @param {Manager} manager
-   */
-  init(manager) {
-    manager.setComponentList("sprite", this.objects);
-  }
-  /**
-   * Clears the canvas on which the renderer draws on.
-   */
-  clear() {
-
-    throw "Override Renderer.clear()"
-  }
-  /**
-   * Updates the objects within the renderer.
-   * 
-   * @param {number} dt
-   */
-  update(dt) {
-    throw "Override Renderer.update()"
-  }
-  /**
-   * Requests an animation frame.
-   * 
-   * @protected
-   */
-  RAF() {
-    this._rafID = requestAnimationFrame(this._update);
-  }
-  /**
-   * Starts the rendering cycle of a renderer.
-   */
-  play() {
-    this.RAF();
-  }
-  /**
-   * Stops the rendering cycle of a renderer.
-   */
-  pause() {
-    cancelAnimationFrame(this._rafID);
+    this.camera = new Camera2D();
   }
   /**
    * Attaches the renderer to a given html element by its selector.
-   * 
    * @param {string} selector A css selector string that is passed to document.querySelector
-   * @param {true} focus whether to shift focus of input to the element pr not
+   * @param {boolean} focus whether to shift focus of input to the element pr not
+   * @param {Renderer} renderer
    */
-  bindTo(selector, focus = true) {
+  static bindTo(renderer,selector,focus = true) {
     let element = document.querySelector(selector);
-    this.domElement.remove();
-    this.domElement.style.backgroundColor = "grey";
-    this.domElement.style.touchAction = "none";
-    element.append(this.domElement);
-  }
-  /**
-   * Adds a mesh to the renderer.
-   * 
-   * @param {Sprite | Group} sprite
-   */
-  add(sprite) {
-    this.objects.push(sprite);
-  }
-  /**
-   * Removes the given sprite from the renderer.
-   * 
-   * @param {Sprite} sprite
-   */
-  remove(sprite) {
-    this.objects.splice(this.objects.indexOf(sprite), 1);
+    if (!element) return console.error("could not find container for the canvas.");
+    renderer.domElement.remove();
+    renderer.domElement.style.backgroundColor = "grey";
+    renderer.domElement.style.touchAction = "none";
+    element.append(renderer.domElement);
   }
   /**
    * Requests fullscreen for the renderer.
+   * 
+   * @param {Renderer} renderer
    */
-  requestFullScreen() {
-    this.domElement.parentElement.requestFullscreen();
+  static requestFullScreen(renderer) {
+    const parent = renderer.domElement.parentElement;
+    if (parent) return parent.requestFullscreen()
+    return renderer.domElement.requestFullscreen()
   }
   /**
    * Sets the width and height of the canvas being rendered to.
-   * 
    * @param {number} w Width of the canvas.
    * @param {number} h Height of the canvas.
+   * @param {Renderer} renderer
    */
-  setViewport(w, h) {
-    let canvas = this.domElement;
+  static setViewport(renderer,w,h) {
+    const canvas = renderer.domElement;
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
     canvas.width = w * devicePixelRatio;
@@ -7044,84 +6052,8 @@ class Renderer extends System {
   }
 }
 
-/**
- * Renders images and paths to the 2D context of a canvas.
- * 
- * @extends Renderer
- */
-class Renderer2D extends Renderer {
-  frameRate = 1 / 60
-  renderLast = []
-  /**
-  @param {HTMLCanvasElement} [canvas] element to draw on
-  */
-  constructor(canvas) {
-    canvas = canvas || document.createElement("canvas");
-    super(canvas, canvas.getContext("2d"));
-
-  }
-  /**
-   * @inheritdoc
-   * 
-   * @param {Sprite | Group} sprite
-   */
-  add(sprite) {
-    super.add(sprite);
-    sprite.geometry?.init(this.ctx);
-  }
-  clear() {
-    this.ctx.setTransform();
-    let h = this.height,
-      w = this.width;
-    this.ctx.clearRect(0, 0, w, h);
-  }
-  /**
-   * @param {number} dt
-   */
-  update(dt) {
-    this.camera.update();
-    this.perf.lastTimestamp = performance.now();
-    this.clear();
-    if (this.background != void 0)
-      this.background.update(this, dt);
-    this.ctx.save();
-    this.ctx.translate(this.camera.transform.position.x,-this.camera.transform.position.y);
-    this.ctx.rotate(this.camera.transform.orientation.value);
-    for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].render(this.ctx, dt);
-    }
-    this.ctx.restore();
-    for (var i = 0; i < this.renderLast.length; i++) {
-      this.renderLast[i].update(this, dt, this.camera.transform);
-    }
-    this.perf.total = performance.now() - this.perf.lastTimestamp;
-  }
-  /**
-   * @private
-   */
-  _update = (accumulate) => {
-    let dt = this.clock.update(accumulate);
-    if (this._accumulator < this.frameRate) {
-      this._accumulator += dt;
-      this.RAF();
-      return
-    }
-    this.update(dt || this._accumulator);
-    this.RAF();
-    this._accumulator = 0;
-  }
-  /**
-   * @param {Sprite} sprite
-  */
-  addUI(sprite) {
-    this.renderLast.push(sprite);
-  }
-  requestFullScreen() {
-    this.domElement.parentElement.requestFullscreen();
-  }
-}
-
 //Dont get too excited yet :)
+
 
 /**
  * Renders images and paths to the webgpu context of a canvas.
@@ -7130,6 +6062,7 @@ class Renderer2D extends Renderer {
 */
 class WebGPURenderer extends Renderer{
   constructor(){
+    super();
     throw new Error("Dont get too excited yet :)")
   }
 }
@@ -7146,238 +6079,7 @@ class WebGLRenderer extends Renderer{
 }
 
 /**
- * This is the base class used to render images and paths onto the renderer.
- * Extend it to create your custom behaviour.
- * 
- * TODO - ADD id property to this class and Group class.
- */
-class Sprite extends Component{
-  /**
-   * @private
-   */
-  _position = null
-  /**
-   * @private
-   */
-  _orientation = null
-  /**
-   * @private
-   */
-  _scale = null
-  /**
-   * @private
-   */
-  geometry = null
-  /**
-   * @private
-   */
-  material = null
-  /**
-   * @type Group | null
-   */
-  parent = null
-  /**
-   * @param {BufferGeometry} geometry
-   * @param {Material} material
-   */
-  constructor(geometry, material) {
-    super();
-    this.geometry = geometry;
-    this.material = material;
-  }
-  /**
-   * Angle in degrees
-   * 
-   * @type number
-   */
-  get angle() {
-    return this._orientation.value * 180 / Math.PI
-  }
-  set angle(x) {
-    this._orientation.value = x * Math.PI/180;
-  }
-  /**
-   * World space position.
-   * 
-   * @type Vector2
-   */
-  get position() {
-    return this._position
-  }
-  set position(x) {
-    this._position.copy(x);
-  }
-  /**
-   * Orientation of the sprite
-   * 
-   * @type Angle
-   */
-  get orientation() {
-    return this._orientation
-  }
-  set orientation(x) {
-    this._orientation.copy(x);
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-  */
-  render(ctx, dt) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.translate(...this._position);
-    ctx.rotate(this._orientation.value);
-    ctx.scale(...this._scale);
-    this.material?.render(ctx,dt,this.geometry?.drawable);
-    ctx.closePath();
-    ctx.restore();
-  }
-  /**
-   * @param {Entity} entity
-   */
-  init(entity) {
-    if(!entity){
-      this._position = new Vector2$1();
-      this._orientation = new Angle();
-      this._scale = new Vector2$1(1,1);
-      return
-    }
-    this.entity = entity;
-    this.requires(entity,"transform");
-    let transform = entity.get("transform");
-    this._position = transform.position;
-    this._orientation = transform.orientation;
-    //TODO - Correct this later
-    this._scale = new Vector2$1(1,1);
-    return this
-  }
-  /**
-   * @inheritdoc
-   * @returns {*}
-  */
-  toJson(){
-    let obj = {
-      pos:this._position.toJson(),
-      angle:this._orientation.toJson(),
-      geometry:this.geometry?.toJson(),
-      material:this.material?.toJson(),
-      parent:this.parent?.id
-    };
-    return obj
-  }
-  /**
-   * @inheritdoc
-   * 
-   * @param {Renderer} renderer
-  */
-  fromJson(obj,renderer){
-    this.geometry?.fromJson(obj.geometry);
-    this.material?.fromJson(obj.material);
-    this.position.fromJson(obj.pos);
-    this._orientation.fromJson(obj.angle);
-    //Todo - implement this renderer function
-    this.parent = renderer.getById(obj.parent);
-  }
-}
-Component.implement(Sprite);
-
-/**
- * @interface
-*/
-class Material{
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   * @param {Path2D} [path]
-  */
-  render(ctx,dt,path){
-    throw "Override this method in derived class"
-  }
-}
-
-/**
- * 
- * @implements Material
-*/
-class BasicMaterial {
-  /**
-   * 
-   * @type string
-   * @default "white"
-   */
-  fill = "white"
-  /**
-   * 
-   * @type string
-   * @default "black"
-   */
-  stroke = "black"
-  /**
-   * 
-   * @type boolean
-   * @default false
-   */
-  wireframe = false
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   * @param {Path2D} path
-   */
-  render(ctx,dt, path) {
-    if (!this.wireframe) {
-      ctx.fillStyle = this.fill;
-      ctx.fill(path);
-    }
-    ctx.strokeStyle = this.stroke;
-    ctx.stroke(path);
-  }
-}
-
-/**
- * 
- * @implements Material
- */
-class StaticImageMaterial {
-  /**
-   * @readonly
-   * @type Image
-   */
-  image = null
-  /**
-   * 
-   * @type number
-   */
-  width = 100
-  /**
-   * 
-   * @type number
-   */
-  height = 100
-  /**
-   * @type Vector_like
-   */
-  offset = {
-    x: 0,
-    y: 0
-  }
-  /**
-   * @param {Image} img
-   */
-
-  constructor(img) {
-    //TODO - Find a way to load images synchronously.
-    this.image = img;
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    ctx.drawImage(this.image, this.offset.x, this.offset.y, this.width, this.height);
-  }
-}
-
-/**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x1
  * @param {number} y1
  * @param {number} x2
@@ -7388,7 +6090,7 @@ function line(ctx, x1, y1, x2, y2) {
   ctx.lineTo(x2, y2);
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x
  * @param {number} y
  * @param {number} w
@@ -7398,7 +6100,7 @@ function rect(ctx, x, y, w, h) {
   ctx.rect(x, y, w, h);
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x
  * @param {number} y
  * @param {number} r
@@ -7407,7 +6109,7 @@ function circle(ctx, x, y, r) {
   ctx.arc(x, y, r, 0, Math.PI * 2);
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param { Vector2[]} vertices
  * @param {boolean} [close=true]
  */
@@ -7421,7 +6123,7 @@ function vertices(ctx, vertices, close = true) {
     ctx.lineTo(vertices[0].x, vertices[0].y);
 }
 /**
- * @param {CanvasRenderingContext2D} ctx
+ * @param {CanvasRenderingContext2D | Path2D} ctx
  * @param {number} x
  * @param {number} y
  * @param {number} r
@@ -7443,7 +6145,7 @@ function fillText(ctx, text, x, y) {
 /**
  * @param {CanvasRenderingContext2D} ctx
  * @param {string} [color="black"]
- * @param {string} [fillRule]
+ * @param {CanvasFillRule} [fillRule]
  */
 function fill(ctx, color = "black", fillRule) {
   ctx.fillStyle = color;
@@ -7464,8 +6166,8 @@ function stroke(ctx, color = "black", width = 1) {
  * @param {HTMLImageElement} img
  * @param {number} x
  * @param {number} y
- * @param { number } [w = img#width]
- * @param { number } [h=img#height]
+ * @param { number } [w = img.width]
+ * @param { number } [h=img.height]
  * @param { number } [ix = 0]
  * @param { number } [iy = 0]
  */
@@ -7487,15 +6189,312 @@ function drawImage(
     dw, dh);
 }
 
+class BufferGeometry {
+  /**
+   * @type {Record<string,any[] | undefined>}
+   */
+  attributes = {}
+  /**
+   * @package
+   * @type {Path2D | null}
+   */
+  drawable = null
+  /**
+   * @param { Vector2[]} vertices
+   */
+  /**
+   * @param {BufferGeometry} geometry
+   */
+  static initCanvas2D(geometry) {
+    geometry.drawable = new Path2D();
+    const positions = geometry.attributes["position"];
+    if (!positions) return warnOnce("The `position` attribute should be available in `BufferGeometry` to use `Renderer2D` ")
+    vertices(geometry.drawable, positions, true);
+  }
+  /**
+   * @param {BufferGeometry} geometry
+   * @param {string} name
+   * @param {any[]} attribute
+   */
+  static setAttribute(geometry, name, attribute) {
+    geometry.attributes[name] = attribute;
+  }
+}
+
+class CircleGeometry extends BufferGeometry {
+  /**
+   * @param {number} radius
+   */
+  constructor(radius) {
+    super();
+    BufferGeometry.setAttribute(this, "position", [radius]);
+    CircleGeometry.initCanvas2D(this);
+  }
+  /**
+   * @param {CircleGeometry} geometry
+   */
+  static initCanvas2D(geometry) {
+    geometry.drawable = new Path2D();
+    const position = geometry.attributes["position"];
+    if(!position)return
+    circle(geometry.drawable, 0, 0, position[0]);
+  }
+}
+
+class BoxGeometry extends BufferGeometry{
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
+  constructor(width,height){
+    let v1 = new Vector2(-width / 2, -height / 2);
+    let v2 = new Vector2(-width / 2, height / 2);
+    let v3 = new Vector2(width / 2, height / 2);
+    let v4 = new Vector2(width / 2, -height / 2);
+    super();
+    BufferGeometry.setAttribute(this, "position", [v1, v2, v3, v4]);
+    BufferGeometry.initCanvas2D(this);
+  }
+}
+
+class TriangleGeometry extends BufferGeometry {
+  /**
+   * @param {number} base
+   * @param {number} height
+   * @param {number} angle
+   */
+  constructor(base, height, angle = Math.asin(height / base)) {
+    const l1 = new Vector2(base);
+    const l2 = Vector2.fromAngle(angle);
+    Vector2.multiplyScalar(l2, -height / Math.sin(angle), l2);
+    const center = new Vector2(
+      -(l1.x + l2.x) / 3,
+      -l2.y / 3
+    );
+    super();
+    BufferGeometry.setAttribute(this, "position", [
+      center,
+      Vector2.add(l1,center,l1),
+      Vector2.add(l2,center,l2),
+    ]);
+    BufferGeometry.initCanvas2D(this);
+  }
+}
+
+class LineGeometry extends BufferGeometry {
+  /**
+   * @param {number} length
+   */
+  constructor(length) {
+    const start = new Vector2(length / 2);
+    const end = new Vector2(-length / 2);
+    super();
+    BufferGeometry.setAttribute(this, "position", [start, end]);
+    BufferGeometry.initCanvas2D(this);
+  }
+}
+
+const MaterialType = {
+  NULL:-1,
+  BASIC: 0,
+  TEXT: 1,
+  STATICIMAGE: 2,
+  SPRITE: 3,
+};
+
+/**
+ * @interface
+ */
+class Material {
+  type = MaterialType.NULL
+  /**
+   * @param {Material} material
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} dt
+   * @param {Path2D} [path]
+   */
+  static render(material, ctx, dt, path) {
+    switch (material.type) {
+      case MaterialType.BASIC:
+        // @ts-ignore
+        if (!material.wireframe) {
+          // @ts-ignore
+          ctx.fillStyle = material.fill;
+          // @ts-ignore
+          ctx.fill(path);
+        }
+        // @ts-ignore
+        ctx.strokeStyle = material.stroke;
+        // @ts-ignore
+        ctx.stroke(path);
+        break;
+      case MaterialType.TEXT:
+        /**@type {TextMetrics}*/
+        // @ts-ignore
+        const metrics = ctx.measureText(this.text);
+        // @ts-ignore
+        const x = material.center ? -metrics.width / 2 : 0;
+        const y = 0;
+        // @ts-ignore
+        ctx.strokeRect = material.color;
+        // @ts-ignore
+        ctx.fillStyle = material.color;
+        // @ts-ignore
+        ctx.font = material.font;
+        // @ts-ignore
+        if (material.fill)
+          // @ts-ignore
+          ctx.fillText(material.text, x, y);
+        else
+          // @ts-ignore
+          ctx.strokeText(material.text, x, y);
+        break;
+      case MaterialType.STATICIMAGE:
+        ctx.drawImage(
+          // @ts-ignore
+          material.image,
+          // @ts-ignore
+          material.offset.x,
+          // @ts-ignore
+          material.offset.y,
+          // @ts-ignore
+          material.width,
+          // @ts-ignore
+          material.height
+        );
+        break;
+      case MaterialType.SPRITE:
+        drawImage(
+          ctx,
+          // @ts-ignore
+          material.img,
+          // @ts-ignore
+          -material.width / 2,
+          // @ts-ignore
+          -material.width / 2,
+          // @ts-ignore
+          material.frameWidth,
+          // @ts-ignore
+          material.frameHeight,
+          // @ts-ignore
+          material._frame,
+          // @ts-ignore
+          material._index,
+          // @ts-ignore
+          material.width,
+          // @ts-ignore
+          material.height
+        );
+        // @ts-ignore
+        material._accumulator += dt;
+        // @ts-ignore
+        if (material._accumulator < material.frameRate) return
+        // @ts-ignore
+        material._accumulator = 0;
+        // @ts-ignore
+        material._frame += 1;
+        // @ts-ignore
+        if (material._frame >= material._maxFrame)
+          // @ts-ignore
+          material._frame = 0;
+        break;
+      case MaterialType.STATICIMAGE:
+        ctx.drawImage(
+          // @ts-ignore
+          material.image,
+          // @ts-ignore
+          material.offset.x,
+          // @ts-ignore
+          material.offset.y,
+          // @ts-ignore
+          material.width,
+          // @ts-ignore
+          material.height
+        );
+        break;
+      default:
+        throws("Unsupported Material type");
+    }
+  }
+}
+
 /**
  * 
- * @implements Material
+ * @implements {Material}
+*/
+class BasicMaterial {
+  type = MaterialType.BASIC
+  /**
+   * 
+   * @type {string}
+   * @default "white"
+   */
+  fill = "white"
+  /**
+   * 
+   * @type {string}
+   * @default "black"
+   */
+  stroke = "black"
+  /**
+   * 
+   * @type {Boolean}
+   * @default false
+   */
+  wireframe = false
+}
+
+/**
+ * 
+ * @implements {Material}
+ */
+class StaticImageMaterial{
+  type = MaterialType.STATICIMAGE
+  /**
+   * @readonly
+   * @type {Image}
+   */
+  image
+  /**
+   * 
+   * @type {number}
+   */
+  width = 100
+  /**
+   * 
+   * @type {number}
+   */
+  height = 100
+  /**
+   * @type {Vector_like}
+   */
+  offset = {
+    x: 0,
+    y: 0
+  }
+  /**
+   * @param {Image} img
+   */
+
+  constructor(img, width = 100, height = 100) {
+    this.image = img;
+    this.width = width;
+    this.height = height;
+    this.offset.x = -width/2;
+    this.offset.y = -height/2;
+  }
+}
+
+/**
+ * 
+ * @implements {Material}
  */
 class SpriteMaterial {
+  type = MaterialType.SPRITE
   /**
    * @type {HTMLImageElement}
    */
-  img = null
+  img
   /**
    * The index of the current action.
    * 
@@ -7537,8 +6536,6 @@ class SpriteMaterial {
    * @type {number[]}
    */
   _maxFrames = []
-  /**
-   * @type {Vector}
   /**
    * The width of the sprite.
    * 
@@ -7608,36 +6605,13 @@ class SpriteMaterial {
     this._index = index;
     this._frame = 0;
   }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   */
-  render(ctx, dt) {
-    drawImage(
-      ctx,
-      this.img,
-      -this.width / 2,
-      -this.width / 2,
-      this.frameWidth,
-      this.frameHeight,
-      this._frame,
-      this._index,
-      this.width,
-      this.height
-    );
-    this._accumulator += dt;
-    if (this._accumulator < this.frameRate) return
-    this._accumulator = 0;
-    this._frame += 1;
-    if (this._frame >= this._maxFrame)
-      this._frame = 0;
-  }
 }
 
 /**
  * Material for rendering text.
  */
 class TextMaterial extends Material {
+  type = MaterialType.TEXT
   /**
    * @type {String}
    */
@@ -7665,478 +6639,63 @@ class TextMaterial extends Material {
     super();
     this.text = text;
   }
-  /**
-   * @inheritdoc
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    /**@type {TextMetrics}*/
-    const metrics = ctx.measureText(this.text);
-    const x = this.center ? -metrics.width / 2 : 0;
-    const y = 0;
-    ctx.strokeRect = this.color;
-    ctx.fillStyle = this.color;
-    ctx.font = this.font;
-    if (this.fill)
-      ctx.fillText(this.text, x, y);
-    else
-      ctx.strokeText(this.text, x, y);
-  }
 }
 
-let r = new Vector2$1();
-let material$1 = new BasicMaterial();
-material$1.wireframe = true;
 /**
- * This draws a body from the physics System.
+ * This is the base class used to render images and paths onto the renderer.
+ * Extend it to create your custom behaviour.
  * 
- * @augments Sprite
+ * TODO - ADD id property to this class and Group class.
+ * * @template {BufferGeometry} T
+ * * @template {Material} U
  */
-class BodySprite extends Sprite {
+class Sprite {
   /**
    * @private
-   * @type Body
+   * @type {T}
    */
-  body = null
+  geometry
   /**
-   * Determine whether to draw a representation of the velocity.
-   * 
-   * @type {boolean}
+   * @private
+   * @type {U}
    */
-  drawVelocity = false
+  material
   /**
-   * Determine whether to draw the bounding box.
-   * 
-   * @type {boolean}
+   * @param {T} geometry
+   * @param {U} material
    */
-  drawBounds = false
-  /**
-   * Determine whether to draw the position of the body.
-   * 
-   * @type {boolean}
-   */
-  drawPosition = true
-  /**
-   * @param {{}} [options={}] 
-   * @param {boolean} [options.drawVelocity=false] Determine whether to draw a representation of the velocity.
-   * @param {boolean} [options.drawBounds=false] Determine whether to draw the bounding box.
-   */
-  constructor(options = {}) {
-    super();
-    this.drawVelocity = options.drawVelocity || false;
-    this.drawBounds = options.drawBounds || false;
+  constructor(geometry, material) {
+    this.geometry = geometry;
+    this.material = material;
   }
   /**
-   * @inheritdoc
-   *  @param {CanvasRenderingContext2D} ctx
+   * @deprecated
+   * @template {BufferGeometry} T
+   * @template {Material} U
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {Sprite<T,U>} sprite
    * @param {number} dt
    */
-  render(ctx, dt) {
-
-    if (this.body.physicsType == ObjType.COMPOSITE) {
-      for (var i = 0; i < this.body.bodies.length; i++) {
-        this._drawShapes(this.body.bodies[i], ctx);
-
-      }
-    } else {
-      this._drawShapes(this.body, ctx);
-    }
-    if (this.drawVelocity == true)
-      this._drawVelocity(this.body, ctx);
-    if (this.drawBounds == true)
-      this._drawBound(this.body, ctx);
-    if (this.drawPosition)
-      this._drawCenter(this.body, ctx);
-  }
-  /**
-   * @private
-   * @param {Body} body
-   * @param {CanvasRenderingContext2D} renderer
-   */
-  _drawCenter(body, ctx) {
+  static render(
+    ctx,
+    sprite,
+    position,
+    orientation,
+    scale,
+    dt
+  ) {
+    ctx.save();
     ctx.beginPath();
-    circle(
-      ctx,
-      body.position.x,
-      body.position.y,
-      2
-    );
-    fill(ctx, "black");
+    ctx.translate(position.x, position.y);
+    ctx.rotate(orientation);
+    ctx.scale(scale.x, scale.y);
+    // @ts-ignore
+    Material.render(sprite.material,ctx, dt, sprite.geometry.drawable);
     ctx.closePath();
-  }
-  /**
-   * @private
-   * @param {Body} body
-   * @param {CanvasRenderingContext2D} renderer
-   */
-  _drawVelocity(body, ctx) {
-    ctx.beginPath();
-    line(
-      ctx,
-      body.position.x,
-      body.position.y,
-      body.position.x + body.velocity.x,
-      body.position.y + body.velocity.y
-    );
-    stroke(ctx, "cyan");
-    ctx.closePath();
-  }
-  /**
-   * @private
-   * @param {Body} body
-   * @param {CanvasRenderingContext2D} renderer
-   */
-  _drawBound(body, ctx) {
-    ctx.beginPath();
-    if (body.bounds.r) {
-      circle(ctx, ...body.position, body.bounds.r);
-    } else {
-      rect(
-        ctx,
-        body.bounds.min.x,
-        body.bounds.min.y,
-        body.bounds.max.x - this.body.bounds.min.x,
-        body.bounds.max.y - this.body.bounds.min.y
-      );
-    }
-    stroke(ctx, "red");
-    ctx.closePath();
-  }
-  /**
-   * @private
-   * @param {Body} body
-   * @param {CanvasRenderingContext2D} renderer
-   */
-  _drawShapes(body, ctx) {
-    ctx.beginPath();
-    for (var i = 0; i < body.shapes.length; i++) {
-      let shape = body.shapes[i];
-      if (shape.type === Shape.CIRCLE) {
-        circle(
-          ctx,
-          shape.position.x,
-          shape.position.y,
-          shape.radius);
-        Vector2$1.fromRad(shape.angle, r).multiply(shape.radius);
-        line(ctx, ...shape.position,
-          shape.position.x + r.x,
-          shape.position.y + r.y);
-      } else {
-        vertices(ctx, shape.vertices, true);
-      }
-    }
-    stroke(ctx);
-    ctx.closePath();
-  }
-  /**
-   * @inheritdoc
-   * @param {Entity} parent
-   */
-  init(parent) {
-    this.body = parent.get("body");
-    super.init(parent);
-  }
-}
-
-class BufferGeometry {
-  /**
-   * @readonly
-   * @type Vector2[]
-   */
-  vertices = null
-  /**
-   * @package
-   * @type Path2D | WebGLVertexArrayObject
-   */
-  drawable = null
-  /**
-   * @param { Vector2[]} vertices
-   */
-  constructor(vertices) {
-    this.vertices = vertices || [];
-  }
-  /**
-   * @package
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  init(ctx) {
-    this.updateVertices(this.vertices);
-  }
-  /**
-   * @param {Vector2[]} data
-  */
-  updateVertices(data){
-    const path = this.drawable = new Path2D();
-    vertices(path, data, true);
-  }
-}
-
-class CircleGeometry {
-  /**
-   * @param {number} radius
-   */
-  constructor(radius) {
-    this.radius = radius;
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  init(ctx) {
-    this._drawable = new Path2D();
-    circle(path, this.vertices, true);
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    circle(ctx, 0, 0, this.radius);
-  }
-}
-
-class BoxGeometry extends BufferGeometry{
-  constructor(width,height){
-    let v1 = new Vector2$1(-width / 2, -height / 2);
-    let v2 = new Vector2$1(-width / 2, height / 2);
-    let v3 = new Vector2$1(width / 2, height / 2);
-    let v4 = new Vector2$1(width / 2, -height / 2);
-    super([v1, v2, v3, v4]);
-  }
-}
-
-class TriangleGeometry extends BufferGeometry{
-  constructor(base, height, angle) {
-    let l1 = new Vector2$1(1).multiply(base);
-    let l2 = Vector2$1.fromRad(angle).multiply(height/Math.sin(angle));
-    let center = tmp1.set((l1.x + l2.x) / 3, l2.y / 3);
-    super([
-      new Vector2$1().sub(center),
-      l1.sub(center),
-      l2.sub(center)
-    ]);
-  }
-}
-
-class LineGeometry extends BufferGeometry {
-  constructor(length) {
-    let start = new Vector2$1(1).multiply(length / 2),
-      end = new Vector2$1(1).multiply(-length / 2);
-    super([start, end]);
-  }
-}
-
-let geometry = new BufferGeometry([
-  new Vector2$1(-10, -10),
-  new Vector2$1(-10, 10),
-  new Vector2$1(20, 0)
-  ]);
-let material = new BasicMaterial();
-material.fill = "purple";
-/**
- * Used for debugging agents.
- * 
- * @augments Sprite
- */
-class AgentSprite extends Sprite {
-  /**
-   * 
-   * @private
-   * @type Agent
-   */
-  agent = null
-  constructor() {
-    super(geometry,material);
-  }
-  /**
-   * @inheritdoc
-   * @param {Entity} entity 
-   */
-  init(entity) {
-    super.init(entity);
-    this.requires(entity,"agent");
-    this.agent = entity.get("agent");
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    this.agent.draw(ctx);
-    super.render(ctx);
-  }
-}
-
-/**
- * Its a fricking particle!
- */
-class Particle {
-  /**
-   * @readonly
-   * @type Vector2
-   */
-  position = null
-  /**
-   * @readonly
-   * @type Vector2
-   */
-  velocity = null
-  /**
-   * @type boolean
-   */
-  active = true
-  /**
-   * @type number
-   */
-  radius = 0
-  /**
-   * @type {{r:number,b:number,g:number,a:number}}
-   */
-  color = null
-  /**
-   * @private
-   * @type number
-   */
-  _life = 0
-  /**
-   * @readonly
-   * @type number
-   */
-  lifespan = 0
-  /**
-   * @param { Vector2} pos
-   * @param {number} radius
-   * @param {number} [lifespan=5] In seconds
-   */
-  constructor(pos, radius, lifespan = 5) {
-    this.position = pos;
-    this.velocity = new Vector2$1();
-    this.radius = radius;
-    this.color = {
-      r: 100,
-      g: 255,
-      b: 255,
-      a: 1
-    };
-    this.lifespan = lifespan;
-    this._life = 0;
-  }
-  /**
-   * Renders a particle.
-   * 
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
-    ctx.beginPath();
-    circle(ctx, ...this.position, this.radius);
-    fill(ctx, `rgba(${this.color.r},${this.color.g},${this.color.b},${this.color.a})`);
-    ctx.closePath();
-  }
-  /**
-   * Updates a particle's lifetime
-   * @inheritdoc
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-   */
-  update(ctx, dt) {
-    this._life += dt;
-    this.position.add(this.velocity);
-    this.active = this._life < this.lifespan;
-  }
-}
-
-/**
- * This creates a particle system 
- * @augments Sprite
- */
-class ParticleSystemSprite extends Sprite {
-  /**
-   * @private
-   */
-  _particles = []
-  /**
-   * @type number
-   * @default 1
-   */
-  initial = 0
-  /**
-   * @type number
-   * @default 1
-   */
-  frameIncrease = 0
-  /**
-   * @type number
-   * @default 1
-   */
-  max = 0
-  /**
-   * @param {number} [initial=1] Number of particles to start with.
-   * @param {number} [max=100] Maximum number of particles.
-   * param {number} [increment=5] Maximum number of particles.
-   */
-  constructor(initial = 1, max = 100, increment = 5) {
-    super();
-    this.initial = initial;
-    this.frameIncrease = increment;
-    this.max = max;
-  }
-
-  /**
-   * @protected
-   * @param {number} n
-   */
-  initParticles(n) {
-    for (var i = 0; i < n; i++) {
-      this._particles.push(this.create());
-    }
-  }
-
-  /**
-   * override this to return an object created from your own class extending the particle class
-   * 
-   * @protected
-   */
-  create() {
-    return new Particle(
-      new Vector2$1(...this.position),
-      rand(1, 10),
-      rand(1, 6)
-    )
-  }
-  /**
-   * @inheritdoc
-   * @param {Entity} entity
-   */
-  init(entity) {
-    super.init(entity);
-    this.initParticles(this.initial);
-  }
-  /**
-   * @protected
-   * @param {Particle} p
-   * @param {number} dt
-   */
-  behavior(p,dt) {
-    p.velocity.set(
-      p.velocity.x + rand(-1, 1)*dt,
-      p.velocity.y + rand(0, 0.3)*dt
-    );
-  }
-  /**
-   * @inheritdoc
-   *  @param {CanvasRenderingContext2D} ctx
-   * @param {number} dt
-  */
-  render(ctx, dt) {
-    for (let i = this._particles.length - 1; i > 0; i--) {
-      let p = this._particles[i];
-      p.update(ctx, dt);
-      this.behavior(p,dt);
-      p.draw(ctx, dt);
-      if (!p.active) {
-        this._particles.splice(i, 1);
-      }
-    }
-    if (this._particles.length < this.max) {
-      this.initParticles(this.frameIncrease);
-    }
+    ctx.restore();
   }
 }
 
@@ -8162,18 +6721,6 @@ class Group extends Sprite {
   constructor(sprites = []) {
     super();
     this._children = sprites;
-  }
-  /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "group"
   }
 
   /**
@@ -8220,62 +6767,6 @@ class Group extends Sprite {
   }
 }
 
-class CamController {
-  /**
-   * @type {Vector2}
-   */
-  offset = new Vector2$1()
-  /**
-   * @type {Transform}
-   */
-  transform = null
-  /**
-   * @type {Vector2 | null}
-   */
-  targetPosition = null
-  /**
-   * @type {Angle | null}
-   */
-  targetOrientation = null
-  /**
-   * @param {Camera} camera
-   */
-
-  constructor(camera) {
-    this.transform = camera.transform;
-  }
-  /**
-   * @param {Vector2} position
-   * @param {Angle} orientation
-   */
-  follow(position, orientation = null) {
-    this.targetOrientation = orientation;
-    this.targetPosition = position;
-  }
-  /**
-   * @param {Entity} entity
-   */
-  followEntity(entity) {
-    if (!entity.has("transform")) return
-    let target = entity.get("transform");
-    this.follow(target.position, target.orientation);
-  }
-  /**
-   * @param {number} x
-   * @param {number} y
-   */
-  setOffset(x, y) {
-    this.offset.set(x, y);
-  }
-  init() {}
-  update() {
-    if (this.targetPosition)
-      this.transform.position.copy(this.targetPosition.clone().sub(this.offset));
-    if (this.targetOrientation)
-      this.transform.orientation.copy(this.targetOrientation);
-  }
-}
-
 /**
  * Handled the keyboard input of an application on a PC.
 */
@@ -8319,6 +6810,7 @@ class Keyboard {
   /**
    * @private
   */
+  // @ts-ignore
   _onDown = e => {
     let key = this.normalize(e.code);
     this.keys[key] = true;
@@ -8327,6 +6819,7 @@ class Keyboard {
     /**
      * @private
      */
+  // @ts-ignore
   _onUp = e =>{
     this.keys[this.normalize(e.code)] = false;
   }
@@ -8419,19 +6912,22 @@ class Mouse {
     eh.add('click', this._onClick);
     eh.add('mousedown', this._onDown);
     eh.add('mouseup', this._onUp);
-    eh.add('mousewheel', this._onWheel);
+    eh.add('wheel', this._onWheel);
     eh.add('mousemove', this._onMove);
     eh.add("contextmenu", this._onContextMenu);
   }
   /**
    * @private
    */
+  // @ts-ignore
+  // @ts-ignore
   _onClick = (e) => {
     ++this.clickCount;
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onMove = (e) => {
     this.position.x = e.clientX;
 
@@ -8451,6 +6947,7 @@ class Mouse {
   /**
    * @private
    */
+  // @ts-ignore
   _onDown = (e) => {
     switch (e.button) {
 
@@ -8466,6 +6963,7 @@ class Mouse {
   /**
    * @private
    */
+  // @ts-ignore
   _onUp = (e) => {
     switch (e.button) {
       case 0:
@@ -8479,11 +6977,13 @@ class Mouse {
   /**
    * @private
    */
+  // @ts-ignore
   _onWheel = (e) => {
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onContextMenu = (e) => {
     e.preventDefault();
   }
@@ -8516,19 +7016,6 @@ class Touch {
     this.init(eh);
   }
   /**
-   * Checks to see if the position is within the dragbox of the first two touches.
-   * Not yet fully implemented
-   * 
-   * @param {Vector_like} pos
-   */
-  inDragBox(pos) {
-    if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
-      pos.y > this.dragLastPosition.y && pos.y < this.dragLastPosition.y + this.position.y) {
-      return false
-    }
-    return true
-  }
-  /**
    * Adds Touch events to the DOM.
    * 
    * @param {DOMEventHandler} eh
@@ -8541,18 +7028,21 @@ class Touch {
   /**
    * @private
    */
+  // @ts-ignore
   _onMove = (e) => {
     e.preventDefault();
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onDown = (e) => {
     this.touches = e.touches;
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onUp = (e) => {
     this.touches = e.touches;
   }
@@ -8567,24 +7057,24 @@ class Input {
   /**
    * This attaches callbacks to the DOM.
    * 
-   * @type DOMEventHandler
+   * @type {DOMEventHandler}
   */
-  DOMEventHandler = null
+  DOMEventHandler
   /**
    * 
-   * @type Mouse
+   * @type {Mouse}
   */
-  mouse = null
+  mouse
   /**
    * 
-   * @type Touch
+   * @type {Touch}
   */
-  touch = null
+  touch
   /**
    * 
-   * @type Keyboard
+   * @type {Keyboard}
   */
-  keyboard = null
+  keyboard
   /**
    * @param {DOMEventHandler} eventHandler
   */
@@ -8606,9 +7096,9 @@ class Input {
   */
   dispose() {
     //TODO remove eventlisteners
-    this.mouse.dispose();
-    this.keyboard.dispose();
-    this.touch.dispose();
+    //this.mouse.dispose()
+    //this.keyboard.dispose()
+    //this.touch.dispose()
   }
 }
 
@@ -8620,23 +7110,23 @@ class Sfx {
    * @private
    * @type {AudioBuffer}
    */
-  _soundBuffer = null
+  _soundBuffer
   /**
    * @private
    * @type {AudioBufferSourceNode}
    */
-  _source = null
+  _source
   //Todo - Check to see if this one works
   /**
    * @private
    * @type {Function}
    */
-  _onended = null
+  _onended = ()=>{}
   /**
    * @private
    * @type {AudioNode}
    */
-  _destination = null
+  _destination
   /**
    * @private
    * @type {number}
@@ -8672,8 +7162,10 @@ class Sfx {
   constructor(handler, buffer) {
     this.handler = handler;
     this.ctx = handler.ctx;
+    this._source = handler.ctx.createBufferSource();
     this._soundBuffer = buffer;
     this._destination = handler.masterGainNode;
+    this._startTime = Date.now();
     this.finished = false;
     this.id = -1;
     this.duration = buffer.duration;
@@ -8682,7 +7174,7 @@ class Sfx {
   /**
    * Set callback when the sound finishes playing.
    * 
-   * @type {Function}
+   * @param {Function} x 
   */
   set onended(x) {
     this._onended = x;
@@ -8741,59 +7233,60 @@ class AudioHandler {
    * Audio context to use.
    * 
    *  @private
-   * @type AudioContext
+   * @type {AudioContext}
    */
   ctx = new AudioContext()
   /**
    * List of audio buffers to use.
    * 
    *  @private
-   * @type Object<string,AudioBuffer>
+   * @type {Object<string,AudioBuffer>}
    */
   sfx = {}
   /**
    * The name of the background music playing.
    * 
    *  @private
-   * @type string
+   * @type {string}
    */
   _backname = ""
   /**
    * The audiobuffer of the background music.
    * 
    *  @private
-   * @type AudioBuffer
+   * @type {Sfx | null }
    */
   _background = null
   /**
    * List of playing sounds
    * 
    * @private
-   * @type Sfx[]
+   * @type {Sfx[]}
    */
   playing = []
   /**
    * What to play after loading the audiobuffers.
    * 
    * @private
+   * @type {Record<string,number>}
    */
   toplay = {}
   /**
    * Volume to resume playing when unmuted.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _mute = 1
   /**
    * Master volume for all sounds.
    * 
    * @private
-   * @type AudioNode
+   * @type {GainNode}
    */
-  masterGainNode = null
+  masterGainNode
   /**
-   * @type string
+   * @type {string}
    */
   baseUrl = ""
     /**
@@ -8827,7 +7320,7 @@ class AudioHandler {
       .then(e => {
         this.sfx[name] = e;
         if (this._backname == name)
-          this.playMusic(name);
+          this.playBackgroundMusic(name);
         if (name in this.toplay) {
           this.playEffect(name);
         }
@@ -8836,21 +7329,21 @@ class AudioHandler {
   /**
    * Loads all audio from the loader.
    * 
-   * @param {Loader} loader
+   * @param {*} loader
    */
-  loadFromLoader(loader) {
+  /*loadFromLoader(loader) {
     for (var n in loader.sfx) {
-      let name = n;
+      let name = n
       this.ctx.decodeAudioData(loader.sfx[n]).then(e => {
-        this.sfx[n] = e;
+        this.sfx[n] = e
         if (this._backname == name)
-          this.playMusic(name);
+          this.playMusic(name)
         if (name in this.toplay) {
-          this.playEffect(name);
+          this.playEffect(name)
         }
-      });
+      })
     }
-  }
+  }*/
   /**
    * Plays a single audio as the background in a loop throughout the game
    * 
@@ -8901,22 +7394,23 @@ class AudioHandler {
    */
   pauseAll() {
     this.playing.forEach(sound => {
-      sound.stop();
+      sound.pause();
     });
   }
   /**
    * Sets the volume to zero.Sounds will continue playing but not be audible.
    */
   mute() {
-    this._mute = this.masterGainNode.gain;
-    this.masterGainNode.gain = 0;
+    if(!this.masterGainNode)return
+    this._mute = this.masterGainNode.gain.value;
+    this.masterGainNode.gain.value = 0;
 
   }
   /**
    * Restores the volume before it was muted.
    */
   unmute() {
-    this.masterGainNode.gain = this._mute;
+    this.masterGainNode.gain.value = this._mute;
   }
   /**
    * Removes an sfx from the handler and disconnects it from its destination.
@@ -8932,267 +7426,32 @@ class AudioHandler {
 }
 
 /**
- * A system that manages agent components by updating them.
- */
-class AgentManager extends System{
-  /**
-   * A list of agents to update every frame.
-   * 
-   * @type Agent[]
-  */
-  objects = []
-  /**
-   * Initializes the manager.
-   * 
-   * @param {Manager} manager
-  */
-  init(manager) {
-    manager.setComponentList("agent", this.objects);
-  }
-  /**
-   * Update all registered agents.
-   * 
-   * @param {number} dt
-  */
-  update(dt) {
-    let inv_dt = 1 / dt;
-    for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].update(inv_dt);
-    }
-  }
-}
-
-/**
- * Manages the behaviours for an agent.
- * 
- * @package
- */
-class BehaviourManager {
-  /**
-   * A list of behaviors
-   * 
-   * @type Behaviour[]
-   */
-  _behaviours = []
-  /**
-   * Accumulated force from behaviours to apply to agent
-   */
-  _accumulated = new Vector2$1()
-  /**
-   * Adds a behavior to the manager
-   * 
-   * @param {Behaviour} behaviour 
-   */
-  add(behaviour) {
-    this._behaviours.push(behaviour);
-    if (this.active) behaviour.init(this._agent);
-  }
-  /**
-   * Removes a behavior to the manager
-   * 
-   * @param {Behaviour} behaviour 
-   */
-  remove(behaviour) {
-    removeElement(this._behaviours, this._behaviours.indexOf(behaviour));
-  }
-  /**
-   * Boots up the behavoiurs of the agent that contains it.
-   * 
-   * @param {Agent} agent 
-   */
-  init(agent) {
-    this._agent = agent;
-    for (var i = 0; i < this._behaviours.length; i++) {
-      this._behaviours[i].init(agent);
-    }
-  }
-  /**
-   * Updates the behaviours of the agent and applies changes to agent.
-   * 
-   * @param {number} inv_dt
-   */
-  update(inv_dt) {
-    let result = new Vector2$1();
-    this._accumulated.set(0, 0);
-    for (let i = 0; i < this._behaviours.length; i++) {
-      this._behaviours[i].calc(result, inv_dt);
-      this._accumulated.add(result);
-    }
-    this._agent.acceleration.add(this._accumulated);
-    this._agent.orientation.value = Vector2$1.toRad(this._agent.velocity);
-  }
-  /**
-   * Removes all behaviours from a manager.
-   */
-  clear() {
-    clearArr(this._behaviours);
-  }
-  /**
-   * @ignore
-   * Used for visually debugging items.
-   */
-  draw(renderer) {
-    this._behaviours.forEach(b => b.draw(renderer));
-  }
-}
-
-/**
- * This is a component class used to add AI behavior to an entity.
- */
-class Agent extends Component{
-  /**
-   * The position of the entity.
-   * 
-   * @type Vector2
-   */
-  position = null
-  /**
-   * The velocity of the entity.
-   * 
-   * @type Vector2
-   */
-  velocity = null
-  /**
-   * The acceleration of the entity.
-   * 
-   * @type Vector2
-   */
-  acceleration = null
-  /**
-   * The orientation of the entity.
-   * 
-   * @type Angle
-   */
-  orientation = null
-  /**
-   * The rotation of the entity.
-   * 
-   * @type Angle
-   */
-  rotation = null
-  /**
-   * The maximum speed of the agent in pixels per second.
-   * 
-   * @type number
-   */
-  maxSpeed = 20
-  /**
-   * Maximum rotation of the agent in radians per second
-   * Not yet implemented.
-   */
-  maxTurnRate = 5
-  /**
-   * 
-   * @private
-   * @type BehaviourManager
-   */
-  behaviours = new BehaviourManager()
-  /**
-   * @inheritdoc
-   * @param {Entity} entity
-   */
-  init(entity) {
-    this.requires(entity,"transform", "movable");
-    let move = entity.get("movable"),
-      transform = entity.get("transform");
-    this.velocity = move.velocity;
-    this.rotation = move.rotation;
-    this.position = transform.position;
-    this.orientation = transform.orientation;
-    this.acceleration = move.acceleration;
-    this.behaviours.init(this);
-  }
-  /**
-   * Adds a behavior to the agent.
-   * 
-   * @param {Behaviour} behaviour
-   */
-  add(behaviour) {
-    this.behaviours.add(behaviour);
-  }
-  /**
-   * Removes a behavior to the agent.
-   * 
-   * @param {Behaviour} behaviour
-   */
-  remove(behaviour) {
-    this.behaviours.remove(behaviour);
-  }
-  /**
-   * @inheritdoc
-   * @param {number} inv_dt Inverse of delta time i.e frameRate.
-   */
-  update(inv_dt) {
-    this.behaviours.update(inv_dt);
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
-    this.behaviours.draw(ctx);
-  }
-}
-
-/**
  * Base class for implementing customized behaviours.
  * 
- * @abstract
  */
 
 class Behaviour {
   /**
-   * The position of the agent.
-   * 
-   * @type Vector2
-   */
-  position = null
-  /**
-   * The velocity of the agent.
-   * 
-   * @type Vector2
-   */
-  velocity = null
-  /**
    * The maximum speed a behaviour will reach when active.
    * 
-   * @type number
+   * @type {number}
    */
-
   maxSpeed = 1000
   /**
    * Maximum force a behaviour will exert on the agent.This affects acceleration, deceleration and turn rate of the agent.
    * 
-   * @type number
+   * @type {number}
    */
   maxForce = 1000
   /**
    * Whether to exert a behaviour's calculated force onto its agent
+   * 
+   * @type {boolean}
    */
   active = true
-
-  /**
-   * Sets up a behavior to work on an agent.
-   * 
-   * @param {Agent} agent
-   */
-  init(agent) {}
-  /**
-   * Calculates the amount of force required to satisfy a behavior.
-   * 
-   * @param { Vector2} target
-   * @param {number} inv_dt
-   * @returns Vector2 the first parameter
-   */
-  calc(target, inv_dt) {}
-  /**
-   * Used to debug a behavior visually.
-   * 
-   * @param {Renderer} renderer
-   */
-  draw(renderer) {}
 }
 
-let tmp1$5 = new Vector2$1();
+let tmp1$4 = new Vector2();
 /**
  * Creates a behaviour to evade a certain position.
  * 
@@ -9202,45 +7461,38 @@ class EvadeBehaviour extends Behaviour {
   /**
    * Distance in which to begin evading.
    * 
-   * @type number
+   * @type {number}
   */
   radius = 200
   /**
-   * @param { Vector2} pursuer
+   * @param { Vector2 } pursuer
   */
   constructor(pursuer) {
     super();
     this.pursuer = pursuer;
   }
-    /**
+  /**
    * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position;
-    this.velocity = agent.velocity;
-    
-  }
-    /**
-   * @inheritdoc
-   * @param { Vector2} target
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
    * @param {number} inv_dt
    * @returns Vector2 the first parameter
    */
-  calc(target,inv_dt) {
-    let difference = tmp1$5.copy(this.position).sub(this.pursuer);
+  calc(position,velocity,target,inv_dt) {
+    let difference = tmp1$4.copy(position).sub(this.pursuer);
     let length = difference.magnitude();
-    if(length == 0 || length > this.radius)return
+    if (length == 0 || length > this.radius) return
     difference.setMagnitude(map(length,0,this.radius,this.maxSpeed,0));
-    let steering = difference.sub(this.velocity).multiply(inv_dt);
-    
-    steering.clamp(0, this.maxForce);
+    let steering = difference.sub(velocity).multiply(inv_dt);
+
+    steering.clamp(0,this.maxForce);
     target.copy(steering);
   }
 }
 
-let tmp1$4 = new Vector2$1(),
-  tmp2$2 = new Vector2$1();
+let tmp1$3 = new Vector2(),
+  tmp2$1 = new Vector2();
   
 /**
  * Creates a behaviour that is used to make an agent wander in an organic manner.
@@ -9251,15 +7503,15 @@ class WanderBehaviour extends Behaviour {
   /**
    * This sets a point on the perimeter circle that is infront of the agent.
    * 
-   * @type number
+   * @type {number}
    */
-  _theta = 90
+  _theta = Math.PI
   /**
    * This clamps the offset that modify the WandererBehaviour#theta value each frame.
    * 
-  * @type number
+  * @type {number}
   */
-  dtheta = 10
+  dtheta = Math.PI/18
   /**
    * How big should the circle in front of the agent be.
   */
@@ -9269,34 +7521,24 @@ class WanderBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position;
-    this.velocity = agent.velocity;
-  }
-  /**
-   * @inheritdoc
-   * @param { Vector2} target
+   * @param {Vector2} velocity
+   * @param {Vector2} target
    * @param {number} inv_dt
-   * @returns Vector2 the first parameter
+   * @returns {Vector2} the first parameter
    */
-  calc(target, inv_dt) {
+  calc(velocity,target, inv_dt) {
 
     this._theta += rand(-this.dtheta, +this.dtheta);
-    let forward = tmp1$4.copy(this.velocity);
+    let forward = tmp1$3.copy(velocity);
     if (forward.equalsZero())
-      Vector2$1.random(forward);
+      Vector2.random(forward);
     let radius = this._radius * 0.8;
     forward.setMagnitude(this._radius);
-    //ctx.arc(...tmp2.copy(this.position).add(forward), radius, 0, Math.PI * 2)
-    //ctx.stroke()
-    Vector2$1.fromDeg(this._theta + Vector2$1.toDeg(this.velocity), tmp2$2).multiply(radius);
-    forward.add(tmp2$2);
-    //forward.draw(ctx,...this.position)
+    Vector2.fromAngle(this._theta + Vector2.toAngle(velocity), tmp2$1).multiply(radius);
+    forward.add(tmp2$1); 
     forward.setMagnitude(this.maxSpeed);
-    forward.sub(this.velocity).multiply(inv_dt).clamp(0, this.maxForce);
-    target.copy(forward);
+    forward.sub(velocity).multiply(inv_dt).clamp(0, this.maxForce);
+    return target.copy(forward)
   }
 
 }
@@ -9310,21 +7552,14 @@ class Pursuit extends Behaviour {
   constructor() {
     super();
   }
-    /**
-     * @inheritdoc
-     * @param {Agent} agent
-     */
-  init(){
-    
-  }
-    /**
-     * @inheritdoc
-     * @param { Vector2} target
-     * @param {number} inv_dt
-     * @returns Vector2 the first parameter
-     */
-  calc(target){
-    
+  /**
+   * @inheritdoc
+   * @param { Vector2} target
+   * @param {number} inv_dt
+   * @returns Vector2 the first parameter
+   */
+  calc(target,inv_dt) {
+
   }
 }
 
@@ -9334,20 +7569,8 @@ class Pursuit extends Behaviour {
  * @augments Behaviour
  */
 class Flock extends Behaviour{
-  /**
-   * @type Agent[]
-   */
-  neighbours = []
   constructor() {
     super();
-  }
-  /**
-   * @inheritdoc
-   * @param {Agent} agent
-   * 
-   */
-  init(agent) {
-
   }
   /**
    * @inheritdoc
@@ -9360,7 +7583,7 @@ class Flock extends Behaviour{
   }
 }
 
-let tmp1$3 = new Vector2$1();
+let tmp1$2 = new Vector2();
   
 /**
  * Creates a behaviour to seek out a target and move towards it.
@@ -9372,46 +7595,39 @@ class SeekBehaviour extends Behaviour {
    * Not implemented.
    * Radius in which to seek out the target.
    * 
-   * @type number
+   * @type {number}
   */
   radius = 100
   /**
-   * @type Vector2
+   * @type {Vector2}
   */
-  target = null
-  /**
+  target
+    /**
    * @param { Vector2} target
   */
   constructor(target) {
     super();
     this.target = target;
   }
-    /**
-     * @inheritdoc
-     * @param {Agent} agent
-     */
-  init(agent) {
-    this.position = agent.position;
-    this.velocity = agent.velocity;
-  }
-    /**
-     * @inheritdoc
-     * @param { Vector2} target
-     * @param {number} inv_dt
-     * @returns Vector2 the first parameter
-     */
-  calc(target,inv_dt) {
-    let difference = tmp1$3.copy(this.target).sub(this.position);
+  /**
+   * @inheritdoc
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
+   * @param {number} inv_dt
+   * @returns Vector2 the first parameter
+   */
+  calc(position,velocity,target,inv_dt) {
+    let difference = tmp1$2.copy(this.target).sub(position);
     difference.setMagnitude(this.maxSpeed);
-    let steering = difference.sub(this.velocity).multiply(inv_dt);
+    let steering = difference.sub(velocity).multiply(inv_dt);
     
     steering.clamp(0, this.maxForce);
     target.copy(steering);
   }
 }
 
-let tmp1$2 = new Vector2$1(),
-  tmp2$1 = new Vector2$1();
+let tmp1$1 = new Vector2();
 
 /**
  * This provides a seek behaviour which slows down when the agent approaches a target.
@@ -9432,25 +7648,18 @@ class ArriveBehaviour extends Behaviour {
     super();
     this.target = target;
   }
-
   /**
    * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position;
-    this.velocity = agent.velocity;
-  }
-  /**
-   * @inheritdoc
-   * @param { Vector2} target
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
    * @param {number} inv_dt
    * @returns Vector2 the first parameter
    */
-  calc(target, inv_dt) {
-    let difference = tmp1$2.copy(this.target).sub(this.position);
-    let velocity = tmp2$1.copy(this.velocity);
-    let length = difference.magnitude();
+  calc(position,velocity,target, inv_dt) {
+    const difference = tmp1$1.copy(this.target).sub(position);
+    //const velocity = tmp2.copy(velocity1)
+    const length = difference.magnitude();
 
     if (length < this.radius) {
       difference.setMagnitude(map(length, 0, this.radius, 0, this.maxSpeed));
@@ -9458,120 +7667,18 @@ class ArriveBehaviour extends Behaviour {
       difference.setMagnitude(this.maxSpeed);
     }
 
-    let steering = difference.sub(velocity).multiply(inv_dt);
+    const steering = difference.sub(velocity).multiply(inv_dt);
 
     steering.clamp(0, this.maxForce);
-    steering.draw(ctx, ...this.position);
     target.add(steering);
   }
 }
 
-const tmp1$1 = new Vector2$1();
-const tmp2 = new Vector2$1();
-/**
- * Creates a behaviour that follows a certain path.
- * 
- * @augments Behaviour
- */
-class PathFollowing extends Behaviour {
-  /**
-   * The path taken by a pathfollowing behaviour.
-   * 
-   * @type Path
-   */
-  path = null
-  /**
-   * @param {Path} path
-   */
-  constructor(path) {
-    super();
-    this.path = path;
-    path.speed = this.maxSpeed;
-  }
-  /**
-   * @inheritdoc
-   * @param { Vector2} target
-   * @param {number} inv_dt
-   * @returns Vector2 the first parameter
-   */
-  calc(target, inv_dt) {
-    tmp1$1.copy(this.position);
-    let [p1, p2] = this.path.current();
-    tmp2.copy(p2).sub(p1).normalize();
-
-    let proj = tmp2.dot(tmp1$1.sub(p1));
-    let projPoint = this.path.update(proj);
-    tmp1$1.copy(projPoint).sub(this.position);
-    let length = tmp1$1.magnitude();
-    if (length < this.velocity.magnitude()) {
-      tmp1$1.setMagnitude(map(length, 0, this.maxSpeed, 0, this.maxSpeed));
-    }
-    let steering = tmp1$1.sub(this.velocity).multiply(inv_dt);
-
-    steering.clamp(0, this.maxForce);
-    target.add(steering);
-
-    return target
-  }
-  /**
-   * Removes all points on the path.
-   */
-  clear() {
-    this.path.clear();
-  }
-  /**
-   * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position;
-    this.velocity = agent.velocity;
-  }
-  /**
-   * Adds a point into the path.
-   * 
-   * @param { Vector2} point
-   */
-  add(point) {
-    this.path.add(point);
-  }
-  /**
-   * If the agent should start at the beginning after reaching the ent of the path.
-   * 
-   * @type boolean
-   */
-  set loop(x) {
-    this.path.loop = x;
-  }
-  get loop() {
-    return this.path.loop
-  }
-  /**
-   * Sets a new path to follow.
-   *
-   * @param {Path} path
-   */
-  setPath(path) {
-    this.path = path;
-  }
-  draw(ctx) {
-    ctx.beginPath();
-    circle(ctx, ...this.path.point(), 4);
-    fill(ctx, "blue");
-    ctx.closePath();
-    ctx.beginPath();
-    circle(ctx, ...this.path.point(), this.path.tolerance);
-    stroke(ctx, "blue");
-    ctx.closePath();
-    this.path.draw(ctx);
-  }
-}
-
-let tmp = new Vector2$1();
+let tmp = new Vector2();
 class Path {
   /**
    * @private
-   * type Vector2[]
+   * @type {Vector2[]}
    */
   _points = []
   /**
@@ -9611,7 +7718,7 @@ class Path {
    * @private
    * type Vector2 
    */
-  _lerpedPoint = new Vector2$1()
+  _lerpedPoint = new Vector2()
   /**
    * type boolean 
    */
@@ -9666,7 +7773,7 @@ class Path {
       if (!this.advance()) this._finished = true;
     }
     this._lerp_t = clamp(this._lerp_t, 0, 1);
-    Vector2$1.lerp(
+    Vector2.lerp(
       this._points[this._way[0]],
       this._points[this._way[1]],
       this._lerp_t,
@@ -9706,6 +7813,181 @@ class Path {
   }
 }
 
+const tmp1 = new Vector2();
+const tmp2 = new Vector2();
+/**
+ * Creates a behaviour that follows a certain path.
+ * 
+ * @augments Behaviour
+ */
+class PathFollowing extends Behaviour {
+  /**
+   * The path taken by a pathfollowing behaviour.
+   * 
+   * @type {Path}
+   */
+  path
+  /**
+   * @param {Path} path
+   */
+  constructor(path) {
+    super();
+    this.path = path;
+    path.speed = this.maxSpeed;
+  }
+  /**
+   * @inheritdoc
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
+   * @param {number} inv_dt
+   * @returns {Vector2} the first parameter
+   */
+  calc(position,velocity,target, inv_dt) {
+    tmp1.copy(position);
+    let [p1, p2] = this.path.current();
+    tmp2.copy(p2).sub(p1).normalize();
+
+    let proj = tmp2.dot(tmp1.sub(p1));
+    let projPoint = this.path.update(proj);
+    tmp1.copy(projPoint).sub(position);
+    let length = tmp1.magnitude();
+    if (length < velocity.magnitude()) {
+      tmp1.setMagnitude(map(length, 0, this.maxSpeed, 0, this.maxSpeed));
+    }
+    let steering = tmp1.sub(velocity).multiply(inv_dt);
+
+    steering.clamp(0, this.maxForce);
+    target.add(steering);
+
+    return target
+  }
+  /**
+   * Removes all points on the path.
+   */
+  clear() {
+    this.path.clear();
+  }
+  /**
+   * Adds a point into the path.
+   * 
+   * @param { Vector2} point
+   */
+  add(point) {
+    this.path.add(point);
+  }
+  /**
+   * If the agent should start at the beginning after reaching the ent of the path.
+   * 
+   * @type boolean
+   */
+  set loop(x) {
+    this.path.loop = x;
+  }
+  get loop() {
+    return this.path.loop
+  }
+  /**
+   * Sets a new path to follow.
+   *
+   * @param {Path} path
+   */
+  setPath(path) {
+    this.path = path;
+  }
+}
+
+/**
+ * This is a component class used to add AI behavior to an entity.
+ */
+class Agent {
+  /**
+   * The maximum speed of the agent in pixels per second.
+   * 
+   * @type {number}
+   */
+  maxSpeed = 20
+  /**
+   * Maximum rotation of the agent in radians per second
+   * Not yet implemented.
+   * @type {number}
+   */
+  maxTurnRate = 5
+  /**
+   * 
+   * @type {Behaviour[]}
+   */
+  behaviours = []
+  /**
+   * Adds a behavior to the agent.
+   * 
+   * @param {Behaviour} behaviour
+   */
+  add(behaviour) {
+    this.behaviours.push(behaviour);
+  }
+  /**
+   * Removes a behavior to the agent.
+   * 
+   * @param {Behaviour} behaviour
+   */
+  remove(behaviour) {
+    this.behaviours.splice(
+      this.behaviours.indexOf(behaviour),
+      1
+    );
+  }
+  /**
+   * :
+   * @param {number} inv_dt Inverse of delta time i.e frameRate.
+   * @param {Agent} agent
+   * @param {any} transform
+   * @param {any} movable
+   */
+  static update(agent, transform, movable, inv_dt) {
+    Agent.updateBehaviours(agent.behaviours, transform, movable, inv_dt);
+  }
+  /**
+   * Updates the behaviours of the agent and applies changes to agent.
+   * @param {number} inv_dt
+   * @param {string | any[]} behaviours
+   * @param {any} transform
+   * @param {{ acceleration: { add: (arg0: Vector2) => void; }; torque: number; }} movable
+   */
+  static updateBehaviours(behaviours, transform, movable, inv_dt) {
+    const accumulate = new Vector2();
+    const angular = new Angle();
+    for (let i = 0; i < behaviours.length; i++) {
+      behaviours[i].calc(
+        transform,
+        movable,
+        accumulate,
+        angular,
+        inv_dt
+      );
+      accumulate.add(accumulate);
+    }
+    movable.acceleration.add(accumulate);
+    movable.torque += angular.value;
+  }
+}
+
+/**
+* A system that manages agent components by updating them.
+*/
+class AgentManager {
+  /**
+   * Update all registered agents.
+   * @param {number} dt
+   * @param {Agent[]} agents
+   */
+  update(agents,dt) {
+    for (var i = 0; i < agents.length; i++) {
+      
+    }
+  }
+}
+
 /**
  * Contains values showing which features are supported,general model of the device and browser used.
  */
@@ -9714,112 +7996,113 @@ const DEVICE = {
   /**
    * Whether this device supports WebGPU
    * 
-   * @type boolean
+   * @type {boolean}
    */
   webgpu: false,
   /**
    * Whether this device supports WebGL
    * 
-   * @type boolean
+   * @type {boolean}
    */
   webgl: false,
   /**
    * Whether this device supports 2D canvas
    * 
-   * @type boolean
+   * @type {boolean}
    */
   canvas: false,
   /**
    * Whether this device supports WebAudio
    * 
-   * @type boolean
+   * @type {boolean}
    */
   webAudio: false,
   /**
    * Whether this device supports Audio tag.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   audio: false,
 
   /**
    * A list of audio extensions this device supports.
    * 
-   * @type array<string>
+   * @type {string[]}
    */
   supportedAudio: [],
+  //Todo - Get the supported images correctly
   /**
    * A list of image extensions this device supports.
    * 
-   * @type array<string>
+   * @type {string[]}
    */
-  supportedImages: [],
+  supportedImages: ["png","jpeg","svg","jpg"],
 
   /**
    * Whether this device uses windows
    * 
-   * @type boolean
+   * @type {boolean}
    */
   windows: false,
   /**
    * Whether this device uses MacOS
    * 
-   * @type boolean
+   * @type {boolean}
    */
   mac: false,
   /**
    * Whether this device uses android
    * 
-   * @type boolean
+   * @type {boolean}
    */
   android: false,
   /**
    * Whether this device uses linux
    * 
-   * @type boolean
+   * @type {boolean}
    */
   linux: false,
   /**
    * Whether this device uses IOS
    * 
-   * @type boolean
+   * @type {boolean}
    */
   ios: false,
 
   /**
    * If browser used is Chrome.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   chrome: false,
   /**
    * If browser used is FireFox.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   firefox: false,
   /**
    * If browser used is Edge.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   edge: false,
   /**
    * If browser used is Internet Explorer.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   ie: false,
   /**
    * If browser used is Safari.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   safari: false,
   /**
    * If browser used is Opera.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   opera: false
 
@@ -9895,11 +8178,210 @@ Object.freeze(DEVICE);
 Object.freeze(DEVICE.supportedAudio);
 Object.freeze(DEVICE.supportedImages);
 
+class LoadManager {
+  _total = 0
+  _sucessful = 0
+  _failed = 0
+  onItemFinish = NOOP
+  onItemStart = NOOP
+  onItemError = NOOP
+  onFinish = NOOP
+  onError = NOOP
+  /**
+   * @param {LoadManager} manager
+   * @param {string} url
+   */
+  static itemStart(manager, url) {
+    manager._total += 1;
+    manager.onItemStart(url);
+  }
+  /**
+   * @param {Response} request
+   * @param {LoadManager} manager
+   */
+  static itemFinish(manager, request) {
+    if (!request.ok)
+      return LoadManager.itemError(manager, request)
+
+    manager._sucessful += 1;
+    manager.onItemFinish(request);
+  }
+  /**
+   * @param {LoadManager} manager
+   */
+  static finish(manager) {
+    if (manager._sucessful + manager._failed === manager._total) manager.onFinish();
+  }
+  /**
+   * @param {LoadManager} manager
+   * @param {Response} request
+   */
+  static itemError(manager, request) {
+    error("Could not load the resource \"" + request.url + "\".Resource was not found.");
+    manager._failed += 1;
+    manager.onItemError();
+  }
+}
+
+/**
+ * @param {*} _args
+ * @returns {void}
+ */
+function NOOP(..._args) {}
+
+/**
+ * @param {string} url
+ */
+function getURLName(url){
+  const prelude = url.split("/").pop();
+  if(!prelude)return ""
+  return prelude.split(".")[0]
+}
+/**
+ * @param {string} url
+ */
+function getURLExtension(url){
+  const prelude = url.split(".").pop();
+  if(!prelude)return ""
+  return prelude
+}
+
+/**
+ * @template T
+ */
+class Loader {
+  /**
+   * @type {{ [x: string]: T; }}
+   */
+  _resources = {}
+  manager
+  baseUrl = ""
+  constructor(manager = new LoadManager()) {
+    this.manager = manager;
+  }
+  name() {
+    return this.constructor.name
+  }
+  /**
+   * @param {string} _extension
+   */
+  verify(_extension) {
+    return true
+  }
+  /**
+   * @abstract
+   * @param {Response} _request
+   * @returns {Promise<T | undefined>}
+   */
+  async parse(_request) {
+    return new Promise(()=>{})
+  }
+  /**
+   * @param {string} url
+   */
+  async load(url) {
+    const fullurl = this.baseUrl + url;
+    const name = getURLName(url);
+    const extension = getURLExtension(url);
+
+    if (this._resources[name])
+      return warn("Duplicate load of \"" + fullurl + "\".")
+    if (!this.verify(extension))
+      return error(`\`${this.name()}\` could not load "${fullurl}" as it does not support the extension ${extension}.`)
+
+    const request = await fetch(fullurl);
+
+    LoadManager.itemStart(this.manager, fullurl);
+    const resource = await this.parse(request);
+    if (resource) this._resources[name] = resource;
+    LoadManager.itemFinish(this.manager, request);
+    LoadManager.finish(this.manager);
+  }
+  /**
+   * @param {string} name
+   */
+  get(name) {
+    const resource = this._resources[name];
+    if (!resource) throws(`\`${this.name()}\` could not find the resource "${name}" `);
+    return resource
+  }
+}
+
+/**
+ * @extends {Loader<{buffer: ArrayBuffer}>}
+ */
+class SoundLoader extends Loader {
+  /**
+   * @inheritdoc
+   * @param {string} extension
+   */
+  verify(extension){
+    if (DEVICE.supportedAudio.includes(extension))return true
+    return false
+  }
+  /**
+   * @param {Response} request
+   */
+  async parse(request) {
+    if(!request.ok) return
+    const raw = await request.arrayBuffer();
+
+    return {
+      buffer: raw
+    }
+  }
+}
+
+/**
+ * @extends {Loader<{buffer: ArrayBuffer;dimensions:Vector_like}>}
+ */
+class ImageLoader extends Loader {
+  /**
+   * @param {string} extension
+   */
+  verify(extension) {
+    if (DEVICE.supportedImages.includes(extension)) return true
+    return false
+  }
+  /**
+   * @param {Response} request
+   */
+  async parse(request) {
+    if (!request.ok) return
+
+    const raw = await request.arrayBuffer();
+    const dimensions = await getDimensions(raw);
+    return {
+      buffer: raw,
+      dimensions
+    }
+  }
+}
+
+/**
+ * @param {BlobPart} raw
+ * @returns {Promise<Vector_like>}
+ */
+function getDimensions(raw) {
+  return new Promise((resolve,reject) => {
+    const url = URL.createObjectURL(new Blob([raw]));
+    const img = new Image();
+    img.onload = e => {
+      resolve({
+        x: img.width,
+        y: img.height
+      });
+    };
+    img.src = url;
+    URL.revokeObjectURL(url);
+  })
+}
+
 /**
  * Used to manipulate and read from the cookie string.
  * 
  * @module Cookie
-*/
+ */
 
 const Cookies = {
   /**
@@ -9907,36 +8389,35 @@ const Cookies = {
    * 
    * @param {string} n Key of the cookie.
    * @param {string} v The value of the cookie.
-   * @param {number} [=12000] Max age of the cookie before it is deleted.
-  */
-  set(n, v, maxAge= 12000) {
+   * @param {number} [maxAge=12000] Max age of the cookie before it is deleted.
+   */
+  set(n, v, maxAge = 12000) {
     document.cookie = `${n}=${v};maxAge=${maxAge}`;
   },
   /**
    * Returns the value of the given key.
    * 
    * @param {string} n Key of the cookie
-   * @returns {string}
-  */
+   * @returns {string | undefined}
+   */
   get(n) {
     let arr = document.cookie.split(";");
     for (var i = 0; i < arr.length; i++) {
       let pair = arr[i].split('=');
-      if (pair[0].includes(n))
-        return pair[1]
+      if (pair[0] === n) return pair[1]
     }
   },
   /**
    * Removes a cookie by its key from cookies.
    * 
    * @param {string} n Key of the cookie
-  */
-  delete(n){
+   */
+  delete(n) {
     document.cookie = `${n}=; max-age=0`;
   },
   /**
    * Removes all cookies that are contained on the document.
-  */
+   */
   clear() {
     let arr = document.cookie.split(";");
     for (var i = 0; i < arr.length; i++) {
@@ -9964,11 +8445,13 @@ const Session = {
   },
   /**
    * Gets a value from sessions using a key
-   * 
+   * @template T
    * @param {string} k A key to retrieve a value
+   * @returns {T | undefined}
   */
   get(k) {
     let json = sessionStorage.getItem(k);
+    if(!json)return undefined
     return JSON.parse(json)
   },
   /**
@@ -9996,11 +8479,13 @@ const Storage = {
   },
   /**
    * Gets a value from local storage by its key.
-   * 
+   * @template T
    * @param {string} k
+   * @returns {T | undefined}
   */
   get(k) {
     let json = localStorage.getItem(k);
+    if(!json)return undefined
     return JSON.parse(json)
   },
   /**
@@ -10012,68 +8497,16 @@ const Storage = {
 };
 
 /**
- * @template T
- */
-class IndexedList {
-  /**
-   * @private
-   * @type {Map<string,number>}
-   */
-  _keys = new Map()
-  /**
-   * @private 
-   * @type {T[]}
-   */
-  _list = []
-  /**
-   * @param {string} name
-   */
-  get(name) {
-    return this._list[this._keys.get(name)]
-  }
-  /**
-   * @param {string} name
-   * @param {T} value
-   */
-  set(name, value) {
-    this._keys.set(name, this._list.length);
-    this._list.push(value);
-  }
-  /**
-   * @param {string} name
-   */
-  remove(name) {
-    this._list.splice(
-      this._keys.get(name),
-      1
-    );
-    this._keys.delete(name);
-  }
-  /**
-   * @returns {string[]}
-   */
-  keys() {
-    return this._keys.keys()
-  }
-  /**
-   * @returns {T[]}
-   */
-  values() {
-    return this._list
-  }
-}
-
-/**
+ * @deprecated
  * @param {number} x x-position of entity 
  * @param {number} y y-position of entity 
  * @param {number} a angle in degrees
  */
 
 function createEntity(x, y, a) {
+  deprecate("createEntity()","Manager().create()");
+  throws("Breaking deprecation encountered");
   return new Entity()
-    .attach("transform", new Transform$1(x, y, a))
-    .attach("movable", new Movable$1())
-    .attach("bounds", new Bound$1())
 }
 
 /**
@@ -10081,42 +8514,22 @@ function createEntity(x, y, a) {
  * 
  * @param {Object} [options] 
  * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
- * @param {Object} [options.files={}] manager is passed onto the Loader.Please check `Loader.load()` for more information on it.
  * @param {boolean} [options.physics=true] Adds physics world as a System.
  * @param {boolean} [options.renderer=true] Adds a renderer as a system.
  * @param {boolean} [options.input=true] Adds input as a system.
  * 
- * @returns {Manager}
  **/
 function createManager(options) {
-  options = Object.assign({
-    autoPlay: true,
-    physics: true,
-    renderer: true,
-    input: true
-  }, options);
-
-  let manager = new Manager();
-
-  if (options.input)
-    manager.registerSystem("input", new Input());
-  if (options.physics) {
-    manager.registerSystem("world", new World());
-    manager.events.add("collision", defaultCollisionHandler);
-    manager.events.add("precollision", defaultPrecollisionHandler);
-  }
-  if (options.renderer)
-    manager.registerSystem("renderer", new Renderer2D());
-  return manager
+  deprecate("createManager()","Manager()");
+  throws("Breaking deprecation encountered");
 }
 
-//import {System} from "../ecs/index.js"
 /**
  * @param {Manager} manager
  */
 function fpsDebugger(manager) {
   const container = document.body.appendChild(document.createElement("div"));
-  
+
   container.id = "fps-container";
   container.style.position = "absolute";
   container.style.top = "0px";
@@ -10126,56 +8539,337 @@ function fpsDebugger(manager) {
   container.style.background = "black";
   container.style.textAlign = "center";
   container.style.color = "white";
-  
-  manager.registerSystem("fps",{
-    updateTime : 0.5,
-    timerDt : 0,
-    init(manager){
-      this.perf = manager.perf;
-    },
-    update(dt){
-      this.timerDt += dt;
-      if(this.timerDt < this.updateTime)return
-      container.innerHTML = this.perf.fps().toFixed(2);
-      this.timerDt = 0;
-    }
+
+  const timer = {
+    updateTime: 0.5,
+    timerDt: 0,
+    perf: new Perf()
+  };
+  manager.events.add("updateStart", dt => {
+    timer.perf.start();
+  });
+
+  manager.events.add("updateEnd", dt => {
+    timer.perf.end();
+    timer.timerDt += dt;
+    if (timer.timerDt < timer.updateTime) return
+    const fps = timer.perf.fps().toFixed(0);
+    const afps = (1 / dt).toFixed(0);
+    container.innerHTML =
+      fps + " fps" +
+      "<br>" +
+      afps + " afps";
+    timer.timerDt = 0;
   });
 }
 
 /**
- * @param {Manager} manager
+ * Renders images and paths to the 2D context of a canvas.
+ * 
+ * @extends Renderer
  */
-function bodyDebugger(manager) {
-  manager.registerSystem("bodydebugger", {
-    key: new Map(),
-    renderer: null,
-    init(manager) {
-      this.renderer = manager.getSystem('renderer');
-      manager.events.add('add', (entity) => {
-        if (entity.has('body')) {
-          entity.manager.getSystem('bodydebugger').add(entity.get("body"));
+class Renderer2D extends Renderer {
+  /**@type {CanvasRenderingContext2D }*/
+  ctx
+  /**
+  @param {HTMLCanvasElement} [canvas] element to draw on
+  */
+    constructor(canvas = document.createElement("canvas"), context = canvas.getContext('2d')) {
+      if (!context) throw "Could not get a 2d context"
+      super(canvas);
+      this.ctx = context;
+    }
+  /**
+   * @deprecated
+   * @param {string} selector
+   * @param {boolean} focus
+   */
+  bindTo(selector,focus = true){
+    deprecate("Renderer2D().bindTo()","Renderer2D.bindTo()");
+    Renderer.bindTo(this,selector,focus);
+  }
+    /**
+   * @deprecated
+   * @param {number} x
+   * @param {number} y
+   */
+    setViewport(x,y){
+      deprecate("Renderer2D().setViewport()","Renderer2D.setViewport()");
+      Renderer.setViewport(this,x,y);
+    }
+  /**
+   * @deprecated
+   */
+  clear() {
+    deprecate("Renderer2D().clear()","Renderer2D.clear()");
+    Renderer2D.clear(this);
+  }
+  /**
+   * @param {Renderer2D} renderer
+   */
+  static clear(renderer) {
+    renderer.ctx.setTransform();
+    const h = renderer.height,
+      w = renderer.width;
+    renderer.ctx.clearRect(0, 0, w, h);
+  }
+  /**
+   * @template {BufferGeometry} T
+   * @template {Material} U
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {Vector2} position
+   * @param {number} orientation
+   * @param {Vector2} scale
+   * @param {Sprite<T,U>} sprite
+   * @param {number} dt
+   */
+  static render(
+    ctx,
+    sprite,
+    position,
+    orientation,
+    scale,
+    dt
+  ) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(position.x, position.y);
+    ctx.rotate(orientation);
+    ctx.scale(scale.x, scale.y);
+    // @ts-ignore
+    Material.render(sprite.material,ctx, dt, sprite.geometry.drawable);
+    ctx.closePath();
+    ctx.restore();
+  }
+}
+
+class Renderer2DPlugin {
+  constructor(renderer = new Renderer2D()) {
+    this.renderer = renderer;
+    this.camera = renderer.camera;
+    if (!renderer.domElement.parentElement)
+      document.body.append(renderer.domElement);
+  }
+  /**
+   * @param {Manager} manager
+   */
+  register(manager) {
+    manager.setResource("renderer", this.renderer);
+    manager.setResource("ctx",this.renderer.ctx);
+    manager.setResource("camera",this.camera);
+    manager.registerSystem(manager => {
+      const [transforms, sprites] = manager.query("transform", "sprite").raw();
+      const dt = manager.getResource("delta");
+      const renderer = manager.getResource("renderer");
+      const ctx = manager.getResource("ctx");
+      const camera = manager.getResource("camera");
+      
+      Renderer2D.clear(renderer);
+      ctx.save();
+      ctx.rotate(
+        camera.transform.orientation
+      );
+      ctx.scale(
+        camera.transform.scale.x,
+        camera.transform.scale.y
+      );
+      ctx.translate(
+        camera.transform.position.x,
+        camera.transform.position.y
+      );
+      for (let i = 0; i < sprites.length; i++) {
+      for (let j = 0; j < sprites[i].length; j++) {
+        Renderer2D.render(
+          ctx,
+          sprites[i][j],
+          transforms[i][j].position,
+          transforms[i][j].orientation,
+          transforms[i][j].scale,
+          dt
+        );
+      }
+    }
+      ctx.save();
+    });
+  }
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
+  setViewport(width, height) {
+    Renderer2D.setViewport(this.renderer, width, height);
+  }
+  /**
+   * @param {string} selector
+   */
+  bindTo(selector) {
+    Renderer2D.bindTo(this.renderer, selector);
+  }
+}
+
+/**
+ * @param {Manager} manager
+ * @param {BodyDebbuggerOptions} [options]
+ */
+// @ts-ignore
+function bodyDebugger(manager, options = {}) {
+  options.clearRenderer = options.clearRenderer || false;
+  options.drawCollisionArm = options.drawCollisionArm || false;
+  options.drawContacts = options.drawContacts || false;
+  manager.registerSystem(dt => {
+    const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bound", "body").raw();
+    const clmd = manager.queryEvent("collision");
+    const viewport = manager.getResource("renderer");
+    const ctx = manager.getResource("ctx");
+    
+    if (options.clear) ctx.clearRect(0,0,viewport.width,viewport.height);
+    if (options.drawCollisionArm) drawArms();
+    if (options.drawPosition) drawPositions();
+    if (options.drawContacts) drawContacts();
+    if (options.drawBounds) drawBounds();
+
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = 0; j < bodies[i].length; j++) {
+        drawShapes(bodies[i][j].shape, ctx);
+      }
+    }
+
+    function drawContacts() {
+      for (let i = 0; i < clmd.length; i++) {
+        let [p1, p2] = clmd[i].contactData.contactPoints;
+        ctx.beginPath();
+        circle(ctx, p1.x, p1.y, 5);
+        if (clmd[i].contactData.contactNo === 2) circle(ctx, p2.x, p2.y, 5);
+        ctx.closePath();
+        fill(ctx, "white");
+      }
+    }
+
+    function drawPositions() {
+      for (let i = 0; i < transform.length; i++) {
+        for (let j = 0; j < transform[i].length; j++) {
+          ctx.beginPath();
+          circle(
+            ctx,
+            transform[i][j].position.x,
+            transform[i][j].position.y,
+            2
+          );
+          ctx.closePath();
+          fill(ctx, "white");
         }
-        manager.events.add('remove', (entity) => {
-          if (entity.has('body')) {
-            entity.manager.getSystem('bodydebugger').remove(entity.get("body"));
-          }
-        });
-      });
-    },
-    add(body) {
-      const sprite = new BodySprite(body);
-      sprite.init(body.entity);
-      this.renderer.add(sprite);
-      this.key.set(body, sprite);
-    },
-    remove(body) {
-      const sprite = this.key.get(body);
-      this.renderer.remove(sprite);
-      this.key.delete(body);
-    },
-    update() {}
+      }
+    }
+
+    function drawArms() {
+      ctx.beginPath();
+      for (let i = 0; i < clmd.length; i++) {
+        const manifold = clmd[i];
+        const { contactData: { contactNo, contactPoints } } = clmd[i];
+        const [transformA] = manager.get(manifold.entityA, "transform");
+        const [transformB] = manager.get(manifold.entityB, "transform");
+
+        for (let j = 0; j < contactNo; j++) {
+          drawArmRaw(ctx, transformA.position, contactPoints[j]);
+          drawArmRaw(ctx, transformB.position, contactPoints[j]);
+        }
+
+      }
+      ctx.strokeStyle = "yellow";
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    function drawBounds() {
+      for (let i = 0; i < bounds.length; i++) {
+        for (let j = 0; j < bounds[i].length; j++) {
+          renderObj(
+            ctx,
+            bounds[i][j]
+          );
+          stroke(ctx, "red", 3);
+        }
+      }
+    }
   });
 }
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Vector2} position
+ * @param {Vector2} arm
+ */
+function drawArm(ctx, position, arm, color = "blue") {
+  ctx.moveTo(position.x, position.y);
+  ctx.lineTo(
+    position.x + arm.x,
+    position.y + arm.y
+  );
+
+  ctx.strokeStyle = color;
+  ctx.stroke();
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Vector2} position
+ * @param {Vector2} arm
+ */
+function drawArmRaw(ctx, position, arm) {
+  ctx.moveTo(position.x, position.y);
+  ctx.lineTo(
+    arm.x,
+    arm.y
+  );
+}
+
+/**
+ * @param {Shape} shape
+ * @param {CanvasRenderingContext2D} ctx
+ */
+function drawShapes(shape, ctx) {
+  ctx.beginPath();
+  if (shape.type === Shape.CIRCLE) {
+    circle(
+      ctx,
+      shape.vertices[0].x,
+      shape.vertices[0].y,
+      shape.vertices[1].x
+    );
+    const r = Vector2.fromAngle(shape.angle);
+    Vector2.multiplyScalar(r, shape.vertices[1].x, r);
+    drawArm(ctx, shape.vertices[0], r);
+  } else {
+    vertices(ctx, shape.vertices, true);
+  }
+  ctx.lineWidth = 10;
+  stroke(ctx, "lightgreen", 2);
+  ctx.closePath();
+}
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {BoundingBox} bounds
+ */
+function renderObj(ctx, bounds) {
+  const w = (bounds.max.x - bounds.min.x);
+  const h = (bounds.max.y - bounds.min.y);
+  ctx.strokeRect(
+    bounds.min.x,
+    bounds.min.y,
+    w,
+    h
+  );
+}
+/**
+ * @typedef BodyDebbuggerOptions
+ * @property {boolean} [drawBounds=false]
+ * @property {boolean} [drawPosition=false]
+ * @property {boolean} [drawVelocity=false]
+ * @property {boolean} [clearRenderer=false]
+ * @property {boolean} [drawCollisionArm=false]
+ * @property {boolean} [drawContacts]
+ * @property {boolean} [clear]
+ */
 
 /**
  * @param {Manager} manager
@@ -10241,17 +8935,17 @@ class Ray {
    * @private
    * @type {Vector2}
    */
-  _origin = null;
+  _origin
   /**
    * @private
    * @type {Vector2}
    */
-  _direction = null;
+  _direction
   /**
    * @param {Vector2} origin
    * @param {Vector2} direction
    */
-  constructor(origin = new Vector2$1(0, 1), direction = new Vector2$1()) {
+  constructor(origin = new Vector2(0, 1), direction = new Vector2()) {
     this._origin = origin;
     this._direction = direction;
   }
@@ -10262,7 +8956,7 @@ class Ray {
     return this._direction
   }
   set direction(x) {
-    this._direction.copy(x);
+    Vector2.copy(x, this._direction);
   }
   /**
    * @type {Vector2}
@@ -10271,66 +8965,53 @@ class Ray {
     return this._origin
   }
   set origin(x) {
-    this._origin.copy(x);
+    Vector2.copy(x, this._origin);
   }
   /**
    * @param {number} x
    * @param {number} y
    */
   setOrigin(x, y) {
-    this._origin.set(x, y);
+    Vector2.set(this._origin, x, y);
   }
   /**
    * @param {number} x
    * @param {number} y
    */
   setDirection(x, y) {
-    this._direction.set(x, y);
+    Vector2.set(this._direction, x, y);
   }
   /**
    * @param {number} x
    * @param {number} y
    */
   lookAt(x, y) {
-    this._direction.set(
+    Vector2.set(
+      this._direction,
       x - this._origin.x,
       y - this._origin.y
     );
-    this._direction.normalize();
+    Vector2.normalize(this._direction, this._direction);
   }
 }
 
-class RaycastResult {
-  //TODO - Make this property work
-  /**
-   * @type {RayCastModes}
-   */
-  mode = RayCastModes.NONE
-  /**
-   * @type {RayCollisionResult[]}
-   */
-  collisions = []
-}
+/**
+ * @template T
+*/
 class RayCollisionResult {
   /**
-   * @type {Body}
+   * @type {T}
    */
-  object = null
+  object
   /**
    * @readonly
    * @type {RayPoint[]}
    */
   points = []
   /**
-   * @type {Ray}
+   * @param {T} object
    */
-  ray = null
-  /**
-   * @param {Ray} ray 
-   * @param {Body} object
-   */
-  constructor(ray, object) {
-    this.ray = ray;
+  constructor(object) {
     this.object = object;
   }
 }
@@ -10338,7 +9019,7 @@ class RayPoint {
   /**
    * @type {Vector2}
    */
-  point = null
+  point
   /**
    * @type {number}
    */
@@ -10363,175 +9044,115 @@ const RayCastModes = {
   ANY: 3
 };
 
-class RaycastManager extends System {
+class Raycast2D {
   /**
-   * @private
-   * @type {Raycaster[]}
+   * @template  T
+   * @param {Ray} ray
+   * @param {Body2D} body
+   * @param {T} value
+   * @returns {RayCollisionResult<T>}
    */
-  objects = []
-  /**
-   * @private
-   * @type {Body[]}
-   */
-  bodies = null
-  /**
-   * @inheritdoc
-   * @param {Manager} manager
-   */
-  init(manager) {
-    if (!manager.getSystem("world"))
-      throw "World is required for running Raycast system."
-    manager.setComponentList("raycaster", this.objects);
-    this.bodies = manager.getComponentList("body");
-
+  static castToBody(ray, body, value) {
+    return Raycast2D.cast(ray,body.shapes[0],value)
   }
   /**
-   * @inheritdoc
+   * @template {Shape} T
+   * @template  U
+   * @param {Ray} ray
+   * @param {T} shape
+   * @param {U} value
+   * @param {RayCollisionResult<U>} results
    */
-  update(dt) {
-    for (let i = 0; i < this.objects.length; i++) {
-      this.objects[i].update(this.bodies);
-    }
-  }
-}
-
-class Raycaster extends Component {
-  /**
-   * @type {Ray[]}
-   */
-  rays = []
-  /**
-   * @type {Ray[]}
-   */
-  collisionResults = []
-  /**
-   * @private
-   * @type {Ray[]}
-   */
-  _number = 0
-  /**
-   * @private
-   * @type {Ray[]}
-   */
-  _angle = 0
-  /**
-   * @private
-   * @type {Ray[]}
-   */
-  _transform = null
-  /**
-   * @private
-   * @type {number}
-   */
-  _lastangle = 0
-  mode = RayCastModes.ANY
-  constructor(number = 1, angleSpace = 0) {
-    super();
-    this._angle = angleSpace;
-    this._number = number;
+  static cast(ray, shape, value, results = new RayCollisionResult(value)) {
+    if (shape.type === Shape.POLYGON)
+      return Raycast2D.testVertices(ray, shape.vertices, results)
+    if (shape.type === Shape.CIRCLE)
+      return Raycast2D.testCircle(ray, shape.vertices[0], shape.vertices[1].x, results)
+    return results
   }
   /**
-   * @inheritdoc
-  */
-  init(entity) {
-    this.requires(entity, "transform");
-    this._transform = entity.get("transform");
+   * @template T
+   * @param {Ray} ray
+   * @param {Vector_like} position
+   * @param {number} radius
+   * @param {RayCollisionResult<T>} results 
+   */
+  static testCircle(ray, position, radius, results) {
+    const x1 = ray.origin.x;
+    const y1 = ray.origin.y;
+    const x2 = ray.direction.x;
+    const y2 = ray.direction.y;
 
-    const halfview = this._number * this._angle / 2;
-    for (let a = -halfview; a <= halfview; a += this._angle) {
-      this.rays.push(new Ray(new Vector2$1(), Vector2$1.fromRad(a)));
-      if (this._angle == 0) break
-    }
+    const x3 = position.x;
+    const y3 = position.y;
+    const x4 = x3 - x1;
+    const y4 = y3 - y1;
+    const r = radius;
+
+    const proj = x2 * x4 + y2 * y4;
+    const delta = proj * proj - ((x4 * x4 + y4 * y4) - r * r);
+    const sqrtDelta = Math.sqrt(delta);
+    const distance1 = proj + sqrtDelta;
+    const distance2 = proj - sqrtDelta;
+
+    if (delta < 0 || distance1 < 0) return results
+    results.points.push(new RayPoint(
+      new Vector2(
+        x1 + distance1 * x2,
+        y1 + distance1 * y2
+      ), distance1 * distance1
+    ));
+    if (delta === 0 || (distance2 < 0)) return results
+    results.points.push(new RayPoint(
+      new Vector2(
+        x1 + distance2 * x2,
+        y1 + distance2 * y2
+      ),
+      distance2 * distance2
+    ));
+    return results
   }
   /**
-   * @param {Body[]} bodies
-  */
-  update(bodies) {
-    this.collisionResults = [];
-    const angle = this._transform.orientation.value;
-    const rotangle = angle - this._lastangle;
-    for (var i = 0; i < this.rays.length; i++) {
-      const ray = this.rays[i];
-      ray.origin.copy(this._transform.position);
-      ray.direction.rotate(rotangle);
-    }
-    this._lastangle = angle;
-    for (let i = 0; i < bodies.length; i++) {
-      const shapes = bodies[i].shapes;
+   * @template T
+   * @param {Ray} ray
+   * @param {Vector2[]} vertices
+   * @param {RayCollisionResult<T>} result 
+   */
+  static testVertices(ray, vertices, result) {
+    const origin = ray.origin;
+    const direction = ray.direction;
 
-      for (let j = 0; j < shapes.length; j++) {
-        const shape = shapes[j];
-        if (shape.type === Shape.POLYGON)
-          this.testVertices(shape.vertices, bodies[i]);
-        if (shape.type === Shape.CIRCLE)
-          this.testCircle(shape.position, shape.radius, bodies[i]);
-      }
-    }
-  }
-  /**
-   * @private
-  */
-  testCircle(position, radius, body) {
-    let results = new RaycastResult();
-    for (let i = 0; i < this.rays.length; i++) {
-      const ray = this.rays[i];
-
-      results.collisions.push(testraycircle(ray, position, radius, body));
-    }
-    this.collisionResults.push(results);
-  }
-    /**
-     * @private
-     */
-  testVertices(vertices, body) {
-    let results = new RaycastResult();
-    for (let i = 0; i < this.rays.length; i++) {
-      const ray = this.rays[i];
-
-      results.collisions.push(testray(ray, vertices, body));
-    }
-    this.collisionResults.push(results);
-  }
-}
-/**
- * @private
- */
-function testray(ray, vertices, body) {
-  const origin = ray.origin;
-  const direction = ray.direction;
-  const results = new RayCollisionResult(ray, body);
-
-  let res = testSingleEdge(
-    vertices[vertices.length - 1],
-    vertices[0], origin, direction
-  );
-  if (res != void 0)
-    results.points.push(
+    const res = testSingleEdge(
+      vertices[vertices.length - 1],
+      vertices[0], ray.origin, ray.direction
+    );
+    if (res) result.points.push(
       new RayPoint(
         res,
-        res.clone().sub(origin)
-        .magnitudeSquared()
+        Vector2.magnitudeSquared(Vector2.sub(res,origin))
       )
     );
-  for (let i = 0; i < vertices.length - 1; i++) {
-    let res = testSingleEdge(
-      vertices[i], vertices[i + 1],
-      origin, direction
-    );
-    if (res != void 0)
-      results.points.push(
+    for (let i = 0; i < vertices.length - 1; i++) {
+      let res = testSingleEdge(
+        vertices[i], vertices[i + 1],
+        origin, direction
+      );
+      if (res) result.points.push(
         new RayPoint(
           res,
-          res.clone().sub(origin)
-          .magnitudeSquared()
+          Vector2.magnitudeSquared(Vector2.sub(res,origin))
         )
       );
+    }
+    return result
   }
-  return results
 }
 
 /**
- * @private
+ * @param {Vector2} v1
+ * @param {Vector2} v2
+ * @param {Vector2} or
+ * @param {Vector2} dir
  */
 function testSingleEdge(v1, v2, or, dir) {
   const x1 = v1.x;
@@ -10542,7 +9163,6 @@ function testSingleEdge(v1, v2, or, dir) {
   const y3 = or.y;
   const x4 = dir.x + x3;
   const y4 = dir.y + y3;
-
   const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
   if (den === 0) return null
@@ -10553,103 +9173,11 @@ function testSingleEdge(v1, v2, or, dir) {
   if (
     t > 0 && t < 1 &&
     u > 0
-  ) return new Vector2$1(
+  ) return new Vector2(
     x1 + t * (x2 - x1),
     y1 + t * (y2 - y1)
   )
   return null
 }
 
-/**
- * @private
- */
-function testraycircle(ray, center, radius, body) {
-  const results = new RayCollisionResult(ray, body);
-
-  const x1 = ray.origin.x;
-  const y1 = ray.origin.y;
-  const x2 = ray.direction.x;
-  const y2 = ray.direction.y;
-
-  const x3 = center.x;
-  const y3 = center.y;
-  const x4 = x3 - x1;
-  const y4 = y3 - y1;
-  const r = radius;
-
-  const proj = x2 * x4 + y2 * y4;
-  const delta = proj * proj - ((x4 * x4 + y4 * y4) - r * r);
-  const sqrtDelta = Math.sqrt(delta);
-  const distance1 = proj + sqrtDelta;
-  const distance2 = proj - sqrtDelta;
-
-  if (delta < 0 || distance1 < 0) return results
-  results.points.push(new RayPoint(
-    new Vector2$1(
-      x1 + distance1 * x2,
-      y1 + distance1 * y2
-    ), distance1 * distance1
-  ));
-  if (delta === 0 || (distance2 < 0)) return results
-  results.points.push(new RayPoint(
-    new Vector2$1(
-      x1 + distance2 * x2,
-      y1 + distance2 * y2
-    ),
-    distance2 * distance2
-  ));
-  return results
-}
-
-export { Agent, AgentManager, AgentSprite, Angle, AngleUpdate, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, BodySprite, Bound$1 as Bound, BoundingBox, BoundingCircle, Box, BoxGeometry, BufferGeometry, CamController, Camera, Circle, CircleGeometry, Clock, Color, ColorUpdate, Component, Composite, Constraint, Cookies, DEG2RAD, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, error$1 as Err, EulerSolver, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, HALF_PI, IndexedList, Input, Intergrator, Interpolation, Keyboard, Line, LineGeometry, Loader, Manager, Material, Matrix2 as Matrix, Matrix2, Mouse, Movable$1 as Movable, NaiveBroadphase, NarrowPhase, Overlaps, PI, Particle, ParticleSystemSprite, Path, PathFollowing, Perf, Pursuit, QuadTreeBroadphase, RAD2DEG, Ray, RayCastModes, RayCollisionResult, RayPoint, RaycastManager, RaycastResult, Raycaster, Rectangle, Renderer, Renderer2D, SATNarrowPhase, SQRT2, SeekBehaviour, Session, Sfx, Shape, Signal, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, System, TWO_PI, TextMaterial, Touch, Transform$1 as Transform, Triangle, TriangleGeometry, Trigon, Tween, TweenManager, common as Utils, Vec2, Vector, Vector2$1 as Vector2, Vector2Update, Vector3Update, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, arc, bodyDebugger, circle, clamp, createEntity, createManager, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, drawImage, epilson, exp, fill, fillText, fpsDebugger, lerp, line, map, mixin, naturalizePair, radToDeg, rand, raycastDebugger, rect, round, sq, sqrt, stroke, vertices, wrapAngle };
-/**
- * @typedef Bounds
- * @property {Vector_like} max
- * @property {Vector_like} min
- *//**
- * @callback EasingFunc
- * @param {number} t
- * @returns {number}
- *//**
- * @typedef CollisionPair
- * @property {Body} a
- * @property {Body} b
-*/
-
-/**
- * @typedef transform = null
- * @property {Body} bodyA 
- * @property {Body} bodyB
- * @property {ContactManifold} contactData
- * @property {number} stmp
- * @property {number} impulse
- * @property {boolean} persistent 
- * @property { Vector2} ca1
- * @property { Vector2} ca2
- * @property {number} restitution
- * @property {number} staticFriction
- * @property {number} kineticFriction
- * @property { Vector2} velA
- * @property { Vector2} velB
- * @property {number} rotA
- * @property {number} rotB
- */
-
-/**
- * @typedef ContactManifold
- * @property {number} lastOverlap
- * @property {number} overlap=-Infinity
- * @property {boolean} done=false
- * @property { Vector2} axis
- * @property { Vector2[]} verticesA
- * @property { Vector2[]} verticesB
- * @property {Shape} vertShapeA
- * @property {Shape} vertShapeB
- * @property {number} contactNo
- * @property {number} indexA
- * @property {number} indexB
- *//**
- * @typedef Vector_like
- * @property {number} x
- * @property {number} y
- */
+export { AABBColliding, AABBvsSphere, Agent, AgentManager, Angle, AngleUpdate, NaiveArchTypeTable as ArchetypeTable, ArriveBehaviour, AudioHandler, Ball, BasicMaterial, Behaviour, Body, Body2D, BoundType, BoundingBox, BoundingCircle, Box, BoxGeometry, Broadphase, Broadphase2DPlugin, BufferGeometry, Camera, Camera2D, Circle, CircleGeometry, Clock, CollisionData, CollisionManifold, Color, ColorUpdate, Constraint, Cookies, DEG2RAD, DEVICE, DOMEventHandler, DistanceConstraint, Easing, Entity, EvadeBehaviour, EventDispatcher, Events, Flock, Geometry, Group, HALF_PI, ImageLoader, IndexedList, Input, Intergrator2DPlugin, Interpolation, Keyboard, Line, LineGeometry, LoadManager, Loader, Logger, Manager, Material, Matrix3x2, Mouse, Movable, NaiveArchTypeTable, NaiveBroadphase, NarrowPhase, Narrowphase2DPlugin, Noise, PI, Path, PathFollowing, Perf, Physics2DPlugin, Pool, Pursuit, Query, RAD2DEG, Ray, RayCastModes, RayCollisionResult, RayPoint, Raycast2D, Rectangle, Renderer, Renderer2D, Renderer2DPlugin, SATNarrowphase, SQRT2, SeekBehaviour, Session, Sfx, Shape, Signal, SoundLoader, SpringConstraint, Sprite, SpriteMaterial, StaticImageMaterial, Storage, TWO_PI, TextMaterial, Touch, Transform, Triangle, TriangleGeometry, Trigon, Tween, TweenPlugin, common as Utils, Vec2, Vector, Vector2, Vector2Update, Vector3Update, WanderBehaviour, WebGLRenderer, WebGPURenderer, World, World2D, applyGravity, arc, assert, bodyDebugger, boundSpheresColliding, boundsColliding, circle, clamp, collisionResponse, createEntity, createManager, dampenVelocity, defaultCollisionHandler, defaultPrecollisionHandler, degToRad, deprecate, drawImage, epilson, error, exp, fill, fillText, fpsDebugger, lerp, line, log, map, mixin, naivebroadphaseUpdate, naturalizePair, radToDeg, rand, raycastDebugger, rect, round, satNarrowphaseUpdate, sq, sqrt, stroke, throws, updateBodies, updateTransformEuler, updateTransformVerlet, vertices, warn, warnOnce, wrapAngle };

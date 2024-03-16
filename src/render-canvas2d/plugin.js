@@ -1,3 +1,4 @@
+import { Manager } from "../ecs/index.js"
 import { Renderer2D } from "./canvas.js"
 
 export class Renderer2DPlugin {
@@ -7,6 +8,9 @@ export class Renderer2DPlugin {
     if (!renderer.domElement.parentElement)
       document.body.append(renderer.domElement)
   }
+  /**
+   * @param {Manager} manager
+   */
   register(manager) {
     manager.setResource("renderer", this.renderer)
     manager.setResource("ctx",this.renderer.ctx)
@@ -46,9 +50,16 @@ export class Renderer2DPlugin {
       ctx.save()
     })
   }
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
   setViewport(width, height) {
     Renderer2D.setViewport(this.renderer, width, height)
   }
+  /**
+   * @param {string} selector
+   */
   bindTo(selector) {
     Renderer2D.bindTo(this.renderer, selector)
   }

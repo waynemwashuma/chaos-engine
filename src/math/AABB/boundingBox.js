@@ -44,7 +44,9 @@ export class BoundingBox {
   intersects(bound) {
     deprecate("BoundingBox().intersects()", "boundsColliding()")
     if (bound.type === BoundType.CIRCLE)
+      // @ts-ignore
       return AABBvsSphere(this, bound)
+    // @ts-ignore
     return AABBColliding(this, bound)
   }
   /**
@@ -76,14 +78,22 @@ export class BoundingBox {
     deprecate("BoundingBox().copy()", "BoundingBox.copy()")
     BoundingBox.copy(bounds,this)
   }
+  /**
+   * @param {BoundingBox} bound
+   */
   static copy(bound,out = new BoundingBox()){
-    out.min.x = bounds.min.x
-    out.min.y = bounds.min.y
-    out.max.x = bounds.max.x
-    out.max.y = bounds.max.y
+    out.min.x = bound.min.x
+    out.min.y = bound.min.y
+    out.max.x = bound.max.x
+    out.max.y = bound.max.y
     
     return out
   }
+  /**
+   * @param {BoundingBox} bound
+   * @param {number} x
+   * @param {number} y
+   */
   static translate(bound, x, y, out = new BoundingBox()) {
     out.min.x = bound.min.x + x
     out.min.y = bound.min.y + y
@@ -97,7 +107,7 @@ export class BoundingBox {
    * 
    * @param {BoundingBox} bound1 
    * @param {BoundingBox} bound2 
-   * @param {BoundingBox} target Bound to store results into.
+   * @param {BoundingBox} out Bound to store results into.
    * @returns BoundingBox
    */
   static union(bound1, bound2, out = new BoundingBox()) {

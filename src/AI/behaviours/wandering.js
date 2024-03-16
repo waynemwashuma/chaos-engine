@@ -31,31 +31,24 @@ export class WanderBehaviour extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position
-    this.velocity = agent.velocity
-  }
-  /**
-   * @inheritdoc
-   * @param { Vector2} target
+   * @param {Vector2} velocity
+   * @param {Vector2} target
    * @param {number} inv_dt
    * @returns {Vector2} the first parameter
    */
-  calc(target, inv_dt) {
+  calc(velocity,target, inv_dt) {
 
     this._theta += rand(-this.dtheta, +this.dtheta)
-    let forward = tmp1.copy(this.velocity)
+    let forward = tmp1.copy(velocity)
     if (forward.equalsZero())
       Vector2.random(forward)
     let radius = this._radius * 0.8
     forward.setMagnitude(this._radius)
-    Vector2.fromAngle(this._theta + Vector2.toAngle(this.velocity), tmp2).multiply(radius)
+    Vector2.fromAngle(this._theta + Vector2.toAngle(velocity), tmp2).multiply(radius)
     forward.add(tmp2) 
     forward.setMagnitude(this.maxSpeed)
-    forward.sub(this.velocity).multiply(inv_dt).clamp(0, this.maxForce)
-    target.copy(forward)
+    forward.sub(velocity).multiply(inv_dt).clamp(0, this.maxForce)
+    return target.copy(forward)
   }
 
 }

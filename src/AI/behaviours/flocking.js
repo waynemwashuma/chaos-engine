@@ -8,20 +8,8 @@ import { Vector2 } from "../../math/index.js"
  * @augments Behaviour
  */
 export class Flock extends Behaviour{
-  /**
-   * @type Agent[]
-   */
-  neighbours = []
   constructor() {
     super()
-  }
-  /**
-   * @inheritdoc
-   * @param {Agent} agent
-   * 
-   */
-  init(agent) {
-
   }
   /**
    * @inheritdoc

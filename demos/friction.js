@@ -8,7 +8,6 @@ import {
   BoxGeometry,
   CircleGeometry,
   BasicMaterial,
-  Body2D,
   degToRad
 } from "/src/index.js"
 export function friction(manager) {

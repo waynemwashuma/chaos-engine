@@ -109,7 +109,7 @@ export class Manager {
   /**
    * Adds an entity to the manager and initializes it.
    * 
-   * @param {Record<string,any>} [components] The entity to add
+   * @param {Record<string,any>} components The entity to add
    */
   create(components) {
     const entity = new Entity()
@@ -139,6 +139,7 @@ export class Manager {
    * @returns {T}
    */
   get(entity, ...compNames) {
+    // @ts-ignore
     return this._table.get(entity, compNames)
   }
   /**
