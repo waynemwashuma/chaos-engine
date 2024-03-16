@@ -1,4 +1,3 @@
-import { BoundingCircle } from "./boundingSphere.js"
 import { AABBvsSphere, AABBColliding, BoundType } from "./overlap.js"
 import { deprecate } from "../../logger/index.js"
 
