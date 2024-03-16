@@ -1,10 +1,10 @@
 import { BoundingBox, Vector2 } from "../../math/index.js"
-import { Broadphase,NaiveBroadphase } from "../broadphases/index.js"
-import { SATNarrowPhase,CollisionManifold,NarrowPhase } from "../narrowphase/index.js"
+import { Broadphase, NaiveBroadphase } from "../broadphases/index.js"
+import { SATNarrowPhase, CollisionManifold, NarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
 import { deprecate } from "../../logger/index.js"
 import { Body2D } from "../bodies/index.js"
-import { Entity,Manager } from "../../ecs/index.js";
+import { Entity, Manager } from "../../ecs/index.js";
 import { Movable } from "../../intergrator/movableComponent.js"
 import { Transform } from "../../intergrator/index.js"
 
@@ -36,7 +36,7 @@ export class World2D {
    * 
    * @type {Vector2}
    */
-  gravitationalAcceleration = new Vector2(0,0)
+  gravitationalAcceleration = new Vector2(0, 0)
   /**
    * Time in seconds that a single frame takes.This has more precedence than the first parameter of World2D.update(),set to this to zero if you want to use the latter as the delta time.
    * 
@@ -72,9 +72,9 @@ export class World2D {
 
   set gravity(x) {
     if (typeof x === "object") {
-      Vector2.copy(x,this.gravitationalAcceleration)
+      Vector2.copy(x, this.gravitationalAcceleration)
     } else {
-      Vector2.set(this.gravitationalAcceleration,0,x)
+      Vector2.set(this.gravitationalAcceleration, 0, x)
     }
   }
 
@@ -84,8 +84,8 @@ export class World2D {
    * @param {World2D} world
    * @param {CollisionPair[]} contactList
    */
-  static narrowPhase(manager,world,contactList) {
-    return world.narrowphase.getCollisionPairs(manager,contactList)
+  static narrowPhase(manager, world, contactList) {
+    return world.narrowphase.getCollisionPairs(manager, contactList)
 
   }
   /**
@@ -100,9 +100,9 @@ export class World2D {
    * @param {any} manager
    * @param {World2D} world
    */
-  static collisionDetection(manager,world) {
+  static collisionDetection(manager, world) {
     world.contactList = World2D.broadPhase(world)
-    world.CLMDs = World2D.narrowPhase(manager,world,world.contactList)
+    world.CLMDs = World2D.narrowPhase(manager, world, world.contactList)
   }
   /**
    * 
@@ -111,13 +111,13 @@ export class World2D {
    * @param {World2D} world
    * @param {string | any[]} CLMDs
    */
-  static collisionResponse(manager,world,CLMDs,dt) {
+  static collisionResponse(manager, world, CLMDs, dt) {
     const inv_dt = 1 / dt
 
     for (let i = 0; i < CLMDs.length; i++) {
       const manifold = CLMDs[i]
-      const [transformA,movableA,bodyA] = manager.get(manifold.entityA,"transform","movable","body")
-      const [transformB,movableB,bodyB] = manager.get(manifold.entityB,"transform","movable","body")
+      const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body")
+      const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body")
 
       if (Settings.warmStarting)
         CollisionManifold.warmstart(
@@ -141,8 +141,8 @@ export class World2D {
     for (let i = 0; i < world.velocitySolverIterations; i++) {
       for (let i = 0; i < CLMDs.length; i++) {
         const manifold = CLMDs[i]
-        const [movableA,bodyA] = manager.get(manifold.entityA,"movable","body")
-        const [movableB,bodyB] = manager.get(manifold.entityB,"movable","body")
+        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
+        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
 
         CollisionManifold.solve(
           manifold,
@@ -156,17 +156,17 @@ export class World2D {
   }
   /**
    * 
-   * @param {World2D} world
+   * @param {Vector} gravity
    * @param {Movable[][]} movable
    * @param {Body2D[][]} bodies
    */
-  static applyGravity(world,movable,bodies) {
+  static applyGravity(gravity, movable, bodies) {
     for (var i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
         if (bodies[i][j].inv_mass)
           Vector2.add(
             movable[i][j].acceleration,
-            world.gravitationalAcceleration,
+            gravity,
             movable[i][j].acceleration
           )
       }
@@ -178,7 +178,7 @@ export class World2D {
    * @param {Transform[][]} transform
    * @param {BoundingBox[][]} bounds
    */
-  static updateBodies(transform,bounds,bodies) {
+  static updateBodies(transform, bounds, bodies) {
     for (let i = 0; i < bodies.length; i++) {
       for (let j = 0; j < bodies[i].length; j++) {
         Body2D.update(
@@ -201,15 +201,15 @@ export class World2D {
    * @param {Movable[][]} movable
    * @param {BoundingBox[][]} bounds
    */
-  static update(manager,world,entities,transform,movable,bounds,bodies,dt) {
+  static update(manager, world, entities, transform, movable, bounds, bodies, dt) {
     /** @type {CollisionManifold<Entity>[]}*/
     this.CLMDs = []
-    World2D.applyGravity(world,movable,bodies)
-    World2D.updateBodies(transform,bounds,bodies)
-    world.broadphase.update(entities,bounds)
-    World2D.collisionDetection(manager,world)
-    World2D.collisionResponse(manager,world,world.CLMDs,dt)
-    manager.events.addEvent("collision",world.CLMDs)
+    World2D.applyGravity(world.gravitationalAcceleration, movable, bodies)
+    World2D.updateBodies(transform, bounds, bodies)
+    world.broadphase.update(entities, bounds)
+    World2D.collisionDetection(manager, world)
+    World2D.collisionResponse(manager, world, world.CLMDs, dt)
+    manager.events.addEvent("collision", world.CLMDs)
   }
 
   /**
@@ -220,8 +220,8 @@ export class World2D {
    * @param {T[]} [out = []] an array to store results in
    * @returns {T[]}
    */
-  query(bound,out = []) {
-    this.broadphase.query(bound,out)
+  query(bound, out = []) {
+    this.broadphase.query(bound, out)
     return out
   }
 }
@@ -235,7 +235,7 @@ export class World extends World2D {
    * @inheritdoc
    */
   constructor() {
-    deprecate("World()","World2D()")
+    deprecate("World()", "World2D()")
     // @ts-ignore
     super(...arguments)
   }
