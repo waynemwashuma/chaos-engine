@@ -13,7 +13,6 @@ import {
 import { makeContainer } from "./utils.js"
 
 export function random(manager) {
-  const world = manager.getResource("world")
   const rect = manager.getResource("renderer")
   const maxCount = 30
   let count = 0
@@ -30,7 +29,7 @@ export function random(manager) {
     50,
     50
   )
-  world.gravity = 500
+  manager.getResource("gravity").y = 900
 }
 
 function randomEntities(n, manager) {
@@ -47,7 +46,7 @@ function randomEntities(n, manager) {
     manager.create({
       "transform": new Transform(x, y),
       "movable": new Movable(rand(-100,100),200,rand(0,Math.PI)),
-      "bounds": new BoundingBox(),
+      "bound": new BoundingBox(),
       "body": body,
       "sprite": new Sprite(
         geometry,

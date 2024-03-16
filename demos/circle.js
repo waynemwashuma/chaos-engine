@@ -14,7 +14,7 @@ export function circle(manager) {
   manager.create({
     "transform": new Transform(rect.width/2, 300),
     "movable": new Movable(),
-    "bounds": new BoundingBox(),
+    "bound": new BoundingBox(),
     "body": new Ball(30),
     "sprite": new Sprite(
       new CircleGeometry(30),
@@ -27,5 +27,5 @@ export function circle(manager) {
     rect.height * 0.8,
     rect.width,
     50)
-  manager.getResource("world").gravity = 900
+  manager.getResource("gravity").y = 900
 }

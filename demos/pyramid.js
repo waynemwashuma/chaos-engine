@@ -13,7 +13,7 @@ export function pyramid(manager) {
   const rect = manager.getResource("renderer")
   const viewX = rect.width / 2
   stackpyramid(viewX, 100, 50, 50, 10, 0, manager)
-  manager.getResource("world").gravity = 980
+  manager.getResource("gravity").y = 900
 
   makePlatform(
     manager,
@@ -25,7 +25,7 @@ export function pyramid(manager) {
 }
 
 function stackpyramid(x, y, w, h, no, spacing, manager) {
-  let dx = x - (w / 2 * no )
+  let dx = x - (w / 2 * no)
   for (var j = no; j > 0; j--) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
@@ -35,7 +35,7 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
           y + (h + spacing) * j
         ),
         "movable": new Movable(),
-        "bounds": new BoundingBox(),
+        "bound": new BoundingBox(),
         "body": new Box(w, h),
         "sprite": new Sprite(
           new BoxGeometry(w, h),
