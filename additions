@@ -1,10 +1,5 @@
-add an intergrator system to work on the transform and movable component.
-separate Entity and Manager helpers to their own files
-
 bug : Restitution does not work.
 bug : Restitution affects friction too much.
 
-use your own conventional commit style to generate changelog.
-The format of the commit style will be:
- [SCOPE]message(#issue_fixed:optional) #tags
- 
+Remove `Utils.inritcomponent` and `Utils.inheritSystem` and where they are used
+Fix type errors with symbol.iterator

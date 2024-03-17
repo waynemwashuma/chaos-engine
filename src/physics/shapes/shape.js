@@ -2,137 +2,168 @@ import { Vector2 } from "../../math/index.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
 
-let tmp1 = new Vector2()
-
 /**
  * This class makes a body tangible
  * to collision detection and response.Without it,the body will not be able to interact with other bodies.
  */
-class Shape {
+export class Shape {
   /**
    * Used to determine what type of shape this is.
    * 
-   * @type number
+   * @type {number}
    * @readonly
    */
   type = ShapeType.POLYGON
   /**
-   * The offset angle of this shape from this body's angle.
-   * 
-   * @type number
+   * @type {number}
    */
-  offAngle = 0
-  /**
-   * The offset position of this shape from this body's position.
-   * 
-   * @type Vector2
-   */
-  offPosition = null
+  angle = 0
   /**
    * The vertices describing the shape.
    * 
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  vertices = null
+  vertices
   /**
    * Keeps the original normals and vertices of this shape
    * 
-   * @type Geometry
+   * @type {Geometry}
    */
-  geometry = null
+  geometry
 
   /**
    * @param { Vector2[]} vertices The vertices of the shape in local space coordinates.
-   * @param { Vector2} [offset=vector] offset position relative to parent body
-   * @param {number} [offsetAngle=0] offset angle relative to parent body.
    */
-  constructor(vertices, offset = new Vector2(), offsetAngle = 0) {
-    this.offPosition = offset
-    this.offAngle = offsetAngle * Math.PI / 180
-    this.vertices = vertices.map(v => v.clone())
+  constructor(vertices) {
+    // @ts-ignore
+    this.vertices = vertices.map(v => Vector2.copy(v))
     this.geometry = new Geometry(vertices)
   }
   /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "shape"
-  }
-  /**
-   * The area occupied by a shape.
-   * @type number
-   */
-  get area() {
-    return 0
-  }
-  /**
    * Returns the normals of the faces when rotated.
-   * 
    * @param {Shape} shape
-   * @param { Vector2[]} [target=[]] An array where results are stored.
-   * @returns { Vector2[]}
+   * @param {Shape} refshape
+   * @param {Vector2[]} [out] An array where results are stored.
+   * @returns {Vector2[]}
    */
-  getNormals(shape, target) {
-    return this.geometry.getNormals(this.angle, target)
+  static getNormals(shape, refshape, out = []) {
+    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, out)
+    let vertex = null
+    if (refshape.type === Shape.POLYGON)
+      vertex = getNearVertex(shape.vertices[0], shape.vertices)
+    if (!vertex)
+      vertex = refshape.vertices[0]
+    const normal = Vector2.copy(vertex)
+    Vector2.sub(normal, shape.vertices[0], normal)
+    Vector2.normalize(normal, normal)
+    // @ts-ignore
+    out.push(normal)
+
+    return out
   }
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @param { Vector2} position the world position of the body
+   * @template {Shape} T
+   * @param {T} shape
+   * @param {Vector2} position the world position of the body
    * @param {number} angle the orientation of body
-   * @param {number} scale the scale of the body
+   * @param {Vector2} scale the scale of the body
    */
-  update(position, angle, scale) {
-    this.angle = this.offAngle + angle
-    this.geometry.transform(this.vertices, tmp1.copy(position).add(this.offPosition), this.angle, 1 || scale, position)
+  static update(shape, position, angle, scale) {
+    shape.angle = angle
+    if (shape.type === ShapeType.CIRCLE) {
+      Vector2.copy(position, shape.vertices[0])
+      return
+    }
+    Geometry.transform(
+      shape.geometry.vertices,
+      position,
+      angle,
+      scale,
+      shape.vertices
+    )
   }
 
   /**
    * Returns the world coordinates of the vertices.
-   * 
-   * @param { Vector2} axis
-   * @param { Vector2[]} target 
-   * @returns { Vector2[]}
+   * @template {Shape} T
+   * @param {T} shape
+   * @param { Vector2 } axis
+   * @param { Vector2[] } out
+   * @returns { Vector2[] }
    */
-  getVertices(axis, target) {
-    return this.vertices
-  }
+  static getVertices(shape, axis, out = []) {
+    if (shape.type === Shape.POLYGON)
+      return shape.vertices
 
+    const v1 = Vector2.multiplyScalar(axis, -shape.vertices[1].x)
+    const v2 = Vector2.multiplyScalar(axis, shape.vertices[1].x)
+
+    Vector2.add(v1, shape.vertices[0], v1)
+    Vector2.add(v2, shape.vertices[0], v2)
+    
+    // @ts-ignore
+    out[0] = v1
+    // @ts-ignore
+    out[1] = v2
+
+    return out
+  }
+  /**
+   * TODO - Actually implement this
+   * @param {Shape} shape
+   */
+  static getArea(shape){
+    if(shape.type === Shape.POLYGON){
+      return 0
+    }
+    return 0
+  }
   /**
    * Calculates the inertia of a given shape.
    * 
-   * @virtual
+   * @param {Shape} shape
+   * @param {number} mass
    * @returns {number}
    */
-  static calcInertia() {
-    throw new Error("Implement in the children classes")
-  }
-  toJson() {
-    let obj = {
-      type: this.CHAOS_OBJ_TYPE,
-      geometry: this.geometry.toJson(),
-      shapwType: this.type,
-      offset: this.offPosition.toJson(),
-      offAngle: this.offAngle
+  static calcInertia(shape, mass) {
+    const vertices = shape.vertices
+    if (shape.type === Shape.CIRCLE) {
+      const radius = vertices[1].x
+      return mass * (radius * radius) * 0.5
     }
-    return obj
-  }
-  fromJson(obj) {
-    this.offAngle = obj.offAngle
-    this.offPosition = obj.offset
-    this.geometry.fromJson(obj.geometry)
-    this.vertices = this.geometry.vertices.map(v => v.clone())
+    const vertexCount = vertices.length
+    let numerator = 0.0
+    let denominator = 0.0
+    let i = vertexCount - 1
+    for (let j = 0; j < vertexCount; ++j) {
+      const v1 = vertices[i]
+      const v2 = vertices[j]
+      const crs = Math.abs(Vector2.cross(v1, v2))
+      numerator += crs * (Vector2.dot(v2, v2) + Vector2.dot(v1, v2) + Vector2.dot(v1, v1))
+      denominator += crs
+      i = j
+    }
+    return mass * numerator / (denominator * 6.0)
   }
   static CIRCLE = 0
   static POLYGON = 1
 }
 
-export {
-  Shape
+/**
+ * @param {Vector2} position
+ * @param {Vector2[]} vertices
+ */
+function getNearVertex(position, vertices) {
+  let vertex = Vector2.ZERO
+  let min = -Infinity
+  for (let i = 0; i < vertices.length; i++) {
+    const a = Vector2.distanceToSquared(vertices[i], position)
+    if (min > a) {
+      vertex = vertices[i]
+      min = a
+    }
+  }
+  return vertex
 }

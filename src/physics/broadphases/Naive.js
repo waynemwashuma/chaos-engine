@@ -1,62 +1,58 @@
 import { Broadphase } from "./broadphase.js"
+import { BoundingBox,boundsColliding } from "../../math/index.js"
+import { Entity } from "../../ecs/index.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
-*/
+ */
 export class NaiveBroadphase extends Broadphase {
   /**
    * @private
-   * @type Body[]
-  */
-  bodies = null
+   * @type {Entity[]}
+   */
+  entities = []
   /**
-   * @param {World} world
-  */
-  constructor(world) {
-    super()
-    this.bodies = world.objects
-  }
+   * @private
+   * @type {BoundingBox[]}
+   */
+  bounds = []
   /**
    * @inheritdoc
-   * @param {Bounds} bound Region to check in.
-   * @param {Body[]} target Empty array to store results.
-   * @returns {Body[]}
-  */
-  query(bound, target) {
-    closeObjects = target || []
-    for (var i = 0; i < this.objects.length; i++) {
-      let ob = this.world.objects[i]
-      if (ob.bounds.intersects(bound) < dist)
-        closeObjects.push(ob)
-    }
-    return closeObjects
+   * @param {BoundingBox} bound Region to check in.
+   * @param {Entity[]} target Empty array to store results.
+   * @returns {Entity[]}
+   */
+  query(bound,target = []) {
+    for (let i = 0; i < this.entities.length; i++)
+      if (boundsColliding(bound,this.bounds[i]))
+        target.push(this.entities[i])
+    return target
+  }
+  /**
+   * @param {Entity[][]} entities 
+   * @param {BoundingBox[][]} bounds
+   */
+  update(entities,bounds) {
+    this.entities = entities.reduce((a,b) => a.concat(b),[])
+    this.bounds = bounds.reduce((a,b) => a.concat(b),[])
   }
   /**
    * @inheritdoc
    * @param {CollisionPair[]} target Empty array to store results.
    * @returns {CollisionPair[]}
-  */
-  getCollisionPairs(target) {
-    target = target || []
-    let bodies = this.bodies,
-      length = bodies.length
-    for (let i = 0; i < length; i++) {
-      let a = bodies[i]
-      for (let j = i + 1; j < length; j++) {
-        let b = bodies[j]
-        if(!this.canCollide(a,b))continue
-        if (!a.bounds.intersects(b.bounds))
+   */
+  getCollisionPairs(target = []) {
+    const { entities,bounds } = this
+    for (let i = 0; i < entities.length; i++) {
+      for (let j = i + 1; j < entities.length; j++) {
+        if (!boundsColliding(bounds[i],bounds[j]))
           continue
-        let list = {
-          a,
-          b
-        }
-        if (a.aabbDetectionOnly || b.aabbDetectionOnly) continue
-        if (!a.shapes.length || !b.shapes.length) continue
-        target.push(list)
+        target.push({
+          a: entities[i],
+          b: entities[j]
+        })
       }
     }
     return target
   }
-
 }

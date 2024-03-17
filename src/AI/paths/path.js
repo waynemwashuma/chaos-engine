@@ -5,7 +5,7 @@ let tmp = new Vector2()
 export class Path {
   /**
    * @private
-   * type Vector2[]
+   * @type {Vector2[]}
    */
   _points = []
   /**

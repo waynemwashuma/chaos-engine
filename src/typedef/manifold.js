@@ -1,13 +1,13 @@
 /**
  * @typedef CollisionPair
- * @property {Body} a
- * @property {Body} b
+ * @property {Body2D} a
+ * @property {Body2D} b
 */
 
 /**
- * @typedef transform = null
- * @property {Body} bodyA 
- * @property {Body} bodyB
+ * @typedef Manifold
+ * @property {Body2D} bodyA 
+ * @property {Body2D} bodyB
  * @property {ContactManifold} contactData
  * @property {number} stmp
  * @property {number} impulse

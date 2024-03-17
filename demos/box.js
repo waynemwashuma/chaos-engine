@@ -1,16 +1,32 @@
 import {
-  createEntity,
+  Transform,
+  Movable,
+  BoundingBox,
   Box,
-  BodySprite
-} from  "/src/index.js"
+  Sprite,
+  BoxGeometry,
+  BasicMaterial
+} from "/src/index.js"
+import { makePlatform } from "./utils.js"
+
 export function box(manager) {
-  let world = manager.getSystem("world")
+  const rect = manager.getResource("renderer")
   
-  let box = createEntity(200,100)
-  let body = new Box(50,50)
-  
-  box.attach("body",body)
-  .attach("sprite",new BodySprite())
-  manager.add(box)
-  world.gravity = 980
+  manager.create({
+    "transform": new Transform(1000, 300), //,Math.PI/9),
+    "movable": new Movable(0,0),
+    "bound": new BoundingBox(),
+    "body": new Box(50, 50),
+    "sprite": new Sprite(
+      new BoxGeometry(50, 50),
+      new BasicMaterial()
+    )
+  })
+  makePlatform(
+    manager,
+    rect.width / 2,
+    rect.height * 0.8,
+    rect.width,
+    50)
+  manager.getResource("gravity").y = 900
 }

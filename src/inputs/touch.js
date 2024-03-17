@@ -1,3 +1,5 @@
+import { DOMEventHandler } from "../events/index.js"
+
 /**
  * Handles the touch input of an application from a smartphone,tablet or PCs with touchscreens.
  * 
@@ -19,19 +21,6 @@ export class Touch {
     this.init(eh)
   }
   /**
-   * Checks to see if the position is within the dragbox of the first two touches.
-   * Not yet fully implemented
-   * 
-   * @param {Vector_like} pos
-   */
-  inDragBox(pos) {
-    if (pos.x > this.dragLastPosition.x && pos.x < this.dragLastPosition.x + this.position.x &&
-      pos.y > this.dragLastPosition.y && pos.y < this.dragLastPosition.y + this.position.y) {
-      return false
-    }
-    return true
-  }
-  /**
    * Adds Touch events to the DOM.
    * 
    * @param {DOMEventHandler} eh
@@ -44,18 +33,21 @@ export class Touch {
   /**
    * @private
    */
+  // @ts-ignore
   _onMove = (e) => {
     e.preventDefault()
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onDown = (e) => {
     this.touches = e.touches
   }
   /**
    * @private
    */
+  // @ts-ignore
   _onUp = (e) => {
     this.touches = e.touches
   }

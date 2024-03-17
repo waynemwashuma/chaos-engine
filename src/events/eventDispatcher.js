@@ -11,19 +11,21 @@ export class EventDispatcher {
    */
   handlers = {}
   /**
+   * @private
+   * @type Object<string,any>
+  */
+  events = {}
+  /**
    * This fires all event handlers of a certain event.
    * 
    * @param {string} n the name of event fired.
    * @param {any} data The payload of the event.
    */
   trigger(n, data) {
+    this.addEvent(n,data)
     if (n in this.handlers)
       this.handlers[n].forEach(h => h(data))
   }
-  /**
-   * Ignore this,must be here for it to be a system.Might make this class not a system later
-   */
-  init() {}
   /**
    * Adds an event handler to an event dispatcher.
    * 
@@ -36,6 +38,24 @@ export class EventDispatcher {
       return
     }
     this.handlers[name] = [handler]
+  }
+  /**
+   * @param {string} n
+   * @param {any} data
+   */
+  addEvent(n,data){
+    this.events[n] = data
+  }
+  /**
+   * @param {string} n
+   */
+  getEvent(n){
+    return this.events[n]
+  }
+  clear(){
+    for (const name in this.events) {
+      delete this.events[name]
+    }
   }
 }
 

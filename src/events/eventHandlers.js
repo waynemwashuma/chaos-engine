@@ -1,7 +1,7 @@
 /**
  * This provides a way to fire off an entity's collision event handler registered to it.
  * 
- * @param {CollisionPair[]} clmds an array of collision manifolds
+ * @param {Manifold[]} clmds an array of collision manifolds
 */
 export function defaultCollisionHandler(clmds) {
   let a, b
@@ -25,7 +25,7 @@ export function defaultCollisionHandler(clmds) {
 /**
  * This provides a way to fire off an entity's precollision event handler registered to it
  * 
- * @param {Manifold[]} clmds an array of collision manifolds
+ * @param {CollisionPair[]} clmds an array of collision manifolds
 */
 export function defaultPrecollisionHandler(clmds) {
   let a, b

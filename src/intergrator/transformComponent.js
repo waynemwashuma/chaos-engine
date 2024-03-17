@@ -1,31 +1,18 @@
-import { Component } from "../ecs/index.js"
-import { Vector2, Angle } from "../math/index.js"
+import { Vector2 } from "../math/index.js"
 
 /**
  * Holds transformation info of an entity 
  * 
  */
-export class Transform extends Component{
+export class Transform{
   /**
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
-   * @returns 
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
    */
-  constructor(x,y,a){
-    super()
+  constructor(x = 0,y = 0,a = 0){
     this.position = new Vector2(x,y)
-    this.orientation = new Angle(a)
-  }
-  init(){}
-  toJson(){
-    return {
-      position: this.position.toJson(),
-      orientation:this.orientation.toJson()
-    }
-  }
-  fromJson(obj){
-    this.position.fromJson(obj.position)
-    this.orientation.fromJson(obj.orientation)
+    this.orientation = a
+    this.scale = new Vector2(1,1)
   }
 }

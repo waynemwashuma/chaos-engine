@@ -1,4 +1,6 @@
-import { Utils, Err } from "../utils/index.js"
+import { Utils } from "../utils/index.js"
+import {Logger } from "../logger/index.js"
+import { Entity } from "./entity.js"
 
 
 /**
@@ -8,6 +10,7 @@ import { Utils, Err } from "../utils/index.js"
  * Use instead `Component.implement()` if you have your own hierarchy of classes.
  * In typescript,this would be an interface.
  * 
+ * @deprecated
  * @interface
  * 
  */
@@ -31,17 +34,20 @@ export class Component {
    */
   init(entity) {}
   /**
+   * @deprecated
    * @param {number} dt
    */
   update(dt) {
-    Err.warnOnce("Please override the update function in the component " + proto.constructor.name)
+    Logger.warnOnce("Please ovLoggeride the update function in the component " + proto.constructor.name)
   }
   /**
+   * @deprecated
    * @param {Entity} entity
    * @param {string} n
    */
   get(entity, n) {
-    return entity.getComponent(n);
+    Logger.deprecate("Component.get()","Entity.get()")
+    return entity.get(n);
   }
   /**
    * @param {Entity} entity
@@ -51,36 +57,32 @@ export class Component {
   requires(entity, ...names) {
     for (var i = 0; i < names.length; i++)
       if (!entity.has(names[i]))
-        Err.throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
+        Logger.throws(`The component \`${this.CHOAS_CLASSNAME}\` requires another component \`${names[i]}\` but cannot find it in the Entity with id ${entity.id}`)
   }
   /**
+   * @deprecated
    * @param {Entity} entity
-   * @param {CircleBounding | BoxBounding} bound
+   * @param {BoundingBox | BoundingCircle} bound
    * @param {Entity[]} [target=[]]
    * @returns {Entity[]}
    */
   query(entity, bound, target = []) {
+    Logger.deprecate("Component.query()","Entity.query()")
     return entity.query(bound, target)
   }
   /**
    * @template {System} T
    * @param {*} obj
    * @param {T} system
-  */
+   */
   fromJson(obj, system) {
     throw "Implement static method fromJson() in your component " + this.CHOAS_CLASSNAME
-   
+
   }
   /**
    * @returns {*}
-  */
+   */
   toJson() {
     throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
-  }
-  /**
-   * @param {*} component
-  */
-  static implement(component) {
-    Utils.inheritComponent(component)
   }
 }

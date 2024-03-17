@@ -1,93 +1,88 @@
+import { Vector2 } from "../../math/index.js"
+
 export class Geometry {
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  vertices = null
+  vertices
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  normals = null
+  normals
   /**
-   * @type Vector2[]
+   * @type {Vector2[]}
    */
-  _dynNormals = null
+  _dynNormals
   /**
    * @param { Vector2[]} vertices
    */
   constructor(vertices) {
     this.vertices = vertices
-    this.normals = this.calcFaceNormals()
-    this._dynNormals = this.normals.map(e => e.clone())
+    this.normals = Geometry.calcFaceNormals(vertices)
+    // @ts-ignore
+    this._dynNormals = this.normals.map(e => Vector2.copy(e))
   }
+
   /**
-   * @type string
+   * @param {Geometry} geometry
+   * @param {number} angle
+   * @param {Vector2[]} out
    */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "geometry"
-  }
-  /**
-   * @param {number} rad
-   * @param {Vector2[]} target
-   */
-  getNormals(rad, target) {
-    target = target || []
-    for (var i = 0; i < this.normals.length; i++) {
-      target.push(this._dynNormals[i].copy(this.normals[i]).rotate(rad))
+  static getNormals(geometry, angle, out = []) {
+    for (let i = 0; i < geometry.normals.length; i++) {
+      const normal = Vector2.rotate(geometry.normals[i], angle)
+      // @ts-ignore
+      out.push(normal)
     }
-    return target
+    return out
   }
   /**
-   * @private
-   * @returns Vector2[]
+   * @param {Vector2[]} vertices
+   * @returns {Vector2[]}
    */
-  calcFaceNormals() {
-    const axes = [],
-      { vertices } = this
-    for (var i = 0; i < vertices.length; i++) {
-      let axis = vertices[i >= vertices.length ? vertices.length - 1 : i]
-        .clone()
-        .sub(vertices[i + 1 >= vertices.length ? 0 : i + 1]).normal()
-      for (var j = 0; j < axes.length; j++) {
-        if (axis.equals(axes[j]) || axis.clone().reverse().equals(axes[j])) {
-          axis = null
-          break
-        }
-      }
-      if (!axis) continue
-      axes.push(axis)
+  static calcFaceNormals(vertices) {
+    const axes = []
+    let previous = vertices[vertices.length - 1]
+    for (let i = 0; i < vertices.length; i++) {
+      const current = vertices[i]
+      const axis = Vector2.sub(previous, current)
+      Vector2.normal(axis, axis)
+      Vector2.normalize(axis, axis)
+
+      previous = current
+      // @ts-ignore
+      if (!checkifEquals(axis, axes))
+        axes.push(axis)
     }
+    // @ts-ignore
     return axes
   }
   /**
-   * @param {number} n
-   * @param { Vector2[]} vertices
-   * @param { Vector2} pos
-   * @param {number} rad
+   * @param {Vector2[]} vertices
+   * @param {Vector2} pos
+   * @param {number} angle
+   * @param {Vector2} scale
+   * @param {Vector2[]} out
    */
-  transform(vertices, pos, rad, n) {
-    for (let i = 0; i < this.vertices.length; i++) {
-      let vertex = vertices[i]
-      vertex.copy(this.vertices[i])
-      vertex.rotate(rad)
-      vertex.multiply(n)
-      vertex.add(pos)
+  static transform(vertices, pos, angle, scale, out) {
+    const cos = Math.cos(angle)
+    const sin = Math.sin(angle)
+    for (let i = 0; i < vertices.length; i++) {
+      const vertex = out[i]
+      Vector2.rotateFast(vertices[i], cos, sin, vertex)
+      Vector2.multiply(vertex, scale, vertex)
+      Vector2.add(vertex, pos, vertex)
     }
   }
-  toJson(){
-    let obj = {
-      vertices:this.vertices.map((v)=>v.toJson())
-    }
-    return obj
-  }
-  fromJson(obj){
-    this.vertices = obj.vertices.map(v=>new Vector2().fromJson(v))
-    this.normals = this.calcFaceNormals()
-    this._dynNormals = this.normals.map(e => e.clone())
-  }
+}
+
+/**
+ * @param {Vector2} axis
+ * @param {Vector2[]} axes
+ */
+function checkifEquals(axis, axes) {
+  for (let i = 0; i < axes.length; i++)
+    if (Vector2.absEqual(axis, axes[i]))
+      return true
+  return false
 }

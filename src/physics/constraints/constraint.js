@@ -18,11 +18,11 @@ export class Constraint {
    */
   localB = null
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   body1 = null
   /**
-   * @type {Body}
+   * @type {Body2D}
    */
   body2 = null
   /**:
@@ -34,8 +34,8 @@ export class Constraint {
    */
   dampening = 0.03
   /**
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param { Vector2} localA
    * @param { Vector2} localB
    */
@@ -55,23 +55,11 @@ export class Constraint {
     return ObjType.CONSTRAINT
   }
   /**
-   * @type string
-   */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
-  }
-  /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "constraint"
-  }
-  /**
    * Will refactor this out later.
    * 
    * @protected
-   * @param {Body} body1
-   * @param {Body} body2
+   * @param {Body2D} body1
+   * @param {Body2D} body2
    * @param {number} dt
    */
   behavior(body1, body2, dt) {
@@ -84,30 +72,5 @@ export class Constraint {
    */
   update(dt) {
     this.behavior(this.body1, this.body2, dt)
-  }
-  toJson() {
-    return {
-      body1: this.body1.id,
-      body2: this.body2.id,
-      localA: this.localA.toJson(),
-      localB: this.localB.toJson(),
-      stiffness: this.stiffness,
-      dampening: this.dampening,
-      type: this.CHAOS_OBJ_TYPE
-    }
-  }
-  fromJson(obj, world) {
-    let bod1 = world.getById(obj.body1)
-    let bod2 = world.getById(obj.body2)
-
-    let constraint = new Constraint(
-      bod1,
-      bod2,
-      new Vector2().fromJson(obj.localA),
-      new Vector2().fromJson(obj.localB)
-    )
-    constraint.stiffness = obj.stiffness
-    constraint.dampening = obj.dampening
-    return constraint
   }
 }

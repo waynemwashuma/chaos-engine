@@ -1,29 +1,34 @@
-import { mixin, Err, Utils } from "../utils/index.js"
+import { mixin, Utils } from "../utils/index.js"
+import { Logger } from "../logger/index.js"
+import { Manager } from "./manager.js"
 
 /**
+ * @deprecated
  * Updates components assigned to it.
  */
 export class System {
+  objects = []
   /**
    * @param {Manager} manager
    */
   init(manager) {
-    Err.warnOnce("Please override the init method in the system " + this.constructor.name)
+    Logger.warnOnce("Please override the init method in the system " + this.constructor.name)
   }
   /**
    * @param {number} dt
+   * @param {Manager} manager
    */
-  update(dt) {
-    Err.warnOnce("Please override the update method in the system " + this.constructor.name)
+  update(dt,manager) {
+    Logger.warnOnce("Please override the update method in the system " + this.constructor.name)
   }
   /**
-   * @param {Component} component
+   * @param {*} component
    */
   add(component) {
     this.objects.push(component)
   }
   /**
-   * @param {Component} component
+   * @param {*} component
    */
   remove(component) {
     let index = this.objects.indexOf(component)

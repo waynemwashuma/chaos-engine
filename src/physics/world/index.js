@@ -1,138 +1,64 @@
-import { VerletSolver } from "../integrators/index.js";
-import { PenetrationSolver, FrictionSolver, ImpulseSolver, ContactSolver } from "../solvers/index.js";
-import { Vector2 } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
-import { ObjType } from "../settings.js"
-import { NaiveBroadphase } from "../broadphases/index.js"
-import { SATNarrowPhase } from "../narrowphase/index.js"
+import { BoundingBox, Vector2 } from "../../math/index.js"
+import { Broadphase, NaiveBroadphase } from "../broadphases/index.js"
+import { SATNarrowphase, CollisionManifold, NarrowPhase } from "../narrowphase/index.js"
 import { Settings } from "../settings.js"
-import { System } from "../../ecs/index.js"
+import { deprecate } from "../../logger/index.js"
+import { Body2D } from "../bodies/index.js"
+import { Entity, Manager } from "../../ecs/index.js";
+import { Movable } from "../../intergrator/movableComponent.js"
+import { Transform } from "../../intergrator/index.js"
+
 /**
  * Class responsible for updating bodies,constraints and composites.
  */
-export class World extends System {
-  /**
-   * Used to check if a manifold is persistent.
-   * 
-   * @type number
-   * @private
-   */
-  count = 0
-  /**
-   * A record of collision manifolds.
-   * 
-   * @type Map<number,Manifold>
-   * @protected
-   */
-  records = new Map()
-  /**
-   * A list of bodies.
-   * 
-   * @type Body[]
-   * @private
-   */
-  objects = []
-  /**
-   * A list of constraints fixed to a static object.
-   * 
-   * @type Constraint[]
-   * @private
-   */
-  fixedConstraits = []
-  /**
-   * A list of constraints fixed to two dynamic bodies.
-   * 
-   * @type Array<Constraint>
-   * @private
-   */
-  constraints = []
-  /**
-   * A value between 0 and 1 used to dampen linear velocity of bodies.
-   * 
-   * @type number
-   */
-  linearDamping = Settings.linearDamping
-  /**
-   * A value between 0 and 1 used to dampen angular velocity of bodies.
-   * 
-   * @type number
-   */
-  angularDamping = Settings.angularDamping
-
-  /**
-   * The number of times to solve for velocity.A high number results in much more stable stacking.
-   * 
-   * @type number
-   */
-  velocitySolverIterations = Settings.velocitySolverIterations
+export class World2D {
   /**
    * The collision manifolds that have passed narrowphase and verified to be colliding.
    * 
-   * @type Manifold[]
+   * @type {CollisionManifold<Entity>[]}
    */
   CLMDs = []
   /**
    * The collision manifolds that have passed broadphase and could be colliding
    * 
-   * 
-   * @type CollisionPair[]
+   * @deprecated
+   * @type {CollisionPair[]}
    */
   contactList = []
   /**
    * The gravitational pull of the world.
    * 
-   * @type Vector2
+   * @type {Vector2}
    */
   gravitationalAcceleration = new Vector2(0, 0)
   /**
-   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World.update(),set to this to zero if you want to use the latter as the delta time.
+   * Time in seconds that a single frame takes.This has more precedence than the first parameter of World2D.update(),set to this to zero if you want to use the latter as the delta time.
    * 
-   * @type number
+   * @type {number}
    */
   fixedFrameRate = Settings.fixedFrameRate
   /**
-   * 
-   * @type { {lastTimestamp:number,total: number}}
-   * @ignore
-   */
-  perf = {
-    lastTimestamp: 0,
-    total: 0
-  }
-  /**
    * This is a cheap way of determining which pairs of bodies could be colliding.
    * 
-   * @type Broadphase
+   * @type {Broadphase}
    */
-  broadphase = null
+  broadphase
   /**
    * This accurately tests body pairs to check 
    * for collision and outputs a manifold for each body pair.
    * 
-   * @type NarrowPhase
+   * @type {NarrowPhase}
    */
-  narrowphase = null
-  /**
-   * Moves the bodies forward in time.
-   * 
-   * @type {Intergrator}
-   */
-  intergrator = VerletSolver
-  /**
-   * @type boolean
-   * @default true
-   */
-  enableIntergrate = true
-
+  narrowphase
   constructor() {
-    super()
-    this.broadphase = new NaiveBroadphase(this)
-    this.narrowphase = new SATNarrowPhase()
+    this.broadphase = new NaiveBroadphase()
+    this.narrowphase = new SATNarrowphase()
   }
 
   /**
    * Gravitational pull of the world,will affect all bodies except static bodies.
    * 
+   * @deprecated
    * @type { Vector2 }
    */
   get gravity() {
@@ -141,281 +67,170 @@ export class World extends System {
 
   set gravity(x) {
     if (typeof x === "object") {
-      this.gravitationalAcceleration.copy(x)
+      Vector2.copy(x, this.gravitationalAcceleration)
     } else {
-      this.gravitationalAcceleration.set(0, x)
+      Vector2.set(this.gravitationalAcceleration, 0, x)
     }
   }
 
   /**
-   * @private
+   * 
+   * @param {any} manager
+   * @param {World2D} world
+   * @param {CollisionPair[]} contactList
    */
-  narrowPhase() {
-    this.CLMDs = this.narrowphase.getCollisionPairs(this.contactList, [])
-  }
-  /*
-   * @private
-   */
-  broadPhase() {
-    this.contactList = []
-    this.broadphase.getCollisionPairs(this.contactList)
+  static narrowPhase(manager, world, contactList) {
+    return world.narrowphase.getCollisionPairs(manager, contactList)
+
   }
   /**
-   * @private
+   * 
+   * @param {World2D} world
    */
-  collisionDetection() {
-    this.broadPhase()
-    this.narrowPhase()
+  static broadPhase(world) {
+    return world.broadphase.getCollisionPairs([])
   }
   /**
-   * @private
-   * @param {number} dt 
+   * 
+   * @param {any} manager
+   * @param {World2D} world
    */
-  collisionResponse(dt) {
-    let length = this.CLMDs.length,
-      manifold,
-      inv_dt = 1 / dt
+  static collisionDetection(manager, world) {
+    world.contactList = World2D.broadPhase(world)
+    world.CLMDs = World2D.narrowPhase(manager, world, world.contactList)
+  }
+  /**
+   * 
+   * @param {number} dt
+   * @param {Manager} manager
+   * @param {World2D} world
+   * @param {string | any[]} CLMDs
+   */
+  static collisionResponse(manager, world, CLMDs, dt) {
+    const inv_dt = 1 / dt
 
-    for (var j = 0; j < this.velocitySolverIterations; j++) {
-      for (let i = 0; i < length; i++) {
-        manifold = this.CLMDs[i]
-        manifold.velA.set(0, 0)
-        manifold.velB.set(0, 0)
-        manifold.rotA = 0
-        manifold.rotB = 0
-        ImpulseSolver.solve(manifold)
-        FrictionSolver.solve(manifold)
-      }
-      for (var i = 0; i < length; i++) {
-        manifold = this.CLMDs[i]
-        manifold.bodyA.velocity.add(manifold.velA)
-        manifold.bodyB.velocity.add(manifold.velB)
-        manifold.bodyA.rotation.value += manifold.rotA
-        manifold.bodyB.rotation.value += manifold.rotB
-      }
-    }
+    for (let i = 0; i < CLMDs.length; i++) {
+      const manifold = CLMDs[i]
+      const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body")
+      const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body")
 
-    for (let i = 0; i < length; i++) {
-      manifold = this.CLMDs[i]
-      PenetrationSolver.solve(manifold, inv_dt)
-    }
-
-    for (let i = 0; i < length; i++) {
-      manifold = this.CLMDs[i]
-      manifold.stmp = this.count
-      ContactSolver.solve(
-        manifold.bodyA,
-        manifold.bodyB,
-        manifold.impulse,
-        manifold.contactData.contactNo
+      if (Settings.warmStarting)
+        CollisionManifold.warmstart(
+          manifold,
+          movableA,
+          movableB,
+          bodyA,
+          bodyB
+        )
+      CollisionManifold.prepare(
+        manifold,
+        bodyA,
+        bodyB,
+        movableA,
+        movableB,
+        transformA.position,
+        transformB.position,
+        inv_dt
       )
     }
-  }
-  /**
-   * @private
-   * @param {number} dt 
-   * @param {number} length 
-   */
-  intergrate(dt, length) {
-    for (var i = 0; i < length; i++) {
-      let a = this.objects[i]
-      if (!a.sleeping)
-        this.intergrator.solve(a, dt)
-      //VerletSolver.solve(a, dt)
-    }
-  }
-  /**
-   * @private
-   * @param {number} length 
-   * @param {number} dt 
-   */
-  applyGravity(length, dt) {
-    for (var i = 0; i < length; i++) {
-      let a = this.objects[i]
-      if (a.mass)
-        a.acceleration.add(this.gravitationalAcceleration)
-      a.velocity.add(a.acceleration.multiply(dt))
-      a.acceleration.set(0, 0)
-    }
-  }
-  /**
-   * @private
-   * @param {number} dt
-   */
-  updateConstraints(dt) {
-    let length = this.constraints.length,
-      fixedlength = this.fixedConstraits.length
-    for (var i = 0; i < fixedlength; i++) {
-      this.fixedConstraits[i].update(dt)
-    }
-    for (var i = 0; i < length; i++) {
-      this.constraints[i].update(dt)
-    }
-  }
-  /**
-   * @private
-   * @param {number} length 
-   */
-  updateBodies(length) {
-    let ld = 1 - this.linearDamping
-    let ad = 1 - this.angularDamping
-    for (var i = 0; i < length; i++) {
-      this.objects[i].update()
-      this.objects[i].velocity.multiply(ld)
-      this.objects[i].angularVelocity = this.objects[i].angularVelocity * ad
-    }
-  }
-  /**
-   * 
-   * 
-   * @param {Number} delta the time passed between the last call and this call.
-   */
-  update(delta) {
-    this.perf.lastTimestamp = performance.now()
-    let dt = this.fixedFrameRate || delta
-    let length = this.objects.length
-    this.CLMDs = []
+    for (let i = 0; i < Settings.velocitySolverIterations; i++) {
+      for (let i = 0; i < CLMDs.length; i++) {
+        const manifold = CLMDs[i]
+        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
+        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
 
-    this.applyGravity(length, dt)
-    this.updateBodies(length)
-    this.updateConstraints(dt)
-    this.broadphase.update()
-    this.collisionDetection()
-    this.collisionResponse(dt)
-    this.updateConstraints(dt)
-    if (this.enableIntergrate)
-      this.intergrate(dt, length)
-    this.updateBodies(length)
-    this.count += 1
-    this.perf.total = performance.now() - this.perf.lastTimestamp
+        CollisionManifold.solve(
+          manifold,
+          movableA,
+          movableB,
+          bodyA,
+          bodyB
+        )
+      }
+    } /***/
   }
-
   /**
-   * Initializes the manager.
    * 
+   * @param {Vector2} gravity
+   * @param {Movable[][]} movable
+   * @param {Body2D[][]} bodies
+   */
+  static applyGravity(gravity, movable, bodies) {
+    for (var i = 0; i < bodies.length; i++) {
+      for (let j = 0; j < bodies[i].length; j++) {
+        if (bodies[i][j].inv_mass)
+          Vector2.add(
+            movable[i][j].acceleration,
+            gravity,
+            movable[i][j].acceleration
+          )
+      }
+    }
+  }
+  /**
+   * 
+   * @param {Body2D[][]} bodies
+   * @param {Transform[][]} transform
+   * @param {BoundingBox[][]} bounds
+   */
+  static updateBodies(transform, bounds, bodies) {
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = 0; j < bodies[i].length; j++) {
+        Body2D.update(
+          bodies[i][j],
+          transform[i][j].position,
+          transform[i][j].orientation,
+          transform[i][j].scale,
+          bounds[i][j]
+        )
+      }
+    }
+  }
+  /**
+   * @param {World2D} world
+   * @param {Body2D[][]} bodies
+   * @param {Number} dt the time passed between the last call and this call.
    * @param {Manager} manager
+   * @param {Entity[][]} entities
+   * @param {Transform[][]} transform
+   * @param {Movable[][]} movable
+   * @param {BoundingBox[][]} bounds
    */
-  init(manager) {
-    manager.setComponentList("body", this.objects)
-  }
-  /**
-   * Adds an object to the world.
-   * 
-   * @param {Body | Composite | Constraint} object
-   */
-  add(object) {
-    if (object.physicsType == ObjType.BODY) {
-      this.addBody(object)
-    } else if (object.physicsType == ObjType.CONSTRAINT) {
-      this.addConstraint(object)
-    } else if (object.physicsType == ObjType.COMPOSITE) {
-      this.addComposite(object)
-    }
-  }
-  /**
-   * Adds a body to the physics world
-   * @param {Body} body Body to insert to world
-   */
-  addBody(body) {
-    //must update vertices and bounds so that Broadphase works properly
-    body.update()
-    body.index = this.objects.length
-    this.objects.push(body)
-    this.broadphase.insert(body)
-  }
-  /**
-   * Removes an object from the world
-   * @param {Body | Composite | Constraint} object
-   */
-  remove(object) {
-    object.destroy()
-    if (object.physicsType == ObjType.BODY) {
-      this.removeBody(object)
-    } else if (object.physicsType == ObjType.CONSTRAINT) {
-      this.removeContraint(object)
-    } else if (object.physicsType == ObjType.COMPOSITE) {
-      this.removeComposite(object)
-    }
-  }
-  /**
-   * Removes a body from the physics world
-   * @param {Body} body Body to remove from world
-   * 
-   * @returns Body
-   */
-  removeBody(body) {
-    this.broadphase.remove(body)
-    if (Utils.removeElement(this.objects, body.index)) {
-      if (body.index === this.objects.length)
-        return
-      this.objects[body.index].index = body.index
-    }
-    return body
-  }
-  /**
-   * Adds a constraint to the physics world
-   * @param {Constraint} constraint constaint to add to world
-   */
-  addConstraint(constraint) {
-    if (constraint.fixed) {
-      constraint.index = this.fixedConstraits.length
-      this.fixedConstraits.push(constraint)
-      return
-    }
-    constraint.index = this.constraints.length
-    this.constraints.push(constraint)
-  }
-  /**
-   * Removes a constraint from the physics world
-   * @param {Constraint} constraint constaint to add to world
-   * 
-   * @returns Constraint
-   */
-  removeContraint(constraint) {
-    let arr = constraint.fixed ? this.fixedConstraits : this.constraints
-    let temp = arr.pop()
-    if (constraint.index == arr.length) return constraint
-    arr[constraint.index] = temp
-    temp.index = constraint.index
-    constraint.index = -1
-    return constraint
+  static update(manager, world, entities, transform, movable, bounds, bodies, dt) {
+    /** @type {CollisionManifold<Entity>[]}*/
+    this.CLMDs = []
+    World2D.applyGravity(world.gravitationalAcceleration, movable, bodies)
+    World2D.updateBodies(transform, bounds, bodies)
+    world.broadphase.update(entities, bounds)
+    World2D.collisionDetection(manager, world)
+    World2D.collisionResponse(manager, world, world.CLMDs, dt)
   }
 
-  /**
-   * Adds a composite to the physics world.
-   * 
-   * @param {Composite} composite composite to add to world
-   */
-  addComposite(composite) {
-    for (var i = 0; i < composite.bodies.length; i++) {
-      this.addBody(composite.bodies[i])
-    }
-    for (var i = 0; i < composite.constraints.length; i++) {
-      this.addConstraint(composite.constraints[i])
-    }
-  }
-  /**
-   * Removes a composite from the physics world.
-   * 
-   * @param {Composite} composite composite to remove
-   */
-  removeComposite(composite) {
-    for (var i = 0; i < composite.bodies.length; i++) {
-      this.removeBody(composite.bodies[i])
-    }
-    for (var i = 0; i < composite.constraints.length; i++) {
-      this.removeContraint(composite.constraints[i])
-    }
-  }
   /**
    * Searches for objects in a given bounds and returns them.
    * 
+   * @template {Entity} T
    * @param {Bounds} bound the region to search in
-   * @param {Array<Body>} [target = []] an array to store results in
-   * @returns Array<Body>
+   * @param {T[]} [out = []] an array to store results in
+   * @returns {T[]}
    */
-  query(bound, target = []) {
-    this.broadphase.query(bound, target)
-    return target
+  query(bound, out = []) {
+    this.broadphase.query(bound, out)
+    return out
+  }
+}
+
+/**
+ * Todo - Remove in version 1.0.0
+ * @deprecated
+ */
+export class World extends World2D {
+  /**
+   * @inheritdoc
+   */
+  constructor() {
+    deprecate("World()", "World2D()")
+    // @ts-ignore
+    super(...arguments)
   }
 }

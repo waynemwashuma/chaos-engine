@@ -8,7 +8,7 @@ let a = new Vector2()
 */
 export class RungeKuttaSolver{
     /**
-   * @param {Body} body
+   * @param {Body2D} body
    * @param {number} dt
   */
   static solve(body,dt){

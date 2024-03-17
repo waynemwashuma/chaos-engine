@@ -265,15 +265,15 @@ export const Interpolation = {
     return (p1 - p0) * t + p0
   },
   //Todo - remove this Bernstein and Factorial.
-  Bernstein: function(n, i) {
-    const fc = Interpolation.Utils.Factorial
+  Bernstein: function(/** @type {number} */ n, /** @type {number} */ i) {
+    const fc = Interpolation.Factorial
 
     return fc(n) / fc(i) / fc(n - i)
   },
   Factorial: (function() {
     const a = [1]
 
-    return function(n) {
+    return function(/** @type { number} */ n) {
       let s = 1
 
       if (a[n]) {
@@ -305,4 +305,13 @@ export const Interpolation = {
 
     return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1
   },
+  /**
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} t
+   */
+  cosine(p0, p1, t) {
+    const c = (1 - Math.cos(t * 3.1415927)) * .5
+    return (1 - c) * p0 + c * p1
+  }
 }

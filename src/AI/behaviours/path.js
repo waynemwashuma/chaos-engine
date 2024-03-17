@@ -1,6 +1,6 @@
 import { Behaviour } from "./behaviour.js"
 import { Vector2, map } from "../../math/index.js"
-import { circle, fill, stroke } from "../../render/index.js"
+import { Path } from "../paths/index.js"
 const tmp1 = new Vector2()
 const tmp2 = new Vector2()
 /**
@@ -12,9 +12,9 @@ export class PathFollowing extends Behaviour {
   /**
    * The path taken by a pathfollowing behaviour.
    * 
-   * @type Path
+   * @type {Path}
    */
-  path = null
+  path
   /**
    * @param {Path} path
    */
@@ -25,23 +25,25 @@ export class PathFollowing extends Behaviour {
   }
   /**
    * @inheritdoc
-   * @param { Vector2} target
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
    * @param {number} inv_dt
-   * @returns Vector2 the first parameter
+   * @returns {Vector2} the first parameter
    */
-  calc(target, inv_dt) {
-    tmp1.copy(this.position)
+  calc(position,velocity,target, inv_dt) {
+    tmp1.copy(position)
     let [p1, p2] = this.path.current()
     tmp2.copy(p2).sub(p1).normalize()
 
     let proj = tmp2.dot(tmp1.sub(p1))
     let projPoint = this.path.update(proj)
-    tmp1.copy(projPoint).sub(this.position)
+    tmp1.copy(projPoint).sub(position)
     let length = tmp1.magnitude()
-    if (length < this.velocity.magnitude()) {
+    if (length < velocity.magnitude()) {
       tmp1.setMagnitude(map(length, 0, this.maxSpeed, 0, this.maxSpeed))
     }
-    let steering = tmp1.sub(this.velocity).multiply(inv_dt)
+    let steering = tmp1.sub(velocity).multiply(inv_dt)
 
     steering.clamp(0, this.maxForce)
     target.add(steering)
@@ -53,14 +55,6 @@ export class PathFollowing extends Behaviour {
    */
   clear() {
     this.path.clear()
-  }
-  /**
-   * @inheritdoc
-   * @param {Agent} agent
-   */
-  init(agent) {
-    this.position = agent.position
-    this.velocity = agent.velocity
   }
   /**
    * Adds a point into the path.
@@ -88,16 +82,5 @@ export class PathFollowing extends Behaviour {
    */
   setPath(path) {
     this.path = path
-  }
-  draw(ctx) {
-    ctx.beginPath()
-    circle(ctx, ...this.path.point(), 4)
-    fill(ctx, "blue")
-    ctx.closePath()
-    ctx.beginPath()
-    circle(ctx, ...this.path.point(), this.path.tolerance)
-    stroke(ctx, "blue")
-    ctx.closePath()
-    this.path.draw(ctx)
   }
 }

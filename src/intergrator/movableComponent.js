@@ -1,45 +1,48 @@
-import { Component } from "../ecs/index.js"
-import { Vector2, Angle } from "../math/index.js"
+import { Vector2 } from "../math/index.js"
 /**
  * Component to hold requirements for an entity to move.
  * 
  */
-export class Movable extends Component {
+export class Movable {
   /**
-   * @type {Transform}
-  */
-  transform = null
-  /**  * 
-   * @param {number} x
-   * @param {number} y
-   * @param {number} a
-   * @returns {Entity}
+   * @param {number} [x]
+   * @param {number} [y]
+   * @param {number} [a]
    */
-  constructor(x, y, a) {
-    super()
+  constructor(x = 0, y = 0, a = 0) {
     this.velocity = new Vector2(x, y)
-    this.rotation = new Angle(a)
+    this.rotation = a
     this.acceleration = new Vector2()
-    this.torque = new Angle()
+    this.torque = 0
   }
   /**
-   * @inheritdoc
-  */
-  init(entity) {
-    this.requires(entity, "transform")
-    if (!this.transform)
-      this.transform = entity.get("transform")
+   * Applies a force to a body affecting its direction of travel and rotation.
+   * @param {Vector2} force The force to be applied.
+   * @param {Vector2} [arm] The collision arm.
+   * @param {number} inv_mass
+   * @param {number} inv_inertia
+   */
+  applyForce(force, inv_mass, inv_inertia, arm = Vector2.ZERO) {
+    Vector2.set(
+      this.acceleration,
+      this.acceleration.x + force.x * inv_mass,
+      this.acceleration.y + force.y * inv_mass
+    )
+    this.torque += Vector2.cross(arm,force) * inv_inertia
   }
-  toJson() {
-    return {
-      velocity: this.velocity.toJson(),
-      rotation: this.rotation.toJson(),
-      acceleration: this.acceleration.toJson()
-    }
-  }
-  fromJson(obj) {
-    this.velocity.fromJson(obj.velocity)
-    this.rotation.fromJson(obj.rptatjon)
-    this.acceleration.fromJson(obj.acceleration)
+  /**
+   * Applies a force to a body affecting its direction of travel and rotation.
+   * @param {Vector2} impulse The force to be applied.
+   * @param {Vector2} [arm] The collision arm.
+   * @param {number} inv_mass
+   * @param {number} inv_inertia
+   */
+  applyImpulse(impulse, inv_mass, inv_inertia, arm = Vector2.ZERO) {
+    Vector2.set(
+      this.velocity,
+      this.velocity.x + impulse.x * inv_mass,
+      this.velocity.y + impulse.y * inv_mass
+    )
+    this.rotation += Vector2.cross(arm,impulse) * inv_inertia
   }
 }

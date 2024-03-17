@@ -1,31 +1,17 @@
-import{Body} from "./body.js"
-import {Rectangle} from "../shapes/index.js"
+import { Body2D } from "./body.js"
+import { Rectangle } from "../shapes/index.js"
 
 /**
  * A body with a rectangle shape on it.
  * 
- * @augments Body
-*/
-export class Box extends Body {
+ * @augments Body2D
+ */
+export class Box extends Body2D {
   /**
    * @param {number} w
    * @param {number} h
-  */
-  constructor(w,h) {
-    super(new Rectangle(w,h))
-    this.inertia = Rectangle.calcInertia(this._mass,w,h)
-    
-  }
-  /**
-   * @inheritdoc
-   * @type number 
-  */
-  set mass(x){
-    this._mass = x
-    this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inertia = Rectangle.calcInertia(x,this.shapes[0].width,this.shapes[0].height)
-  }
-  get mass(){
-    return this._mass
+   */
+  constructor(w, h) {
+    super(new Rectangle(w, h))
   }
 }

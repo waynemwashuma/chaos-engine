@@ -1,10 +1,12 @@
-//import {System} from "../ecs/index.js"
+import { Manager } from "../ecs/index.js"
+import { Perf } from "../utils/index.js"
+
 /**
  * @param {Manager} manager
  */
 export function fpsDebugger(manager) {
   const container = document.body.appendChild(document.createElement("div"))
-  
+
   container.id = "fps-container"
   container.style.position = "absolute"
   container.style.top = "0px"
@@ -14,18 +16,26 @@ export function fpsDebugger(manager) {
   container.style.background = "black"
   container.style.textAlign = "center"
   container.style.color = "white"
-  
-  manager.registerSystem("fps",{
-    updateTime : 0.5,
-    timerDt : 0,
-    init(manager){
-      this.perf = manager.perf
-    },
-    update(dt){
-      this.timerDt += dt
-      if(this.timerDt < this.updateTime)return
-      container.innerHTML = this.perf.fps().toFixed(2)
-      this.timerDt = 0
-    }
+
+  const timer = {
+    updateTime: 0.5,
+    timerDt: 0,
+    perf: new Perf()
+  }
+  manager.events.add("updateStart", dt => {
+    timer.perf.start()
+  })
+
+  manager.events.add("updateEnd", dt => {
+    timer.perf.end()
+    timer.timerDt += dt
+    if (timer.timerDt < timer.updateTime) return
+    const fps = timer.perf.fps().toFixed(0)
+    const afps = (1 / dt).toFixed(0)
+    container.innerHTML =
+      fps + " fps" +
+      "<br>" +
+      afps + " afps"
+    timer.timerDt = 0
   })
 }

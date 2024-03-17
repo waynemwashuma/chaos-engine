@@ -1,24 +1,22 @@
 import { circle } from "../utils/canvasfunc.js"
+import { BufferGeometry } from "./geometry.js"
 
-
-export class CircleGeometry {
+export class CircleGeometry extends BufferGeometry {
   /**
    * @param {number} radius
    */
   constructor(radius) {
-    this.radius = radius
+    super()
+    BufferGeometry.setAttribute(this, "position", [radius])
+    CircleGeometry.initCanvas2D(this)
   }
   /**
-   * @param {CanvasRenderingContext2D} ctx
+   * @param {CircleGeometry} geometry
    */
-  init(ctx) {
-    this._drawable = new Path2D()
-    circle(path, this.vertices, true)
-  }
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  render(ctx) {
-    circle(ctx, 0, 0, this.radius)
+  static initCanvas2D(geometry) {
+    geometry.drawable = new Path2D()
+    const position = geometry.attributes["position"]
+    if(!position)return
+    circle(geometry.drawable, 0, 0, position[0])
   }
 }

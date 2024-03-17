@@ -6,112 +6,113 @@ export const DEVICE = {
   /**
    * Whether this device supports WebGPU
    * 
-   * @type boolean
+   * @type {boolean}
    */
   webgpu: false,
   /**
    * Whether this device supports WebGL
    * 
-   * @type boolean
+   * @type {boolean}
    */
   webgl: false,
   /**
    * Whether this device supports 2D canvas
    * 
-   * @type boolean
+   * @type {boolean}
    */
   canvas: false,
   /**
    * Whether this device supports WebAudio
    * 
-   * @type boolean
+   * @type {boolean}
    */
   webAudio: false,
   /**
    * Whether this device supports Audio tag.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   audio: false,
 
   /**
    * A list of audio extensions this device supports.
    * 
-   * @type array<string>
+   * @type {string[]}
    */
   supportedAudio: [],
+  //Todo - Get the supported images correctly
   /**
    * A list of image extensions this device supports.
    * 
-   * @type array<string>
+   * @type {string[]}
    */
-  supportedImages: [],
+  supportedImages: ["png","jpeg","svg","jpg"],
 
   /**
    * Whether this device uses windows
    * 
-   * @type boolean
+   * @type {boolean}
    */
   windows: false,
   /**
    * Whether this device uses MacOS
    * 
-   * @type boolean
+   * @type {boolean}
    */
   mac: false,
   /**
    * Whether this device uses android
    * 
-   * @type boolean
+   * @type {boolean}
    */
   android: false,
   /**
    * Whether this device uses linux
    * 
-   * @type boolean
+   * @type {boolean}
    */
   linux: false,
   /**
    * Whether this device uses IOS
    * 
-   * @type boolean
+   * @type {boolean}
    */
   ios: false,
 
   /**
    * If browser used is Chrome.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   chrome: false,
   /**
    * If browser used is FireFox.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   firefox: false,
   /**
    * If browser used is Edge.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   edge: false,
   /**
    * If browser used is Internet Explorer.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   ie: false,
   /**
    * If browser used is Safari.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   safari: false,
   /**
    * If browser used is Opera.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   opera: false
 

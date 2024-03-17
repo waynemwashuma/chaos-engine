@@ -9,59 +9,60 @@ export class AudioHandler {
    * Audio context to use.
    * 
    *  @private
-   * @type AudioContext
+   * @type {AudioContext}
    */
   ctx = new AudioContext()
   /**
    * List of audio buffers to use.
    * 
    *  @private
-   * @type Object<string,AudioBuffer>
+   * @type {Object<string,AudioBuffer>}
    */
   sfx = {}
   /**
    * The name of the background music playing.
    * 
    *  @private
-   * @type string
+   * @type {string}
    */
   _backname = ""
   /**
    * The audiobuffer of the background music.
    * 
    *  @private
-   * @type AudioBuffer
+   * @type {Sfx | null }
    */
   _background = null
   /**
    * List of playing sounds
    * 
    * @private
-   * @type Sfx[]
+   * @type {Sfx[]}
    */
   playing = []
   /**
    * What to play after loading the audiobuffers.
    * 
    * @private
+   * @type {Record<string,number>}
    */
   toplay = {}
   /**
    * Volume to resume playing when unmuted.
    * 
    * @private
-   * @type number
+   * @type {number}
    */
   _mute = 1
   /**
    * Master volume for all sounds.
    * 
    * @private
-   * @type AudioNode
+   * @type {GainNode}
    */
-  masterGainNode = null
+  masterGainNode
   /**
-   * @type string
+   * @type {string}
    */
   baseUrl = ""
     /**
@@ -95,7 +96,7 @@ export class AudioHandler {
       .then(e => {
         this.sfx[name] = e
         if (this._backname == name)
-          this.playMusic(name)
+          this.playBackgroundMusic(name)
         if (name in this.toplay) {
           this.playEffect(name)
         }
@@ -104,9 +105,9 @@ export class AudioHandler {
   /**
    * Loads all audio from the loader.
    * 
-   * @param {Loader} loader
+   * @param {*} loader
    */
-  loadFromLoader(loader) {
+  /*loadFromLoader(loader) {
     for (var n in loader.sfx) {
       let name = n
       this.ctx.decodeAudioData(loader.sfx[n]).then(e => {
@@ -118,7 +119,7 @@ export class AudioHandler {
         }
       })
     }
-  }
+  }*/
   /**
    * Plays a single audio as the background in a loop throughout the game
    * 
@@ -169,22 +170,23 @@ export class AudioHandler {
    */
   pauseAll() {
     this.playing.forEach(sound => {
-      sound.stop()
+      sound.pause()
     })
   }
   /**
    * Sets the volume to zero.Sounds will continue playing but not be audible.
    */
   mute() {
-    this._mute = this.masterGainNode.gain
-    this.masterGainNode.gain = 0
+    if(!this.masterGainNode)return
+    this._mute = this.masterGainNode.gain.value
+    this.masterGainNode.gain.value = 0
 
   }
   /**
    * Restores the volume before it was muted.
    */
   unmute() {
-    this.masterGainNode.gain = this._mute
+    this.masterGainNode.gain.value = this._mute
   }
   /**
    * Removes an sfx from the handler and disconnects it from its destination.

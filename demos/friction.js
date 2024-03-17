@@ -1,38 +1,63 @@
 import {
-  createEntity,
+  Transform,
+  Movable,
+  BoundingBox,
   Box,
   Ball,
-  BodySprite,
-  Body
-} from  "/src/index.js"
+  Sprite,
+  BoxGeometry,
+  CircleGeometry,
+  BasicMaterial,
+  degToRad
+} from "/src/index.js"
 export function friction(manager) {
-  let world = manager.getSystem("world")
-  
-  let floor1 = createEntity(200,300,20)
-  let body1 = new Box(300,20)
-  let entity1 = createEntity(100,237)
-  let body2 = new Ball(15)
-  let floor2 = createEntity(200,200,20)
-  let body3 = new Box(300,20)
-  let entity2 = createEntity(100,100,20)
-  let body4 = new Box(50,30)
-  
-  body1.type = Body.STATIC
-  body3.type = Body.STATIC
-  
-  floor1.attach("body",body1)
-  .attach("sprite",new BodySprite())
-  entity1.attach("body",body2)
-  .attach("sprite",new BodySprite())
-  floor2.attach("body",body3)
-  .attach("sprite",new BodySprite())
-  entity2.attach("body",body4)
-  .attach("sprite",new BodySprite())
-  
-  manager.add(floor1)
-  manager.add(entity1)
-  manager.add(floor2)
-  manager.add(entity2)
-  
-  world.gravity = 980
+  const body1 = new Box(300, 20)
+  const body2 = new Box(300, 20)
+
+  manager.create({
+    "transform": new Transform(200, 300, degToRad(20)),
+    "movable": new Movable(),
+    "bound": new BoundingBox(),
+    "body": body1,
+    "sprite": new Sprite(
+      new BoxGeometry(300, 20),
+      new BasicMaterial()
+    )
+  })
+
+  manager.create({
+    "transform": new Transform(200, 200, degToRad(20)),
+    "movable": new Movable(),
+    "bound": new BoundingBox(),
+    "body": body2,
+    "sprite": new Sprite(
+      new BoxGeometry(300, 20),
+      new BasicMaterial()
+    )
+  })
+  manager.create({
+    "transform": new Transform(100, 100, degToRad(20)),
+    "movable": new Movable(),
+    "bound": new BoundingBox(),
+    "body": new Box(50, 20),
+    "sprite": new Sprite(
+      new BoxGeometry(50, 20),
+      new BasicMaterial()
+    )
+  })
+  manager.create({
+    "transform": new Transform(100, 237),
+    "movable": new Movable(),
+    "bound": new BoundingBox(),
+    "body": new Ball(15),
+    "sprite": new Sprite(
+      new CircleGeometry(15),
+      new BasicMaterial()
+    )
+  })
+
+  Box.setType(body1, Box.STATIC)
+  Box.setType(body2, Box.STATIC)
+
+  manager.getResource("gravity").y = 900
 }

@@ -1,6 +1,4 @@
 import {
-  createEntity,
-  Body,
   Box,
   Ball,
   Trigon,
@@ -37,7 +35,7 @@ function createBox(x, y) {
     body = new Box(50, 50)
   else
     body = new Trigon(50, 50, Math.PI / 3)
-  body.type = Body.STATIC
+  Box.setType(body,Body2D.STATIC)
   box.attach("body", body)
   return box
 }

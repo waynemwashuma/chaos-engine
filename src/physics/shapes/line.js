@@ -1,20 +1,13 @@
 import { Shape } from "./shape.js"
-import { Vector2 }from "../../math/index.js"
+import { Vector2 } from "../../math/index.js"
 
 export class Line extends Shape {
   /**
-   * @type number
-  */
-  length = 0
-  /**
    * @param {number} length
-   * @param { Vector2} offset
-   * @param {number} offsetAngle
-  */
-  constructor(length,offset,offsetAngle) {
-    let start = new Vector2(1).multiply(length / 2),
-      end = new Vector2(1).multiply(-length / 2)
-    super([start, end],offset,offsetAngle)
-    this.length = length
+   */
+  constructor(length) {
+    const start = new Vector2(length / 2)
+    const end = new Vector2(-length / 2)
+    super([start, end])
   }
 }
