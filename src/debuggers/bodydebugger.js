@@ -15,11 +15,11 @@ export function bodyDebugger(manager, options = {}) {
   options.drawContacts = options.drawContacts || false
   manager.registerSystem(dt => {
     const [transform, movable, bounds, bodies] = manager.query("transform", "movable", "bound", "body").raw()
-    const clmd = manager.queryEvent("collision")
+    const clmd = manager.getResource("contacts")
     const viewport = manager.getResource("renderer")
     const ctx = manager.getResource("ctx")
     
-    if (options.clear) ctx.clearRect(0,0,viewPort.width,viewport.height)
+    if (options.clearRenderer) ctx.clearRect(0,0,viewport.width,viewport.height)
     if (options.drawCollisionArm) drawArms()
     if (options.drawPosition) drawPositions()
     if (options.drawContacts) drawContacts()
