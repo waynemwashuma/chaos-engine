@@ -10,7 +10,7 @@
 
 ## Features of this game engine.
 
- - An entity-component-system architecture where entities are made up of components and components are updated by their respective systems.Both object-oriented and data-driven systems are allowed.
+ - An entity-component-system architecture where entities are made up of components and components are updated by their respective systems.Data-driven systems only.
  
  - An AI system that follows the Craig - Renolds implementation.It provides means to follow a target,evade another entity,follow a path and wandering about in the game world.
  
@@ -26,7 +26,7 @@
     
     -> Static and Dynamic bodies types:Static bodies do not respond to collision with other bodies(due to infinite mass) while dynamic bodies respond to collision forces.
     
-    -> Composite bodies:It is a composition of several bodies and constraints.
+    -> ~~Composite bodies:It is a composition of several bodies and constraints.~~
     
     -> Friction:Bodies colliding experience friction between their two surfaces.
     
@@ -36,18 +36,18 @@
     
     -> Iterative solving for velocity to improve non-rotational stacking.
     
-    -> Shapes:Various shapes are supported in the physics engine.
+    -> Shapes:Various convex shapes are supported in the physics engine.
     
  - An event system to provide defined events such as the collision event and user defined events.
- - A loader to preload game assets.
- - A storage API to store data in cookies,sessions or localstorage.
+ - A set of loaders to preload game assets.
+ - A storage API to store data in cookies,sessions or local storage.
  
  - An input abstraction that normalizes input from the keyboard,mouse and touch on mobile devices.
  
  - A math library with support for 2D vectors.
 
 ## Usage
-### Downloading and installing.
+### Download and installation.
 In order to get a copy of the engine ,enter the following command on your node project.
 
 ```bash
@@ -93,76 +93,71 @@ Add this to your html file in the body tag for this example to work
 In your JavaScript file,do this:
 ```javascript
 //creates a new game manager for us to handle the game's entities.
-let game = new CHAOS.Manager()
+const game = new CHAOS.Manager()
 
 //we need to draw the entities on the screen.
 //that is done through a renderer.
-let renderer = new CHAOS.Renderer2D()
-
-//this will keep track of physics.
-let world = new CHAOS.World2D()
-
-//this adds the world and renderer to the game so that they can be updated every frame.
-game.registerSystem("renderer", renderer)
-game.registerSystem("world", world)
+const renderer = new CHAOS.Renderer2D()
 
 //this binds the renderer to html.
 //the canvas will be a child to the queried  html element(renderer will attach it to the html element with id of "can")
-renderer.bindTo("#can")
+//CHAOS.Renderer2D.bindTo(renderer,"#can")
 
 //This sets the width and height of the renderer to cover the entire screen.
-renderer.setViewport(innerWidth, innerHeight)
+CHAOS.Renderer2D.setViewport(renderer,innerWidth, innerHeight)
 
-//applies gravity to the world.
-world.gravity = 900
+//Enables physics for the game.
+game.registerPlugin(new CHAOS.Physics2DPlugin({
+  //applies gravity to the physics world.
+  gravity:new CHAOS.Vector2(0,900)
+}))
+
+//Enables rendering to 2D context of canvas
+game.registerPlugin(new CHAOS.Renderer2DPlugin(renderer))
 ```
 #### Add a box to the game
 
 So far there is nothing on the screen... Lets fix that.
 ```javascript
-//Creates an entity on which we can add(attach) component to.
-let box = CHAOS.createEntity(innerWidth/2,innerHeight/2)
-
-//Creates a physics component.
-let boxBody = new CHAOS.Box(40, 40)
-
-//Creates a component that can be rendered onto the screen.
-let boxSprite = new CHAOS.BodySprite()
-
-//Adds the physics body to the entity.
-box.attach("body", boxBody)
-
-//Adds the sprite to the entity.
-box.attach("sprite", boxSprite)
-
-//Adds the box to the game to be updated every frame.
-game.add(box)
+//Creates an entity on which we can components are added to.
+game.create({
+  //transform contains the position , orientation and scale of the entity
+  "transform": new CHAOS.Transform(renderer.width/2, 300),
+  //movable contains components to enable movement i.e velocity and rotation
+  "movable": new CHAOS.Movable(),
+  //bound is used for broadphase collision detection in the physics engine
+  "bound": new CHAOS.BoundingBox(),
+  //body is used for physics interaction with other bodies.
+  "body": new CHAOS.Box(50, 50),
+  //sprite is the object renderered onto the canvas.
+  "sprite": new CHAOS.Sprite(
+    new CHAOS.BoxGeometry(50, 50),
+    new CHAOS.BasicMaterial()
+  )
+})
 ```
 #### Adding ground
 
 Now you should see a box falling into nothingness.
 Lets add ground it can land on.
+
 ```javascript
-//Creates an entity that we call ground on which we can add(attach) component to.
-let ground = CHAOS.createEntity(innerWidth / 2, innerHeight - 100)
+const body = new CHAOS.Box(400, 100)
 
-//Creates a physics component to iteract physically with other entities
-let groundBody = new CHAOS.Box(400, 20)
+//This makes the body immune to gravity and collisions with other bodies.
+CHAOS.Box.setType(body, CHAOS.Box.STATIC)
 
-//Adds the sprite to the entity.
-let groundSprite = new CHAOS.BodySprite()
-
-//sets the body to not move or respond to collisions.
-groundBody.type = CHAOS.Body.STATIC
-
-//Adds the physics body to the entity.
-ground.attach("body", groundBody)
-
-//Adds the sprite to the entity.
-ground.attach("sprite", groundSprite)
-
-//Adds the ground to the game to be updated every frame.
-game.add(ground)
+//Creates an entity that will act as ground.
+game.create({
+  "transform": new CHAOS.Transform(renderer.width/2, renderer.height - 800),
+  "movable": new CHAOS.Movable(),
+  "bound": new CHAOS.BoundingBox(),
+  "body": body,
+  "sprite": new CHAOS.Sprite(
+    new CHAOS.BoxGeometry(400, 100),
+    new CHAOS.BasicMaterial()
+  )
+})
 ```
 
 
@@ -173,17 +168,17 @@ game.add(ground)
  
 ## **** FUTURE WORK ****
  
- - [ ] Add a webgl renderer(~~dont have a direct plan for this yet~~ Now i do :) ) 
+ - [ ] Add a webgl renderer
  - [ ] Stabilize the collision response to work well with large forces such as (gravity =  10000)
  - [ ] Stabilize rotational stacking in the physics engine
  - [ ] ~~Add game state class for managing the game~~
- - [ ] Add an animation system.
+ - [x] Add an animation system.
  - [ ] Add tutorials to this game engine
  - [ ] Add appropriate demos to the project and get a website running for them
  - [ ] Add some error handling mechanisms 
  - [x] Add Serialization/Deserialization of objects(on the way)
- - [ ] Kinematic bodies.
- - [ ] Collision masking using bits(bit masking)
+ - [ ]~~ Kinematic bodies~~
+ - [x] Collision masking using bits(bit masking)
  - [ ] More AI behaviors.
  - [ ] Add indexedDB to Storage API.
  - [ ] An audio tag fallback to Web audio (if necessary )
