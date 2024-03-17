@@ -1,5 +1,6 @@
-import { verlet, euler } from "./intergrator.js"
+import { verlet,euler } from "./intergrator.js"
 import { Vector2 } from "../math/index.js"
+import { Manager } from "../ecs/index.js"
 export class Intergrator2DPlugin {
   /**
    * @param {IntergratorPluginOptions} options
@@ -12,32 +13,40 @@ export class Intergrator2DPlugin {
 
     this.options = options
   }
+  /**
+   * @param {Manager} manager
+   */
   register(manager) {
     if (this.options.enableDamping) {
-      manager.setResource("linearDamping", this.options.linearDamping)
-      manager.setResource("angularDamping", this.options.angularDamping)
+      manager.setResource("linearDamping",this.options.linearDamping)
+      manager.setResource("angularDamping",this.options.angularDamping)
       manager.registerSystem(dampenVelocity)
     }
     manager.registerSystem(updateTransformVerlet)
   }
 }
-
+/**
+ * @param {Manager} manager
+ */
 export function dampenVelocity(manager) {
   const [movables] = manager.query("movable").raw()
   const linear = 1 - manager.getResource("linearDamping")
   const angular = 1 - manager.getResource("angularDamping")
-  for (let i = 0; i < transforms.length; i++) {
-    for (let j = 0; j < transforms[i].length; j++) {
+  for (let i = 0; i < movables.length; i++) {
+    for (let j = 0; j < movables[i].length; j++) {
       const velocity = movables[i][j].velocity
-      Vector2.multiplyScalar(velocity, linear, velocity)
+      Vector2.multiplyScalar(velocity,linear,velocity)
       movables[i][j].rotation *= angular
     }
   }
 }
+/**
+ * @param {Manager} manager
+ */
 export function updateTransformVerlet(manager) {
-  const [transforms, movables] = manager.query("transform", "movable").raw()
-  const dt = 1/60// manager.getResource("delta")
-  
+  const [transforms,movables] = manager.query("transform","movable").raw()
+  const dt = 1 / 60// manager.getResource("delta")
+
   for (let i = 0; i < transforms.length; i++) {
     for (let j = 0; j < transforms[i].length; j++) {
       verlet(
@@ -48,8 +57,11 @@ export function updateTransformVerlet(manager) {
     }
   }
 }
+/**
+ * @param {Manager} manager
+ */
 export function updateTransformEuler(manager) {
-  const [transforms, movables] = manager.query("transform", "movable").raw()
+  const [transforms,movables] = manager.query("transform","movable").raw()
   const dt = manager.getResource("delta")
 
   for (let i = 0; i < transforms.length; i++) {

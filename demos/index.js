@@ -9,7 +9,7 @@ import { circlestacking } from "./circlestack.js"
 import { triangle } from "./triangle.js"
 import { friction } from "./friction.js"
 import { restitution } from "./restitution.js"
-import { animation } from "./animation.js"
+//import { animation } from "./animation.js"
 
 
 /*

@@ -1,7 +1,7 @@
 
-import { Renderer,Material,BufferGeometry } from "../render/index.js"
-import { Transform } from "../intergrator/index.js"
+import { Renderer,Material,BufferGeometry, Sprite } from "../render/index.js"
 import { deprecate } from "../logger/index.js"
+import { Vector2 } from "../math/index.js"
 /**
  * Renders images and paths to the 2D context of a canvas.
  * 

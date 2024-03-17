@@ -151,7 +151,7 @@ export class World2D {
   }
   /**
    * 
-   * @param {Vector} gravity
+   * @param {Vector2} gravity
    * @param {Movable[][]} movable
    * @param {Body2D[][]} bodies
    */

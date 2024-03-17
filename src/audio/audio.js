@@ -6,23 +6,23 @@ export class Sfx {
    * @private
    * @type {AudioBuffer}
    */
-  _soundBuffer = null
+  _soundBuffer
   /**
    * @private
    * @type {AudioBufferSourceNode}
    */
-  _source = null
+  _source
   //Todo - Check to see if this one works
   /**
    * @private
    * @type {Function}
    */
-  _onended = null
+  _onended = ()=>{}
   /**
    * @private
    * @type {AudioNode}
    */
-  _destination = null
+  _destination
   /**
    * @private
    * @type {number}
@@ -58,8 +58,10 @@ export class Sfx {
   constructor(handler, buffer) {
     this.handler = handler
     this.ctx = handler.ctx
+    this._source = handler.ctx.createBufferSource()
     this._soundBuffer = buffer
     this._destination = handler.masterGainNode
+    this._startTime = Date.now()
     this.finished = false
     this.id = -1
     this.duration = buffer.duration
@@ -68,7 +70,7 @@ export class Sfx {
   /**
    * Set callback when the sound finishes playing.
    * 
-   * @type {Function}
+   * @param {Function} x 
   */
   set onended(x) {
     this._onended = x

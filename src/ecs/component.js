@@ -85,10 +85,4 @@ export class Component {
   toJson() {
     throw "Implement static method toJson() in your component " + this.CHOAS_CLASSNAME
   }
-  /**
-   * @param {*} component
-   */
-  static implement(component) {
-    Utils.inheritComponent(component)
-  }
 }

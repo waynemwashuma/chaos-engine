@@ -19,32 +19,26 @@ export class SeekBehaviour extends Behaviour {
   /**
    * @type {Vector2}
   */
-  target = null
-  /**
+  target
+    /**
    * @param { Vector2} target
   */
   constructor(target) {
     super()
     this.target = target
   }
-    /**
-     * @inheritdoc
-     * @param {Agent} agent
-     */
-  init(agent) {
-    this.position = agent.position
-    this.velocity = agent.velocity
-  }
-    /**
-     * @inheritdoc
-     * @param { Vector2} target
-     * @param {number} inv_dt
-     * @returns Vector2 the first parameter
-     */
-  calc(target,inv_dt) {
-    let difference = tmp1.copy(this.target).sub(this.position)
+  /**
+   * @inheritdoc
+   * @param {Vector2} position
+   * @param {Vector2} velocity
+   * @param {Vector2} target
+   * @param {number} inv_dt
+   * @returns Vector2 the first parameter
+   */
+  calc(position,velocity,target,inv_dt) {
+    let difference = tmp1.copy(this.target).sub(position)
     difference.setMagnitude(this.maxSpeed)
-    let steering = difference.sub(this.velocity).multiply(inv_dt)
+    let steering = difference.sub(velocity).multiply(inv_dt)
     
     steering.clamp(0, this.maxForce)
     target.copy(steering)
