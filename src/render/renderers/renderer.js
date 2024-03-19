@@ -1,5 +1,5 @@
 import { Camera2D } from "../camera.js"
-
+import { deprecate } from "../../logger/index.js"
 
 class Viewport {
   /**
@@ -72,6 +72,7 @@ export class Renderer extends Viewport {
    */
   constructor(canvas) {
     super(canvas)
+    deprecate("Renderer()", "Viewport()")
     this.domElement = canvas
     this.camera = new Camera2D()
   }
@@ -84,7 +85,8 @@ export class Renderer extends Viewport {
    * @param {Viewport} renderer
    */
   static bindTo(renderer, element, focus = true) {
-    if(typeof element === "string"){
+    deprecate("Renderer.bindTo()", "Viewport.bindTo()")
+    if (typeof element === "string") {
       element = document.querySelector(element)
     }
     if (!element) return console.error("could not find container for the canvas.");
@@ -100,6 +102,8 @@ export class Renderer extends Viewport {
    * @param {Renderer} renderer
    */
   static requestFullScreen(renderer) {
+        deprecate("Renderer.requestFullScreen()", "Viewport.requestFullScreen()")
+
     const parent = renderer.domElement.parentElement
     if (parent) return parent.requestFullscreen()
     return renderer.domElement.requestFullscreen()
@@ -113,6 +117,8 @@ export class Renderer extends Viewport {
    * @param {Renderer} renderer
    */
   static setViewport(renderer, w, h) {
+        deprecate("Renderer.setViewport()", "Viewport.set()")
+
     const canvas = renderer.domElement
     canvas.style.width = w + "px"
     canvas.style.height = h + "px"
@@ -125,9 +131,13 @@ export class Renderer extends Viewport {
    * @type number
    */
   get width() {
+        deprecate("Renderer().width", "Viewport().width")
+
     return this.domElement.width
   }
   set width(x) {
+        deprecate("Renderer().width", "Viewport().width")
+
     this.domElement.width = x
   }
   /**
@@ -136,9 +146,13 @@ export class Renderer extends Viewport {
    * @type number
    */
   get height() {
+        deprecate("Renderer().height", "Viewport().height")
+
     return this.domElement.height
   }
   set height(x) {
+        deprecate("Renderer().height", "Viewport().height")
+
     this.domElement.height = x
   }
 }
