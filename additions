@@ -1,5 +1,0 @@
-bug : Restitution does not work.
-bug : Restitution affects friction too much.
-
-Remove `Utils.inritcomponent` and `Utils.inheritSystem` and where they are used
-Fix type errors with symbol.iterator
