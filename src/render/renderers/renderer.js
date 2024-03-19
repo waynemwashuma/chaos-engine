@@ -1,5 +1,26 @@
 import { Camera2D } from "../camera.js"
 
+
+class Viewport {
+  /**
+   * @readonly
+   * @type {HTMLCanvasElement}
+   */
+  domElement
+  constructor(options = {}) {
+    this.domElement = options.canvas || document.createElement("canvas")
+  }
+  /**
+   * Attaches the renderer to a given html element by its selector.
+   * @param {HTMLElement} element A css selector string that is passed to document.querySelector
+   * @param {boolean} focus whether to shift focus of input to the element pr not
+   * @param {Renderer} renderer
+   */
+  static bindTo(element, selector, focus = true) {
+    renderer.domElement.remove()
+    element.append(renderer.domElement)
+  }
+}
 /**
  * This is an abstract class from which different types of renderers are implemented.
  * 
@@ -8,11 +29,7 @@ import { Camera2D } from "../camera.js"
  * @see WebGLRenderer
  * @see WebGPURenderer
  */
-export class Renderer {
-  /**
-   * @type {HTMLCanvasElement}
-   */
-  domElement
+export class Renderer extends Viewport {
   /**
    * @type {Camera2D}
    */
@@ -21,17 +38,17 @@ export class Renderer {
    * @param {HTMLCanvasElement} canvas element to draw on
    */
   constructor(canvas) {
+    super(canvas)
     this.domElement = canvas
     this.camera = new Camera2D()
   }
   /**
    * Attaches the renderer to a given html element by its selector.
-   * @param {string} selector A css selector string that is passed to document.querySelector
+   * @param {HTMLElement} element A css selector string that is passed to document.querySelector
    * @param {boolean} focus whether to shift focus of input to the element pr not
-   * @param {Renderer} renderer
+   * @param {Viewport} renderer
    */
-  static bindTo(renderer,selector,focus = true) {
-    let element = document.querySelector(selector)
+  static bindTo(renderer, element, focus = true) {
     if (!element) return console.error("could not find container for the canvas.");
     renderer.domElement.remove()
     renderer.domElement.style.backgroundColor = "grey"
@@ -54,7 +71,7 @@ export class Renderer {
    * @param {number} h Height of the canvas.
    * @param {Renderer} renderer
    */
-  static setViewport(renderer,w,h) {
+  static setViewport(renderer, w, h) {
     const canvas = renderer.domElement
     canvas.style.width = w + "px"
     canvas.style.height = h + "px"
