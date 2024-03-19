@@ -45,8 +45,8 @@ export function register(n, f) {
   examples.set(n, f)
 }
 
-soundloader.load("assets/wanderer.wav")
-imageloader.load("assets/dust.jpg")
+soundloader.load("assets/hit.mp3")
+///imageloader.load("assets/dust.jpg")
 imageloader.load("assets/warrior.png")
 
 //Tweens
