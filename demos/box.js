@@ -8,9 +8,9 @@ import {
   BasicMaterial
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
+import {viewport} from "./demo.js"
 
 export function box(manager) {
-  const rect = manager.getResource("renderer")
   
   manager.create({
     "transform": new Transform(1000, 300), //,Math.PI/9),
@@ -24,9 +24,9 @@ export function box(manager) {
   })
   makePlatform(
     manager,
-    rect.width / 2,
-    rect.height * 0.8,
-    rect.width,
+    viewport.width / 2,
+    viewport.height * 0.8,
+    viewport.width,
     50)
   manager.getResource("gravity").y = 900
 }

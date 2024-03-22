@@ -11,9 +11,9 @@ import {
   BasicMaterial
 } from "/src/index.js"
 import { makeContainer } from "./utils.js"
+import {viewport} from "./demo.js"
 
 export function random(manager) {
-  const rect = manager.getResource("renderer")
   const maxCount = 30
   let count = 0
   setInterval(()=>{
@@ -23,8 +23,8 @@ export function random(manager) {
   },100)
   makeContainer(
     manager,
-    rect.width - 100,
-    rect.height * 0.8,
+    viewport.width - 100,
+    viewport.height * 0.8,
     500,
     50,
     50
@@ -33,9 +33,8 @@ export function random(manager) {
 }
 
 function randomEntities(n, manager) {
-  const renderer = manager.getResource("renderer")
-  const width = renderer.width - 100,
-    height = renderer.height -100
+  const width = viewport.width - 100,
+    height = viewport.height -100
   for (let i = 0; i < n; i++) {
     const props = rand()
     const x = width/2,
