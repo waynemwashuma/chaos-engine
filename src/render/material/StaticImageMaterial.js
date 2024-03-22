@@ -3,9 +3,8 @@ import { Material } from "././material.js"
 
  /**
  * 
- * @implements {Material}
  */
-export class StaticImageMaterial{
+export class StaticImageMaterial extends Material{
   type = MaterialType.STATICIMAGE
   /**
    * @readonly

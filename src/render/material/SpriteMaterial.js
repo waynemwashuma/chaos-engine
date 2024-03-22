@@ -4,7 +4,7 @@ import { MaterialType } from "./types.js"
  * 
  * @implements {Material}
  */
-export class SpriteMaterial {
+export class SpriteMaterial extends Material{
   type = MaterialType.SPRITE
   /**
    * @type {HTMLImageElement}

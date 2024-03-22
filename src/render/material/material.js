@@ -6,6 +6,19 @@ import { throws } from "../../logger/index.js"
  */
 export class Material {
   type = MaterialType.NULL
+  _uniforms = {
+    
+  }
+  static setUniform(material,name,value){
+    material._uniforms[name] = {
+      name,
+      value,
+      position:0
+    }
+  }
+  static getUniform(material,name){
+    return material._uniforms[name]
+  }
   /**
    * @param {Material} material
    * @param {CanvasRenderingContext2D} ctx

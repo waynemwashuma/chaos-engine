@@ -2,9 +2,8 @@ import { Material } from "./material.js"
 import { MaterialType } from "./types.js"
 /**
  * 
- * @implements {Material}
 */
-export class BasicMaterial {
+export class BasicMaterial extends Material {
   type = MaterialType.BASIC
   /**
    * 
