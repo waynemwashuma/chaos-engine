@@ -1,123 +1,166 @@
 import { Material } from "./material.js"
 import { MaterialType } from "./types.js"
+import { deprecate, throws } from "../../logger/index.js"
+
 /**
  * 
  * @implements {Material}
  */
-export class SpriteMaterial extends Material{
+export class SpriteMaterial extends Material {
   type = MaterialType.SPRITE
-  /**
-   * @type {HTMLImageElement}
-   */
-  img
-  /**
-   * The index of the current action.
-   * 
-   * @private
-   * @type {number}
-   */
-  _index = 0
-  /**
-   * The current action's max frame index.
-   * 
-   * @private
-   * @type {number}
-   */
-  _maxFrame = 0
-  /**
-   * The current frame of an action.
-   * 
-   * @private
-   * @type {number}
-   */
-  _frame = 0
-  /**
-   * Used with ImageSprite#frameRate to throttle the fps of the sprite.
-   * 
-   * @private
-   * @type {number}
-   */
-  _accumulator = 0
-  /**
-   * The maximum frames for each given action.
-   * 
-   * @type {number}
-   */
-  frameRate = 1 / 60
-  /**
-   * The current action.
-   * 
-   * @private
-   * @type {number[]}
-   */
-  _maxFrames = []
-  /**
-   * The width of the sprite.
-   * 
-   * @type {number}
-   */
-  width = 0
-  /**
-   * The height of the sprite..
-   * 
-   * @type {number}
-   */
-  height = 0
-  /**
-   * The width of a frame.
-   * 
-   * @private
-   * @type {number}
-   */
-  frameWidth = 0
-  /**
-   * The height of a frame..
-   * 
-   * @private
-   * @type {number}
-   */
-  frameHeight = 0
   /**
    * @param {HTMLImageElement} img Image to draw
    * @param {number} [frames] Number of cutouts in the sprite in the X axis of the image.
    * @param {number} [actions] Number of cutouts in the sprite in the Y axis of the image.
    */
-  constructor(img, frames = 1, actions = 1) {
-    this.img = img
-    this.setup(frames, actions)
+  constructor(opts = {}) {
+    if (!opts.uniforms) opts.uniforms = {}
+    opts.uniforms.image = opts.image ?? new Image()
+    opts.uniforms.width = opts.width ?? 100
+    opts.uniforms.height = opts.height ?? 100
+    opts.uniforms.frameRate = opts.frameRate ?? 1 / 60
+    super(opts)
+    SpriteMaterial.setup(
+      this,
+      opts.uniforms.image.width,
+      opts.uniforms.image.height,
+      opts.frames,
+      opts.actions,
+    )
+    console.log(this)
+  }
+  /**
+   * 
+   * @deprecated
+   * @type {String}
+   * @default 100
+   */
+  get width() {
+    deprecate("SpriteMaterial().width")
+    return this._uniforms["width"].value
+  }
+  set width(x) {
+    deprecate("SpriteMaterial().width")
+    this._uniforms["width"] = x
+  }
+  /**
+   * 
+   * @deprecated
+   * @type {String}
+   * @default 100
+   */
+  get height() {
+    deprecate("SpriteMaterial().height")
+    return this._uniforms["height"].value
+  }
+  set width(x) {
+    deprecate("SpriteMaterial().width")
+    this._uniforms["width"] = x
+  }
+  /**
+   * 
+   * @deprecated
+   * @type {String}
+   * @default 1/60
+   */
+  get frameRate() {
+    deprecate("SpriteMaterial().frameRate")
+    return this._uniforms["frameRate"].value
+  }
+  set frameRate(x) {
+    deprecate("SpriteMaterial().frameRate")
+    this._uniforms["frameRate"] = x
+  }
+  /**
+   * 
+   * @deprecated
+   * @type {String}
+   * @default 100
+   */
+  get frameWidth() {
+    deprecate("SpriteMaterial().frameWidth")
+    return this._uniforms["frameWidth"].value
+  }
+  set frameWidth(x) {
+    deprecate("SpriteMaterial().frameWidth")
+    this._uniforms["frameWidth"] = x
+  }
+  /**
+   * 
+   * @deprecated
+   * @type {String}
+   * @default 100
+   */
+  get frameHeight() {
+    deprecate("SpriteMaterial().frameHeight")
+    return this._uniforms["frameHeight"].value
+  }
+  set frameHeight(x) {
+    deprecate("SpriteMaterial().frameHeight")
+    this._uniforms["frameHeight"] = x
+  }
+  /**
+   * @deprecated
+   */
+  setup() {
+    deprecate("SpriteMaterial().setup()")
+    throws("Breaking deprecation encountered")
+  }
+
+  /**
+   * Sets max number of frames for a given action
+   * 
+   * @deprecated
+   * @param {number} action 
+   * @param {number} max
+   */
+  setMaxFrames(action, max) {
+    deprecate("SpriteMaterial().setMaxFrames()", 'SpriteMaterial.setMaxFrames()')
+    SpriteMaterial.setMaxFrames(this, action, max)
+  }
+
+  /**
+   * Sets a given action to be rendered
+   * 
+   * @deprecated
+   * @param {number} index
+   */
+  setAction(index) {
+    deprecate("SpriteMaterial().setAction()", 'SpriteMaterial.setAction()')
+    SpriteMaterial.setAction(this, index)
+  }
+  static setMaxFrames(material, action, max) {
+    Material.getUniform(material, "maxFrames")[action] = max
   }
   /**
    * 
    * @param {number} frames
    * @param {number} actions
    */
-  setup(frames, actions) {
-    this._maxFrame = frames - 1
-    this.frameWidth = this.img.width / (frames || 1)
-    this.frameHeight = this.img.height / actions
-    this.width ||= this.frameWidth
-    this.height ||= this.frameHeight
-    for (var i = 0; i < actions; i++) {
-      this._maxFrames.push(frames)
+  static setup(material, width, height, frames, actions) {
+    const maxFrames = []
+    const frameWidth = width / (frames || 1)
+    const frameHeight = height / actions
+
+    for (let i = 0; i < actions; i++) {
+      maxFrames.push(frames)
     }
-  }
-  /**
-   * Sets max number of frames for a given action
-   * 
-   * @param {number} action 
-   * @param {number} max
-   */
-  setMaxFrames(action, max) {
-    this._maxFrames[action] = max
+
+    Material.setUniform(material, "maxFrame", frames - 1)
+    Material.setUniform(material, "frameWidth", frameWidth)
+    Material.setUniform(material, "frameHeight", frameHeight)
+    Material.setUniform(material, "maxFrames", maxFrames)
+    Material.setUniform(material, "_frame", 0)
+    Material.setUniform(material, "_index", 0)
+    Material.setUniform(material, "_accumulator", 0)
   }
   /**
    * Sets a given action to be rendered
    * 
-   * @param {number} index
+   * @param {number} action
    */
-  setAction(index) {
-    this._maxFrame = (this._maxFrames[index] || 0)
-    this._index = index
-    this._frame = 0
+  static setAction(material, action) {
+    Material.setUniform(material, "_index", action)
+    Material.setUniform(material, "_frame", 0)
   }
 }

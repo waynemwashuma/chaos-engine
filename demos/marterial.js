@@ -1,7 +1,7 @@
 import {
   Sprite,
   Transform,
-  BufferGeometry,
+  BoxGeometry,
   BasicMaterial,
   StaticImageMaterial,
   SpriteMaterial,
@@ -12,50 +12,52 @@ const assets = {
   static: "./assets/warrior.png"
 }
 
-
 export function materials(manager) {
   manager.clear()
-  let geometry = new BufferGeometry([
-  new Vector2(-50, -50),
-  new Vector2(-50, 50),
-  new Vector2(50, 50),
-  new Vector2(50, -50)
-  ])
+  const geometry = new BoxGeometry(50, 50)
 
   //Basic material
-  let material1 = new BasicMaterial()
+  const material1 = new BasicMaterial()
   createsprite(manager, 60, 60, geometry, material1)
 
   //Static Image material
-  let img = new Image()
+  const img = new Image()
   img.src = assets.static
-  let material2 = new StaticImageMaterial(img)
-  material2.offset.x = -material2.width / 2
-  material2.offset.y = -material2.height / 2
+  const material2 = new StaticImageMaterial({
+    image: img
+  })
 
   createsprite(manager, 170, 60, geometry, material2)
 
   //Sprite material
-  let img2 = new Image()
+  const img2 = new Image()
   img2.src = assets.static
 
-  let material3 = new SpriteMaterial(img)
-  material3.width = 150
-  material3.height = 100
-  img2.onload = () => {
-    material3.setup(7, 11)
-    material3.frameRate = 1 / 10
-    material3.setAction(1)
-  }
-  let material4 = new TextMaterial("here it is")
-  createsprite(manager, 290, 60, geometry, material3)
-  createsprite(manager, 380, 60, geometry, material4)
+  const material3 = new SpriteMaterial({
+    image: img2,
+    width: 150,
+    height: 100,
+    frameRate: 1 / 10,
+  })
   
+  //will remove when the texture loader is complete.
+  img2.onload = () => {
+    SpriteMaterial.setup(material3, img2.width, img2.height, 7, 11)
+    SpriteMaterial.setAction(material3, 1)
+  }
+  const material4 = new TextMaterial({
+    text: "here it is",
+    center: true
+  })
+  createsprite(manager, 380, 60, geometry, material4)
+  createsprite(manager, 290, 60, geometry, material3)
+  
+  //doing this in an actual game would be catastrophic.
   let r = 0
   setInterval(() => {
-    material3.setAction(r)
+    SpriteMaterial.setAction(material3, r)
     r += r < 9 ? 1 : -9
-  }, 10000)
+  }, 4000)
 }
 
 function createsprite(manager, x, y, geometry, material) {
