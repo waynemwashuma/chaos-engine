@@ -18,8 +18,9 @@ export class BoundingCircle {
   /**
    * @param {number} [r=0]
    */
-  constructor(r = 0) {
+  constructor(position,r = 0) {
     this.r = r
+    this.pos = position
   }
   /**
    * 
