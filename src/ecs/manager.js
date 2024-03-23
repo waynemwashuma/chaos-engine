@@ -121,6 +121,11 @@ export class Manager {
     })
     return entity
   }
+  createMany(entities){
+    for (let i = 0; i < entities.length; i++) {
+      this.create(entities[i])
+    }
+  }
   /**
    * Removes an entity from the manager.
    * Note that this doesn't destroy the entity, only removes it and its components from the manager.
