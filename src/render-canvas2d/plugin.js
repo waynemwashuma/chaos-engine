@@ -4,12 +4,11 @@ import { Viewport, Sprite, Material, Camera2D } from "../render/index.js"
 
 export class Renderer2DPlugin {
   constructor(options = {}) {
-    options = {
-      ...options,
-      camera: new Camera2D(),
-    }
+    if(!options.camera)
+    options.camera = new Camera2D()
     if (!options.viewport)
       options.viewport = new Viewport()
+      
     this.renderer = options.viewport
     this.camera = options.camera
     this.enableSorting = options.enableSorting ?? false
@@ -38,7 +37,6 @@ function updateSprites(manager) {
   const camera = manager.getResource("camera")
 
   Renderer2D.clear(ctx, viewport.width, viewport.height)
-  ctx.save()
   ctx.rotate(
     camera.transform.orientation
   )
@@ -62,7 +60,6 @@ function updateSprites(manager) {
       )
     }
   }
-  ctx.restore()
 }
 
 function updateSortedSprites(manager) {
@@ -92,7 +89,6 @@ function updateSortedSprites(manager) {
   )
 
   Renderer2D.clear(ctx, viewport.width, viewport.height)
-  ctx.save()
   ctx.rotate(
     camera.transform.orientation
   )
@@ -114,7 +110,6 @@ function updateSortedSprites(manager) {
       dt
     )
   }
-  ctx.restore()
 }
 
 /**
@@ -145,11 +140,11 @@ function quickSort(arr, compareFunc, swapFunc, min = 0, max = arr.length - 1) {
  * @param {number} i
  * @param {number} j
  * @returns {boolean}
-*/
+ */
 
 /**
  * @callback SwapFunc
  * @param {number} i
  * @param {number} j
  * @returns {void}
-*/
+ */
