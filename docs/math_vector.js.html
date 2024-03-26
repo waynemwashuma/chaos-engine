@@ -1,20 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: math/vector.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <title>math/vector.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: math/vector.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Agent.html#add">add</a></li><li data-type='method' style='display: none;'><a href="Agent.html#remove">remove</a></li></ul></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="Angle.html">Angle</a><ul class='methods'></ul></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a><ul class='methods'><li data-type='method' style='display: none;'><a href="ArriveBehaviour.html#calc">calc</a></li></ul></li><li><a href="AudioHandler.html">AudioHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="AudioHandler.html#createSfx">createSfx</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#load">load</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#mute">mute</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#pauseAll">pauseAll</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#playBackgroundMusic">playBackgroundMusic</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#playEffect">playEffect</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#remove">remove</a></li><li data-type='method' style='display: none;'><a href="AudioHandler.html#unmute">unmute</a></li></ul></li><li><a href="Ball.html">Ball</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Ball.html#getAnchor">getAnchor</a></li><li data-type='method' style='display: none;'><a href="Ball.html#getLocalAnchor">getLocalAnchor</a></li><li data-type='method' style='display: none;'><a href="Ball.html#setAnchor">setAnchor</a></li></ul></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="Body.html">Body</a></li><li><a href="Body2D.html">Body2D</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Body2D.html#getAnchor">getAnchor</a></li><li data-type='method' style='display: none;'><a href="Body2D.html#getLocalAnchor">getLocalAnchor</a></li><li data-type='method' style='display: none;'><a href="Body2D.html#setAnchor">setAnchor</a></li></ul></li><li><a href="BoundingBox.html">BoundingBox</a><ul class='methods'><li data-type='method' style='display: none;'><a href="BoundingBox.html#clone">clone</a></li><li data-type='method' style='display: none;'><a href="BoundingBox.html#copy">copy</a></li><li data-type='method' style='display: none;'><a href="BoundingBox.html#intersects">intersects</a></li><li data-type='method' style='display: none;'><a href="BoundingBox.html#translate">translate</a></li></ul></li><li><a href="BoundingCircle.html">BoundingCircle</a><ul class='methods'><li data-type='method' style='display: none;'><a href="BoundingCircle.html#intersects">intersects</a></li><li data-type='method' style='display: none;'><a href="BoundingCircle.html#translate">translate</a></li></ul></li><li><a href="Box.html">Box</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Box.html#getAnchor">getAnchor</a></li><li data-type='method' style='display: none;'><a href="Box.html#getLocalAnchor">getLocalAnchor</a></li><li data-type='method' style='display: none;'><a href="Box.html#setAnchor">setAnchor</a></li></ul></li><li><a href="BoxGeometry_BoxGeometry.html">BoxGeometry</a></li><li><a href="Broadphase.html">Broadphase</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Broadphase.html#getCollisionPairs">getCollisionPairs</a></li><li data-type='method' style='display: none;'><a href="Broadphase.html#query">query</a></li><li data-type='method' style='display: none;'><a href="Broadphase.html#update">update</a></li></ul></li><li><a href="Broadphase2DPlugin_Broadphase2DPlugin.html">Broadphase2DPlugin</a></li><li><a href="Camera.html">Camera</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Clock.html#update">update</a></li></ul></li><li><a href="CollisionManifold.html">CollisionManifold</a><ul class='methods'></ul></li><li><a href="Color.html">Color</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Color.html#add">add</a></li><li data-type='method' style='display: none;'><a href="Color.html#clone">clone</a></li><li data-type='method' style='display: none;'><a href="Color.html#copy">copy</a></li><li data-type='method' style='display: none;'><a href="Color.html#darken">darken</a></li><li data-type='method' style='display: none;'><a href="Color.html#lerp">lerp</a></li><li data-type='method' style='display: none;'><a href="Color.html#lighten">lighten</a></li><li data-type='method' style='display: none;'><a href="Color.html#random">random</a></li><li data-type='method' style='display: none;'><a href="Color.html#set">set</a></li><li data-type='method' style='display: none;'><a href="Color.html#toArray">toArray</a></li></ul></li><li><a href="Constraint.html">Constraint</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Constraint.html#behavior">behavior</a></li><li data-type='method' style='display: none;'><a href="Constraint.html#update">update</a></li></ul></li><li><a href="DOMEventHandler.html">DOMEventHandler</a><ul class='methods'><li data-type='method' style='display: none;'><a href="DOMEventHandler.html#add">add</a></li><li data-type='method' style='display: none;'><a href="DOMEventHandler.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="DOMEventHandler.html#disposeEvent">disposeEvent</a></li><li data-type='method' style='display: none;'><a href="DOMEventHandler.html#remove">remove</a></li></ul></li><li><a href="DistanceConstraint.html">DistanceConstraint</a><ul class='methods'><li data-type='method' style='display: none;'><a href="DistanceConstraint.html#behavior">behavior</a></li></ul></li><li><a href="EulerSolver.html">EulerSolver</a><ul class='methods'></ul></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EvadeBehaviour.html#calc">calc</a></li></ul></li><li><a href="EventDispatcher.html">EventDispatcher</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EventDispatcher.html#add">add</a></li><li data-type='method' style='display: none;'><a href="EventDispatcher.html#addEvent">addEvent</a></li><li data-type='method' style='display: none;'><a href="EventDispatcher.html#getEvent">getEvent</a></li><li data-type='method' style='display: none;'><a href="EventDispatcher.html#trigger">trigger</a></li></ul></li><li><a href="Flock.html">Flock</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Flock.html#calc">calc</a></li></ul></li><li><a href="Geometry_Geometry.html">Geometry</a></li><li><a href="Group.html">Group</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Group.html#add">add</a></li><li data-type='method' style='display: none;'><a href="Group.html#remove">remove</a></li><li data-type='method' style='display: none;'><a href="Group.html#render">render</a></li></ul></li><li><a href="ImageLoader.html">ImageLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="ImageLoader.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="ImageLoader.html#verify">verify</a></li></ul></li><li><a href="IndexedList.html">IndexedList</a><ul class='methods'><li data-type='method' style='display: none;'><a href="IndexedList.html#get">get</a></li><li data-type='method' style='display: none;'><a href="IndexedList.html#has">has</a></li><li data-type='method' style='display: none;'><a href="IndexedList.html#keys">keys</a></li><li data-type='method' style='display: none;'><a href="IndexedList.html#remove">remove</a></li><li data-type='method' style='display: none;'><a href="IndexedList.html#set">set</a></li><li data-type='method' style='display: none;'><a href="IndexedList.html#values">values</a></li></ul></li><li><a href="Input.html">Input</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Input.html#dispose">dispose</a></li><li data-type='method' style='display: none;'><a href="Input.html#update">update</a></li></ul></li><li><a href="Intergrator2DPlugin_Intergrator2DPlugin.html">Intergrator2DPlugin</a></li><li><a href="Jacobian.html">Jacobian</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Jacobian.html#set">set</a></li></ul></li><li><a href="Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Keyboard.html#init">init</a></li></ul></li><li><a href="Line_Line.html">Line</a></li><li><a href="LineGeometry_LineGeometry.html">LineGeometry</a></li><li><a href="Loader.html">Loader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Loader.html#get">get</a></li><li data-type='method' style='display: none;'><a href="Loader.html#load">load</a></li><li data-type='method' style='display: none;'><a href="Loader.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="Loader.html#verify">verify</a></li></ul></li><li><a href="Manager_Manager.html">Manager</a></li><li><a href="Matrix3x2.html">Matrix3x2</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Matrix3x2.html#append">append</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#clone">clone</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#copy">copy</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#equals">equals</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#identity">identity</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#invert">invert</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#prepend">prepend</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#rotate">rotate</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#scale">scale</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#setFromTransform">setFromTransform</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#transform">transform</a></li><li data-type='method' style='display: none;'><a href="Matrix3x2.html#translate">translate</a></li></ul></li><li><a href="Mouse.html">Mouse</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Mouse.html#inDragBox">inDragBox</a></li><li data-type='method' style='display: none;'><a href="Mouse.html#init">init</a></li><li data-type='method' style='display: none;'><a href="Mouse.html#update">update</a></li></ul></li><li><a href="Movable.html">Movable</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Movable.html#applyForce">applyForce</a></li><li data-type='method' style='display: none;'><a href="Movable.html#applyImpulse">applyImpulse</a></li></ul></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a><ul class='methods'><li data-type='method' style='display: none;'><a href="NaiveBroadphase.html#getCollisionPairs">getCollisionPairs</a></li><li data-type='method' style='display: none;'><a href="NaiveBroadphase.html#query">query</a></li><li data-type='method' style='display: none;'><a href="NaiveBroadphase.html#update">update</a></li></ul></li><li><a href="Narrowphase2DPlugin_Narrowphase2DPlugin.html">Narrowphase2DPlugin</a></li><li><a href="Noise_Noise.html">Noise</a></li><li><a href="Particle.html">Particle</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Particle.html#draw">draw</a></li><li data-type='method' style='display: none;'><a href="Particle.html#update">update</a></li></ul></li><li><a href="ParticleSystemSprite.html">ParticleSystemSprite</a><ul class='methods'><li data-type='method' style='display: none;'><a href="ParticleSystemSprite.html#behavior">behavior</a></li><li data-type='method' style='display: none;'><a href="ParticleSystemSprite.html#create">create</a></li><li data-type='method' style='display: none;'><a href="ParticleSystemSprite.html#init">init</a></li><li data-type='method' style='display: none;'><a href="ParticleSystemSprite.html#initParticles">initParticles</a></li><li data-type='method' style='display: none;'><a href="ParticleSystemSprite.html#render">render</a></li></ul></li><li><a href="PathFollowing.html">PathFollowing</a><ul class='methods'><li data-type='method' style='display: none;'><a href="PathFollowing.html#add">add</a></li><li data-type='method' style='display: none;'><a href="PathFollowing.html#calc">calc</a></li><li data-type='method' style='display: none;'><a href="PathFollowing.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="PathFollowing.html#setPath">setPath</a></li></ul></li><li><a href="Physics2DPlugin_Physics2DPlugin.html">Physics2DPlugin</a></li><li><a href="Pool.html">Pool</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Pool.html#create">create</a></li><li data-type='method' style='display: none;'><a href="Pool.html#give">give</a></li><li data-type='method' style='display: none;'><a href="Pool.html#take">take</a></li></ul></li><li><a href="Pursuit.html">Pursuit</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Pursuit.html#calc">calc</a></li></ul></li><li><a href="Query.html">Query</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Query.html#each">each</a></li></ul></li><li><a href="Ray_Ray.html">Ray</a></li><li><a href="RayCollisionResult.html">RayCollisionResult</a></li><li><a href="RayPoint_RayPoint.html">RayPoint</a></li><li><a href="Rectangle_Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a><ul class='methods'></ul></li><li><a href="Renderer2D.html">Renderer2D</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Renderer2D.html#bindTo">bindTo</a></li><li data-type='method' style='display: none;'><a href="Renderer2D.html#clear">clear</a></li><li data-type='method' style='display: none;'><a href="Renderer2D.html#setViewport">setViewport</a></li></ul></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a><ul class='methods'></ul></li><li><a href="SATNarrowphase.html">SATNarrowphase</a><ul class='methods'><li data-type='method' style='display: none;'><a href="SATNarrowphase.html#getCollisionPairs">getCollisionPairs</a></li></ul></li><li><a href="SeekBehaviour.html">SeekBehaviour</a><ul class='methods'><li data-type='method' style='display: none;'><a href="SeekBehaviour.html#calc">calc</a></li></ul></li><li><a href="Sfx.html">Sfx</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Sfx.html#connect">connect</a></li><li data-type='method' style='display: none;'><a href="Sfx.html#disconnect">disconnect</a></li><li data-type='method' style='display: none;'><a href="Sfx.html#pause">pause</a></li><li data-type='method' style='display: none;'><a href="Sfx.html#play">play</a></li><li data-type='method' style='display: none;'><a href="Sfx.html#resume">resume</a></li></ul></li><li><a href="Shape.html">Shape</a><ul class='methods'></ul></li><li><a href="Signal.html">Signal</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Signal.html#addListener">addListener</a></li><li data-type='method' style='display: none;'><a href="Signal.html#removeListener">removeListener</a></li></ul></li><li><a href="SoundLoader.html">SoundLoader</a><ul class='methods'><li data-type='method' style='display: none;'><a href="SoundLoader.html#parse">parse</a></li><li data-type='method' style='display: none;'><a href="SoundLoader.html#verify">verify</a></li></ul></li><li><a href="SpringConstraint.html">SpringConstraint</a><ul class='methods'><li data-type='method' style='display: none;'><a href="SpringConstraint.html#behavior">behavior</a></li></ul></li><li><a href="Sprite.html">Sprite</a><ul class='methods'></ul></li><li><a href="SpriteMaterial.html">SpriteMaterial</a><ul class='methods'><li data-type='method' style='display: none;'><a href="SpriteMaterial.html#setAction">setAction</a></li><li data-type='method' style='display: none;'><a href="SpriteMaterial.html#setMaxFrames">setMaxFrames</a></li><li data-type='method' style='display: none;'><a href="SpriteMaterial.html#setup">setup</a></li></ul></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="System.html">System</a><ul class='methods'><li data-type='method' style='display: none;'><a href="System.html#add">add</a></li><li data-type='method' style='display: none;'><a href="System.html#init">init</a></li><li data-type='method' style='display: none;'><a href="System.html#remove">remove</a></li><li data-type='method' style='display: none;'><a href="System.html#update">update</a></li></ul></li><li><a href="TextMaterial.html">TextMaterial</a></li><li><a href="Touch.html">Touch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Touch.html#init">init</a></li></ul></li><li><a href="Transform.html">Transform</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="TriangleGeometry_TriangleGeometry.html">TriangleGeometry</a></li><li><a href="Trigon_Trigon.html">Trigon</a></li><li><a href="Tween.html">Tween</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Tween.html#chain">chain</a></li><li data-type='method' style='display: none;'><a href="Tween.html#duration">duration</a></li><li data-type='method' style='display: none;'><a href="Tween.html#easing">easing</a></li><li data-type='method' style='display: none;'><a href="Tween.html#from">from</a></li><li data-type='method' style='display: none;'><a href="Tween.html#interpolant">interpolant</a></li><li data-type='method' style='display: none;'><a href="Tween.html#onUpdate">onUpdate</a></li><li data-type='method' style='display: none;'><a href="Tween.html#to">to</a></li></ul></li><li><a href="TweenManager.html">TweenManager</a><ul class='methods'><li data-type='method' style='display: none;'><a href="TweenManager.html#add">add</a></li></ul></li><li><a href="TweenPlugin.html">TweenPlugin</a><ul class='methods'><li data-type='method' style='display: none;'><a href="TweenPlugin.html#register">register</a></li></ul></li><li><a href="Vec2.html">Vec2</a></li><li><a href="Vector.html">Vector</a></li><li><a href="Vector2.html">Vector2</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Vector2.html#add">add</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#addScalar">addScalar</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#clamp">clamp</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#clone">clone</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#copy">copy</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#cross">cross</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#distanceTo">distanceTo</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#distanceToSquared">distanceToSquared</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#divide">divide</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#dot">dot</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#equals">equals</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#equalsZero">equalsZero</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#magnitude">magnitude</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#magnitudeSquared">magnitudeSquared</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#multiply">multiply</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#normal">normal</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#normalFast">normalFast</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#normalize">normalize</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#reflect">reflect</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#reverse">reverse</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#rotate">rotate</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#rotateFast">rotateFast</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#set">set</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#setMagnitude">setMagnitude</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#sub">sub</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#subScalar">subScalar</a></li><li data-type='method' style='display: none;'><a href="Vector2.html#toArray">toArray</a></li></ul></li><li><a href="VerletSolver.html">VerletSolver</a><ul class='methods'></ul></li><li><a href="WanderBehaviour.html">WanderBehaviour</a><ul class='methods'><li data-type='method' style='display: none;'><a href="WanderBehaviour.html#calc">calc</a></li></ul></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li><li><a href="World2D.html">World2D</a><ul class='methods'><li data-type='method' style='display: none;'><a href="World2D.html#query">query</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-utils_index.html">utils/index</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Component.html#fromJson">fromJson</a></li><li data-type='method' style='display: none;'><a href="Component.html#get">get</a></li><li data-type='method' style='display: none;'><a href="Component.html#init">init</a></li><li data-type='method' style='display: none;'><a href="Component.html#query">query</a></li><li data-type='method' style='display: none;'><a href="Component.html#requires">requires</a></li><li data-type='method' style='display: none;'><a href="Component.html#toJson">toJson</a></li><li data-type='method' style='display: none;'><a href="Component.html#update">update</a></li></ul></li><li><a href="Material.html">Material</a><ul class='methods'></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#AABBColliding">AABBColliding</a></li><li><a href="global.html#AABBvsSphere">AABBvsSphere</a></li><li><a href="global.html#AngleUpdate">AngleUpdate</a></li><li><a href="global.html#BodyDebbuggerOptions">BodyDebbuggerOptions</a></li><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#Bounds">Bounds</a></li><li><a href="global.html#CollisionPair">CollisionPair</a></li><li><a href="global.html#ColorUpdate">ColorUpdate</a></li><li><a href="global.html#ContactManifold">ContactManifold</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#EasingFunc">EasingFunc</a></li><li><a href="global.html#Entity">Entity</a></li><li><a href="global.html#EventHandlerFunc">EventHandlerFunc</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#IntergratorFunc">IntergratorFunc</a></li><li><a href="global.html#IntergratorPluginOptions">IntergratorPluginOptions</a></li><li><a href="global.html#LerpFunc">LerpFunc</a></li><li><a href="global.html#Logger">Logger</a></li><li><a href="global.html#ManagerOptions">ManagerOptions</a></li><li><a href="global.html#Manifold">Manifold</a></li><li><a href="global.html#NOOP">NOOP</a></li><li><a href="global.html#NoUpdateThrow">NoUpdateThrow</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Physics2DPluginOptions">Physics2DPluginOptions</a></li><li><a href="global.html#Plugin">Plugin</a></li><li><a href="global.html#RayCastModes">RayCastModes</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#SystemFunc">SystemFunc</a></li><li><a href="global.html#TweenPluginOptions">TweenPluginOptions</a></li><li><a href="global.html#TweenUpdate">TweenUpdate</a></li><li><a href="global.html#Vector2Update">Vector2Update</a></li><li><a href="global.html#Vector3Update">Vector3Update</a></li><li><a href="global.html#Vector_like">Vector_like</a></li><li><a href="global.html#applyGravity">applyGravity</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#assert">assert</a></li><li><a href="global.html#bodyDebugger">bodyDebugger</a></li><li><a href="global.html#boundSpheresColliding">boundSpheresColliding</a></li><li><a href="global.html#boundsColliding">boundsColliding</a></li><li><a href="global.html#checkifEquals">checkifEquals</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#collisionResponse">collisionResponse</a></li><li><a href="global.html#dampenVelocity">dampenVelocity</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#deprecate">deprecate</a></li><li><a href="global.html#drawArm">drawArm</a></li><li><a href="global.html#drawArmRaw">drawArmRaw</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#drawShapes">drawShapes</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#euler">euler</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#fpsDebugger">fpsDebugger</a></li><li><a href="global.html#getDimensions">getDimensions</a></li><li><a href="global.html#getNearVertex">getNearVertex</a></li><li><a href="global.html#getURLExtension">getURLExtension</a></li><li><a href="global.html#getURLName">getURLName</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#naivebroadphaseUpdate">naivebroadphaseUpdate</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#raycastDebugger">raycastDebugger</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#renderObj">renderObj</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#satNarrowphaseUpdate">satNarrowphaseUpdate</a></li><li><a href="global.html#signalListener">signalListener</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#testSingleEdge">testSingleEdge</a></li><li><a href="global.html#throws">throws</a></li><li><a href="global.html#updateBodies">updateBodies</a></li><li><a href="global.html#updateTransformEuler">updateTransformEuler</a></li><li><a href="global.html#updateTransformVerlet">updateTransformVerlet</a></li><li><a href="global.html#verlet">verlet</a></li><li><a href="global.html#vertices">vertices</a></li><li><a href="global.html#warn">warn</a></li><li><a href="global.html#warnOnce">warnOnce</a></li><li><a href="global.html#wrapAngle">wrapAngle</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">math/vector.js</h1>
+    
 
     
 
@@ -23,7 +47,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { TWO_PI } from "./constants.js";
+            <pre class="prettyprint source linenums"><code>import { deprecate } from "../logger/index.js";
+import { TWO_PI } from "./constants.js";
 
 const obj = {
   x: 0,
@@ -32,224 +57,142 @@ const obj = {
 /**
  * This is a 2D vector class.
  * 
- * @license MIT
  */
 export class Vector2 {
   /**
-   * @param {number} x the x coordinate of the vector
-   * @param {number} y the y coordinate of the vector
+   * @param {number} [x] the x coordinate of the vector
+   * @param {number} [y] the y coordinate of the vector
    */
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
   }
   /**
-   * @type string
+   * @deprecated
+   *Calculates length squared of vector and returns it
    */
-  get CHOAS_CLASSNAME() {
-    return this.constructor.name.toLowerCase()
+  magnitudeSquared() {
+    deprecate("Vector2().magnitudeSquared()", "Vector2.magnitudeSquared()")
+    return Vector2.magnitudeSquared(this)
   }
   /**
-   * @type string
-   */
-  get CHAOS_OBJ_TYPE() {
-    return "vector"
-  }
-  /**
+   * @deprecated
    *Calculates length of this vector and returns 
    * it
    * 
    * @returns {number}
    */
   magnitude() {
-    return Math.sqrt(this.magnitudeSquared());
-  };
+    deprecate("Vector2().magnitude()", "Vector2.magnitude()")
+    return Vector2.magnitude(this)
+  }
   /**
+   * @deprecated
    * Sets a vector to have the given length.
    * 
    * @param {number} length 
    */
   setMagnitude(length) {
-    this.normalize().multiply(length)
+    deprecate("Vector2().setMagnitude()", "Vector2.setMagnitude()")
+    Vector2.setMagnitude(this, length, this)
+    return this
   }
   /**
-   *Calculates length squared of vector and returns it
-   */
-  magnitudeSquared() {
-    return this.y ** 2 + this.x ** 2
-  }
-  /**
+   * @deprecated
    *Calculates length of this vector to another vector
    * @param { Vector2} v the other vector
    */
   distanceTo(v) {
-    obj.x = this.x - v.x
-    obj.y = this.y - v.y
-    return Math.sqrt(Vector2.prototype.magnitudeSquared.call(obj))
+    deprecate("Vector2().distanceTo()", "Vector2.distanceTo()")
+
+    return Vector2.distanceTo(this, v)
   }
   /**
    *Calculates length squared of this vector to another vector
    * 
+   * @deprecated
    * @param { Vector2} v the other vector
    * @returns {number}
    */
   distanceToSquared(v) {
-    obj.x = this.x - v.x
-    obj.y = this.y - v.y
-    return Vector2.prototype.magnitudeSquared.call(obj)
+    deprecate("Vector2().distanceToSquared()", "Vector2.distanceToSquared()")
+    return Vector2.distanceTo(this, v)
   }
   /**
    * Adds a given vector into this 
    * 
+   * @deprecated
    * @param { Vector2} v
-   * @returns {this}
    */
   add(v) {
-    this.x += v.x
-    this.y += v.y
+    deprecate("Vector2().add()", "Vector2.add()")
+    Vector2.add(this, v, this)
     return this
   }
   /**
    * Adds a scalar value into this vector's
    * x and y values
    * 
+   * @deprecated
    * @param {number} n
-   * @returns {this}
    */
   addScalar(n) {
-    this.x += n
-    this.y += n
+    deprecate("Vector2().addScalar()", "Vector2.addScalar()")
+    Vector2.addScalar(this, n, this)
     return this
   }
   /**
    * Subtracts a given vector from this vector
    * 
+   * @deprecated
    * @param { Vector2} v
    * @returns {this}
    */
   sub(v) {
-    this.x -= v.x
-    this.y -= v.y
+    deprecate("Vector2().sub()", "Vector2.sub()")
+    Vector2.sub(this, v, this)
     return this
   }
   /**
    * Subtracts a scalar value from this vector's x and y values.
    * 
+   * @deprecated
    * @param {number} n
    * @returns {this}
    */
   subScalar(n) {
-    this.x -= n
-    this.y -= n
+    deprecate("Vector2().subScalar()", "Vector2.subScalar()")
+    Vector2.subScalar(this, n, this)
     return this
-  }
-  /**
-   * Calculates the dot product of two vectors.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  dot(v) {
-    return this.x * v.x + this.y * v.y
-  }
-  /**
-   * Calculates the cross product of two vectors.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  cross(v) {
-    return this.x * v.y - this.y * v.x
   }
   /**
    * Multiplies this vector with a scalar.
    * 
+   * @deprecated
    * @param {number} n 
    * @returns {this}
    */
   multiply(n) {
-    this.x *= n
-    this.y *= n
+    deprecate("Vector2().multiply()", "Vector2.multiply()")
+    Vector2.multiplyScalar(this, n, this)
     return this
-  }
-  /**
-   * Divides this vector with a scalar.
-   * 
-   * @param {number} n 
-   * @returns {this}
-   */
-  divide(n) {
-    this.multiply(1 / n)
-    return this
-  }
-  /**
-   * Makes this vector a unit vector by 
-   * dividing its components with its length.
-   * 
-   * @returns {this}
-   */
-  normalize() {
-    const length = this.magnitude()
-    if (length == 0) return this
-    this.x = this.x / length
-    this.y = this.y / length
-    return this
-  };
-  /**
-   * Checks to see if this vector is equal to
-   * another vector.
-   * 
-   * @param { Vector2} v
-   * @returns {boolean}
-   */
-  equals(v) {
-    return v.x === this.x &amp;&amp; v.y === this.y
-  }
-  /**
-   * Checks if the vector length is zero.
-   * 
-   * @returns {boolean}
-   */
-  equalsZero() {
-    return this.x === 0 &amp;&amp; this.y === 0
-  }
-  /**
-   * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
-   * 
-   * @param {number} l the length of the vector returned.
-   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
-   * @returns { Vector2}
-   */
-  normal(l = 1, target) {
-    target = target || new Vector2()
-    target.copy(this).normalize()
-    return target.set(-target.y * l, target.x * l);
-  };
-  /**
-   * Returns the normal to a vector, the normal has the same length as the vector.
-   * 
-   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
-   *  @returns { Vector2}
-   */
-  normalFast(target = new Vector2()) {
-    return target.set(-this.y, this.x)
   }
   /**
    * Rotates this vector by a given angle in radians.
    * 
-   * @param {number} rad Angle in radians
+   * @deprecated
+   * @param {number} cos
+   * @param {number} sin 
    * @returns {this}
    */
-  rotate(rad) {
-    let
-      x = this.x,
-      cos = Math.cos(rad),
-      sin = Math.sin(rad)
-    this.x = x * cos - this.y * sin;
-    this.y = x * sin + this.y * cos;
+  rotateFast(cos, sin) {
+    deprecate("Vector2().rotateFast()", "Vector2.rotateFast()")
+    Vector2.rotateFast(this, cos, sin, this)
     return this
   };
   /**
+   * 
+   * @deprecated
    * Returns an array with x and y values of
    * this vector pushed into the array in
    * that order.
@@ -260,6 +203,7 @@ export class Vector2 {
    * @returns number[]
    */
   toArray(target = [], offset = 0) {
+    deprecate("Vector2().toArray()", "Vector2.toArray()")
     target[offset] = this.x
     target[offset + 1] = this.y
     return target;
@@ -267,108 +211,440 @@ export class Vector2 {
   /**
    * Copies x and y values of this vector to 
    * a new vector and returns the new vector.
-   * 
+   * @deprecated
    * @return Vector2
    */
   clone() {
-    return new Vector2(this.x, this.y)
+    deprecate("Vector2().clone()", "Vector2.copy()")
+    return Vector2.copy(this)
   }
   /**
    * Copies x and y values of another vector
    * to this vector.
    * 
-   * @@param { Vector2} v 
+   * @deprecated
+   * @param { Vector2} v 
    * @return this
    */
   copy(v) {
-    this.x = v.x
-    this.y = v.y
+    deprecate("Vector2().copy()", "Vector2.copy()")
+    Vector2.copy(v, this)
     return this
   }
   /**
    * Sets x and y values of this vector to the given parameter.
    * 
+   * @deprecated
    * @param {Number} x 
    * @param {Number} y
-   * @returns {this}
    */
   set(x, y) {
-    this.x = x
-    this.y = y
+    deprecate("Vector2().set()", "Vector2.set()")
+    Vector2.set(this, x, y)
     return this
-  }
-  /**
-   * Draws this vector to a 2D canvas.
-   * 
-   * @param {CanvasRenderingContext2D} ctx the context to draw on.
-   * @param {number} x Translates the x-coordinate origin of the vector
-   * @param {number} y Translates the y-coordinate origin of the vector
-   * @param {string} color a CSS string that
-   * is supplied to the rendering context.Can
-   *  be a hex(e.g "0xFFFFFF"),rgb(e.g "rgb(255,255,255)"),hsl or a color name(e.g "white")
-   * @param {Number} scale A value that
-   * lengthens or shortens the length of the vector
-   * @returns {this}
-   */
-  draw(ctx, x = 0, y = 0, color = "red", scale = 1) {
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-    ctx.lineTo(this.x * scale + x, this.y * scale + y)
-    //ctx.arc(this.x * scale + x, this.y * scale + y, 2, 0, Math.PI * 2)
-    ctx.strokeStyle = color
-    ctx.stroke()
-    ctx.strokeStyle = "black"
-    ctx.closePath()
-    return this
-  }
-  /**
-   * Negates the values of this vector.
-   * 
-   * @returns {this}
-   */
-  reverse() {
-    return this.multiply(-1)
   }
   /**
    * Returns a vector of this reflected on a sirface perpendicular to the normal.
    * 
-   * @param {number} normal the unit vector perpendicular to reflection surface
+   * @deprecated
+   * @param {Vector2} normal the unit vector perpendicular to reflection surface
    * @param { Vector2} [target]
    * @return { Vector2}
    */
   reflect(normal, target = new Vector2()) {
-    return target.copy(normal).multiply(this.dot(normal) * 2).sub(this)
+    deprecate("Vector2().reflect()", "Vector2.reflect()")
+    Vector2.reflect(this, normal, target)
+    return target
   }
   /**
    * Forces this vector to have a length 
    * between the min and max.
    * 
+   * @deprecated
    * @param {number} [min = 0] The smallest value 
    * the length of this vector is allowed to have.
    * @param {number} [max = 1] The biggest value the length of this vector is allowed to have.
    * @returns {this}
    */
   clamp(min = 0, max = 1) {
-    let length = this.magnitude()
-    if (length == 0) return this
+    deprecate("Vector2().clamp()", "Vector2.clamp()")
+    Vector2.clampMagnitude(this, min, max, this)
+    return this
+  }
+  /**
+   * Calculates the dot product of two vectors.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {number}
+   */
+  dot(v) {
+    deprecate("Vector2().dot()", "Vector2.dot()")
+    return Vector2.dot(this, v)
+  }
+  /**
+   * Calculates the cross product of two vectors.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {number}
+   */
+  cross(v) {
+    deprecate("Vector2().cross()", "Vector2.cross()")
+    return Vector.cross(this, v)
+  }
+  /**
+   * Makes this vector a unit vector by 
+   * dividing its components with its length.
+   * 
+   * @deprecated
+   * @returns {this}
+   */
+  normalize() {
+    deprecate("Vector2().normalize()", "Vector2.normalize()")
+    Vector2.normalize(this, this)
+    return this
+  }
+  /**
+   * Returns a scaled vector normal to this vector,when scaled to 1,it returns a unit vector.
+   * 
+   * @deprecated
+   * @param {number} l the length of the vector returned.
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   * @returns { Vector2}
+   */
+  normal(l = 1, target = new Vector2()) {
+    deprecate("Vector2().normal()", "Vector2.normal()")
+    Vector2.normal(this, target)
+    Vector2.normalize(target, target)
+    Vector2.multiplyScalar(target, l, target)
+    return target
+  }
+  /**
+   * Returns the normal to a vector, the normal has the same length as the vector.
+   * 
+   * @deprecated
+   * @param { Vector2} [target = Vector2] Vector2 in which results are stored.
+   *  @returns { Vector2}
+   */
+  normalFast(target = new Vector2()) {
+    deprecate("Vector2().normalFast()", "Vector2.normal()")
+    Vector2.set(target,-this.y, this.x)
+    return this
+  }
+  /**
+   * Rotates this vector by a given angle in radians.
+   * 
+   * @deprecated
+   * @param {number} rad Angle in radians
+   * @returns {this}
+   */
+  rotate(rad) {
+    deprecate("Vector2().rotate()", "Vector2.rotate()")
+    Vector2.rotate(this, rad, this)
+    return this
+  }
+  /**
+   * Divides this vector with a scalar.
+   * 
+   * @deprecated
+   * @param {number} n 
+   * @returns {this}
+   */
+  divide(n) {
+    deprecate("Vector2().divide()", "Vector2.divide()")
+    this.multiply(1 / n)
+    return this
+  }
+  /**
+   * Checks to see if this vector is equal to
+   * another vector.
+   * 
+   * @deprecated
+   * @param { Vector2} v
+   * @returns {boolean}
+   */
+  equals(v) {
+    deprecate("Vector2().equals()", "Vector2.equals()")
+    return Vector2.equal(this, v)
+  }
+  /**
+   * Checks if the vector length is zero.
+   * 
+   * @deprecated
+   * @returns {boolean}
+   */
+  equalsZero() {
+    deprecate("Vector2().equalsZero()", "Vector2.equalsZero()")
+    return Vector2.equalsZero(this)
+  }
+  /**
+   * Negates the values of this vector.
+   * 
+   * @deprecated
+   * @returns {this}
+   */
+  reverse() {
+    deprecate("Vector2().reverse()", "Vector2.reverse()")
+    Vector2.reverse(this, this)
+    return this
+  }
+  /**
+   * @param {Vector_like} v
+   */
+  static magnitudeSquared(v) {
+    return v.y ** 2 + v.x ** 2
+  }
+  /**
+   * @param {Vector_like} v
+   */
+  static magnitude(v) {
+    return Math.sqrt(Vector2.magnitudeSquared(v));
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} length
+   */
+  static setMagnitude(v, length, out = new Vector2()) {
+    Vector2.normalize(v, out)
+    Vector2.multiplyScalar(v, length, out)
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static distanceTo(v1, v2) {
+    obj.x = v1.x - v2.x
+    obj.y = v1.y - v2.y
+    return Vector2.magnitude(obj)
+  }
+  /**
+   * Calculates length squared of this vector to another vector
+   * 
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static distanceToSquared(v1, v2) {
+    obj.x = v1.x - v2.x
+    obj.y = v1.y - v2.y
+    return Vector2.magnitudeSquared(obj)
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static add(v1, v2, out = new Vector2()) {
+    out.x = v1.x + v2.x
+    out.y = v1.y + v2.y
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static addScalar(v1, n, out = new Vector2()) {
+    out.x = v1.x + n
+    out.y = v1.y + n
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static sub(v1, v2, out = new Vector2()) {
+    out.x = v1.x - v2.x
+    out.y = v1.y - v2.y
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static subScalar(v1, n, out = new Vector2()) {
+    out.x = v1.x - n
+    out.y = v1.y - n
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static multiply(v1, v2, out = new Vector2()) {
+    out.x = v1.x * v2.x
+    out.y = v1.y * v2.y
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static multiplyScalar(v1, n, out = new Vector2()) {
+    out.x = v1.x * n
+    out.y = v1.y * n
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   * @param {Vector_like} [out]
+   */
+  static divide(v1, v2, out = new Vector2()) {
+    out.x = v1.x / v2.x
+    out.y = v1.y / v2.y
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} [out]
+   */
+  static divideScalar(v1, n, out = new Vector2()) {
+    return Vector2.multiplyScalar(v1, 1 / n, out)
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static dot(v1, v2) {
+    return v1.x * v2.x + v1.y * v2.y
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static cross(v1, v2) {
+    return v1.x * v2.y - v1.y * v2.x
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {number} n
+   * @param {Vector_like} out
+   */
+  static crossScalar(v1, n, out = new Vector2()) {
+    out.x = v1.y * -n
+    out.y = v1.x * n
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} [out=new Vector2()] 
+   */
+  static normalize(v, out = new Vector2()) {
+    const length = Vector2.magnitude(v)
+    if (length == 0) return out
+    out.x = v.x / length
+    out.y = v.y / length
+    return out
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static equal(v1, v2) {
+    return v1.x === v2.x &amp;&amp; v1.y === v2.y
+  }
+  /**
+   * @param {Vector_like} v1
+   * @param {Vector_like} v2
+   */
+  static absEqual(v1, v2) {
+    return (
+      Math.abs(v1.x) === Math.abs(v2.x) ||
+      Math.abs(v1.y) === Math.abs(v2.y)
+    )
+  }
+  /**
+   * @param {Vector_like} v
+   */
+  static equalsZero(v) {
+    return v.x === 0 &amp;&amp; v.y === 0
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} out
+   */
+  static normal(v, out = new Vector2()) {
+    return Vector2.set(out, -v.y, v.x);
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} angle
+   * @param {Vector_like} out
+   */
+  static rotate(v, angle, out = new Vector2()) {
+    return Vector2.rotateFast(v, Math.cos(angle), Math.sin(angle), out)
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} cos
+   * @param {number} sin
+   * @param {Vector_like} out
+   */
+  static rotateFast(v, cos, sin, out = new Vector2()) {
+    const x = v.x
+    out.x = x * cos - v.y * sin
+    out.y = x * sin + v.y * cos
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} [out=new Vector2()] 
+   */
+  static copy(v, out = new Vector2()) {
+    out.x = v.x
+    out.y = v.y
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} x
+   * @param {number} y
+   */
+  static set(v, x, y) {
+    v.x = x
+    v.y = y
+    return v
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} [out=new Vector2()] 
+   */
+  static reverse(v, out = new Vector2()) {
+    return Vector2.multiplyScalar(v, -1, out)
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {Vector_like} normal
+   * @param {Vector_like} [out]
+   */
+  static reflect(v, normal, out = new Vector2()) {
+    const multiplier = Vector2.dot(v, normal) * 2
+    out.x = normal.x * multiplier - v.x
+    out.y = normal.y * multiplier - v.y
+
+    return out
+  }
+  /**
+   * @param {Vector_like} v
+   * @param {number} min
+   * @param {number} max
+   * @param {Vector_like} out
+   */
+  static clampMagnitude(v, min, max, out) {
+    if (Vector2.equalsZero(v)) return Vector2.copy(v, out)
+    let length = Vector2.magnitude(v)
     if (length > max)
-      return this.multiply(max / length)
+      return Vector2.multiplyScalar(v, max / length, out)
     if (length &lt; min)
-      return this.multiply(min / length)
-    return this
-  }
-
-  toJson() {
-    return this
-  }
-  fromJson(obj) {
-    this.x = obj.x
-    this.y = obj.y
-  }
-
-  [Symbol.iterator] = function*() {
-    yield this.x
-    yield this.y
+      return Vector2.multiplyScalar(v, min / length, out)
+    return Vector2.copy(v, out)
   }
   /**
    * Gets the angle (in degrees) between two
@@ -379,7 +655,7 @@ export class Vector2 {
    * @returns {number}
    */
   static getAbsDegBtwn(v1, v2) {
-    let a = v1.cross(v2)
+    let a = Vector2.cross(v1,v2)
     let deg = Vector2.getDegBtwn(v1, v2)
     return a &lt; 0 ? deg : 360 - deg
   }
@@ -390,10 +666,11 @@ export class Vector2 {
    * @param { Vector2 } v2 end of the angle
    * @returns {number}
    **/
-  static getAbsRadBtwn(v1, v2) {
-    let a = v1.cross(v2)
-    let deg = Vector2.getDegBtwn(v1, v2)
-    return a &lt; 0 ? deg : 360 - deg
+  static getAbsAngleBetween(v1, v2) {
+    const a = Vector2.cross(v1, v2)
+    const deg = Vector2.getAngleBetween(v1, v2)
+
+    return a &lt; 0 ? deg : Math.PI * 2 - deg
   }
   /**
    * Gets the angle (in radians) between two
@@ -403,8 +680,8 @@ export class Vector2 {
    * @param { Vector2} v2 end of the angle
    * @returns {number}
    */
-  static getRadBtwn(v1, v2) {
-    return Math.acos(v1.dot(v2) / (v1.magnitude() * v2.magnitude()))
+  static getAngleBetween(v1, v2) {
+    return Math.acos(Vector2.dot(v1, v2) / (Vector2.magnitude(v1) * Vector2.magnitude(v2)))
   }
   /**
    * Gets the angle (in degrees) between two
@@ -415,77 +692,63 @@ export class Vector2 {
    * @returns {number}
    */
   static getDegBtwn(v1, v2) {
-    return Vector2.getRadBtwn(v1, v2) * 180 / Math.PI
+    return Vector2.getAngleBetween(v1, v2) * 180 / Math.PI
   }
   /**
    * Returns a unit vector pointing in the
    * given angle starting from the positive x axis.
    * 
    * @param {number} radian angle in radians from 0 to `Math.PI * 2`
-   * @param { Vector2} [target] Vector2 to store results in.
+   * @param { Vector2} [out] Vector2 to store results in.
    * @returns { Vector2}
    */
-  static fromRad(radian, target = new Vector2()) {
-    return target.set(Math.cos(radian), Math.sin(radian))
-  }
-  /**
-   * Returns a unit vector pointing in the
-   * given angle from the positive x axis
-   * 
-   * @param {number} degree angle in radians from `0°` to `360°`
-   * @param { Vector2} [target] Vector2 to store results in.
-   * @returns { Vector2}
-   */
-  static fromDeg(degree, target) {
-    return Vector2.fromRad(degree * Math.PI / 180, target)
+  static fromAngle(radian, out = new Vector2()) {
+    Vector2.set(out, Math.cos(radian), Math.sin(radian))
+    return out
   }
   /**
    * Generates a new unit Vector2 in a random direction
    * 
-   * @param { Vector2} [target]
+   * @param { Vector2} [out]
    * @returns { Vector2}
    */
-  static random(target) {
-    return Vector2.fromRad(Math.random() * TWO_PI, target)
+  static random(out) {
+    return Vector2.fromAngle(Math.random() * TWO_PI, out)
   }
   /**
    * Returns a Vector2 that has been lerped between v1 and v2
    * @param { Vector2} v1 the vector to lerp from
    * @param { Vector2} v2 the vector to lerp from
    * @param {number} t a value from 0 to 1 to scale the new Vector2 between v1 and v2
-   * @param { Vector2} [target] the vector to store results into
+   * @param { Vector2} [out] the vector to store results into
    * 
    * @returns { Vector2}
    */
-  static lerp(v1, v2, t, target = new Vector2()) {
-    target = target || new Vector2()
-    return target.set(
+  static lerp(v1, v2, t, out = new Vector2()) {
+    Vector2.set(
+      out,
       (v2.x - v1.x) * t + v1.x,
       (v2.y - v1.y) * t + v1.y
     )
+    return out
   }
-
-  /**
-   * Returns the angle in degrees between the positive x-axis and the vector.
-   * 
-   * @param { Vector2} v
-   * @returns {number}
-   */
-  static toDeg(v) {
-    return Vector2.toRad(v) / Math.PI * 180
-  }
-
   /**
    * Returns the angle in radians between the positive x-axis and the vector.
    * 
    * @param { Vector2} v
    * @returns {number}
    */
-  static toRad(v) {
+  static toAngle(v) {
     let a = Math.atan2(v.y, v.x)
     return a &lt; 0 ? TWO_PI + a : a
   }
-
+  /**
+   * @this {Vector2}
+   */
+  [Symbol.iterator] = function*() {
+    yield this.x
+    yield this.y
+  }
   /**
    * A vector whose x and y values will remain 0.
    * 
@@ -494,8 +757,10 @@ export class Vector2 {
    * @type { Vector2}
    */
   static ZERO = Object.freeze(new Vector2())
-
 }
+/**
+ * @deprecated
+ */
 export class Vector extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
@@ -507,6 +772,9 @@ export class Vector extends Vector2 {
   }
 }
 
+/**
+ * @deprecated
+ */
 export class Vec2 extends Vector2 {
   /**
    * @param {number} x the x coordinate of the vector
@@ -523,19 +791,25 @@ export class Vec2 extends Vector2 {
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Cookie.html">Cookie</a></li><li><a href="module-Session.html">Session</a></li><li><a href="module-utils_index.html">utils/index</a></li></ul><h3>Classes</h3><ul><li><a href="AABBBroadphase.html">AABBBroadphase</a></li><li><a href="Agent.html">Agent</a></li><li><a href="AgentManager.html">AgentManager</a></li><li><a href="AgentSprite.html">AgentSprite</a></li><li><a href="Angle.html">Angle</a></li><li><a href="ArriveBehaviour.html">ArriveBehaviour</a></li><li><a href="AudioHandler.html">AudioHandler</a></li><li><a href="Ball.html">Ball</a></li><li><a href="BasicMaterial.html">BasicMaterial</a></li><li><a href="Behaviour.html">Behaviour</a></li><li><a href="BehaviourManager.html">BehaviourManager</a></li><li><a href="Body.html">Body</a></li><li><a href="BodySprite.html">BodySprite</a></li><li><a href="Bound.html">Bound</a></li><li><a href="BoundingBox.html">BoundingBox</a></li><li><a href="BoundingCircle.html">BoundingCircle</a></li><li><a href="Box.html">Box</a></li><li><a href="Broadphase.html">Broadphase</a></li><li><a href="BufferGeometry_BufferGeometry.html">BufferGeometry</a></li><li><a href="CamController_CamController.html">CamController</a></li><li><a href="Circle.html">Circle</a></li><li><a href="CircleGeometry_CircleGeometry.html">CircleGeometry</a></li><li><a href="Clock.html">Clock</a></li><li><a href="Color.html">Color</a></li><li><a href="Composite.html">Composite</a></li><li><a href="Constraint.html">Constraint</a></li><li><a href="DOMEventHandler.html">DOMEventHandler</a></li><li><a href="DistanceConstraint.html">DistanceConstraint</a></li><li><a href="Entity.html">Entity</a></li><li><a href="EulerSolver.html">EulerSolver</a></li><li><a href="EvadeBehaviour.html">EvadeBehaviour</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="Flock.html">Flock</a></li><li><a href="Geometry_Geometry.html">Geometry</a></li><li><a href="GridBroadphase.html">GridBroadphase</a></li><li><a href="Group.html">Group</a></li><li><a href="IndexedList.html">IndexedList</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Line_Line.html">Line</a></li><li><a href="Loader_Loader.html">Loader</a></li><li><a href="Manager.html">Manager</a></li><li><a href="Matrix2.html">Matrix2</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Movable.html">Movable</a></li><li><a href="NaiveBroadphase.html">NaiveBroadphase</a></li><li><a href="Node.html">Node</a></li><li><a href="Particle.html">Particle</a></li><li><a href="ParticleSystemSprite.html">ParticleSystemSprite</a></li><li><a href="PathFollowing.html">PathFollowing</a></li><li><a href="Pool.html">Pool</a></li><li><a href="Pursuit.html">Pursuit</a></li><li><a href="QuadTreeBroadphase.html">QuadTreeBroadphase</a></li><li><a href="Ray_Ray.html">Ray</a></li><li><a href="RayCollisionResult_RayCollisionResult.html">RayCollisionResult</a></li><li><a href="RayPoint_RayPoint.html">RayPoint</a></li><li><a href="Rectangle_Rectangle.html">Rectangle</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="Renderer2D.html">Renderer2D</a></li><li><a href="RungeKuttaSolver.html">RungeKuttaSolver</a></li><li><a href="SATNarrowPhase.html">SATNarrowPhase</a></li><li><a href="SeekBehaviour.html">SeekBehaviour</a></li><li><a href="Sfx.html">Sfx</a></li><li><a href="Shape.html">Shape</a></li><li><a href="Signal.html">Signal</a></li><li><a href="SpringConstraint.html">SpringConstraint</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StaticImageMaterial.html">StaticImageMaterial</a></li><li><a href="System.html">System</a></li><li><a href="TextMaterial.html">TextMaterial</a></li><li><a href="Touch.html">Touch</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Triangle.html">Triangle</a></li><li><a href="Trigon_Trigon.html">Trigon</a></li><li><a href="Tween.html">Tween</a></li><li><a href="Vec2_Vec2.html">Vec2</a></li><li><a href="Vector_Vector.html">Vector</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="VectorPool.html">VectorPool</a></li><li><a href="VerletSolver.html">VerletSolver</a></li><li><a href="WanderBehaviour.html">WanderBehaviour</a></li><li><a href="WebGLRenderer.html">WebGLRenderer</a></li><li><a href="WebGPURenderer.html">WebGPURenderer</a></li><li><a href="World.html">World</a></li></ul><h3>Interfaces</h3><ul><li><a href="Component.html">Component</a></li><li><a href="Material.html">Material</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AngleUpdate">AngleUpdate</a></li><li><a href="global.html#BodyType">BodyType</a></li><li><a href="global.html#ColorUpdate">ColorUpdate</a></li><li><a href="global.html#ContactSolver">ContactSolver</a></li><li><a href="global.html#DEVICE">DEVICE</a></li><li><a href="global.html#Events">Events</a></li><li><a href="global.html#FrictionSolver">FrictionSolver</a></li><li><a href="global.html#ImpulseSolver">ImpulseSolver</a></li><li><a href="global.html#NoUpdateThrow">NoUpdateThrow</a></li><li><a href="global.html#ObjType">ObjType</a></li><li><a href="global.html#Overlaps">Overlaps</a></li><li><a href="global.html#PenetrationSolver">PenetrationSolver</a></li><li><a href="global.html#RayCastModes">RayCastModes</a></li><li><a href="global.html#SAT">SAT</a></li><li><a href="global.html#ShapeType">ShapeType</a></li><li><a href="global.html#Storage">Storage</a></li><li><a href="global.html#Vector2Update">Vector2Update</a></li><li><a href="global.html#Vector3Update">Vector3Update</a></li><li><a href="global.html#arc">arc</a></li><li><a href="global.html#assert">assert</a></li><li><a href="global.html#bodyDebugger">bodyDebugger</a></li><li><a href="global.html#circle">circle</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#createEntity">createEntity</a></li><li><a href="global.html#createManager">createManager</a></li><li><a href="global.html#defaultCollisionHandler">defaultCollisionHandler</a></li><li><a href="global.html#defaultPrecollisionHandler">defaultPrecollisionHandler</a></li><li><a href="global.html#degToRad">degToRad</a></li><li><a href="global.html#deprecate">deprecate</a></li><li><a href="global.html#drawImage">drawImage</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fillText">fillText</a></li><li><a href="global.html#fpsDebugger">fpsDebugger</a></li><li><a href="global.html#lerp">lerp</a></li><li><a href="global.html#line">line</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#mixin">mixin</a></li><li><a href="global.html#naturalizePair">naturalizePair</a></li><li><a href="global.html#radToDeg">radToDeg</a></li><li><a href="global.html#rand">rand</a></li><li><a href="global.html#raycastDebugger">raycastDebugger</a></li><li><a href="global.html#rect">rect</a></li><li><a href="global.html#round">round</a></li><li><a href="global.html#sq">sq</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#stroke">stroke</a></li><li><a href="global.html#throws">throws</a></li><li><a href="global.html#vertices">vertices</a></li><li><a href="global.html#warn">warn</a></li><li><a href="global.html#warnOnce">warnOnce</a></li><li><a href="global.html#wrapAngle">wrapAngle</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Jan 08 2024 16:36:55 GMT+0300 (East Africa Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Mar 26 2024 19:33:53 GMT+0300 (East Africa Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
 </body>
 </html>
