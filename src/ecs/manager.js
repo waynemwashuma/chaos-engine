@@ -112,9 +112,7 @@ export class Manager {
    * @param {Record<string,any>} components The entity to add
    */
   create(components) {
-    const entity = new Entity()
-
-    this._table.insert(entity, components)
+    const entity = this._table.insert(components)
     this.events.trigger("add", {
       entity,
       components
