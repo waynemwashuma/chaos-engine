@@ -4,7 +4,7 @@ import { NarrowPhase } from "./Narrowphase.js"
 import { CollisionData, CollisionManifold } from "./collisionManifold.js"
 import { Shape } from "../shapes/index.js"
 import { Settings } from "../settings.js"
-import { Entity, Manager } from "../../ecs/index.js"
+import { Manager } from "../../ecs/index.js"
 import { Body2D } from "../bodies/index.js"
 
 const  tmp1 = {

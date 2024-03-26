@@ -1,4 +1,3 @@
-import { Entity } from "../../ecs/index.js";
 import { BoundingBox } from "../../math/index.js";
 
 /**

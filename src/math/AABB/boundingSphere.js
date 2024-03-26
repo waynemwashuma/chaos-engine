@@ -16,9 +16,10 @@ export class BoundingCircle {
    */
   pos = { x: 0, y: 0 }
   /**
-   * @param {number} [r=0]
+   * @param {number} [r]
+   * @param {Vector_like} [position]
    */
-  constructor(position,r = 0) {
+  constructor(position = {x:0,y:0},r = 0) {
     this.r = r
     this.pos = position
   }

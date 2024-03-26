@@ -1,5 +1,3 @@
-import { Entity } from "../ecs/entity.js"
-import { warn } from "../logger/index.js"
 import { Utils } from "../utils/index.js"
 
 class Archetype {
@@ -29,7 +27,7 @@ class Archetype {
     return entities.length - 1
   }
   /**
-   * @param {Entity} entity
+   * @param {number} index
    * @returns {Entity | undefined}
    */
   remove(index) {
@@ -44,7 +42,7 @@ class Archetype {
     return this.components.get("entity")[index]
   }
   /**
-   * @param {Entity} entity
+   * @param {number} index
    * @param {{[x:string] : any}} compnames
    */
   get(index, compnames) {
@@ -87,6 +85,9 @@ export class NaiveArchTypeTable {
    * @type {Archetype[]}
    */
   list = []
+  /**
+   * @type {number[]}
+   */
   entities = []
   constructor() {}
   /**
@@ -126,7 +127,7 @@ export class NaiveArchTypeTable {
   }
   /**
    * @private
-   * @param {string | any[]} comps
+   * @param {string[]} comps
    */
   _getArchetypes(comps) {
     const filtered = []
@@ -144,12 +145,11 @@ export class NaiveArchTypeTable {
     return filtered
   }
   /**
-   * @param {Entity} entity
    * @param {{[x:string] : any}} components
    * @returns {Entity}
    */
   insert(components) {
-    const entity = new Entity(this.entities.length)
+    const entity = this.entities.length
     //components.entity = entity
     const keys = []
     for (const name in components) {
