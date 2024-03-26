@@ -2,12 +2,7 @@ import { Entity } from "../ecs/entity.js"
 import { warn } from "../logger/index.js"
 import { Utils } from "../utils/index.js"
 
-
 class Archetype {
-  /**
-   * @type {Entity[]}
-   */
-  entities = []
   /**
    * @type {Map<string,any>}
    */
@@ -17,21 +12,20 @@ class Archetype {
    */
   keys = []
   constructor() {
-    this.components.set("entity",this.entities)
+    this.components.set("entity", [])
   }
   /**
    * @param {Entity} entity
    * @param {{[x:string]:any}} components
    */
-  insert(entity,components) {
-    if (entity.index !== -1)
-      return warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
+  insert(entity, components) {
+    const entities = this.getComponentLists("entity")
+
     for (let i = 0; i < this.keys.length; i++) {
       this.components.get(this.keys[i]).push(components[this.keys[i]])
     }
-    this.entities.push(entity)
-    entity.index = this.entities.length - 1
-    return this.entities.length - 1
+    entities.push(entity)
+    return entities.length - 1
   }
   /**
    * @param {Entity} entity
@@ -56,7 +50,7 @@ class Archetype {
    * @param {Entity} entity
    * @param {{[x:string] : any}} compnames
    */
-  get(entity,compnames) {
+  get(index, compnames) {
     const comp = []
     for (let i = 0; i < compnames.length; i++) {
       const list = this.getComponentLists(compnames[i])
@@ -65,7 +59,7 @@ class Archetype {
         continue
       }
       comp.push(
-        list[entity.index]
+        list[index]
       )
     }
     return comp
@@ -74,8 +68,8 @@ class Archetype {
    * @param {string} name
    * @param {any[]} list
    */
-  setComponentList(name,list) {
-    this.components.set(name,list)
+  setComponentList(name, list) {
+    this.components.set(name, list)
     this.keys.push(name)
   }
   /**
@@ -96,7 +90,8 @@ export class NaiveArchTypeTable {
    * @type {Archetype[]}
    */
   list = []
-  constructor() { }
+  entities = []
+  constructor() {}
   /**
    * @private
    * @param {{[x:string] : any}} comps
@@ -104,7 +99,7 @@ export class NaiveArchTypeTable {
   _createArchetype(comps) {
     const archetype = new Archetype()
     for (let i = 0; i < comps.length; i++) {
-      archetype.setComponentList(comps[i],[])
+      archetype.setComponentList(comps[i], [])
     }
     return this.list.push(archetype) - 1
   }
@@ -113,7 +108,7 @@ export class NaiveArchTypeTable {
    * @param {Archetype} archetype
    * @param {{[x:string] : any}} comps
    */
-  _ArcheTypeHasOnly(archetype,comps) {
+  _ArcheTypeHasOnly(archetype, comps) {
     if (comps.length !== archetype.components.size - 1) return false
     for (let i = 0; i < comps.length; i++) {
       if (!archetype.components.has(comps[i])) return false
@@ -126,7 +121,7 @@ export class NaiveArchTypeTable {
    */
   _getArchetype(comps) {
     for (let i = 0; i < this.list.length; i++) {
-      if (this._ArcheTypeHasOnly(this.list[i],comps)) {
+      if (this._ArcheTypeHasOnly(this.list[i], comps)) {
         return i
       }
     }
@@ -154,37 +149,48 @@ export class NaiveArchTypeTable {
   /**
    * @param {Entity} entity
    * @param {{[x:string] : any}} components
+   * @returns {Entity}
    */
-  insert(entity,components) {
+  insert(components) {
+    const entity = new Entity(this.entities.length)
     const keys = []
-    for (let name in components) {
+    for (const name in components) {
       keys.push(name)
     }
-    let index =
+    let archindex =
       this._getArchetype(keys)
-    index = index === -1 ? this._createArchetype(keys) : index
-    this.list[index].insert(entity,components)
-    entity.archIndex = index
+    archindex = archindex === -1 ? this._createArchetype(keys) : archindex
+    const index = this.list[archindex].insert(entity, components)
+    this.entities[entity] = archindex
+    this.entities[entity + 1] = index
+
+    return entity
   }
   /**
    * @param {Entity} entity
    */
   remove(entity) {
-    this.list[entity.archIndex].remove(entity)
+    const archid = this.entities[entity]
+    const tableid = this.entities[entity + 1]
+
+    this.list[archid].remove(tableid)
+    this.entities[entity] = -1
+    this.entities[entity + 1] = -1
   }
   /**
    * @param {Entity} entity
    * @param {string[]} compnames
    */
-  get(entity,compnames) {
-    if (entity.index === -1) return
-    return this.list[entity.archIndex].get(entity,compnames)
+  get(entity, compnames) {
+    const archid = this.entities[entity]
+    const index = this.entities[entity + 1]
+    return this.list[archid].get(index, compnames)
   }
   /**
    * @param {string[]} compnames
    * @param {any[]} out 
    */
-  query(compnames,out = []) {
+  query(compnames, out = []) {
     let archetypes = this._getArchetypes(compnames)
     for (let i = 0; i < compnames.length; i++) {
       out[i] = []
