@@ -1,7 +1,6 @@
 import { ArchetypeTable } from "../dataStructures/index.js"
 import { Clock } from "../math/index.js"
 import { EventDispatcher } from "../events/index.js"
-import { Entity } from "./entity.js"
 import { Query } from "./query.js"
 export class Manager {
   /**
@@ -119,6 +118,10 @@ export class Manager {
     })
     return entity
   }
+  /**
+   * @template {Object} T
+   * @param {T[]} entities
+   */
   createMany(entities){
     for (let i = 0; i < entities.length; i++) {
       this.create(entities[i])

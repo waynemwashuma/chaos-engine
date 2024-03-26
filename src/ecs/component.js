@@ -1,7 +1,5 @@
 import { Utils } from "../utils/index.js"
 import {Logger } from "../logger/index.js"
-import { Entity } from "./entity.js"
-
 
 /**
  * A helper class.
