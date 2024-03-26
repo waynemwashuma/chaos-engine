@@ -40,6 +40,7 @@ export type Bounds = {
     max: Vector_like;
     min: Vector_like;
 };
+export type Entity = number;
 export type EasingFunc = (t: number) => number;
 export type CollisionPair = {
     a: Body2D;
@@ -109,13 +110,14 @@ export class Angle {
 export function AngleUpdate(lerpFunc: LerpFunc, to: Angle, from: Angle, t: number, into: Angle): void;
 export class NaiveArchTypeTable {
     list: Archetype[];
+    entities: number[];
     private _createArchetype;
     private _ArcheTypeHasOnly;
     private _getArchetype;
     private _getArchetypes;
-    insert(entity: Entity, components: {
+    insert(components: {
         [x: string]: any;
-    }): void;
+    }): Entity;
     remove(entity: Entity): void;
     get(entity: Entity, compnames: string[]): any[];
     query(compnames: string[], out?: any[]): any[];
@@ -222,7 +224,7 @@ export class BoundingBox {
 export class BoundingCircle {
     static translate(bound: BoundingCircle, x: any, y: any, out?: BoundingCircle): BoundingCircle;
     static copy(bound: BoundingCircle, out?: BoundingCircle): BoundingCircle;
-    constructor(r?: number);
+    constructor(position?: Vector_like, r?: number);
     type: number;
     r: number;
     pos: Vector_like;
@@ -271,9 +273,14 @@ export class CircleGeometry extends BufferGeometry {
     constructor(radius: number);
 }
 export class Clock {
+    static start(clock: Clock): void;
+    static getElapsed(clock: Clock): number;
+    static getDelta(clock: Clock): number;
+    static getFrameRate(clock: Clock): number;
     static update(clock: Clock, accumulate?: number): number;
-    private lastcall;
-    dt: number;
+    private start;
+    private lastTick;
+    private dt;
     update(accumulate?: number): number;
 }
 export class CollisionData {
@@ -401,12 +408,6 @@ export namespace Easing {
     let bounceOut: EasingFunc;
     let bounceInOut: EasingFunc;
 }
-export class Entity {
-    index: number;
-    archIndex: number;
-    get CHAOS_OBJ_TYPE(): string;
-    get CHAOS_CLASSNAME(): string;
-}
 export class EvadeBehaviour extends Behaviour {
     constructor(pursuer: Vector2);
     radius: number;
@@ -461,6 +462,10 @@ export class ImageLoader extends Loader<{
     dimensions: Vector_like;
 }> {
     constructor(manager?: LoadManager);
+    parse(request: Response): Promise<{
+        buffer: any;
+        dimensions: Vector_like;
+    }>;
 }
 export class IndexedList<T> {
     private _keys;
@@ -471,7 +476,7 @@ export class IndexedList<T> {
     remove(name: string): void;
     keys(): string[];
     values(): T[];
-    has(name: string): any;
+    has(name: string): boolean;
 }
 export class Input {
     constructor(eventHandler: DOMEventHandler);
@@ -531,7 +536,7 @@ export class Loader<T> {
     };
     manager: LoadManager;
     baseUrl: string;
-    name(): any;
+    name(): string;
     verify(_extension: string): boolean;
     parse(_request: Response): Promise<T | undefined>;
     load(url: string): Promise<void>;
@@ -560,14 +565,15 @@ export class Manager {
     readonly events: EventDispatcher;
     private _update;
     init(): void;
-    create(components: Record<string, any>): Entity;
+    create(components: Record<string, any>): number;
+    createMany<T extends unknown>(entities: T[]): void;
     remove(entity: Entity): void;
-    get<T>(entity: Entity, ...compNames: string[]): T;
-    set<T_1>(entity: Entity, components: T_1): void;
-    query<T_2>(...compNames: string[]): Query<T_2>;
+    get<T_1>(entity: Entity, ...compNames: string[]): T_1;
+    set<T_2>(entity: Entity, components: T_2): void;
+    query<T_3>(...compNames: string[]): Query<T_3>;
     queryEvent(name: string): any;
-    getResource<T_3>(name: string): T_3;
-    setResource<T_4>(name: string, resource: T_4): void;
+    getResource<T_4>(name: string): T_4;
+    setResource<T_5>(name: string, resource: T_5): void;
     clear(): void;
     private RAF;
     play(): void;
@@ -609,6 +615,7 @@ export class Matrix3x2 {
     copy(m: Matrix3x2): this;
     clone(): Matrix3x2;
     equals(matrix: Matrix3x2): boolean;
+    [Symbol.iterator]: (this: Matrix3x2) => Generator<number, void, unknown>;
 }
 export class Mouse {
     constructor(eh: DOMEventHandler);
@@ -727,6 +734,7 @@ export class Query<T> {
     components: T | null;
     raw(): T;
     each(callback: (comp: T) => void): void;
+    single(): any[];
 }
 export const RAD2DEG: number;
 export class Ray {
@@ -769,8 +777,8 @@ export class Rectangle extends Shape {
     constructor(width: number, height: number);
 }
 export class Renderer {
-    static bindTo(renderer: Renderer, selector: string, focus?: boolean): void;
-    static requestFullScreen(renderer: Renderer): Promise<void>;
+    static bindTo(renderer: Renderer, selector: string, focus?: boolean): any;
+    static requestFullScreen(renderer: Renderer): any;
     static setViewport(renderer: Renderer, w: number, h: number): void;
     constructor(canvas: HTMLCanvasElement);
     domElement: HTMLCanvasElement;
@@ -783,7 +791,7 @@ export class Renderer {
 export class Renderer2D extends Renderer {
     static clear(renderer: Renderer2D): void;
     static render<T extends BufferGeometry, U extends Material>(ctx: CanvasRenderingContext2D, sprite: Sprite<T, U>, position: Vector2, orientation: number, scale: Vector2, dt: number): void;
-    constructor(canvas?: HTMLCanvasElement, context?: CanvasRenderingContext2D);
+    constructor(canvas?: HTMLCanvasElement, context?: any);
     ctx: CanvasRenderingContext2D;
     bindTo(selector: string, focus?: boolean): void;
     setViewport(x: number, y: number): void;
@@ -812,7 +820,7 @@ export class SATNarrowphase extends NarrowPhase {
     static shapeContains(shape: Shape, point: Vector2): boolean;
     static circleContains(position: Vector2, radius: number, point: Vector2): boolean;
     static verticesContain(vertices: Vector2[], point: Vector2): boolean;
-    clmdrecord: any;
+    clmdrecord: Map<any, any>;
 }
 export const SQRT2: number;
 export class SeekBehaviour extends Behaviour {
@@ -877,6 +885,9 @@ export class SoundLoader extends Loader<{
     buffer: ArrayBuffer;
 }> {
     constructor(manager?: LoadManager);
+    parse(request: Response): Promise<{
+        buffer: any;
+    }>;
 }
 export class SpringConstraint extends Constraint {
     fixed: boolean;
@@ -907,9 +918,9 @@ export class SpriteMaterial implements Material {
     setAction(index: number): void;
 }
 export class StaticImageMaterial implements Material {
-    constructor(img: new (width?: number, height?: number) => HTMLImageElement, width?: number, height?: number);
+    constructor(img: Image, width?: number, height?: number);
     type: number;
-    readonly image: new (width?: number, height?: number) => HTMLImageElement;
+    readonly image: Image;
     width: number;
     height: number;
     offset: Vector_like;
@@ -1069,6 +1080,7 @@ export class Vector2 {
     equals(v: Vector2): boolean;
     equalsZero(): boolean;
     reverse(): this;
+    [Symbol.iterator]: (this: Vector2) => Generator<number, void, unknown>;
 }
 export function Vector2Update(lerpFunc: LerpFunc, to: Vector2, from: Vector2, t: number, into: Vector2): void;
 export function Vector3Update(lerpFunc: LerpFunc, to: T, from: T, t: number, into: T): void;
@@ -1088,7 +1100,7 @@ export class World extends World2D {
     constructor(...args: any[]);
 }
 export class World2D {
-    static narrowPhase(manager: any, world: World2D, contactList: CollisionPair[]): CollisionManifold<Entity>[];
+    static narrowPhase(manager: any, world: World2D, contactList: CollisionPair[]): CollisionManifold<number>[];
     static broadPhase(world: World2D): CollisionPair[];
     static collisionDetection(manager: any, world: World2D): void;
     static collisionResponse(manager: Manager, world: World2D, CLMDs: string | any[], dt: number): void;
@@ -1103,7 +1115,7 @@ export class World2D {
     narrowphase: NarrowPhase;
     set gravity(x: Vector2);
     get gravity(): Vector2;
-    query<T extends Entity>(bound: Bounds, out?: T[]): T[];
+    query<T extends number>(bound: Bounds, out?: T[]): T[];
 }
 export function applyGravity(manager: Manager): void;
 export function arc(ctx: CanvasRenderingContext2D | Path2D, x: number, y: number, r: number, start: number, end: number): void;
@@ -1114,13 +1126,6 @@ export function boundsColliding(bound1: BoundingBox | BoundingCircle, bound2: Bo
 export function circle(ctx: CanvasRenderingContext2D | Path2D, x: number, y: number, r: number): void;
 export function clamp(value: number, min: number, max: number): number;
 export function collisionResponse(manager: Manager): void;
-export function createEntity(x: number, y: number, a: number): Entity;
-export function createManager(options?: {
-    autoPlay?: boolean;
-    physics?: boolean;
-    renderer?: boolean;
-    input?: boolean;
-}): void;
 export function dampenVelocity(manager: Manager): void;
 export function defaultCollisionHandler(clmds: Manifold[]): void;
 export function defaultPrecollisionHandler(clmds: CollisionPair[]): void;
@@ -1158,19 +1163,18 @@ export function warn(message: string): void;
 export function warnOnce(message: string): void;
 export function wrapAngle(x: number): number;
 declare class Archetype {
-    entities: Entity[];
     components: Map<string, any>;
     keys: string[];
     insert(entity: Entity, components: {
         [x: string]: any;
-    }): number | void;
-    remove(entity: Entity): void;
-    get(entity: Entity, compnames: {
+    }): number;
+    remove(index: number): Entity | undefined;
+    get(index: number, compnames: {
         [x: string]: any;
     }): any[];
     setComponentList(name: string, list: any[]): void;
     getComponentLists(name: string): any;
-    hasComponentList(name: string): any;
+    hasComponentList(name: string): boolean;
 }
 declare class Jacobian {
     constructor(va?: Vector_like, vb?: Vector_like, wa?: number, wb?: number);

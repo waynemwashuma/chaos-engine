@@ -6,6 +6,7 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "allowJs": true,
-        "removeComments":true
+        "removeComments":true,
+        "lib": ["ES2017"]
     }
 }

@@ -1873,7 +1873,7 @@ SOFTWARE.
     if (bound1.type === BoundType.CIRCLE && bound2.type === BoundType.CIRCLE)
       // @ts-ignore
       return boundSpheresColliding(bound1, bound2)
-    if (bound1.type === BoundType.BOX)
+    if (bound1.type === BoundType.CIRCLE)
       // @ts-ignore
       return AABBvsSphere(bound2, bound1)
     // @ts-ignore
@@ -1884,73 +1884,6 @@ SOFTWARE.
     BOX: 0,
     CIRCLE: 1,
   };
-
-  /**
-   * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
-   */
-  class BoundingCircle {
-    type = BoundType.CIRCLE
-    /**
-     * 
-     * @type {number}
-     */
-    r = 0
-    /**
-     * 
-     * @type {Vector_like}
-     */
-    pos = { x: 0, y: 0 }
-    /**
-     * @param {number} [r=0]
-     */
-    constructor(r = 0) {
-      this.r = r;
-    }
-    /**
-     * 
-     * @deprecated
-     * Checks to see if this intersects with another bounding box
-     * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
-     **/
-    intersects(bound) {
-      deprecate("BoundingCircle().intersects()", "boundsColliding()");
-      if (bound.type === BoundType.CIRCLE)
-        // @ts-ignore
-        return boundSpheresColliding(this, bound)
-      // @ts-ignore
-      return AABBvsSphere(bound, this)
-    }
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    translate(x, y) {
-      deprecate("BoundingCircle().translate()", "BoundingCircle.translate()");
-      this.pos.x += x;
-      this.pos.y += y;
-    }
-    /**
-     * @param {BoundingCircle} bound
-     * @param {any} x
-     * @param {any} y
-     */
-    static translate(bound, x, y, out = new BoundingCircle()) {
-      out.pos.x = bound.pos.x + x;
-      out.pos.y = bound.pos.y + y;
-      
-      return out
-    }
-    /**
-     * @param {BoundingCircle} bound
-     */
-    static copy(bound, out = new BoundingCircle()) {
-      out.pos.x = bound.pos.x;
-      out.pos.y = bound.pos.y;
-      out.r = bound.r;
-
-      return out
-    }
-  }
 
   /**
    * A rectangular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -2066,6 +1999,75 @@ SOFTWARE.
       out.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x;
       out.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y;
       
+      return out
+    }
+  }
+
+  /**
+   * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
+   */
+  class BoundingCircle {
+    type = BoundType.CIRCLE
+    /**
+     * 
+     * @type {number}
+     */
+    r = 0
+    /**
+     * 
+     * @type {Vector_like}
+     */
+    pos = { x: 0, y: 0 }
+    /**
+     * @param {number} [r]
+     * @param {Vector_like} [position]
+     */
+    constructor(position = {x:0,y:0},r = 0) {
+      this.r = r;
+      this.pos = position;
+    }
+    /**
+     * 
+     * @deprecated
+     * Checks to see if this intersects with another bounding box
+     * @param { BoundingCircle | BoundingBox } bound the bound to check  intersection with
+     **/
+    intersects(bound) {
+      deprecate("BoundingCircle().intersects()", "boundsColliding()");
+      if (bound.type === BoundType.CIRCLE)
+        // @ts-ignore
+        return boundSpheresColliding(this, bound)
+      // @ts-ignore
+      return AABBvsSphere(bound, this)
+    }
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    translate(x, y) {
+      deprecate("BoundingCircle().translate()", "BoundingCircle.translate()");
+      this.pos.x += x;
+      this.pos.y += y;
+    }
+    /**
+     * @param {BoundingCircle} bound
+     * @param {any} x
+     * @param {any} y
+     */
+    static translate(bound, x, y, out = new BoundingCircle()) {
+      out.pos.x = bound.pos.x + x;
+      out.pos.y = bound.pos.y + y;
+      
+      return out
+    }
+    /**
+     * @param {BoundingCircle} bound
+     */
+    static copy(bound, out = new BoundingCircle()) {
+      out.pos.x = bound.pos.x;
+      out.pos.y = bound.pos.y;
+      out.r = bound.r;
+
       return out
     }
   }
@@ -2320,13 +2322,19 @@ SOFTWARE.
      * Last time the clock was updated
      * 
      * @private
-     * @type number
+     * @type {number}
      */
-    lastcall = 0
+    start = performance.now()
+    /**
+     * @private
+     * @type {number}
+     */
+    lastTick = 0
     /**
      * Difference between the last call in the last frame and current call.
      * 
-     * @type number 
+     * @private
+     * @type {number} 
      */
     dt = 0
     /**
@@ -2335,25 +2343,51 @@ SOFTWARE.
      * @param {number} [accumulate]
      */
     update(accumulate = performance.now()) {
-      deprecate("Clock().update()","Clock.update()");
+      deprecate("Clock().update()", "Clock.update()");
       return Clock.update(this, accumulate)
     }
-    /*getFrameRate(){
-      return 1/(this.dt/1000)
+    /**
+     * starts the clock
+     * 
+     * @param {Clock} clock
+     */
+    static start(clock) {
+      clock.start = performance.now();
+      clock.dt = 0;
     }
-    getRoundedFrameRate(){
-      return Math.round(this.getFrameRate())
-    }*/
+    /**
+     * Gets the elapsed time of the clock
+     * 
+     * @param {Clock} clock
+     */
+    static getElapsed(clock) {
+      return performance.now() - clock.start
+    }
+    /**
+     * Gets the time between two frames/ticks clock
+     * 
+     * @param {Clock} clock
+     */
+    static getDelta(clock) {
+      return clock.dt
+    }
+    /**
+     * Gets the frameRate of the clock
+     * 
+     * @param {Clock} clock
+     */
+    static getFrameRate(clock) {
+      return 1000 / clock.dt
+    }
     /**
      * Updates the clock
      * 
      * @param {Clock} clock
      * @param {number} [accumulate]
      */
-    static update(clock,accumulate = performance.now()) {
-      clock.dt = accumulate - clock.lastcall;
-      clock.lastcall = accumulate;
-
+    static update(clock, accumulate = performance.now()) {
+      clock.dt = accumulate - clock.lastTick;
+      clock.lastTick = accumulate;
       return clock.dt / 1000
     }
   }
@@ -2539,37 +2573,6 @@ SOFTWARE.
     }
   }
 
-  /**
-   * This is a container to hold components,tags and event handlers.
-   * 
-   * @class
-   * @public
-   */
-  class Entity {
-    /**
-     * @internal
-     * @type {number}
-    */
-    index = -1
-    /**
-     * @internal
-     * @type {number}
-     */
-    archIndex = -1
-    /**
-     * @type {string}
-     */
-    get CHAOS_OBJ_TYPE() {
-      return "entity"
-    }
-    /**
-     * @type {string}
-     */
-    get CHAOS_CLASSNAME() {
-      return this.constructor.name.toLowerCase()
-    }
-  }
-
   let tmpID = 0;
 
   /**
@@ -2677,10 +2680,6 @@ SOFTWARE.
 
   class Archetype {
     /**
-     * @type {Entity[]}
-     */
-    entities = []
-    /**
      * @type {Map<string,any>}
      */
     components = new Map()
@@ -2689,46 +2688,42 @@ SOFTWARE.
      */
     keys = []
     constructor() {
-      this.components.set("entity",this.entities);
+      this.components.set("entity", []);
+      //this.keys.push("entity")
     }
     /**
      * @param {Entity} entity
      * @param {{[x:string]:any}} components
      */
-    insert(entity,components) {
-      if (entity.index !== -1)
-        return warn("An entity has been added twice into an archetype.\nThe dublicate will be ignored.")
+    insert(entity, components) {
+      const entities = this.getComponentLists("entity");
+
       for (let i = 0; i < this.keys.length; i++) {
         this.components.get(this.keys[i]).push(components[this.keys[i]]);
       }
-      this.entities.push(entity);
-      entity.index = this.entities.length - 1;
-      return this.entities.length - 1
+      entities.push(entity);
+      return entities.length - 1
     }
     /**
-     * @param {Entity} entity
+     * @param {number} index
+     * @returns {Entity | undefined}
      */
-    remove(entity) {
-      const index = entity.index;
+    remove(index) {
+      const entities = this.components.get("entity");
       for (let name in this.keys) {
         removeElement(
-          this.components.get(name),
+          this.components.get(this.keys[name]),
           index
         );
       }
-      removeElement(
-        this.entities,
-        index
-      );
-      if (index !== this.entities.length)
-        this.entities[index].index = index;
-      entity.index = -1;
+      removeElement(entities, index);
+      return this.components.get("entity")[index]
     }
     /**
-     * @param {Entity} entity
+     * @param {number} index
      * @param {{[x:string] : any}} compnames
      */
-    get(entity,compnames) {
+    get(index, compnames) {
       const comp = [];
       for (let i = 0; i < compnames.length; i++) {
         const list = this.getComponentLists(compnames[i]);
@@ -2737,7 +2732,7 @@ SOFTWARE.
           continue
         }
         comp.push(
-          list[entity.index]
+          list[index]
         );
       }
       return comp
@@ -2746,8 +2741,8 @@ SOFTWARE.
      * @param {string} name
      * @param {any[]} list
      */
-    setComponentList(name,list) {
-      this.components.set(name,list);
+    setComponentList(name, list) {
+      this.components.set(name, list);
       this.keys.push(name);
     }
     /**
@@ -2768,7 +2763,11 @@ SOFTWARE.
      * @type {Archetype[]}
      */
     list = []
-    constructor() { }
+    /**
+     * @type {number[]}
+     */
+    entities = []
+    constructor() {}
     /**
      * @private
      * @param {{[x:string] : any}} comps
@@ -2776,7 +2775,7 @@ SOFTWARE.
     _createArchetype(comps) {
       const archetype = new Archetype();
       for (let i = 0; i < comps.length; i++) {
-        archetype.setComponentList(comps[i],[]);
+        archetype.setComponentList(comps[i], []);
       }
       return this.list.push(archetype) - 1
     }
@@ -2785,7 +2784,7 @@ SOFTWARE.
      * @param {Archetype} archetype
      * @param {{[x:string] : any}} comps
      */
-    _ArcheTypeHasOnly(archetype,comps) {
+    _ArcheTypeHasOnly(archetype, comps) {
       if (comps.length !== archetype.components.size - 1) return false
       for (let i = 0; i < comps.length; i++) {
         if (!archetype.components.has(comps[i])) return false
@@ -2798,7 +2797,7 @@ SOFTWARE.
      */
     _getArchetype(comps) {
       for (let i = 0; i < this.list.length; i++) {
-        if (this._ArcheTypeHasOnly(this.list[i],comps)) {
+        if (this._ArcheTypeHasOnly(this.list[i], comps)) {
           return i
         }
       }
@@ -2806,7 +2805,7 @@ SOFTWARE.
     }
     /**
      * @private
-     * @param {string | any[]} comps
+     * @param {string[]} comps
      */
     _getArchetypes(comps) {
       const filtered = [];
@@ -2824,39 +2823,53 @@ SOFTWARE.
       return filtered
     }
     /**
-     * @param {Entity} entity
      * @param {{[x:string] : any}} components
+     * @returns {Entity}
      */
-    insert(entity,components) {
+    insert(components) {
+      const entity = this.entities.length;
+      //components.entity = entity
       const keys = [];
-      for (let name in components) {
+      for (const name in components) {
         keys.push(name);
       }
-      let index =
+      let archindex =
         this._getArchetype(keys);
-      index = index === -1 ? this._createArchetype(keys) : index;
-      this.list[index].insert(entity,components);
-      entity.archIndex = index;
+      archindex = archindex === -1 ? this._createArchetype(keys) : archindex;
+      const index = this.list[archindex].insert(entity, components);
+      this.entities[entity] = archindex;
+      this.entities[entity + 1] = index;
+
+      return entity
     }
     /**
      * @param {Entity} entity
      */
     remove(entity) {
-      this.list[entity.archIndex].remove(entity);
+      const archid = this.entities[entity];
+      const tableid = this.entities[entity + 1];
+
+      const swapped = this.list[archid].remove(tableid);
+      if (swapped)
+        this.entities[swapped + 1] = this.entities[entity + 1];
+      this.entities[entity] = -1;
+      this.entities[entity + 1] = -1;
     }
     /**
      * @param {Entity} entity
      * @param {string[]} compnames
      */
-    get(entity,compnames) {
-      if (entity.index === -1) return
-      return this.list[entity.archIndex].get(entity,compnames)
+    get(entity, compnames) {
+      const archid = this.entities[entity];
+      const index = this.entities[entity + 1];
+      if (archid === -1) return []
+      return this.list[archid].get(index, compnames)
     }
     /**
      * @param {string[]} compnames
      * @param {any[]} out 
      */
-    query(compnames,out = []) {
+    query(compnames, out = []) {
       let archetypes = this._getArchetypes(compnames);
       for (let i = 0; i < compnames.length; i++) {
         out[i] = [];
@@ -3172,18 +3185,28 @@ SOFTWARE.
     }
     /**
      * @param {(comp:T)=>void} callback
-    */
+     */
     each(callback) {
       const components = new Array(this.number);
-      if(!this.components)return
-      // @ts-ignore
-      for (let i = 0; i < this.components[i].length; i++) {
-        for (let j = 0; j < this.number; j++)
-          // @ts-ignore
-          components[j] = this.components[j][i];
-        // @ts-ignore
-        callback(...components);
+      if (!this.components) return
+      for (let j = 0; j < this.components[0].length; j++) {
+        for (let k = 0; k < this.components[0][j].length; k++) {
+          for (let l = 0; l < this.number; l++) {
+            components[l] = this.components[l][j][k];
+          }
+          callback(...components);
+        }
       }
+    }
+    single() {
+      const components = new Array(this.number);
+      
+      assert(this.components && this.components[0][0] && this.components[0][0][0], `No entity with component types of \"${ this.type.join("\",\"")}\" found on \`Query().single()\``);
+
+      for (let i = 0; i < this.number; i++) {
+        components[i] = this.components[i][0][0];
+      }
+      return components
     }
   }
 
@@ -3300,14 +3323,21 @@ SOFTWARE.
      * @param {Record<string,any>} components The entity to add
      */
     create(components) {
-      const entity = new Entity();
-
-      this._table.insert(entity, components);
+      const entity = this._table.insert(components);
       this.events.trigger("add", {
         entity,
         components
       });
       return entity
+    }
+    /**
+     * @template {Object} T
+     * @param {T[]} entities
+     */
+    createMany(entities){
+      for (let i = 0; i < entities.length; i++) {
+        this.create(entities[i]);
+      }
     }
     /**
      * Removes an entity from the manager.
@@ -8492,34 +8522,6 @@ SOFTWARE.
   };
 
   /**
-   * @deprecated
-   * @param {number} x x-position of entity 
-   * @param {number} y y-position of entity 
-   * @param {number} a angle in degrees
-   */
-
-  function createEntity(x, y, a) {
-    deprecate("createEntity()","Manager().create()");
-    throws("Breaking deprecation encountered");
-    return new Entity()
-  }
-
-  /**
-   * Creates a new instance of Manager class with given default systems.
-   * 
-   * @param {Object} [options] 
-   * @param {boolean} [options.autoPlay=true] Whether the manager should immediately start playing after initialization
-   * @param {boolean} [options.physics=true] Adds physics world as a System.
-   * @param {boolean} [options.renderer=true] Adds a renderer as a system.
-   * @param {boolean} [options.input=true] Adds input as a system.
-   * 
-   **/
-  function createManager(options) {
-    deprecate("createManager()","Manager()");
-    throws("Breaking deprecation encountered");
-  }
-
-  /**
    * @param {Manager} manager
    */
   function fpsDebugger(manager) {
@@ -9213,7 +9215,6 @@ SOFTWARE.
   exports.DOMEventHandler = DOMEventHandler;
   exports.DistanceConstraint = DistanceConstraint;
   exports.Easing = Easing;
-  exports.Entity = Entity;
   exports.EvadeBehaviour = EvadeBehaviour;
   exports.EventDispatcher = EventDispatcher;
   exports.Events = Events;
@@ -9302,8 +9303,6 @@ SOFTWARE.
   exports.circle = circle;
   exports.clamp = clamp;
   exports.collisionResponse = collisionResponse;
-  exports.createEntity = createEntity;
-  exports.createManager = createManager;
   exports.dampenVelocity = dampenVelocity;
   exports.defaultCollisionHandler = defaultCollisionHandler;
   exports.defaultPrecollisionHandler = defaultPrecollisionHandler;
@@ -9346,6 +9345,9 @@ SOFTWARE.
  * @typedef Bounds
  * @property {Vector_like} max
  * @property {Vector_like} min
+ */
+/**
+ * @typedef {number} Entity
  *//**
  * @callback EasingFunc
  * @param {number} t

@@ -1,0 +1,120 @@
+/* Chaos game engine prettify.js theme */
+:root{
+  --comment-color:#458a00;
+  --string-color:#d5ba2a;
+  --variable-color:#5cb9e5;
+  --keyword-color:#b66ae7;
+  --operator-color:#bbb;
+  --tag-color:#157bff;
+  --type-color:#157bff;
+}
+/* plain text */
+.pln {
+  color: var(--variable-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* string content */
+.str {
+  color: var(--string-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* a keyword */
+.kwd {
+  color: var(--keyword-color);
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* a comment */
+.com {
+  color: var(--comment-color);
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* a type name */
+.typ {
+  color: var(--tag-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* a literal value */
+.lit {
+  color: var(--string-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* punctuation */
+.pun {
+  color: var(--operator-color);
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* lisp open bracket */
+.opn {
+  color: var(--operator-color);
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* lisp close bracket */
+.clo {
+  color: var(--operator-color);
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* a markup tag name */
+.tag {
+  color: var(--tag-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* a markup attribute name */
+.atn {
+  color: var(--variable-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* a markup attribute value */
+.atv {
+  color: var(--string-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* a declaration */
+.dec {
+  color: var(--variable-color);
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* a variable name */
+.var {
+  color: var(--variable-color);
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* a function name */
+.fun {
+  color: var(--variable-color);
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  margin-top: 0;
+  margin-bottom: 0;
+}
