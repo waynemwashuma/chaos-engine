@@ -13,6 +13,7 @@ class Archetype {
   keys = []
   constructor() {
     this.components.set("entity", [])
+    //this.keys.push("entity")
   }
   /**
    * @param {Entity} entity
@@ -29,22 +30,18 @@ class Archetype {
   }
   /**
    * @param {Entity} entity
+   * @returns {Entity | undefined}
    */
-  remove(entity) {
-    const index = entity.index
+  remove(index) {
+    const entities = this.components.get("entity")
     for (let name in this.keys) {
       Utils.removeElement(
-        this.components.get(name),
+        this.components.get(this.keys[name]),
         index
       )
     }
-    Utils.removeElement(
-      this.entities,
-      index
-    )
-    if (index !== this.entities.length)
-      this.entities[index].index = index
-    entity.index = -1
+    Utils.removeElement(entities, index)
+    return this.components.get("entity")[index]
   }
   /**
    * @param {Entity} entity
@@ -153,6 +150,7 @@ export class NaiveArchTypeTable {
    */
   insert(components) {
     const entity = new Entity(this.entities.length)
+    //components.entity = entity
     const keys = []
     for (const name in components) {
       keys.push(name)
@@ -173,7 +171,9 @@ export class NaiveArchTypeTable {
     const archid = this.entities[entity]
     const tableid = this.entities[entity + 1]
 
-    this.list[archid].remove(tableid)
+    const swapped = this.list[archid].remove(tableid)
+    if (swapped)
+      this.entities[swapped + 1] = this.entities[entity + 1]
     this.entities[entity] = -1
     this.entities[entity + 1] = -1
   }
@@ -184,6 +184,7 @@ export class NaiveArchTypeTable {
   get(entity, compnames) {
     const archid = this.entities[entity]
     const index = this.entities[entity + 1]
+    if (archid === -1) return []
     return this.list[archid].get(index, compnames)
   }
   /**
