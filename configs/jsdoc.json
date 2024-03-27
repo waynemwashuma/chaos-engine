@@ -13,7 +13,13 @@
         "destination":"./docs",
         "recurse":true,
         "encoding":"utf-8",
-        "template":"doc-template",
+        "template":"docdash",
         "readme":"readme.md"
+    },
+    "docdash":{
+        "search":"true",
+        "static": false,
+        "collapse": true,
+        "typedefs": true
     }
 }

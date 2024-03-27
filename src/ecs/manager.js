@@ -1,7 +1,6 @@
 import { ArchetypeTable } from "../dataStructures/index.js"
 import { Clock } from "../math/index.js"
 import { EventDispatcher } from "../events/index.js"
-import { Entity } from "./entity.js"
 import { Query } from "./query.js"
 export class Manager {
   /**
@@ -112,14 +111,21 @@ export class Manager {
    * @param {Record<string,any>} components The entity to add
    */
   create(components) {
-    const entity = new Entity()
-
-    this._table.insert(entity, components)
+    const entity = this._table.insert(components)
     this.events.trigger("add", {
       entity,
       components
     })
     return entity
+  }
+  /**
+   * @template {Object} T
+   * @param {T[]} entities
+   */
+  createMany(entities){
+    for (let i = 0; i < entities.length; i++) {
+      this.create(entities[i])
+    }
   }
   /**
    * Removes an entity from the manager.

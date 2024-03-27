@@ -51,7 +51,7 @@ export function boundsColliding(bound1, bound2) {
   if (bound1.type === BoundType.CIRCLE && bound2.type === BoundType.CIRCLE)
     // @ts-ignore
     return boundSpheresColliding(bound1, bound2)
-  if (bound1.type === BoundType.BOX)
+  if (bound1.type === BoundType.CIRCLE)
     // @ts-ignore
     return AABBvsSphere(bound2, bound1)
   // @ts-ignore

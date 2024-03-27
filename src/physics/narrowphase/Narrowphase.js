@@ -1,4 +1,4 @@
-import { Entity, Manager } from "../../ecs/index.js"
+import { Manager } from "../../ecs/index.js"
 import { Body2D } from "../bodies/index.js"
 import { CollisionManifold } from "./collisionManifold.js"
 

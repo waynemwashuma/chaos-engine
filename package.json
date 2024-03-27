@@ -1,6 +1,6 @@
 {
   "name": "chaos-studio",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "a 2D game engine",
   "homepage": "https://waynemwashuma.github.io/chaos-engine/",
   "bugs": {
@@ -41,7 +41,7 @@
     "2D"
   ],
   "devDependencies": {
-    "jsdoc": "4.0.2",
+    "jsdoc": "^4.0.2",
     "rollup": "^4.12.0",
     "typescript": "latest"
   },
