@@ -1,59 +1,62 @@
 import { DOMEventHandler } from "../events/index.js";
+import { error } from "../logger/index.js";
 
 /**
  * Handled the keyboard input of an application on a PC.
-*/
+ */
 export class Keyboard {
-  /**
-   * Dictionary of keys showing if they are active or not.
-   * 
-   * @type Object<string,boolean>
-  */
-  keys = {}
-  /**
-   * @param {DOMEventHandler} eh
-  */
-  constructor(eh) {
-    this.keys = {}
-    this.init(eh)
+  A = false
+  B = false
+  C = false
+  D = false
+  E = false
+  F = false
+  G = false
+  H = false
+  I = false
+  J = false
+  K = false
+  L = false
+  M = false
+  N = false
+  O = false
+  P = false
+  Q = false
+  R = false
+  S = false
+  T = false
+  U = false
+  V = false
+  W = false
+  X = false
+  Y = false
+  Z = false
+}
+export class KeyboardPlugin {
+  register(manager) {
+    const eh = manager.getResource("domeventhandler")
+    if (!eh) return error("The resource `DOMEventHandler()` is required to be set first before `KeyboardPlugin()` is registered.")
+    const keyboard = new Keyboard()
+    manager.setResource("keyboard", keyboard)
+    eh.add("keydown", e =>
+      keyboard[normalizeKey(e.code)] = true
+    )
+    eh.add("keyup", e =>
+      keyboard[normalizeKey(e.code)] = false
+    )
+
   }
-  /**
-   * Ensures that keycodes are produced in a consistent manner
-   * 
-   * @private
-   * @param {string} keycode
-   * @returns {string}
-  */
-  normalize(keycode) {
-    let r = keycode;
-    if (keycode.includes('Key')) {
-      r = r.slice(3, r.length)
-    }
-    return r.toUpperCase()
-  }
-  /**
-   * Adds Keyboard events to the DOM.
-   * 
-   * @param {DOMEventHandler} eh
-  */
-  init(eh) {
-    eh.add('keydown',this._onDown)
-    eh.add('keyup',this._onUp)
-  }
-  /**
-   * @private
-  */
-  // @ts-ignore
-  _onDown = e => {
-    let key = this.normalize(e.code)
-    this.keys[key] = true
-    //this.activeKeys.push(key)
-  }
-    /**
-     * @private
-     */
-  // @ts-ignore
-  _onUp = e =>{
-    this.keys[this.normalize(e.code)] = false
-  }
+}
+
+/**
+ * Ensures that keycodes are produced in a consistent manner
+ * 
+ * @param {string} keycode
+ * @returns {string}
+ */
+function normalizeKey(keycode) {
+  const r = keycode.includes('Key') ?
+    r.slice(3, r.length) :
+    keycode
+  return r.toUpperCase()
 }
