@@ -1,170 +1,120 @@
 import { DOMEventHandler } from "../events/index.js"
+import { BoundingBox, Vector2 } from "../math/index.js"
 /**
- * This handles all inputs from mouse and touchpad on laptops
+ * This handles all inputs from mouse and touchpad on PC and laptop.
  */
 
 export class Mouse {
   /**
+   * Distance vector between the last frame's position and current position.
+   * 
+   * @type {Vector2}
+   */
+  velocity = new Vector2()
+  /**
+   * Position of the mouse in current frame.
+   * 
+   * @type {Vector2}
+   */
+  position = new Vector2()
+  /**
    * Number of times the mouse has been clicked.
    * 
-   * @type number
+   * @type {number}
    */
   clickCount = 0
   /**
    * If the mouse is being dragged or not.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   dragging = false
   /**
+   * @type {BoundingBox}
+   */
+  dragBox = new BoundingBox()
+  /**
    * The position from which the mouse is being dragged.
    * 
-   * @type Vector_like
+   * @type {Vector2}
    */
-  dragLastPosition = { x: 0, y: 0 }
-  /**
-   * Distance vector between the last frame's position and current position.
-   * 
-   * @type Vector_like
-   */
-  delta = { x: 0, y: 0 }
-  /**
-   * Position of the mouse in current frame.
-   * 
-   * @type Vector_like
-   */
-  position = { x: 0, y: 0 }
-  /**
-
-   * Position of the mouse in last frame.
-
-   * 
-   * @type Vector_like
-   */
-  lastPosition = { x: 0, y: 0 }
+  dragPosition = new Vector2()
   /**
    * If the left mouse button is pressed or not.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   leftbutton = false
   /**
    * If the right mouse button is pressed or not.
    * 
-   * @type boolean
+   * @type {boolean}
    */
   rightbutton = false
-  /**
-   * @param {DOMEventHandler} eh
-   */
-  constructor(eh) {
-    this.init(eh)
-  }
-  /**
-   * Checks to see if the vector provided is
-   * within a dragbox if mouse is being dragged with a right or left button down
-   * 
-   * @param {Vector_like} pos an object containing x and y coordinates to be checked
-   * @returns {Boolean}
-   * 
-   */
-  inDragBox(pos) {
-    if (!this.dragging) return false
-    if (pos.x > this.dragLastPosition.x && pos.x < this.position.x &&
-      pos.y > this.dragLastPosition.y &&
-      pos.y < this.position.y) {
-      return false
-    }
-    return true
-  }
-  /**
-   * Initializes the mouse by appending to the DOM
-   *
-   * @param {DOMEventHandler} eh
-   */
-  init(eh) {
-    eh.add('click', this._onClick)
-    eh.add('mousedown', this._onDown)
-    eh.add('mouseup', this._onUp)
-    eh.add('wheel', this._onWheel)
-    eh.add('mousemove', this._onMove)
-    eh.add("contextmenu", this._onContextMenu)
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  // @ts-ignore
-  _onClick = (e) => {
-    ++this.clickCount
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onMove = (e) => {
-    this.position.x = e.clientX;
+}
 
-    this.position.y = e.clientY
+export class MousePlugin {
+  register(manager) {
+    const eh = manager.getResource("domeventhandler")
 
-    if (this.lastPosition.x === undefined) {
-      this.lastPosition = { ...this.position }
-    }
-    this.delta.x = this.position.x - this.lastPosition.x
-    this.delta.y = this.position.y - this.lastPosition.y
-    this.dragging = this.leftbutton || this.rightbutton ? true : false
-    if (!this.dragging) {
-      this.dragLastPosition.x = e.clientX;
-      this.dragLastPosition.y = e.clientY
-    }
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onDown = (e) => {
-    switch (e.button) {
+    if (!eh) return error("The resource `DOMEventHandler()` is required to be set first before `MousePlugin()` is registered.")
 
-      case 0:
+    const mouse = new Mouse()
+    manager.setResource("mouse", mouse)
+    eh.add('click', e => ++this.clickCount)
+    eh.add('mousedown', e => {
+      switch (e.button) {
+        case 0:
+          mouse.leftbutton = true
+          break;
+        case 2:
+          mouse.rightbutton = true
+          break;
+      }
+    })
+    eh.add('mouseup', e => {
+      switch (e.button) {
+        case 0:
+          mouse.leftbutton = false
+          break;
+        case 2:
+          mouse.rightbutton = false
+          break;
+      }
+    })
+    eh.add('mousemove', e => {
+      mouse.velocity.x = e.clientX - mouse.position.x
+      mouse.velocity.y = e.clientY - mouse.position.y
+      mouse.position.x = e.clientX
+      mouse.position.y = e.clientY
 
-        this.leftbutton = true
-        break;
-      case 2:
-        this.rightbutton = true
-        break;
-    }
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onUp = (e) => {
-    switch (e.button) {
-      case 0:
-        this.leftbutton = false
-        break;
-      case 2:
-        this.rightbutton = false
-        break;
-    }
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onWheel = (e) => {
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onContextMenu = (e) => {
-    e.preventDefault()
-  }
-  /**
-   * Updates the mouse internals.
-   */
-  update() {
-    this.lastPosition = { ...this.position }
+      mouse.dragging = mouse.leftbutton || mouse.rightbutton
+      if (!mouse.dragging) {
+        mouse.dragPosition.x = e.clientX;
+        mouse.dragPosition.y = e.clientY
+      }
+      if (dragging) {
+        if (mouse.position.x < mouse.dragPosition.x) {
+          mouse.dragBox.min.x = mouse.position.x
+          mouse.dragBox.max.x = mouse.dragPosition.x
+        }else{
+          mouse.dragBox.max.x = mouse.position.x
+
+          mouse.dragBox.min.x = mouse.dragPosition.x
+        }
+        if (mouse.position.y < mouse.dragPosition.y) {
+          mouse.dragBox.min.y = mouse.position.y
+          mouse.dragBox.max.y = mouse.dragPosition.y
+        } else {
+          mouse.dragBox.max.y = mouse.position.y
+          mouse.dragBox.min.y = mouse.dragPosition.y
+        }
+      }
+
+    })
+    eh.add('wheel', e => {})
+    eh.add("contextmenu", e => {
+      e.preventDefault()
+    })
   }
 }
