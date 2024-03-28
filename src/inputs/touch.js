@@ -7,49 +7,37 @@ import { DOMEventHandler } from "../events/index.js"
  */
 export class Touch {
   /**
-   * @type TouchEvent[]
+   * @type {TouchEvent[]}
    */
   touches = []
   /**
-   * @type number
-  */
+   * @type {number}
+   */
   clickCount = 0
-  /**
-   * @param {DOMEventHandler} eh
-  */
-  constructor(eh) {
-    this.init(eh)
+
+}
+export class TouchPlugin {
+  register(manager) {
+    const eh = manager.getResource("domeventhandler")
+
+    if (!eh) return error("The resource `DOMEventHandler()` is required to be set first before `MousePlugin()` is registered.")
+
+    const touch = new Touch()
+    manager.setResource("touch", touch)
+    eh.add('touchstart', (e) => {
+      touch.touches = e.touches
+      e.preventDefault()
+    })
+    eh.add('touchend', e => {
+      touch.touches = e.touches
+      e.preventDefault()
+    })
+
+    eh.add('touchmove', e => {
+      e.preventDefault()
+    })
+    eh.add('touchcancel',e =>{
+      e.preventDefault()
+    })
   }
-  /**
-   * Adds Touch events to the DOM.
-   * 
-   * @param {DOMEventHandler} eh
-   */
-  init(eh) {
-    eh.add('touchstart', this._onDown)
-    eh.add('touchend', this._onUp)
-    eh.add('touchmove', this._onMove)
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onMove = (e) => {
-    e.preventDefault()
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onDown = (e) => {
-    this.touches = e.touches
-  }
-  /**
-   * @private
-   */
-  // @ts-ignore
-  _onUp = (e) => {
-    this.touches = e.touches
-  }
-  update() {}
 }
