@@ -42,5 +42,6 @@ export class FPSDebugger {
  * @param {Manager} manager
  */
 export function fpsDebugger(manager) {
+  deprecate("fpsDebugger()","FPSDebugger()")
   manager.registerPlugin(new FPSDebugger())
 }
