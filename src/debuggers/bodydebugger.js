@@ -5,6 +5,7 @@ import { Manager } from "../ecs/index.js"
 import { deprecate } from "../logger/index.js"
 
 /**
+ * @deprecated
  * @param {Manager} manager
  * @param {BodyDebbuggerOptions} [options]
  */
