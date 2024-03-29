@@ -1,7 +1,12 @@
+import { deprecate,throws } from "../logger/index.js"
+
 /**
+ * @deprecated
  * @param {Manager} manager
  */
 export function raycastDebugger(manager) {
+  deprecate("raycastDebugger()")
+  throws("Breaking deprecation encountered.")
   manager.registerSystem("raycastDebugger", {
     renderer: null,
     raycaster: null,
