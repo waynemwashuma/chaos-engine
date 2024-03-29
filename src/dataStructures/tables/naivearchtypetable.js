@@ -1,4 +1,4 @@
-import { Utils } from "../utils/index.js"
+import { Utils } from "../../utils/index.js"
 
 class Archetype {
   /**
@@ -9,7 +9,7 @@ class Archetype {
    * @type {string[]}
    */
   keys = []
-  constructor() {
+  constructor() { 
     this.components.set("entity", [])
     //this.keys.push("entity")
   }
