@@ -3,6 +3,7 @@ import { BoundingBox, Vector2 } from "../math/index.js"
 import { circle, vertices, stroke, fill } from "../render/index.js"
 import { Manager } from "../ecs/index.js"
 /**
+ * @deprecated
  * @param {Manager} manager
  * @param {BodyDebbuggerOptions} [options]
  */
