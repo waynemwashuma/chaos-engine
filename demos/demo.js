@@ -64,11 +64,3 @@ bodyDebugger(manager, {
   clearRenderer: false,
   drawCollisionArm: false
 })
-
-let a = 0;
-let t = performance.now();
-for(let i = 0;i<100000000;i++){
-  let b = a + 1;
-  a = b.valueOf();
-};
-console.log(performance.now()-t);
