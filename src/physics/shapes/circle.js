@@ -1,14 +1,14 @@
-import { Shape } from "./shape.js"
+import { Shape2D } from "./shape.js"
 import { Vector2 } from "../../math/index.js"
 
 /**
  * A circular shape.
  * 
  * 
- * @augments Shape
+ * @augments Shape2D
  */
-export class Circle extends Shape {
-  type = Shape.CIRCLE
+export class Circle extends Shape2D {
+  type = Shape2D.CIRCLE
   /**
    * @param {number} radius 
    */

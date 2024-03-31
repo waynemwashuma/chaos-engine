@@ -1,4 +1,3 @@
-import { ObjType } from "../settings.js"
 import { Vector2 } from "../../math/index.js"
 
 /**

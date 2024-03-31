@@ -1,7 +1,7 @@
-import { Shape } from "./shape.js"
+import { Shape2D } from "./shape.js"
 import { Vector2 } from "../../math/index.js"
 
-export class Line extends Shape {
+export class Line extends Shape2D {
   /**
    * @param {number} length
    */

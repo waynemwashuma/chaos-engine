@@ -1,5 +1,5 @@
 import { Body2D } from "../bodies/index.js"
-import { Shape } from "../shapes/index.js"
+import { Shape2D } from "../shapes/index.js"
 /**
  * @param {Body2D} a
  * @param {Body2D} b
@@ -51,11 +51,11 @@ export function verticesContain(vertices, point) {
   return true;
 }
 /**
- * @param {Shape} shape
+ * @param {Shape2D} shape
  * @param { Vector2} point
  */
 export function shapeContains(shape, point) {
-  if (shape.type == Shape.CIRCLE)
+  if (shape.type == Shape2D.CIRCLE)
     return circleContains(shape.vertices[0], shape.vertices[1].x, point)
   return verticesContain(shape.vertices, point)
 }
