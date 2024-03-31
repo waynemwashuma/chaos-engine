@@ -1,4 +1,4 @@
-import { Shape } from "../physics/index.js"
+import { Shape2D } from "../physics/index.js"
 import { BoundingBox, Vector2 } from "../math/index.js"
 import { circle, vertices, stroke, fill } from "../render/index.js"
 import { Manager } from "../ecs/index.js"
@@ -53,7 +53,7 @@ function drawShapes(manager) {
   query.each(body => {
     const shape = body.shape
     ctx.beginPath()
-    if (shape.type === Shape.CIRCLE) {
+    if (shape.type === Shape2D.CIRCLE) {
       circle(
         ctx,
         shape.vertices[0].x,
