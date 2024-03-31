@@ -2,7 +2,7 @@ import { Vector2 } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { BoundingBox } from "../../math/index.js"
 import { Settings } from "../settings.js"
-import { Shape } from "../shapes/index.js"
+import { Shape2D } from "../shapes/index.js"
 import { deprecate } from "../../logger/index.js"
 
 /**
@@ -59,7 +59,7 @@ export class Body2D {
    * The shape of the body.
    * 
    * @readonly
-   * @type {Shape}
+   * @type {Shape2D}
    */
   shape
   /**
@@ -83,7 +83,7 @@ export class Body2D {
    */
   autoUpdateBound = Settings.autoUpdateBound
   /**
-   * @param {Shape} shape
+   * @param {Shape2D} shape
    */
   constructor(shape) {
     Body2D.setType(this,Settings.type)
@@ -118,7 +118,7 @@ export class Body2D {
   set mass(x) {
     deprecate("Body2D().mass")
     this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inv_inertia = 1 / Shape.calcInertia(this.shape,this.mass)
+    this.inv_inertia = 1 / Shape2D.calcInertia(this.shape,this.mass)
   }
   get mass() {
     deprecate("Body2D().mass")
@@ -132,12 +132,12 @@ export class Body2D {
    */
   set density(x) {
     deprecate("Body2D().density")
-    const area = Shape.getArea(this.shape)
+    const area = Shape2D.getArea(this.shape)
     this.inv_mass = 1 / (x * area)
   }
   get density() {
     deprecate("Body2D().density")
-    const area = Shape.getArea(this.shape)
+    const area = Shape2D.getArea(this.shape)
     return this.inv_mass * 1 / area
   }
   /**
@@ -204,7 +204,7 @@ export class Body2D {
       maxY = -Number.MAX_SAFE_INTEGER
 
     const shape = body.shape
-    if (shape.type == Shape.CIRCLE) {
+    if (shape.type == Shape2D.CIRCLE) {
       const position = shape.vertices[0]
       const radius = shape.vertices[1].x
       const idx = position.x - radius,
@@ -238,7 +238,7 @@ export class Body2D {
    * @param {BoundingBox} bounds
    */
   static update(body,position,orientation,scale,bounds) {
-    Shape.update(body.shape,position,orientation,scale)
+    Shape2D.update(body.shape,position,orientation,scale)
     if (body.autoUpdateBound)
       Body2D.calculateBounds(body,bounds)
   }
@@ -248,7 +248,7 @@ export class Body2D {
    */
   static setMass(body,mass) {
     body.inv_mass = mass === 0 ? 0 : 1 / mass
-    Body2D.setInertia(body,Shape.calcInertia(body.shape,mass))
+    Body2D.setInertia(body,Shape2D.calcInertia(body.shape,mass))
   }
   /**
    * @param {Body2D} body
@@ -271,7 +271,7 @@ export class Body2D {
    * @param {number} density
    */
   static setDensity(body,density) {
-    const area = Shape.getArea(body.shape)
+    const area = Shape2D.getArea(body.shape)
     Body2D.setMass(body,density * area)
   }
   /**
@@ -297,7 +297,7 @@ export class Body2D {
 export class Body extends Body2D {
   /**
    * @inheritdoc
-   * @param {Shape} shape
+   * @param {Shape2D} shape
    */
   constructor(shape) {
     deprecate("Body()","Body2D()")

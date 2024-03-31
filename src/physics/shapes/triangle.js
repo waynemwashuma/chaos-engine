@@ -1,12 +1,12 @@
-import { Shape } from "./shape.js"
+import { Shape2D } from "./shape.js"
 import { Vector2,clamp } from "../../math/index.js"
 
 /**
  * A triangular shape.
  * 
- * @augments Shape
+ * @augments Shape2D
  */
-export class Triangle extends Shape {
+export class Triangle extends Shape2D {
   /**
    * @param {number} base Length of one side.
    * @param {number} height Length of a second side.

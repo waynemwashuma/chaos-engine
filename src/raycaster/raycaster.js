@@ -1,4 +1,4 @@
-import { Body2D, Shape } from "../physics/index.js"
+import { Body2D, Shape2D } from "../physics/index.js"
 import { Ray } from "./ray.js"
 import { Vector2 } from "../math/index.js"
 import { RayCollisionResult, RayPoint } from "./raycastresult.js"
@@ -15,7 +15,7 @@ export class Raycast2D {
     return Raycast2D.cast(ray,body.shapes[0],value)
   }
   /**
-   * @template {Shape} T
+   * @template {Shape2D} T
    * @template  U
    * @param {Ray} ray
    * @param {T} shape
@@ -23,9 +23,9 @@ export class Raycast2D {
    * @param {RayCollisionResult<U>} results
    */
   static cast(ray, shape, value, results = new RayCollisionResult(value)) {
-    if (shape.type === Shape.POLYGON)
+    if (shape.type === Shape2D.POLYGON)
       return Raycast2D.testVertices(ray, shape.vertices, results)
-    if (shape.type === Shape.CIRCLE)
+    if (shape.type === Shape2D.CIRCLE)
       return Raycast2D.testCircle(ray, shape.vertices[0], shape.vertices[1].x, results)
     return results
   }

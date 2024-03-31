@@ -1,7 +1,7 @@
 import { Vector2, clamp } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { CollisionData, CollisionManifold } from "./collisionManifold.js"
-import { Shape } from "../shapes/index.js"
+import { Shape2D } from "../shapes/index.js"
 import { Settings } from "../settings.js"
 import { Manager } from "../../ecs/index.js"
 import { Body2D } from "../bodies/index.js"
@@ -94,8 +94,8 @@ function getSATContacts(manager) {
 function shapesInBodyCollided(bodyA, bodyB, out) {
   /*** @type {Vector2[]}*/
   const arr = []
-  Shape.getNormals(bodyA.shape, bodyB.shape, arr)
-  Shape.getNormals(bodyB.shape, bodyA.shape, arr)
+  Shape2D.getNormals(bodyA.shape, bodyB.shape, arr)
+  Shape2D.getNormals(bodyB.shape, bodyA.shape, arr)
   projectShapesToAxes(bodyA.shape, bodyB.shape, arr, out)
 
   if (out.overlap < 0) return out
@@ -137,16 +137,16 @@ function shapesInBodyCollided(bodyA, bodyB, out) {
   }
 
   out.contactNo =
-    shape1.type === Shape.CIRCLE ||
-    shape2.type === Shape.CIRCLE ?
+    shape1.type === Shape2D.CIRCLE ||
+    shape2.type === Shape2D.CIRCLE ?
     1 : clamp(overload.length, 0, 2)
 
   return out
 }
 
 /**
- * @param {Shape} shapeB
- * @param {Shape} shapeA
+ * @param {Shape2D} shapeB
+ * @param {Shape2D} shapeA
  * @param {Vector_like[]} axes
  * @param {CollisionData} manifold
  */
@@ -160,9 +160,9 @@ function projectShapesToAxes(shapeA, shapeB, axes, manifold) {
   for (let i = 0; i < axes.length; i++) {
     const axis = Vector2.copy(axes[i], tmp4)
     // @ts-ignore
-    const verticesA = Shape.getVertices(shapeA, axis)
+    const verticesA = Shape2D.getVertices(shapeA, axis)
     // @ts-ignore
-    const verticesB = Shape.getVertices(shapeB, axis)
+    const verticesB = Shape2D.getVertices(shapeB, axis)
     const p1 = projectVerticesToAxis(verticesA, axis, tmp2)
     const p2 = projectVerticesToAxis(verticesB, axis, tmp3)
     const min = p1.max < p2.max ? p1.max : p2.max
