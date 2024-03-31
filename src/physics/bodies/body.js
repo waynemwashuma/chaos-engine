@@ -11,13 +11,6 @@ import { deprecate } from "../../logger/index.js"
  */
 export class Body2D {
   /**
-   * Unique identification of a body.
-   * 
-   * @readonly
-   * @type {number}
-   */
-  id = Utils.generateID()
-  /**
    * Inverse mass of the body.
    * 
    * @type {number}
@@ -51,13 +44,6 @@ export class Body2D {
    */
   kineticFriction = Settings.kineticFriction
   /**
-   * The padding of the body's bounds.
-   * 
-   * @type {number}
-   * @default Settings.boundPadding
-   */
-  boundPadding = Settings.boundPadding
-  /**
    * Used to describe how bodies will collide with each other.
    * Bodies in the same layer or layer 0 will always collide with each other unless they are in different groups.
    * Bodies in the same group will not collied with each other.
@@ -89,20 +75,6 @@ export class Body2D {
    * @type {boolean}
    */
   sleeping = false
-  /**
-   * Whether the body should detect collisions with bounds only.If true,no collision response will occur.Precollision event only will be fired.
-   * 
-   * @type {boolean}
-   * @default Settings.aabbDetectionOnly
-   */
-  aabbDetectionOnly = Settings.aabbDetectionOnly
-  /**
-   * Whether the body should respond to collisions.If false,no collision response will occur but collision events will still be fired.
-   * 
-   * @type {boolean}
-   * @default Settings.collisionResponse
-   */
-  collisionResponse = Settings.collisionResponse
   /**
    * Whether or not the bounds should be automatically updated.
    * 
