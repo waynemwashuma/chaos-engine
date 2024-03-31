@@ -1,5 +1,5 @@
-import { Broadphase,NaiveBroadphase } from "./broadphases/index.js"
-import { NarrowPhase,SATNarrowphase } from "./narrowphase/index.js"
+import { NaiveBroadphase2DPlugin } from "./broadphases/index.js"
+import { SATNarrowphase2DPlugin } from "./narrowphase/index.js"
 import { Vector2 } from "../math/index.js"
 import { Body2D } from "./bodies/index.js"
 import { Settings } from './settings.js';
@@ -14,8 +14,8 @@ export class Physics2DPlugin {
   constructor(options = {}) {
     this.gravity = options.gravity || new Vector2()
     this.enableGravity = options.enableGravity || true
-    this.broadphase = new Broadphase2DPlugin(options.broadphase)
-    this.narrowphase = new Narrowphase2DPlugin(options.narrowphase)
+    this.broadphase = options.broadphase || new NaiveBroadphase2DPlugin()
+    this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
     this.intergrator = new Intergrator2DPlugin(options.intergratorOpt)
 
   }
@@ -34,65 +34,7 @@ export class Physics2DPlugin {
     manager.registerSystem(collisionResponse)
   }
 }
-export class Broadphase2DPlugin {
-  /**
-   * 
-   * @param {Broadphase} broadphase 
-   */
-  constructor(broadphase = new NaiveBroadphase()) {
-    this.broadphase = broadphase
-  }
-  /**
-  * @param {Manager} manager
-  */
-  register(manager) {
-    manager.setResource("collisionPairs",[])
-    manager.setResource("broadphase",this.broadphase)
-    manager.registerSystem(naivebroadphaseUpdate)
-  }
-}
-export class Narrowphase2DPlugin {
-  /**
-   * 
-   * @param {NarrowPhase} narrowphase 
-   */
-  constructor(narrowphase = new SATNarrowphase()) {
-    this.narrowphase = narrowphase
-  }
-  /**
-   * @param {Manager} manager
-   */
-  register(manager) {
-    manager.setResource("contacts",[])
-    manager.setResource("narrowphase",this.narrowphase)
 
-    if (this.narrowphase instanceof SATNarrowphase) {
-      manager.registerSystem(satNarrowphaseUpdate)
-    }
-  }
-}
-/**
- * @param {Manager} manager
- */
-export function naivebroadphaseUpdate(manager) {
-  const [entities,bounds] = manager.query("entity","bound").raw()
-  const broadphase = manager.getResource("broadphase")
-  broadphase.update(entities,bounds)
-  const pairs = manager.getResource("collisionPairs")
-  pairs.length = 0
-  broadphase.getCollisionPairs(pairs)
-}
-/**
- * @param {Manager} manager
- */
-export function satNarrowphaseUpdate(manager) {
-  const narrowphase = manager.getResource("narrowphase")
-  const pairs = manager.getResource("collisionPairs")
-
-  const contacts = manager.getResource("contacts")
-  contacts.length = 0
-  narrowphase.getCollisionPairs(manager,pairs,contacts)
-}
 /**
  * @param {Manager} manager
  */
@@ -182,7 +124,7 @@ export function collisionResponse(manager) {
  * @typedef Physics2DPluginOptions
  * @property {boolean} [enableGravity=true]
  * @property {Vector2} [gravity]
- * @property {Broadphase} [broadphase]
- * @property {NarrowPhase} [narrowphase]
+ * @property {Plugin} [broadphase]
+ * @property {Plugin} [narrowphase]
  * @property {import("../intergrator/index.js").IntergratorPluginOptions} [intergratorOpt]
  */

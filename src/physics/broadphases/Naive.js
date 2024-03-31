@@ -1,10 +1,9 @@
-import { Broadphase } from "./broadphase.js"
-import { BoundingBox,boundsColliding } from "../../math/index.js"
-
+import { BoundingBox, boundsColliding } from "../../math/index.js"
+import { deprecate } from "../../logger/index.js"
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
  */
-export class NaiveBroadphase extends Broadphase {
+export class NaiveBroadphase2D {
   /**
    * @private
    * @type {Entity[]}
@@ -21,37 +20,65 @@ export class NaiveBroadphase extends Broadphase {
    * @param {Entity[]} target Empty array to store results.
    * @returns {Entity[]}
    */
-  query(bound,target = []) {
-    for (let i = 0; i < this.entities.length; i++)
-      if (boundsColliding(bound,this.bounds[i]))
-        target.push(this.entities[i])
-    return target
-  }
-  /**
-   * @param {Entity[][]} entities 
-   * @param {BoundingBox[][]} bounds
-   */
-  update(entities,bounds) {
-    this.entities = entities.reduce((a,b) => a.concat(b),[])
-    this.bounds = bounds.reduce((a,b) => a.concat(b),[])
+  query(bound, target) {
+    deprecate("NaiveBroadphase2D().query()", "NaiveBroadphase2D.query()")
+    NaiveBroadphase2D.query(this, bounds, target)
   }
   /**
    * @inheritdoc
-   * @param {CollisionPair[]} target Empty array to store results.
-   * @returns {CollisionPair[]}
+   * @param {NaiveBroadphase2D} bound Region to check in.
+   * @param {BoundingBox} bound Region to check in.
+   * @param {Entity[]} target Empty array to store results.
+   * @returns {Entity[]}
    */
-  getCollisionPairs(target = []) {
-    const { entities,bounds } = this
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = i + 1; j < entities.length; j++) {
-        if (!boundsColliding(bounds[i],bounds[j]))
-          continue
-        target.push({
-          a: entities[i],
-          b: entities[j]
-        })
-      }
-    }
+  static query(broadphase,bound, target = []) {
+    for (let i = 0; i < this.entities.length; i++)
+      if (boundsColliding(bound, this.bounds[i]))
+        target.push(this.entities[i])
     return target
+  }
+}
+
+/**
+ * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
+ */
+export class NaiveBroadphase2DPlugin {
+  register(manager) {
+    manager.setResource("collisionpairs", [])
+    manager.setResource("naivebroadphase2d", new NaiveBroadphase2D())
+    manager.registerSystem(getCollisionPairs)
+  }
+}
+
+function getCollisionPairs(manager) {
+  const broadphase = manager.getResource("naivebroadphase2d")
+  const pairs = manager.getResource("collisionpairs")
+  const query = manager.query("entity", "bound")
+  const entities = query.raw()[0].reduce((a, b) => a.concat(b), [])
+  const bounds = query.raw()[1].reduce((a, b) => a.concat(b), [])
+
+  broadphase.entities = entities
+  broadphase.bounds = bounds
+  pairs.length = 0
+
+  for (let i = 0; i < entities.length; i++) {
+    for (let j = i + 1; j < entities.length; j++) {
+      if (!boundsColliding(bounds[i], bounds[j]))
+        continue
+      pairs.push({
+        entityA: entities[i],
+        entityB: entities[j]
+      })
+    }
+  }
+}
+
+/**
+ * @deprecated
+ */
+export class NaiveBroadphase extends NaiveBroadphase2D {
+  constructor() {
+    super()
+    deprecate("NaiveBroadphase()", "NaiveBroadphase2D()")
   }
 }
