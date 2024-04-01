@@ -55,8 +55,8 @@ function getSATContacts(manager) {
 
   for (let i = 0; i < pairs.length; i++) {
     const { entityA, entityB } = pairs[i]
-    const [bodyA, movableA] = manager.get(entityA, "body", "movable")
-    const [bodyB, movableB] = manager.get(entityB, "body", "movable")
+    const [bodyA, movableA, transformA] = manager.get(entityA, "body", "movable", "transform")
+    const [bodyB, movableB, transformB] = manager.get(entityB, "body", "movable", "transform")
 
     if (!canCollide(bodyA, bodyB))
       continue
@@ -68,6 +68,8 @@ function getSATContacts(manager) {
       narrowphase.clmdrecord.set(id, new CollisionManifold(
         entityA,
         entityB,
+        transformA.position,
+        transformB.position,
         movableA,
         movableB,
         bodyA,
@@ -156,7 +158,7 @@ function projectShapesToAxes(shapeA, shapeB, axes, manifold) {
   let minVerticesB = null
   let minOverlap = Infinity
   let minaxis = new Vector2()
-  
+
   for (let i = 0; i < axes.length; i++) {
     const axis = Vector2.copy(axes[i], tmp4)
     // @ts-ignore

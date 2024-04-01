@@ -24,7 +24,7 @@ export class Physics2DPlugin {
    */
   register(manager) {
     if (this.enableGravity) {
-      manager.setResource("gravity",this.gravity)
+      manager.setResource("gravity", this.gravity)
       manager.registerSystem(applyGravity)
     }
     manager.registerPlugin(this.intergrator)
@@ -40,7 +40,7 @@ export class Physics2DPlugin {
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const [bodies,movables] = manager.query("body","movable").raw()
+  const [bodies, movables] = manager.query("body", "movable").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
@@ -58,7 +58,7 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const [transform,bounds,bodies] = manager.query("transform","bound","body").raw()
+  const [transform, bounds, bodies] = manager.query("transform", "bound", "body").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
@@ -80,44 +80,43 @@ export function collisionResponse(manager) {
   const contacts = manager.getResource("contacts")
 
   for (let i = 0; i < contacts.length; i++) {
-    const manifold = contacts[i]
-    const [transformA,movableA,bodyA] = manager.get(manifold.entityA,"transform","movable","body")
-    const [transformB,movableB,bodyB] = manager.get(manifold.entityB,"transform","movable","body")
+    const { positionA, positionB, movableA, movableB, bodyA, bodyB } = contacts[i]
 
-    if (Settings.warmStarting)
-      CollisionManifold.warmstart(
-        manifold,
-        movableA,
-        movableB,
-        bodyA,
-        bodyB
-      )
-    CollisionManifold.prepare(
-      manifold,
-      bodyA,
-      bodyB,
+    /* 
+    CollisionManifold.warmstart(
+      contacts[i],
       movableA,
       movableB,
-      transformA.position,
-      transformB.position,
+      bodyA,
+      bodyB
+    )
+    */
+    CollisionManifold.prepare(
+      contacts[i],
+      bodyA,
+      bodyB,
+      positionA,
+      positionB,
+      movableA.velocity,
+      movableB.velocity,
+      movableA.rotation,
+      movableB.rotation,
       inv_dt
     )
   }
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
-      const manifold = contacts[j]
-      const [movableA,bodyA] = manager.get(manifold.entityA,"movable","body")
-      const [movableB,bodyB] = manager.get(manifold.entityB,"movable","body")
-
+      const { movableA, bodyA, movableB, bodyB } = contacts[j]
+      
       CollisionManifold.solve(
-        manifold,
+        contacts[j],
         movableA,
         movableB,
         bodyA,
         bodyB
       )
     }
-  } /***/
+  }
 }
 
 /**
