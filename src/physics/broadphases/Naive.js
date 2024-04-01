@@ -1,6 +1,5 @@
 import { Broadphase } from "./broadphase.js"
 import { BoundingBox,boundsColliding } from "../../math/index.js"
-import { Entity } from "../../ecs/index.js"
 
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)

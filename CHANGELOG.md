@@ -1,6 +1,16 @@
+ - Fixed `Manager().remove()`
+ - Refactored `Manager()` to support the new `ArchetypeTable()`
+ - Added new static methods `Clock.getElapsed()`,`Clock.getDelta()` and `Clock.getFrameRate()`
+ - Added `Query().single()` which gets a single entity on a query
+ - Fixed `boundsColliding()`
+ - Added position as an argument to `BoundingCircle()`
+ - Added a new method `Manager().createMany()` which adds an array of several entities' components
+ - Fixed up `Query.each()` method to pass required components to supplied callback
 
  ## v0.8.0
 
+ - Added a new plugin `Renderer2DPlugin()` for rendering onto 2d context of canvas
+ - Added a new plugin `Renderer2DPlugin()` for rendering onto 2d context of canvas
  - Added `TweenPlugin()` to manage tweens
  - Added new plugins related to physics including `Physics2DPlugin()` , `Broadphase2DPlugin()` ,`Narrowphase2DPlugin()` and `Intergrator2DPlugin()`
  - Added a new plugin `Renderer2DPlugin()` for rendering onto 2d context of canvas
@@ -25,7 +35,7 @@
  - Changed first parameter of `Angle()` to accept radians, nor degrees
  - Added `LoadManager()` to monitor state of loaders
  - deprecated `Logger` in favor of decomposing its functions
- - Deprecated all instance methods of `Color()` in favor of static merhods
+ - Deprecated all instance methods of `Color()` in favor of static methods
  - Deprecated all instance methods of `BoundingBox()` and `BoundingCircle()`
  - Deprecated all instance methods of `Matrix3x2()` in favor of static methods
  - Deprecated `Clock().update()` in favor of `Clock().update()`
@@ -42,7 +52,7 @@
  - Added `CorcleBuffer.init()` method
  - Made `StaticImageMaterial` become  centered
  - Added new method `Interpolation.cosine()` for cosine interpolation
- - Added new merhod `Vector.rotateFast()` for optimisation purposes
+ - Added new method `Vector.rotateFast()` for optimisation purposes
  - Added a new option `autoPlay` on manager to detemine if manger should play on creation
  - Added `Transform.scale` property for scaling entities
  - removed `BufferGeometry.init()` as it is no longer used

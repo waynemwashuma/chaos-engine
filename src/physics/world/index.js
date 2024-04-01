@@ -4,7 +4,7 @@ import { SATNarrowphase, CollisionManifold, NarrowPhase } from "../narrowphase/i
 import { Settings } from "../settings.js"
 import { deprecate } from "../../logger/index.js"
 import { Body2D } from "../bodies/index.js"
-import { Entity, Manager } from "../../ecs/index.js";
+import { Manager } from "../../ecs/index.js";
 import { Movable } from "../../intergrator/movableComponent.js"
 import { Transform } from "../../intergrator/index.js"
 
