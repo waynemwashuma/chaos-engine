@@ -46,11 +46,9 @@ export class Renderer2D extends Renderer {
   /**
    * @param {Renderer2D} renderer
    */
-  static clear(renderer) {
-    renderer.ctx.setTransform()
-    const h = renderer.height,
-      w = renderer.width
-    renderer.ctx.clearRect(0, 0, w, h)
+  static clear(ctx,w,h) {
+    ctx.setTransform()
+    ctx.clearRect(0, 0, w, h)
   }
   /**
    * @template {BufferGeometry} T
