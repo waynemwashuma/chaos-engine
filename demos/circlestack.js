@@ -28,7 +28,7 @@ function stack(x, y, r, no, spacing, manager) {
       "transform": new Transform(x, y + (r + spacing) * i),
       "movable": new Movable(),
       "boundingbox": new BoundingBox(),
-      "body": new Ball(r),
+      "body2d": new Ball(r),
       "sprite": new Sprite(
         new CircleGeometry(r),
         new BasicMaterial()

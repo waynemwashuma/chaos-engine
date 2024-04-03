@@ -46,7 +46,7 @@ function randomEntities(n, manager) {
       "transform": new Transform(x, y),
       "movable": new Movable(rand(-100,100),200,rand(0,Math.PI)),
       "boundingbox": new BoundingBox(),
-      "body": body,
+      "body2d": body,
       "sprite": new Sprite(
         geometry,
         new BasicMaterial()

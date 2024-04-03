@@ -111,8 +111,8 @@ export class World2D {
 
     for (let i = 0; i < CLMDs.length; i++) {
       const manifold = CLMDs[i]
-      const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body")
-      const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body")
+      const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body2d")
+      const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body2d")
 
       if (Settings.warmStarting)
         CollisionManifold.warmstart(
@@ -136,8 +136,8 @@ export class World2D {
     for (let i = 0; i < Settings.velocitySolverIterations; i++) {
       for (let i = 0; i < CLMDs.length; i++) {
         const manifold = CLMDs[i]
-        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body")
-        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body")
+        const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body2d")
+        const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body2d")
 
         CollisionManifold.solve(
           manifold,

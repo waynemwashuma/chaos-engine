@@ -15,7 +15,7 @@ export function circle(manager) {
     "transform": new Transform(viewport.width/2, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": new Ball(30),
+    "body2d": new Ball(30),
     "sprite": new Sprite(
       new CircleGeometry(30),
       new BasicMaterial()

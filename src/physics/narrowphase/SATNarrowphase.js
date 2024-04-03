@@ -44,8 +44,8 @@ export class SATNarrowphase extends NarrowPhase {
   getCollisionPairs(manager, contactList, clmds = []) {
     for (let i = 0; i < contactList.length; i++) {
       const { a, b } = contactList[i]
-      const [bodyA] = manager.get(a, "body")
-      const [bodyB] = manager.get(b, "body")
+      const [bodyA] = manager.get(a, "body2d")
+      const [bodyB] = manager.get(b, "body2d")
 
       if (!NarrowPhase.canCollide(bodyA, bodyB)) continue
       if (bodyA.aabbDetectionOnly || bodyB.aabbDetectionOnly) continue

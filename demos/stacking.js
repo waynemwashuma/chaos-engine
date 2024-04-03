@@ -33,7 +33,7 @@ function stack(x, y, w, h, no, spacing, manager) {
       "transform": new Transform(x, y + (h + spacing) * i),
       "movable": new Movable(),
       "boundingbox": new BoundingBox(),
-      "body": new Box(w, h),
+      "body2d": new Box(w, h),
       "sprite": new Sprite(
         new BoxGeometry(w, h),
         new BasicMaterial()

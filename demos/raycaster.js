@@ -36,6 +36,6 @@ function createBox(x, y) {
   else
     body = new Trigon(50, 50, Math.PI / 3)
   Box.setType(body,Body2D.STATIC)
-  box.attach("body", body)
+  box.attach("body2d", body)
   return box
 }

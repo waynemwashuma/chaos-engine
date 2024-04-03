@@ -98,7 +98,7 @@ export function satNarrowphaseUpdate(manager) {
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const [bodies,movables] = manager.query("body","movable").raw()
+  const [bodies,movables] = manager.query("body2d","movable").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
@@ -116,7 +116,7 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const [transform,bounds,bodies] = manager.query("transform","boundingbox","body").raw()
+  const [transform,bounds,bodies] = manager.query("transform","boundingbox","body2d").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
@@ -139,8 +139,8 @@ export function collisionResponse(manager) {
 
   for (let i = 0; i < contacts.length; i++) {
     const manifold = contacts[i]
-    const [transformA,movableA,bodyA] = manager.get(manifold.entityA,"transform","movable","body")
-    const [transformB,movableB,bodyB] = manager.get(manifold.entityB,"transform","movable","body")
+    const [transformA,movableA,bodyA] = manager.get(manifold.entityA,"transform","movable","body2d")
+    const [transformB,movableB,bodyB] = manager.get(manifold.entityB,"transform","movable","body2d")
 
     if (Settings.warmStarting)
       CollisionManifold.warmstart(
@@ -164,8 +164,8 @@ export function collisionResponse(manager) {
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
       const manifold = contacts[j]
-      const [movableA,bodyA] = manager.get(manifold.entityA,"movable","body")
-      const [movableB,bodyB] = manager.get(manifold.entityB,"movable","body")
+      const [movableA,bodyA] = manager.get(manifold.entityA,"movable","body2d")
+      const [movableB,bodyB] = manager.get(manifold.entityB,"movable","body2d")
 
       CollisionManifold.solve(
         manifold,

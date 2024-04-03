@@ -49,7 +49,7 @@ export class Body2DDebugger {
 
 function drawShapes(manager) {
   const ctx = manager.getResource("ctx")
-  const query = manager.query("body")
+  const query = manager.query("body2d")
   query.each(body => {
     const shape = body.shape
     ctx.beginPath()
