@@ -27,7 +27,7 @@ function stack(x, y, r, no, spacing, manager) {
     manager.create({
       "transform": new Transform(x, y + (r + spacing) * i),
       "movable": new Movable(),
-      "bound": new BoundingBox(),
+      "boundingbox": new BoundingBox(),
       "body": new Ball(r),
       "sprite": new Sprite(
         new CircleGeometry(r),

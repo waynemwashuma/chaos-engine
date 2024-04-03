@@ -75,7 +75,7 @@ export class Narrowphase2DPlugin {
  * @param {Manager} manager
  */
 export function naivebroadphaseUpdate(manager) {
-  const [entities,bounds] = manager.query("entity","bound").raw()
+  const [entities,bounds] = manager.query("entity","boundingbox").raw()
   const broadphase = manager.getResource("broadphase")
   broadphase.update(entities,bounds)
   const pairs = manager.getResource("collisionPairs")
@@ -116,7 +116,7 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const [transform,bounds,bodies] = manager.query("transform","bound","body").raw()
+  const [transform,bounds,bodies] = manager.query("transform","boundingbox","body").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
