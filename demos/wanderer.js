@@ -22,7 +22,7 @@ function createWonderer(x, y) {
   let a = createEntity(x, y)
   let aa = new Agent()
 
-  a.attach("body", new Box(30, 20))
+  a.attach("body2d", new Box(30, 20))
   a.attach("sprite", new AgentSprite())
   //a.attach("sprite", new BodySprite())
   a.attach("agent", aa)

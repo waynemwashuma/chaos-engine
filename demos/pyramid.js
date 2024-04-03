@@ -36,7 +36,7 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
         ),
         "movable": new Movable(),
         "boundingbox": new BoundingBox(),
-        "body": new Box(w, h),
+        "body2d": new Box(w, h),
         "sprite": new Sprite(
           new BoxGeometry(w, h),
           new BasicMaterial()

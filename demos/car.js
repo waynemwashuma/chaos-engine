@@ -16,8 +16,8 @@ export function car(manager) {
   world.gravity = { x: 0, y: 980 }
 
   /* setInterval(x => {
-     tire1.get("body").angularVelocity -= 10
-     tire2.get("body").angularVelocity += 10
+     tire1.get("body2d").angularVelocity -= 10
+     tire2.get("body2d").angularVelocity += 10
    })*/
 }
 
@@ -39,7 +39,7 @@ function createCar(x, y, tireSize = 20, maskgroup = 1, manager) {
   carCompositeBody.add(constraint1)
   carCompositeBody.add(constraint2)
 
-  car.attach("body", carCompositeBody)
+  car.attach("body2d", carCompositeBody)
     .attach("sprite", new BodySprite())
 
   carbody.position.set(x, y)

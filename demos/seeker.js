@@ -20,7 +20,7 @@ export function seeker(manager) {
   )
   let agent = new Agent()
 
-  target.attach("body", new Box(30, 20))
+  target.attach("body2d", new Box(30, 20))
   target.attach("agent",agent)
   target.attach("sprite", new AgentSprite())
   agent.add(new EvadeBehaviour(
@@ -34,7 +34,7 @@ export function seeker(manager) {
 function createSeeker(x, y, target) {
   let a = createEntity(x, y)
   let aa = new Agent()
-  a.attach("body", new Box(30, 20))
+  a.attach("body2d", new Box(30, 20))
   a.attach("sprite", new AgentSprite())
   a.attach("agent", aa)
 

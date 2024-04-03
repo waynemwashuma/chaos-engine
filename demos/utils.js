@@ -62,16 +62,16 @@ function createStaticBox(x, y, w, h) {
     "transform": new Transform(x, y),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": new Box(w, h),
+    "body2d": new Box(w, h),
     "sprite": new Sprite(
       new BoxGeometry(w, h),
       new BasicMaterial()
     )
   }
-  box["body"].inv_mass = 0
-  box["body"].inv_inertia = 0
-  box["body"].restitution = 1
-  box["body"].staticFriction = 1
-  box["body"].kineticFriction = 1
+  box["body2d"].inv_mass = 0
+  box["body2d"].inv_inertia = 0
+  box["body2d"].restitution = 1
+  box["body2d"].staticFriction = 1
+  box["body2d"].kineticFriction = 1
   return box
 }

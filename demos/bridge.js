@@ -12,15 +12,15 @@ export function bridge(manager) {
   world.gravity = 1000
   
   let pin1 = createEntity(100, 200)
-    .attach("body",new Box(20, 20))
+    .attach("body2d",new Box(20, 20))
     .attach("sprite",new BodySprite())
   let pin2 = createEntity(350, 200)
-    .attach("body",new Box(20, 20))
+    .attach("body2d",new Box(20, 20))
     .attach("sprite",new BodySprite())
   let chain = createChain(50, 200, 50, 10, 5, 50, pin1, pin2)
 
-  pin1.get("body").mass = 0
-  pin2.get("body").mass = 0
+  pin1.get("body2d").mass = 0
+  pin2.get("body2d").mass = 0
 
   manager.add(pin1)
   manager.add(pin2)
@@ -32,7 +32,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
   let prev = new Box(w, h),
     bodies = [
       createEntity(x, y)
-      .attach("body", prev)
+      .attach("body2d", prev)
       .attach("sprite", new BodySprite())
       ],
     constraints = []
@@ -47,7 +47,7 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
 
     bodies.push(
       createEntity(x * i, y)
-      .attach("body", chain)
+      .attach("body2d", chain)
       .attach("sprite", new BodySprite())
     )
     constraints.push(constraint)
@@ -55,18 +55,18 @@ function createChain(x, y, w, h, number, spacing, pin1, pin2) {
     prev = chain
   }
   if (pin1) {
-    let an1 = pin1.get("body").setAnchor(new Vector2(0,0))
-    let an2 = bodies[0].get("body").setAnchor(new Vector2(-w/2,0))
-    let constraint = new DistanceConstraint(pin1.get("body"), bodies[0].get("body"), pin1.get("body").getAnchor(an1),  bodies[0].get("body").getAnchor(an2))
+    let an1 = pin1.get("body2d").setAnchor(new Vector2(0,0))
+    let an2 = bodies[0].get("body2d").setAnchor(new Vector2(-w/2,0))
+    let constraint = new DistanceConstraint(pin1.get("body2d"), bodies[0].get("body2d"), pin1.get("body2d").getAnchor(an1),  bodies[0].get("body2d").getAnchor(an2))
     constraints.push(constraint)
-    pin1.get("body").mask.group = 1
+    pin1.get("body2d").mask.group = 1
   }
   if (pin2) {
-    let an1 = pin2.get("body").setAnchor(new Vector2(0,0))
-    let an2 = bodies[bodies.length - 1].get("body").setAnchor(new Vector2(w/2,0))
-    let constraint = new DistanceConstraint(pin2.get("body"), bodies[bodies.length - 1].get("body"), pin2.get("body").getAnchor(an1),  bodies[bodies.length - 1].get("body").getAnchor(an2))
+    let an1 = pin2.get("body2d").setAnchor(new Vector2(0,0))
+    let an2 = bodies[bodies.length - 1].get("body2d").setAnchor(new Vector2(w/2,0))
+    let constraint = new DistanceConstraint(pin2.get("body2d"), bodies[bodies.length - 1].get("body2d"), pin2.get("body2d").getAnchor(an1),  bodies[bodies.length - 1].get("body2d").getAnchor(an2))
     constraints.push(constraint)
-    pin2.get("body").mask.group = 1
+    pin2.get("body2d").mask.group = 1
   }
   return {
     bodies,

@@ -15,9 +15,9 @@ export function constraint(manager) {
   let body1 = new Box(50, 50)
   let body2 = new Box(50, 50)
 
-  box1.attach("body", body1)
+  box1.attach("body2d", body1)
     .attach("sprite", new BodySprite())
-  box2.attach("body", body2)
+  box2.attach("body2d", body2)
     .attach("sprite", new BodySprite())
   
   let an1 = body1.setAnchor(new Vector2(25,-25))

@@ -17,7 +17,7 @@ export function triangle(manager) {
     "transform": new Transform(viewport.width / 2, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": new Trigon(base, (base / 2) * Math.sin(angle), angle),
+    "body2d": new Trigon(base, (base / 2) * Math.sin(angle), angle),
     "sprite": new Sprite(
       new TriangleGeometry(base, (base / 2) * Math.sin(angle), angle),
       new BasicMaterial()

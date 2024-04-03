@@ -29,7 +29,7 @@ export function restitution(manager) {
     "transform": new Transform(100, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": body1,
+    "body2d": body1,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -39,7 +39,7 @@ export function restitution(manager) {
     "transform": new Transform(200, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": body2,
+    "body2d": body2,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -49,7 +49,7 @@ export function restitution(manager) {
     "transform": new Transform(300, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": body3,
+    "body2d": body3,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -59,7 +59,7 @@ export function restitution(manager) {
     "transform": new Transform(400, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": body4,
+    "body2d": body4,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -69,7 +69,7 @@ export function restitution(manager) {
     "transform": new Transform(500, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": body5,
+    "body2d": body5,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -79,7 +79,7 @@ export function restitution(manager) {
     "transform": new Transform(600, 300),
     "movable": new Movable(),
     "boundingbox": new BoundingBox(),
-    "body": body6,
+    "body2d": body6,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()

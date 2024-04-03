@@ -16,7 +16,7 @@ export function box(manager) {
     "transform": new Transform(1000, 300), //,Math.PI/9),
     "movable": new Movable(0,0),
     "boundingbox": new BoundingBox(),
-    "body": new Box(50, 50),
+    "body2d": new Box(50, 50),
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()

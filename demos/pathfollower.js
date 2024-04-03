@@ -18,7 +18,7 @@ export function pathfollower(manager) {
   let p = new Path()
   p.tolerance = 10
 
-  a.attach("body", new Ball(10))
+  a.attach("body2d", new Ball(10))
 
   a.attach("sprite", new AgentSprite())
 
