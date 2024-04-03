@@ -16,7 +16,7 @@ export function triangle(manager) {
   manager.create({
     "transform": new Transform(viewport.width / 2, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": new Trigon(base, (base / 2) * Math.sin(angle), angle),
     "sprite": new Sprite(
       new TriangleGeometry(base, (base / 2) * Math.sin(angle), angle),

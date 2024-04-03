@@ -15,7 +15,7 @@ export function box(manager) {
   manager.create({
     "transform": new Transform(1000, 300), //,Math.PI/9),
     "movable": new Movable(0,0),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": new Box(50, 50),
     "sprite": new Sprite(
       new BoxGeometry(50, 50),

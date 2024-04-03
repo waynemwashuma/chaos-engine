@@ -32,7 +32,7 @@ function stack(x, y, w, h, no, spacing, manager) {
     manager.create({
       "transform": new Transform(x, y + (h + spacing) * i),
       "movable": new Movable(),
-      "bound": new BoundingBox(),
+      "boundingbox": new BoundingBox(),
       "body": new Box(w, h),
       "sprite": new Sprite(
         new BoxGeometry(w, h),

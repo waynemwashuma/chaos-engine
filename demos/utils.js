@@ -61,7 +61,7 @@ function createStaticBox(x, y, w, h) {
   const box = {
     "transform": new Transform(x, y),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": new Box(w, h),
     "sprite": new Sprite(
       new BoxGeometry(w, h),

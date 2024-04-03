@@ -28,7 +28,7 @@ export function restitution(manager) {
   manager.create({
     "transform": new Transform(100, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": body1,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
@@ -38,7 +38,7 @@ export function restitution(manager) {
   manager.create({
     "transform": new Transform(200, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": body2,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
@@ -48,7 +48,7 @@ export function restitution(manager) {
   manager.create({
     "transform": new Transform(300, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": body3,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
@@ -58,7 +58,7 @@ export function restitution(manager) {
   manager.create({
     "transform": new Transform(400, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": body4,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
@@ -68,7 +68,7 @@ export function restitution(manager) {
   manager.create({
     "transform": new Transform(500, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": body5,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
@@ -78,7 +78,7 @@ export function restitution(manager) {
   manager.create({
     "transform": new Transform(600, 300),
     "movable": new Movable(),
-    "bound": new BoundingBox(),
+    "boundingbox": new BoundingBox(),
     "body": body6,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
