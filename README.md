@@ -12,7 +12,7 @@
 
  - An entity-component-system architecture where entities are made up of components and components are updated by their respective systems.Data-driven systems only.
  
- - An AI system that follows the Craig - Renolds implementation.It provides means to follow a target,evade another entity,follow a path and wandering about in the game world.
+ - ~~An AI system that follows the Craig - Renolds implementation.It provides means to follow a target,evade another entity,follow a path and wandering about in the game world.~~(currently disabled)
  
  - A semi-realistic physics engine that features the following:
  
@@ -22,7 +22,7 @@
     
     -> Broadphase:Used to improve performance of the physics world by calculating pairs of bodies that could possibly be colliding.
     
-    -> Distance constraints:Used to constrain two bodies at a certain distance.
+    -> ~~Distance constraints:Used to constrain two bodies at a certain distance.~~(disabled)
     
     -> Static and Dynamic bodies types:Static bodies do not respond to collision with other bodies(due to infinite mass) while dynamic bodies respond to collision forces.
     
@@ -163,22 +163,21 @@ game.create({
 
 ## **** WARNING ****
 
-~~This is not yet a stable version hence dont rely on it to make production apps yet.~~
- 
- 
-## **** FUTURE WORK ****
+This is not yet a stable version hence dont rely on it to make production apps yet.
+As of now,there is major refactor of this engine.
+This will make the engine move away completely from partly data driven/object-oriented ECS to fully data-driven ECS.
+All Previous `System()`s will be converted into `Plugin()`s in order to fit will with the new architecture.
+Components such as `Body2D()` will no longer inherit from `Component()` but will be stand alone instead.
+
+# **** FUTURE WORK ****
  
  - [ ] Add a webgl renderer
- - [ ] Stabilize the collision response to work well with large forces such as (gravity =  10000)
  - [ ] Stabilize rotational stacking in the physics engine
- - [ ] ~~Add game state class for managing the game~~
- - [x] Add an animation system.
+ - [ ] Add a state management system into the engine.
+ - [ ] Add a hierarchy plugin for the entities
+ - [ ] Add an animation system.
  - [ ] Add tutorials to this game engine
  - [ ] Add appropriate demos to the project and get a website running for them
  - [ ] Add some error handling mechanisms 
- - [x] Add Serialization/Deserialization of objects(on the way)
- - [ ]~~ Kinematic bodies~~
- - [x] Collision masking using bits(bit masking)
- - [ ] More AI behaviors.
- - [ ] Add indexedDB to Storage API.
- - [ ] An audio tag fallback to Web audio (if necessary )
+ - [ ] Kinematic bodies
+ - [ ] More AI behaviours
