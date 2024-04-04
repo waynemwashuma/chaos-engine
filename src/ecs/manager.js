@@ -107,8 +107,8 @@ export class Manager {
 
   /**
    * Adds an entity to the manager and initializes it.
-   * 
-   * @param {Record<string,any>} components The entity to add
+   * @template {Tuple} T
+   * @param {T} components The entity to add
    */
   create(components) {
     const entity = this._table.insert(components)
@@ -119,7 +119,7 @@ export class Manager {
     return entity
   }
   /**
-   * @template {Object} T
+   * @template {Tuple} T
    * @param {T[]} entities
    */
   createMany(entities){
