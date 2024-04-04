@@ -1,5 +1,8 @@
 import { Utils } from "../../utils/index.js"
 
+/**
+ * @template {Tuple} T
+ */
 class Archetype {
   /**
    * @type {Map<string,any>}
@@ -9,7 +12,7 @@ class Archetype {
    * @type {string[]}
    */
   keys = []
-  constructor() { 
+  constructor() {
     this.components.set("entity", [])
     //this.keys.push("entity")
   }
@@ -20,65 +23,66 @@ class Archetype {
   insert(entity, components) {
     const entities = this.getComponentLists("entity")
 
-    for (let i = 0; i < this.keys.length; i++) {
-      this.components.get(this.keys[i]).push(components[this.keys[i]])
+    for (let i = 0; i < components.length; i++) {
+      //console.log(components[i].constructor.name.toLowerCase())
+      this.components.get(components[i].constructor.name.toLowerCase()).push(components[i])
+  }
+  entities.push(entity)
+  return entities.length - 1
+}
+/**
+ * @param {number} index
+ * @returns {Entity | undefined}
+ */
+remove(index) {
+  const entities = this.components.get("entity")
+  for (let name in this.keys) {
+    Utils.removeElement(
+      this.components.get(this.keys[name]),
+      index
+    )
+  }
+  Utils.removeElement(entities, index)
+  return this.components.get("entity")[index]
+}
+/**
+ * @param {number} index
+ * @param {{[x:string] : any}} compnames
+ */
+get(index, compnames) {
+  const comp = []
+  for (let i = 0; i < compnames.length; i++) {
+    const list = this.getComponentLists(compnames[i])
+    if (list == void 0) {
+      comp.push(null)
+      continue
     }
-    entities.push(entity)
-    return entities.length - 1
+    comp.push(
+      list[index]
+    )
   }
-  /**
-   * @param {number} index
-   * @returns {Entity | undefined}
-   */
-  remove(index) {
-    const entities = this.components.get("entity")
-    for (let name in this.keys) {
-      Utils.removeElement(
-        this.components.get(this.keys[name]),
-        index
-      )
-    }
-    Utils.removeElement(entities, index)
-    return this.components.get("entity")[index]
-  }
-  /**
-   * @param {number} index
-   * @param {{[x:string] : any}} compnames
-   */
-  get(index, compnames) {
-    const comp = []
-    for (let i = 0; i < compnames.length; i++) {
-      const list = this.getComponentLists(compnames[i])
-      if (list == void 0) {
-        comp.push(null)
-        continue
-      }
-      comp.push(
-        list[index]
-      )
-    }
-    return comp
-  }
-  /**
-   * @param {string} name
-   * @param {any[]} list
-   */
-  setComponentList(name, list) {
-    this.components.set(name, list)
-    this.keys.push(name)
-  }
-  /**
-   * @param {string} name
-   */
-  getComponentLists(name) {
-    return this.components.get(name)
-  }
-  /**
-   * @param {string} name
-   */
-  hasComponentList(name) {
-    return this.components.has(name)
-  }
+  return comp
+}
+/**
+ * @param {string} name
+ * @param {any[]} list
+ */
+setComponentList(name, list) {
+  this.components.set(name, list)
+  this.keys.push(name)
+}
+/**
+ * @param {string} name
+ */
+getComponentLists(name) {
+  return this.components.get(name)
+}
+/**
+ * @param {string} name
+ */
+hasComponentList(name) {
+  return this.components.has(name)
+}
 }
 export class NaiveArchTypeTable {
   /**
@@ -145,15 +149,16 @@ export class NaiveArchTypeTable {
     return filtered
   }
   /**
-   * @param {{[x:string] : any}} components
+   * @template {Tuple} T
+   * @param {T} components
    * @returns {Entity}
    */
   insert(components) {
     const entity = this.entities.length
     //components.entity = entity
     const keys = []
-    for (const name in components) {
-      keys.push(name)
+    for (let i = 0; i < components.length; i++) {
+      keys.push(components[i].constructor.name.toLowerCase())
     }
     let archindex =
       this._getArchetype(keys)
