@@ -3,12 +3,14 @@ import {
   Movable,
   BoundingBox,
   Box,
+  Body2D,
+  Rectangle,
   Sprite,
   BoxGeometry,
   BasicMaterial
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import {viewport} from "./demo.js"
+import { viewport } from "./demo.js"
 
 export function stacking(manager) {
   makePlatform(
@@ -23,21 +25,21 @@ export function stacking(manager) {
   stack(600, 100, 50, 50, 8, 5, manager)
   stack(800, 100, 50, 50, 6, 5, manager)
   stack(1000, 100, 50, 50, 4, 5, manager)
-  
+
   manager.getResource("gravity").y = 900
 }
 
 function stack(x, y, w, h, no, spacing, manager) {
   for (let i = 0; i < no; i++) {
-    manager.create({
-      "transform": new Transform(x, y + (h + spacing) * i),
-      "movable": new Movable(),
-      "boundingbox": new BoundingBox(),
-      "body2d": new Box(w, h),
-      "sprite": new Sprite(
+    manager.create([
+    new Transform(x, y + (h + spacing) * i),
+    new Movable(),
+    new BoundingBox(),
+    new Body2D(new Rectangle(w, h)),
+    new Sprite(
         new BoxGeometry(w, h),
         new BasicMaterial()
       )
-    })
+    ])
   }
 }

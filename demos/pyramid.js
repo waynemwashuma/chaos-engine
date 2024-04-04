@@ -2,13 +2,14 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Box,
+  Body2D,
+  Rectangle,
   Sprite,
   BoxGeometry,
   BasicMaterial
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import {viewport} from "./demo.js"
+import { viewport } from "./demo.js"
 
 export function pyramid(manager) {
   const viewX = viewport.width / 2
@@ -29,19 +30,19 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
   for (var j = no; j > 0; j--) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
-      manager.create({
-        "transform": new Transform(
+      manager.create([
+        new Transform(
           dx + w * i,
           y + (h + spacing) * j
         ),
-        "movable": new Movable(),
-        "boundingbox": new BoundingBox(),
-        "body2d": new Box(w, h),
-        "sprite": new Sprite(
+        new Movable(),
+        new BoundingBox(),
+        new Body2D(new Rectangle(w, h)),
+        new Sprite(
           new BoxGeometry(w, h),
           new BasicMaterial()
         )
-      })
+      ])
     }
   }
 }
