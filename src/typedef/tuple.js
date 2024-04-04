@@ -1,0 +1,4 @@
+ /**
+  * @typedef Tuple
+  * @type {any[]}
+ */
