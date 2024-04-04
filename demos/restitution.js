@@ -2,89 +2,17 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Box,
+  Body2D,
+  Rectangle,
   Sprite,
   BoxGeometry,
   BasicMaterial
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import {viewport} from "./demo.js"
+import { viewport } from "./demo.js"
 export function restitution(manager) {
 
-  let body1 = new Box(50, 50)
-  let body2 = new Box(50, 50)
-  let body3 = new Box(50, 50)
-  let body4 = new Box(50, 50)
-  let body5 = new Box(50, 50)
-  let body6 = new Box(50, 50)
-
-  body1.restitution = 1
-  body2.restitution = 0.8
-  body3.restitution = 0.6
-  body4.restitution = 0.4
-  body5.restitution = 0.2
-  body6.restitution = 0
-
-  manager.create({
-    "transform": new Transform(100, 300),
-    "movable": new Movable(),
-    "boundingbox": new BoundingBox(),
-    "body2d": body1,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(200, 300),
-    "movable": new Movable(),
-    "boundingbox": new BoundingBox(),
-    "body2d": body2,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(300, 300),
-    "movable": new Movable(),
-    "boundingbox": new BoundingBox(),
-    "body2d": body3,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(400, 300),
-    "movable": new Movable(),
-    "boundingbox": new BoundingBox(),
-    "body2d": body4,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(500, 300),
-    "movable": new Movable(),
-    "boundingbox": new BoundingBox(),
-    "body2d": body5,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(600, 300),
-    "movable": new Movable(),
-    "boundingbox": new BoundingBox(),
-    "body2d": body6,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
+  stackHorizontal(100, 500, 50, 50, 5, 100, manager)
   makePlatform(
     manager,
     viewport.width / 2,
@@ -93,4 +21,21 @@ export function restitution(manager) {
     50
   )
   manager.getResource("gravity").y = 900
+}
+
+function stackHorizontal(x, y, w, h, no, spacing, manager) {
+  for (let i = 1; i <= no; i++) {
+    const body = new Body2D(new Rectangle(w, h))
+    body.restitution = i / no
+    manager.create([
+    new Transform(x + (w + spacing) * i, y),
+    new Movable(),
+    new BoundingBox(),
+    body,
+    new Sprite(
+        new BoxGeometry(w, h),
+        new BasicMaterial()
+      )
+    ])
+  }
 }
