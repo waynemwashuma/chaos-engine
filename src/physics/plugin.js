@@ -77,7 +77,37 @@ export function updateBodies(manager) {
 export function updateBounds(manager) {
   const query = manager.query("body", "bound")
   query.each((body, bound) => {
-    Body2D.calculateBounds(body, bound)
+    let minX = Number.MAX_SAFE_INTEGER,
+      minY = Number.MAX_SAFE_INTEGER,
+      maxX = -Number.MAX_SAFE_INTEGER,
+      maxY = -Number.MAX_SAFE_INTEGER
+
+    const shape = body.shape
+    if (shape.type == Shape2D.CIRCLE) {
+      const position = shape.vertices[0]
+      const radiusX = shape.vertices[1].x
+      const radiusY = shape.vertices[1].y
+      const idx = position.x - radiusX,
+        idy = position.y - radiusY,
+        mdx = position.x + radiusX,
+        mdy = position.y + radiusY
+      if (idx < minX) minX = idx
+      if (mdx > maxX) maxX = mdx
+      if (idy < minY) minY = idy
+      if (mdy > maxY) maxY = mdy
+    } else {
+      for (let j = 0; j < shape.vertices.length; j++) {
+        let vertex = shape.vertices[j]
+        if (vertex.x < minX) minX = vertex.x
+        if (vertex.x > maxX) maxX = vertex.x
+        if (vertex.y < minY) minY = vertex.y
+        if (vertex.y > maxY) maxY = vertex.y
+      }
+    }
+    bound.min.x = minX
+    bound.max.x = maxX
+    bound.min.y = minY
+    bound.max.y = maxY
   })
 }
 /**
