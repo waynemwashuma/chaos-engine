@@ -13,11 +13,10 @@ export class Physics2DPlugin {
    */
   constructor(options = {}) {
     this.gravity = options.gravity || new Vector2()
-    this.enableGravity = options.enableGravity || true
+    this.enableGravity = options.enableGravity ?? true
     this.broadphase = options.broadphase || new NaiveBroadphase2DPlugin()
     this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
     this.intergrator = options.intergrator || new Intergrator2DPlugin(options.intergratorOpt)
-
   }
   /**
    * @param {Manager} manager
@@ -107,7 +106,7 @@ export function collisionResponse(manager) {
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
       const { movableA, bodyA, movableB, bodyB } = contacts[j]
-      
+
       CollisionManifold.solve(
         contacts[j],
         movableA,
