@@ -16,7 +16,7 @@ export class Physics2DPlugin {
     this.enableGravity = options.enableGravity || true
     this.broadphase = options.broadphase || new NaiveBroadphase2DPlugin()
     this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
-    this.intergrator = new Intergrator2DPlugin(options.intergratorOpt)
+    this.intergrator = options.intergrator || new Intergrator2DPlugin(options.intergratorOpt)
 
   }
   /**
@@ -125,5 +125,5 @@ export function collisionResponse(manager) {
  * @property {Vector2} [gravity]
  * @property {Plugin} [broadphase]
  * @property {Plugin} [narrowphase]
- * @property {import("../intergrator/index.js").IntergratorPluginOptions} [intergratorOpt]
+ * @property {Plugin} [intergrator]
  */
