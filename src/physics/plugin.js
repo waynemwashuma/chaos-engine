@@ -18,7 +18,7 @@ export class Physics2DPlugin {
     this.broadphase = options.broadphase || new NaiveBroadphase2DPlugin()
     this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
     this.intergrator = options.intergrator || new Intergrator2DPlugin(options.intergratorOpt)
-    //this.autoUpdateBounds = options.autoUpdateBounds ?? true
+    this.autoUpdateBounds = options.autoUpdateBounds ?? true
   }
   /**
    * @param {Manager} manager
@@ -30,7 +30,7 @@ export class Physics2DPlugin {
     }
     manager.registerPlugin(this.intergrator)
     manager.registerSystem(updateBodies)
-    manager.registerSystem(updateBounds)
+    if (this.autoUpdateBounds) manager.registerSystem(updateBounds)
     manager.registerPlugin(this.broadphase)
     manager.registerPlugin(this.narrowphase)
     manager.registerSystem(collisionResponse)
