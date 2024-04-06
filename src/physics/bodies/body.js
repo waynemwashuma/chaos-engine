@@ -198,6 +198,7 @@ export class Body2D {
    * @param {Number} padding increases the size of the bounds
    */
   static calculateBounds(body,bound,padding = 0) {
+    console.log()
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
@@ -231,6 +232,8 @@ export class Body2D {
   }
   /**
    * This updates the world coordinates of shape and bounds.
+   * 
+   * @deprecated
    * @param {Body2D} body
    * @param {Vector2} position
    * @param {number} orientation
@@ -238,6 +241,7 @@ export class Body2D {
    * @param {BoundingBox} bounds
    */
   static update(body,position,orientation,scale,bounds) {
+    deprecate("Body2D.update()")
     Shape2D.update(body.shape,position,orientation,scale)
     if (body.autoUpdateBound)
       Body2D.calculateBounds(body,bounds)
