@@ -193,12 +193,13 @@ export class Body2D {
   /**
    * Calculates the bounds of the body
    * 
+   * @deprecated
    * @param {BoundingBox} bound
    * @param {Body2D} body Body2D to calculate max and min from
    * @param {Number} padding increases the size of the bounds
    */
   static calculateBounds(body,bound,padding = 0) {
-    console.log()
+    deprecate("Body2D.calculateBounds()")
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
