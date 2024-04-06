@@ -2,6 +2,7 @@ import { NaiveBroadphase2DPlugin } from "./broadphases/index.js"
 import { SATNarrowphase2DPlugin } from "./narrowphase/index.js"
 import { Vector2 } from "../math/index.js"
 import { Body2D } from "./bodies/index.js"
+import { Shape2D } from "./shapes/index.js"
 import { Settings } from './settings.js';
 import { CollisionManifold } from './narrowphase/index.js';
 import { Intergrator2DPlugin } from "../intergrator/index.js"
@@ -17,6 +18,7 @@ export class Physics2DPlugin {
     this.broadphase = options.broadphase || new NaiveBroadphase2DPlugin()
     this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
     this.intergrator = options.intergrator || new Intergrator2DPlugin(options.intergratorOpt)
+    //this.autoUpdateBounds = options.autoUpdateBounds ?? true
   }
   /**
    * @param {Manager} manager
@@ -28,6 +30,7 @@ export class Physics2DPlugin {
     }
     manager.registerPlugin(this.intergrator)
     manager.registerSystem(updateBodies)
+    manager.registerSystem(updateBounds)
     manager.registerPlugin(this.broadphase)
     manager.registerPlugin(this.narrowphase)
     manager.registerSystem(collisionResponse)
@@ -57,19 +60,25 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const [transform, bounds, bodies] = manager.query("transform", "bound", "body").raw()
-
+  const [transforms, bodies] = manager.query("transform", "body").raw()
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
-      Body2D.update(
-        bodies[i][j],
-        transform[i][j].position,
-        transform[i][j].orientation,
-        transform[i][j].scale,
-        bounds[i][j]
+      const body = bodies[i][j]
+      const transform = transforms[i][j]
+      Shape2D.update(
+        body.shape,
+        transform.position,
+        transform.orientation,
+        transform.scale
       )
     }
   }
+}
+export function updateBounds(manager) {
+  const query = manager.query("body", "bound")
+  query.each((body, bound) => {
+    Body2D.calculateBounds(body, bound)
+  })
 }
 /**
  * @param {Manager} manager
@@ -77,7 +86,6 @@ export function updateBodies(manager) {
 export function collisionResponse(manager) {
   const inv_dt = 1 / manager.getResource("delta")
   const contacts = manager.getResource("contacts")
-
   for (let i = 0; i < contacts.length; i++) {
     const { positionA, positionB, movableA, movableB, bodyA, bodyB } = contacts[i]
 
