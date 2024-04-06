@@ -183,7 +183,7 @@ function projectShapesToAxes(shapeA, shapeB, axes, manifold) {
         overlap += min
       } else {
         overlap += max
-        Vector2.reverse(axis, axis)
+        //Vector2.reverse(axis, axis)
       }
     }
     if (overlap < minOverlap) {
