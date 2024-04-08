@@ -42,47 +42,40 @@ export class Physics2DPlugin {
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const [bodies, movables] = manager.query("body", "movable").raw()
+  const query = manager.query("movable", "physicsproperties")
 
-  for (let i = 0; i < bodies.length; i++) {
-    for (let j = 0; j < bodies[i].length; j++) {
-      if (bodies[i][j].inv_mass) {
-        Vector2.add(
-          movables[i][j].acceleration,
-          gravity,
-          movables[i][j].acceleration
-        )
-      }
-    }
-  }
+  query.each((movable, properties) => {
+    if (properties.invmass == 0) return
+    Vector2.add(
+      movable.acceleration,
+      gravity,
+      movable.acceleration
+    )
+  })
 }
 /**
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const [transforms, bodies] = manager.query("transform", "body").raw()
-  for (let i = 0; i < bodies.length; i++) {
-    for (let j = 0; j < bodies[i].length; j++) {
-      const body = bodies[i][j]
-      const transform = transforms[i][j]
-      Shape2D.update(
-        body.shape,
-        transform.position,
-        transform.orientation,
-        transform.scale
-      )
-    }
-  }
+  const query = manager.query("transform", "shape2d")
+
+  query.each((transform, shape) => {
+    Shape2D.update(
+      shape,
+      transform.position,
+      transform.orientation,
+      transform.scale
+    )
+  })
 }
 export function updateBounds(manager) {
-  const query = manager.query("body", "bound")
-  query.each((body, bound) => {
+  const query = manager.query("shape2d", "bound")
+  query.each((shape, bound) => {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
       maxY = -Number.MAX_SAFE_INTEGER
 
-    const shape = body.shape
     if (shape.type == Shape2D.CIRCLE) {
       const position = shape.vertices[0]
       const radiusX = shape.vertices[1].x
@@ -117,40 +110,45 @@ export function collisionResponse(manager) {
   const inv_dt = 1 / manager.getResource("delta")
   const contacts = manager.getResource("contacts")
   for (let i = 0; i < contacts.length; i++) {
-    const { positionA, positionB, movableA, movableB, bodyA, bodyB } = contacts[i]
-
-    /* 
-    CollisionManifold.warmstart(
-      contacts[i],
+    const {
+      positionA,
+      positionB,
       movableA,
       movableB,
-      bodyA,
-      bodyB
-    )
-    */
+      propA,
+      propB
+    } = contacts[i]
+
     CollisionManifold.prepare(
       contacts[i],
-      bodyA,
-      bodyB,
       positionA,
       positionB,
       movableA.velocity,
       movableB.velocity,
       movableA.rotation,
       movableB.rotation,
+      propA,
+      propB,
       inv_dt
     )
   }
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
-      const { movableA, bodyA, movableB, bodyB } = contacts[j]
+      const {
+        movableA,
+        movableB,
+        propA,
+        propB
+      } = contacts[j]
 
       CollisionManifold.solve(
         contacts[j],
         movableA,
         movableB,
-        bodyA,
-        bodyB
+        propA.invmass,
+        propB.invmass,
+        propA.invinertia,
+        propB.invinertia,
       )
     }
   }

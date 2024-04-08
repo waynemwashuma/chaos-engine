@@ -2,15 +2,14 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Box,
-  Body2D,
-  Rectangle,
   Sprite,
   BoxGeometry,
-  BasicMaterial
+  BasicMaterial,
+  Rectangle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import { viewport } from "./demo.js"
+import {viewport} from "./demo.js"
 
 export function stacking(manager) {
   makePlatform(
@@ -31,15 +30,15 @@ export function stacking(manager) {
 
 function stack(x, y, w, h, no, spacing, manager) {
   for (let i = 0; i < no; i++) {
-    manager.create([
-    new Transform(x, y + (h + spacing) * i),
-    new Movable(),
-    new BoundingBox(),
-    new Body2D(new Rectangle(w, h)),
-    new Sprite(
+    manager.create({
+      "transform": new Transform(x, y + (h + spacing) * i),
+      "movable": new Movable(),
+      "bound": new BoundingBox(),
+      ...createRawRigidBody2D(new Rectangle(w, h)),
+      "sprite": new Sprite(
         new BoxGeometry(w, h),
         new BasicMaterial()
       )
-    ])
+    })
   }
 }

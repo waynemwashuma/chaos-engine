@@ -49,20 +49,18 @@ export class SATNarrowphase2DPlugin {
 function getSATContacts(manager) {
   const narrowphase = manager.getResource("satnarrowphase2d")
   const pairs = manager.getResource("collisionpairs")
-
   const contacts = manager.getResource("contacts")
   contacts.length = 0
 
   for (let i = 0; i < pairs.length; i++) {
     const { entityA, entityB } = pairs[i]
-    const [bodyA, movableA, transformA] = manager.get(entityA, "body", "movable", "transform")
-    const [bodyB, movableB, transformB] = manager.get(entityB, "body", "movable", "transform")
-
-    if (!canCollide(bodyA, bodyB))
+    const [transformA, movableA, shapeA, propertiesA] = manager.get(entityA, "transform", "movable", "shape2d","physicsproperties")
+    const [transformB, movableB, shapeB, propertiesB] = manager.get(entityB, "transform", "movable", "shape2d","physicsproperties")
+    if (!canCollide(propertiesA,propertiesB))
       continue
 
-    bodyA.sleeping = false
-    bodyB.sleeping = false
+    propertiesA.sleep = false
+    propertiesB.sleep = false
     const id = generatePairID(entityA, entityB)
     if (!narrowphase.clmdrecord.has(id))
       narrowphase.clmdrecord.set(id, new CollisionManifold(
@@ -72,18 +70,20 @@ function getSATContacts(manager) {
         transformB.position,
         movableA,
         movableB,
-        bodyA,
-        bodyB
+        propertiesA,
+        propertiesB
       ))
     const manifold = narrowphase.clmdrecord.get(id)
     const collisionData = manifold.contactData
+
     collisionData.overlap = -Infinity
     collisionData.done = false
-    shapesInBodyCollided(bodyA, bodyB, collisionData)
+    shapesInBodyCollided(shapeA, shapeB, propertiesA.invmass, propertiesB.invmass, collisionData)
     if (collisionData.overlap < 0 || !collisionData.done) continue
-    manifold.restitution = bodyA.restitution < bodyB.restitution ? bodyA.restitution : bodyB.restitution
-    manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction
-    manifold.kineticFriction = bodyA.kineticFriction < bodyB.kineticFriction ? bodyA.kineticFriction : bodyB.kineticFriction
+    manifold.restitution = propertiesA.restitution < propertiesB.restitution ? propertiesA.restitution : propertiesB.restitution
+    //manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction
+    manifold.kineticFriction = propertiesA.kineticfriction < propertiesB.kineticfriction ? propertiesA.kineticfriction : propertiesB.kineticfriction
+    
     contacts.push(manifold)
   }
 }
@@ -93,36 +93,33 @@ function getSATContacts(manager) {
  * @param {Body2D} body2
  * @param {CollisionData} out
  */
-function shapesInBodyCollided(bodyA, bodyB, out) {
+function shapesInBodyCollided(shapeA, shapeB, invmassA, invmassB, out) {
   /*** @type {Vector2[]}*/
   const arr = []
-  Shape2D.getNormals(bodyA.shape, bodyB.shape, arr)
-  Shape2D.getNormals(bodyB.shape, bodyA.shape, arr)
-  projectShapesToAxes(bodyA.shape, bodyB.shape, arr, out)
+  Shape2D.getNormals(shapeA, shapeB, arr)
+  Shape2D.getNormals(shapeB, shapeA, arr)
+  projectShapesToAxes(shapeA, shapeB, arr, out)
 
   if (out.overlap < 0) return out
 
   Vector2.normal(out.axis, out.tangent)
   const contactPoints = out.contactPoints
-  const
-    axis = out.axis,
-    shape1 = bodyA.shape,
-    shape2 = bodyB.shape
+  const axis = out.axis
   const axisReverse = Vector2.reverse(axis, tmp5)
   const overload = []
   // @ts-ignore
   const vertices1 = findNearSupports(out.vertShapeA, axis, [])
   // @ts-ignore
   const vertices2 = findNearSupports(out.vertShapeB, axisReverse, [])
-  const balancedOverlap = out.overlap / (bodyA.inv_mass + bodyB.inv_mass)
+  const balancedOverlap = out.overlap / (invmassA + invmassB)
   for (let i = 0; i < vertices2.length; i++) {
-    if (shapeContains(bodyA.shape, vertices2[i])) {
+    if (shapeContains(shapeA, vertices2[i])) {
       overload.push(vertices2[i])
     }
   }
   if (overload.length < 2) {
     for (let i = 0; i < vertices1.length; i++) {
-      if (shapeContains(bodyB.shape, vertices1[i])) {
+      if (shapeContains(shapeB, vertices1[i])) {
         overload.push(vertices1[i])
       }
     }
@@ -132,15 +129,15 @@ function shapesInBodyCollided(bodyA, bodyB, out) {
   if (overload.length == 0) {
     overload.push(vertices2[0])
   }
-  Vector2.multiplyScalar(axis, -balancedOverlap * bodyB.inv_mass, tmp4)
+  Vector2.multiplyScalar(axis, -balancedOverlap * invmassB, tmp4)
   Vector2.add(tmp4, overload[0], contactPoints[0])
   if (overload.length > 1) {
     Vector2.add(tmp4, overload[1], contactPoints[1])
   }
 
   out.contactNo =
-    shape1.type === Shape2D.CIRCLE ||
-    shape2.type === Shape2D.CIRCLE ?
+    shapeA.type === Shape2D.CIRCLE ||
+    shapeB.type === Shape2D.CIRCLE ?
     1 : clamp(overload.length, 0, 2)
 
   return out

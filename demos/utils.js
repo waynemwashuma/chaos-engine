@@ -2,7 +2,7 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Body2D,
+  createRawRigidBody2D,
   Rectangle,
   Sprite,
   BoxGeometry,
@@ -57,20 +57,15 @@ export function makeContainer(
 }
 
 function createStaticBox(x, y, w, h) {
-  const box = [
-    new Transform(x, y),
-    new Movable(),
-    new BoundingBox(),
-    new Body2D(new Rectangle(w, h)),
-     new Sprite(
+  const box = {
+    "transform": new Transform(x, y),
+    "movable": new Movable(),
+    "bound": new BoundingBox(),
+    ...createRawRigidBody2D(new Rectangle(w,h),0,1,1),
+    "sprite": new Sprite(
       new BoxGeometry(w, h),
       new BasicMaterial()
     )
-  ]
-  box[3].inv_mass = 0
-  box[3].inv_inertia = 0
-  box[3].restitution = 1
-  box[3].staticFriction = 1
-  box[3].kineticFriction = 1
+  }
   return box
 }
