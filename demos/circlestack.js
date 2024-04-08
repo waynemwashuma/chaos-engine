@@ -12,10 +12,7 @@ import { makePlatform } from "./utils.js"
 import {viewport} from "./demo.js"
 
 export function circlestacking(manager) {
-
-
-
-
+  
   stack(200, 300, 25, 8, 5, manager)
 
   makePlatform(

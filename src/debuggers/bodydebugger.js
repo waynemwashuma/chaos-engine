@@ -1,5 +1,5 @@
 import { Shape2D } from "../physics/index.js"
-import { BoundingBox, Vector2 } from "../math/index.js"
+import {  Vector2 } from "../math/index.js"
 import { circle, vertices, stroke, fill } from "../render/index.js"
 import { Manager } from "../ecs/index.js"
 import { deprecate } from "../logger/index.js"
@@ -174,24 +174,7 @@ function drawArmRaw(ctx, position, arm) {
   )
 }
 
-
 /**
- * @param {CanvasRenderingContext2D} ctx
- * @param {BoundingBox} bounds
- */
-function renderObj(ctx, bounds) {
-  const w = (bounds.max.x - bounds.min.x)
-  const h = (bounds.max.y - bounds.min.y)
-  ctx.strokeRect(
-    bounds.min.x,
-    bounds.min.y,
-    w,
-    h
-  )
-}
-/**
-
-
  * @typedef BodyDebbuggerOptions
  * @property {boolean} [drawBounds=false]
  * @property {boolean} [drawPosition=false]
