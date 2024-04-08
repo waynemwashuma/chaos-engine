@@ -1,19 +1,30 @@
-import { Body2D } from "../bodies/index.js"
 import { Shape2D } from "../shapes/index.js"
 /**
  * @param {Body2D} a
  * @param {Body2D} b
  */
-export function canCollide(a, b) {
-  if (!a.inv_mass && !b.inv_mass)
-    return false
+export function canCollide(
+  propA,
+  propB
+) {
   if (
-    (a.mask.group && b.mask.group) &&
-    a.mask.group == b.mask.group
+    !propA.invmass &&
+    !propB.invmass
   ) return false
-  if (a.mask.layer && b.mask.layer && a.mask.layer !== b.mask.layer)
-    return false
-  if (a.sleeping && b.sleeping) return false
+  if (
+    propA.group &&
+    propB.group &&
+    propA.group == propB.group
+  ) return false
+  if (
+    propA.layer &&
+    propB.layer &&
+    propA.layerA != propB.layer
+  ) return false
+  if (
+    propA.sleep &&
+    propB.sleep
+  ) return false
   return true
 }
 /**
@@ -59,6 +70,6 @@ export function shapeContains(shape, point) {
     return circleContains(shape.vertices[0], shape.vertices[1].x, point)
   return verticesContain(shape.vertices, point)
 }
-export function generatePairID(idA,idB){
+export function generatePairID(idA, idB) {
   return idA > idB ? idA + " " + idB : idB + " " + idA
 }

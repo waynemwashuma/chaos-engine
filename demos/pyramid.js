@@ -2,10 +2,11 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Box,
+  Rectangle,
   Sprite,
   BoxGeometry,
-  BasicMaterial
+  BasicMaterial,
+  createRawRigidBody2D,
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 import {viewport} from "./demo.js"
@@ -36,7 +37,7 @@ function stackpyramid(x, y, w, h, no, spacing, manager) {
         ),
         "movable": new Movable(),
         "bound": new BoundingBox(),
-        "body": new Box(w, h),
+        ...createRawRigidBody2D(new Rectangle(w,h)),
         "sprite": new Sprite(
           new BoxGeometry(w, h),
           new BasicMaterial()

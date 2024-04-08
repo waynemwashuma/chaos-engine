@@ -8,6 +8,7 @@ import { Rectangle } from "../shapes/index.js"
  */
 export class Box extends Body2D {
   /**
+   * @deprecated
    * @param {number} w
    * @param {number} h
    */

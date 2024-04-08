@@ -6,6 +6,7 @@ import { Shape2D } from "../shapes/index.js"
 import { deprecate } from "../../logger/index.js"
 
 /**
+ * @deprecated
  * Holds information needed for collision detection and response.
  * 
  */
@@ -15,13 +16,13 @@ export class Body2D {
    * 
    * @type {number}
    */
-  inv_mass = 0
+  invmass = 0
   /**
    * Inverse inertia of the body.
    * 
    * @type {number}
    */
-  inv_inertia = 0
+  invinertia = 0
   /**
    * The bounciness of the body between 0 and 1.
    * 
@@ -74,18 +75,12 @@ export class Body2D {
    * 
    * @type {boolean}
    */
-  sleeping = false
-  /**
-   * Whether or not the bounds should be automatically updated.
-   * 
-   * @type {boolean}
-   * @default Settings.autoUpdateBound
-   */
-  autoUpdateBound = Settings.autoUpdateBound
+  sleep = false
   /**
    * @param {Shape2D} shape
    */
   constructor(shape) {
+    deprecate("Body2D()","RawRigidBody2D()")
     Body2D.setType(this,Settings.type)
     this.shape = shape
     Body2D.setMass(this,1)
@@ -117,12 +112,12 @@ export class Body2D {
    */
   set mass(x) {
     deprecate("Body2D().mass")
-    this.inv_mass = x === 0 ? 0 : 1 / x
-    this.inv_inertia = 1 / Shape2D.calcInertia(this.shape,this.mass)
+    this.invmass = x === 0 ? 0 : 1 / x
+    this.invinertia = 1 / Shape2D.calcInertia(this.shape,this.mass)
   }
   get mass() {
     deprecate("Body2D().mass")
-    return 1 / this.inv_mass
+    return 1 / this.invmass
   }
   /**
    * Density of a body.
@@ -133,12 +128,12 @@ export class Body2D {
   set density(x) {
     deprecate("Body2D().density")
     const area = Shape2D.getArea(this.shape)
-    this.inv_mass = 1 / (x * area)
+    this.invmass = 1 / (x * area)
   }
   get density() {
     deprecate("Body2D().density")
     const area = Shape2D.getArea(this.shape)
-    return this.inv_mass * 1 / area
+    return this.invmass * 1 / area
   }
   /**
    * Rotational inertia of a body.
@@ -148,11 +143,11 @@ export class Body2D {
    */
   set inertia(x) {
     deprecate("Body2D().inertia")
-    this.inv_inertia = x == 0 ? 0 : 1 / x
+    this.invinertia = x == 0 ? 0 : 1 / x
   }
   get inertia() {
     deprecate("Body2D().inertia")
-    return 1 / this.inv_inertia
+    return 1 / this.invinertia
   }
   /**
    * Sets an anchor that is relative to the center of the body into it.The anchor's world coordinates will be updated when the body too is updated.
@@ -252,7 +247,7 @@ export class Body2D {
    * @param {number} mass
    */
   static setMass(body,mass) {
-    body.inv_mass = mass === 0 ? 0 : 1 / mass
+    body.invmass = mass === 0 ? 0 : 1 / mass
     Body2D.setInertia(body,Shape2D.calcInertia(body.shape,mass))
   }
   /**
@@ -260,7 +255,7 @@ export class Body2D {
    * @param {number} inertia
    */
   static setInertia(body,inertia) {
-    body.inv_inertia = inertia === 0 ? 0 : 1 / inertia
+    body.invinertia = inertia === 0 ? 0 : 1 / inertia
   }
   /**
    * @param {Body2D} body
@@ -268,8 +263,8 @@ export class Body2D {
    */
   static setType(body,type) {
     if (type !== Body2D.STATIC) return
-    body.inv_mass = 0
-    body.inv_inertia = 0
+    body.invmass = 0
+    body.invinertia = 0
   }
   /**
    * @param {Body2D} body

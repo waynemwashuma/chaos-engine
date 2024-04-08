@@ -30,14 +30,6 @@ export class CollisionManifold {
    */
   positionB
   /**
-   * @type {Body2D}
-   */
-  bodyA
-  /**
-   * @type {Body2D}
-   */
-  bodyB
-  /**
    * @type {CollisionData}
    */
   contactData = new CollisionData()
@@ -93,76 +85,62 @@ export class CollisionManifold {
    * @param {Body2D} bA
    * @param {Body2D} bA
    */
-  constructor(a, b, pA, pB, mA, mB, bA, bB) {
+  constructor(a, b, pA, pB, mA, mB, prA, prB) {
     this.entityA = a
     this.entityB = b
     this.movableA = mA
     this.movableB = mB
-    this.bodyA = bA
-    this.bodyB = bB
-    this.positionA = pA
+    this.propA = prA
+    this.propB =prB
+      this.positionA = pA
     this.positionB = pB
-  }
-  /**
-   * @param {CollisionManifold} manifold
-   * @param {Movable} movableA
-   * @param {Movable} movableB
-   * @param {Body2D} bodyA
-   * @param {Body2D} bodyB
-   */
-  static warmstart(manifold, movableA, movableB, bodyA, bodyB) {
-    const { contactNo } = manifold.contactData
-
-    for (let i = 0; i < contactNo; i++) {
-      CollisionManifold.applyImpulse(
-        manifold.tJacobian[i],
-        movableA,
-        movableB,
-        bodyA,
-        bodyB,
-        manifold.tLambda[i]
-      ) /***/
-      CollisionManifold.applyImpulse(
-        manifold.nJacobian[i],
-        movableA,
-        movableB,
-        bodyA,
-        bodyB,
-        manifold.nLambda[i]
-      )
-
-    }
   }
   /**
    * @param {Jacobian} jacobian
    * @param {Movable} movableA
    * @param {Movable} movableB
-   * @param {Body2D} bodyA
-   * @param {Body2D} bodyB
    * @param {number} lambda
    */
-  static applyImpulse(jacobian, movableA, movableB, bodyA, bodyB, lambda) {
+  static applyImpulse(
+    jacobian,
+    movableA,
+    movableB,
+    invmassA,
+    invmassB,
+    invinertiaA,
+    invinertiaB,
+    lambda
+  ) {
     const velA = movableA.velocity
     const velB = movableB.velocity
-    const va = Vector2.multiplyScalar(jacobian.va, bodyA.inv_mass * lambda)
-    const vb = Vector2.multiplyScalar(jacobian.vb, bodyB.inv_mass * lambda)
+    const va = Vector2.multiplyScalar(jacobian.va, invmassA * lambda)
+    const vb = Vector2.multiplyScalar(jacobian.vb, invmassB * lambda)
 
     Vector2.add(velA, va, velA)
     Vector2.add(velB, vb, velB)
-    movableA.rotation += bodyA.inv_inertia * jacobian.wa * lambda
-    movableB.rotation += bodyB.inv_inertia * jacobian.wb * lambda
+    movableA.rotation += invinertiaA * jacobian.wa * lambda
+    movableB.rotation += invinertiaB * jacobian.wb * lambda
   }
   /**
    * @param {CollisionManifold} manifold
    * @param {Movable} movableA
    * @param {Movable} movableB
-   * @param {Body2D} bodyA
-   * @param {Body2D} bodyB
    * @param {Vector_like} positionA
    * @param {Vector_like} positionB
    * @param {number} inv_dt
    */
-  static prepare(manifold, bodyA, bodyB, positionA, positionB,velocityA, velocityB,rotationA,rotationB, inv_dt) {
+  static prepare(
+    manifold,
+    positionA,
+    positionB,
+    velocityA,
+    velocityB,
+    rotationA,
+    rotationB,
+    propA,
+    propB,
+    inv_dt
+  ) {
     const { axis, overlap, tangent, contactPoints, contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
@@ -172,7 +150,7 @@ export class CollisionManifold {
       const ca2 = Vector2.sub(contactPoints[i], positionB)
       const va = Vector2.crossScalar(ca1, rotationA)
       Vector2.add(va, velocityA, va)
-      const vb = Vector2.crossScalar(ca2,rotationB)
+      const vb = Vector2.crossScalar(ca2, rotationB)
       Vector2.add(vb, velocityB, vb)
       const relativeVelocity = Vector2.sub(vb, va, vb)
 
@@ -193,14 +171,13 @@ export class CollisionManifold {
       );
       const normalVelocity = Vector2.dot(axis, relativeVelocity);
 
-      if (Settings.positionCorrection)
-        manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
+      manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
       manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity, 0.0);
       const k =
-        bodyA.inv_mass +
-        bodyB.inv_mass +
-        manifold.nJacobian[i].wa * bodyA.inv_inertia * manifold.nJacobian[i].wa +
-        manifold.nJacobian[i].wb * bodyB.inv_inertia * manifold.nJacobian[i].wb;
+        propA.invmass +
+        propB.invmass +
+        manifold.nJacobian[i].wa * propA.invinertia * manifold.nJacobian[i].wa +
+        manifold.nJacobian[i].wb * propB.invinertia * manifold.nJacobian[i].wb;
       manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
     }
   }
@@ -208,10 +185,16 @@ export class CollisionManifold {
    * @param {CollisionManifold} manifold
    * @param {Movable} movableA
    * @param {Movable} movableB
-   * @param {Body2D} bodyA
-   * @param {Body2D} bodyB
    */
-  static solve(manifold, movableA, movableB, bodyA, bodyB) {
+  static solve(
+    manifold,
+    movableA,
+    movableB,
+    invmassA,
+    invmassB,
+    invinertiaA,
+    invinertiaB,
+  ) {
     const { contactNo } = manifold.contactData
 
     for (let i = 0; i < contactNo; i++) {
@@ -270,8 +253,10 @@ export class CollisionManifold {
         manifold.nJacobian[i],
         movableA,
         movableB,
-        bodyA,
-        bodyB,
+        invmassA,
+        invmassB,
+        invinertiaA,
+        invinertiaB,
         manifold.nLambda[i]
       )
       if (manifold.nLambda[i] <= 0) continue
@@ -279,8 +264,10 @@ export class CollisionManifold {
         manifold.tJacobian[i],
         movableA,
         movableB,
-        bodyA,
-        bodyB,
+        invmassA,
+        invmassB,
+        invinertiaA,
+        invinertiaB,
         manifold.tLambda[i]
       ) /***/
     }

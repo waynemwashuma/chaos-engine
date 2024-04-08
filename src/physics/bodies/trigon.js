@@ -1,8 +1,11 @@
 import { Body2D } from "./body.js"
 import { Triangle } from "../shapes/index.js"
-
+/**
+ * @deprecated
+*/
 export class Trigon extends Body2D {
   /**
+   * 
    * @param {number} base
    * @param {number} height
    * @param {number} angle Angle in radians

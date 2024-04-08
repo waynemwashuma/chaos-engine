@@ -2,10 +2,11 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Ball,
+  Circle,
   Sprite,
   CircleGeometry,
   BasicMaterial,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 import {viewport} from "./demo.js"
@@ -25,10 +26,10 @@ export function circlestacking(manager) {
 function stack(x, y, r, no, spacing, manager) {
   for (let i = 0; i < no; i++) {
     manager.create({
-      "transform": new Transform(x, y + (r + spacing) * i),
+      "transform": new Transform(x, y + (r*2 + spacing) * i),
       "movable": new Movable(),
       "bound": new BoundingBox(),
-      "body": new Ball(r),
+      ...createRawRigidBody2D(new Circle(r)),
       "sprite": new Sprite(
         new CircleGeometry(r),
         new BasicMaterial()
