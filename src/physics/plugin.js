@@ -1,7 +1,6 @@
 import { NaiveBroadphase2DPlugin } from "./broadphases/index.js"
 import { SATNarrowphase2DPlugin } from "./narrowphase/index.js"
 import { Vector2 } from "../math/index.js"
-import { Body2D } from "./bodies/index.js"
 import { Shape2D } from "./shapes/index.js"
 import { Settings } from './settings.js';
 import { CollisionManifold } from './narrowphase/index.js';
