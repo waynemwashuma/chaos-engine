@@ -1,4 +1,4 @@
-export { Keyboard } from "./keyboard.js"
-export { Mouse } from "./mouse.js"
-export { Touch } from "./touch.js"
-export { Input } from "./input.js"
+export * from "./keyboard.js"
+export * from "./mouse.js"
+export * from "./touch.js"
+export * from "./input.js"

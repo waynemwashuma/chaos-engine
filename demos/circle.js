@@ -9,11 +9,11 @@ import {
   Circle
 } from  "/src/index.js"
 import {makePlatform} from "./utils.js"
+import {viewport} from "./demo.js"
 
 export function circle(manager) {
-  const rect = manager.getResource("renderer")
   manager.create({
-    "transform": new Transform(rect.width/2, 300),
+    "transform": new Transform(viewport.width/2, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
     ...createRawRigidBody2D(new Circle(30)),
@@ -24,9 +24,9 @@ export function circle(manager) {
   })
   makePlatform(
     manager,
-    rect.width/2,
-    rect.height * 0.8,
-    rect.width,
+    viewport.width/2,
+    viewport.height * 0.8,
+    viewport.width,
     50)
   manager.getResource("gravity").y = 900
 }

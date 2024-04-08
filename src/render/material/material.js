@@ -6,6 +6,26 @@ import { throws } from "../../logger/index.js"
  */
 export class Material {
   type = MaterialType.NULL
+  _uniforms = {}
+  constructor(opts = {}) {
+    if (!opts.uniforms) opts.uniforms = {}
+    for (const key in opts.uniforms) {
+      Material.setUniform(this, key, opts.uniforms[key])
+    }
+  }
+  static setUniform(material, name, value) {
+    const uniform = material._uniforms[name]
+    if (uniform) return uniform.value = value
+    material._uniforms[name] = {
+      value,
+      position: 0
+    }
+  }
+  static getUniform(material, name) {
+    const uniform = material._uniforms[name]
+    if (!uniform) throws(`The uniform \"${name}\" does not exist on the queried material of type ${material.type}.`)
+    return uniform.value
+  }
   /**
    * @param {Material} material
    * @param {CanvasRenderingContext2D} ctx
@@ -15,104 +35,90 @@ export class Material {
   static render(material, ctx, dt, path) {
     switch (material.type) {
       case MaterialType.BASIC:
-        // @ts-ignore
-        if (!material.wireframe) {
-          // @ts-ignore
-          ctx.fillStyle = material.fill
-          // @ts-ignore
-          ctx.fill(path)
-        }
-        // @ts-ignore
-        ctx.strokeStyle = material.stroke
-        // @ts-ignore
-        ctx.stroke(path)
+        renderBasic(ctx, material, path)
         break;
       case MaterialType.TEXT:
-        /**@type {TextMetrics}*/
-        // @ts-ignore
-        const metrics = ctx.measureText(this.text)
-        // @ts-ignore
-        const x = material.center ? -metrics.width / 2 : 0
-        const y = 0
-        // @ts-ignore
-        ctx.strokeRect = material.color
-        // @ts-ignore
-        ctx.fillStyle = material.color
-        // @ts-ignore
-        ctx.font = material.font
-        // @ts-ignore
-        if (material.fill)
-          // @ts-ignore
-          ctx.fillText(material.text, x, y)
-        else
-          // @ts-ignore
-          ctx.strokeText(material.text, x, y)
+        renderText(ctx, material)
         break;
       case MaterialType.STATICIMAGE:
-        ctx.drawImage(
-          // @ts-ignore
-          material.image,
-          // @ts-ignore
-          material.offset.x,
-          // @ts-ignore
-          material.offset.y,
-          // @ts-ignore
-          material.width,
-          // @ts-ignore
-          material.height
-        )
+        renderStaticImage(ctx, material)
         break;
       case MaterialType.SPRITE:
-        drawImage(
-          ctx,
-          // @ts-ignore
-          material.img,
-          // @ts-ignore
-          -material.width / 2,
-          // @ts-ignore
-          -material.width / 2,
-          // @ts-ignore
-          material.frameWidth,
-          // @ts-ignore
-          material.frameHeight,
-          // @ts-ignore
-          material._frame,
-          // @ts-ignore
-          material._index,
-          // @ts-ignore
-          material.width,
-          // @ts-ignore
-          material.height
-        )
-        // @ts-ignore
-        material._accumulator += dt
-        // @ts-ignore
-        if (material._accumulator < material.frameRate) return
-        // @ts-ignore
-        material._accumulator = 0
-        // @ts-ignore
-        material._frame += 1
-        // @ts-ignore
-        if (material._frame >= material._maxFrame)
-          // @ts-ignore
-          material._frame = 0
-        break;
-      case MaterialType.STATICIMAGE:
-        ctx.drawImage(
-          // @ts-ignore
-          material.image,
-          // @ts-ignore
-          material.offset.x,
-          // @ts-ignore
-          material.offset.y,
-          // @ts-ignore
-          material.width,
-          // @ts-ignore
-          material.height
-        )
+        renderSprite(ctx, material, dt)
         break;
       default:
         throws("Unsupported Material type")
     }
   }
+}
+
+function renderBasic(ctx, material, path) {
+  const wireframe = Material.getUniform(material, 'wireframe')
+  const fill = Material.getUniform(material, 'fill')
+  const stroke = Material.getUniform(material, 'stroke')
+  ctx.fillStyle = fill
+  ctx.strokeStyle = stroke
+  if (!wireframe)
+    ctx.fill(path)
+  ctx.stroke(path)
+}
+
+function renderText(ctx, material) {
+  const text = Material.getUniform(material, 'text')
+  const center = Material.getUniform(material, 'center')
+  const font = Material.getUniform(material, 'font')
+  const fill = Material.getUniform(material, 'fill')
+  const stroke = Material.getUniform(material, 'stroke')
+  
+  ctx.textAlign = "center"
+  ctx.fillStyle = fill
+  ctx.strokeStyle = stroke
+  ctx.font = font
+  ctx.fillText(text, 0, 0)
+  ctx.strokeText(text, 0, 0)
+}
+
+function renderStaticImage(ctx, material) {
+  const image = Material.getUniform(material, 'image')
+  const width = Material.getUniform(material, 'width')
+  const height = Material.getUniform(material, 'height')
+
+  ctx.drawImage(
+    image,
+    -width / 2,
+    -height / 2,
+    width,
+    height
+  )
+}
+
+function renderSprite(ctx, material, dt) {
+  const image = Material.getUniform(material, 'image')
+  const width = Material.getUniform(material, 'width')
+  const height = Material.getUniform(material, 'height')
+  const frameWidth = Material.getUniform(material, 'frameWidth')
+  const frameHeight = Material.getUniform(material, 'frameHeight')
+  const _frame = Material.getUniform(material, '_frame')
+  const _index = Material.getUniform(material, '_index')
+  const _accumulator = Material.getUniform(material, '_accumulator')
+  const frameRate = Material.getUniform(material, 'frameRate')
+  const maxFrame = Material.getUniform(material, 'maxFrames')[_index]
+  drawImage(
+    ctx,
+    image,
+    -width / 2,
+    -height / 2,
+    frameWidth,
+    frameHeight,
+    _frame,
+    _index,
+    width,
+    height
+  )
+  Material.setUniform(material, "_accumulator", _accumulator + dt)
+  if (_accumulator < frameRate) return
+  Material.setUniform(material, "_accumulator", 0)
+  Material.setUniform(material, "_frame", _frame + 1)
+  if (_frame >= maxFrame - 1)
+    Material.setUniform(material, "_frame", 0)
 }

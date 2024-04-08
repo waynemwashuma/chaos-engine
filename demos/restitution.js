@@ -9,9 +9,8 @@ import {
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-
+import {viewport} from "./demo.js"
 export function restitution(manager) {
-  const rect = manager.getResource("renderer")
 
   const body1 = createRawRigidBody2D(new Rectangle(50, 50),1,1)
   const body2 = createRawRigidBody2D(new Rectangle(50, 50),1,0.8)
@@ -82,9 +81,9 @@ export function restitution(manager) {
   })
   makePlatform(
     manager,
-    rect.width / 2,
-    rect.height * 0.8,
-    rect.width,
+    viewport.width / 2,
+    viewport.height * 0.8,
+    viewport.width,
     50
   )
   manager.getResource("gravity").y = 900

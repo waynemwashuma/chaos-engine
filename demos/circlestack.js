@@ -9,15 +9,20 @@ import {
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
+import {viewport} from "./demo.js"
 
 export function circlestacking(manager) {
-  const rect = manager.getResource("renderer")
-  stack(200, 300, 25, 8, 0, manager)
+
+
+
+
+  stack(200, 300, 25, 8, 5, manager)
+
   makePlatform(
     manager,
-    rect.width / 2,
-    rect.height * 0.8,
-    rect.width,
+    viewport.width / 2,
+    viewport.height * 0.8,
+    viewport.width,
     50
   )
   manager.getResource("gravity").y = 900
