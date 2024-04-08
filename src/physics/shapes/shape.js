@@ -64,8 +64,7 @@ export class Shape2D {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @template {Shape2D} T
-   * @param {T} shape
+   * @param {Shape2D} shape
    * @param {Vector2} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {Vector2} scale the scale of the body
@@ -152,10 +151,10 @@ export class Shape2D {
 }
 /**
  * @deprecated
-*/
-export class Shape extends Shape2D{
-  constructor(){
-    deprecate("Shape()","Shape2D()")
+ */
+export class Shape extends Shape2D {
+  constructor() {
+    deprecate("Shape()", "Shape2D()")
     //@ts-ignore
     super(...arguments)
   }

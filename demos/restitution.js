@@ -2,35 +2,29 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Box,
   Sprite,
   BoxGeometry,
-  BasicMaterial
+  BasicMaterial,
+  Rectangle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 
 export function restitution(manager) {
   const rect = manager.getResource("renderer")
 
-  let body1 = new Box(50, 50)
-  let body2 = new Box(50, 50)
-  let body3 = new Box(50, 50)
-  let body4 = new Box(50, 50)
-  let body5 = new Box(50, 50)
-  let body6 = new Box(50, 50)
-
-  body1.restitution = 1
-  body2.restitution = 0.8
-  body3.restitution = 0.6
-  body4.restitution = 0.4
-  body5.restitution = 0.2
-  body6.restitution = 0
-
+  const body1 = createRawRigidBody2D(new Rectangle(50, 50),1,1)
+  const body2 = createRawRigidBody2D(new Rectangle(50, 50),1,0.8)
+  const body3 = createRawRigidBody2D(new Rectangle(50, 50),1,0.6)
+  const body4 = createRawRigidBody2D(new Rectangle(50, 50),1,0.4)
+  const body5 = createRawRigidBody2D(new Rectangle(50, 50),1,0.2)
+  const body6 = createRawRigidBody2D(new Rectangle(50, 50),1,0)
+  
   manager.create({
     "transform": new Transform(100, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": body1,
+    ...body1,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -40,7 +34,7 @@ export function restitution(manager) {
     "transform": new Transform(200, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": body2,
+    ...body2,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -50,7 +44,7 @@ export function restitution(manager) {
     "transform": new Transform(300, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": body3,
+    ...body3,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -60,7 +54,7 @@ export function restitution(manager) {
     "transform": new Transform(400, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": body4,
+    ...body4,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -70,7 +64,7 @@ export function restitution(manager) {
     "transform": new Transform(500, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": body5,
+    ...body5,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()
@@ -80,7 +74,7 @@ export function restitution(manager) {
     "transform": new Transform(600, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": body6,
+    ...body6,
     "sprite": new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()

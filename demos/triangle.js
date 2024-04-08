@@ -2,10 +2,11 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Trigon,
   Sprite,
   TriangleGeometry,
   BasicMaterial,
+  Triangle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 
@@ -17,7 +18,7 @@ export function triangle(manager) {
     "transform": new Transform(rect.width / 2, 300),
     "movable": new Movable(),
     "bound": new BoundingBox(),
-    "body": new Trigon(base, (base / 2) * Math.sin(angle), angle),
+    ...createRawRigidBody2D(new Triangle(base, (base / 2) * Math.sin(angle), angle)),
     "sprite": new Sprite(
       new TriangleGeometry(base, (base / 2) * Math.sin(angle), angle),
       new BasicMaterial()

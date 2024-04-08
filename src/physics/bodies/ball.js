@@ -5,6 +5,7 @@ import { Circle } from "../shapes/index.js"
 /**
  * A body with a circle shape on it.
  * 
+ * @deprecated
  * @augments Body2D
  */
 export class Ball extends Body2D {
