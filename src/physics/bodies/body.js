@@ -1,6 +1,4 @@
 import { Vector2 } from "../../math/index.js"
-import { Utils } from "../../utils/index.js"
-import { BoundingBox } from "../../math/index.js"
 import { Settings } from "../settings.js"
 import { Shape2D } from "../shapes/index.js"
 import { deprecate } from "../../logger/index.js"

@@ -49,11 +49,10 @@ export class Body2DDebugger {
 
 function drawShapes(manager) {
   const ctx = manager.getResource("ctx")
-  const query = manager.query("body")
-  query.each(body => {
-    const shape = body.shape
+  const query = manager.query("shape2d")
+  query.each(shape => {
     ctx.beginPath()
-    if (shape.type === Shape.CIRCLE) {
+    if (shape.type === Shape2D.CIRCLE) {
       circle(
         ctx,
         shape.vertices[0].x,
@@ -175,30 +174,6 @@ function drawArmRaw(ctx, position, arm) {
   )
 }
 
-/**
-
- * @param {Shape2D} shape
- * @param {CanvasRenderingContext2D} ctx
- */
-function drawShapes(shape, ctx) {
-  ctx.beginPath()
-  if (shape.type === Shape2D.CIRCLE) {
-    circle(
-      ctx,
-      shape.vertices[0].x,
-      shape.vertices[0].y,
-      shape.vertices[1].x
-    )
-    const r = Vector2.fromAngle(shape.angle)
-    Vector2.multiplyScalar(r, shape.vertices[1].x, r)
-    drawArm(ctx, shape.vertices[0], r)
-  } else {
-    vertices(ctx, shape.vertices, true)
-  }
-  ctx.lineWidth = 10
-  stroke(ctx, "lightgreen", 2)
-  ctx.closePath()
-}
 
 /**
  * @param {CanvasRenderingContext2D} ctx
