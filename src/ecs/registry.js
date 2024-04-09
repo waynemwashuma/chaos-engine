@@ -18,6 +18,7 @@ export class Registry {
    * @type {Record<string,any>}
    */
   _resources = {}
+  //_unserializableResources = []
   events = new EventDispatcher()
   /**
    * Adds an entity to the manager and initializes it.
@@ -80,11 +81,10 @@ export class Registry {
   }
   /**
    * @template T
-   * @param {string} name
    * @param {T} resource
    */
-  setResource(name, resource) {
-    this._resources[name] = resource
+  setResource(resource) {
+    this._resources[resource.constructor.name.toLowerCase()] = resource
   }
   /**
    * This removes all of the entities and components from the manager
