@@ -19,9 +19,9 @@ export class Renderer2DPlugin {
    * @param {Manager} manager
    */
   register(manager) {
-    manager.setResource("viewport", this.renderer)
-    manager.setResource("ctx", this.renderer.domElement.getContext("2d"))
-    manager.setResource("camera", this.camera)
+    manager.setResource(this.renderer)
+    manager.setResource(this.renderer.domElement.getContext("2d"))
+    manager.setResource(this.camera)
     if (this.enableSorting)
       manager.registerSystem(updateSortedSprites)
     else
@@ -33,8 +33,8 @@ function updateSprites(manager) {
   const [transforms, sprites] = manager.query("transform", "sprite").raw()
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
-  const ctx = manager.getResource("ctx")
-  const camera = manager.getResource("camera")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
+  const camera = manager.getResource("camera2d")
 
   Renderer2D.clear(ctx, viewport.width, viewport.height)
   ctx.rotate(
@@ -68,8 +68,8 @@ function updateSortedSprites(manager) {
   const sprites = sprite.slice().flat()
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
-  const ctx = manager.getResource("ctx")
-  const camera = manager.getResource("camera")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
+  const camera = manager.getResource("camera2d")
 
   quickSort(
     sprites,

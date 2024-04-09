@@ -37,7 +37,7 @@ export class KeyboardPlugin {
     const eh = manager.getResource("domeventhandler")
     if (!eh) return error("The resource `DOMEventHandler()` is required to be set first before `KeyboardPlugin()` is registered.")
     const keyboard = new Keyboard()
-    manager.setResource("keyboard", keyboard)
+    manager.setResource(keyboard)
     eh.add("keydown", e =>
       keyboard[normalizeKey(e.code)] = true
     )

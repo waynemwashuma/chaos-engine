@@ -1,6 +1,10 @@
 import { verlet,euler } from "./intergrator.js"
 import { Vector2 } from "../math/index.js"
 import { Manager } from "../ecs/index.js"
+
+class LinearDamping extends Number{}
+class AngularDamping extends Number{}
+
 export class Intergrator2DPlugin {
   /**
    * @param {IntergratorPluginOptions} options
@@ -18,8 +22,8 @@ export class Intergrator2DPlugin {
    */
   register(manager) {
     if (this.options.enableDamping) {
-      manager.setResource("linearDamping",this.options.linearDamping)
-      manager.setResource("angularDamping",this.options.angularDamping)
+      manager.setResource(new LinearDamping(this.options.linearDamping))
+      manager.setResource(new AngularDamping(this.options.angularDamping))
       manager.registerSystem(dampenVelocity)
     }
     manager.registerSystem(updateTransformVerlet)
@@ -30,8 +34,8 @@ export class Intergrator2DPlugin {
  */
 export function dampenVelocity(manager) {
   const [movables] = manager.query("movable").raw()
-  const linear = 1 - manager.getResource("linearDamping")
-  const angular = 1 - manager.getResource("angularDamping")
+  const linear = 1 - manager.getResource("lineardamping")
+  const angular = 1 - manager.getResource("angulardamping")
   for (let i = 0; i < movables.length; i++) {
     for (let j = 0; j < movables[i].length; j++) {
       const velocity = movables[i][j].velocity

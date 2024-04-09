@@ -23,7 +23,7 @@ export class TouchPlugin {
     if (!eh) return error("The resource `DOMEventHandler()` is required to be set first before `MousePlugin()` is registered.")
 
     const touch = new Touch()
-    manager.setResource("touch", touch)
+    manager.setResource(touch)
     eh.add('touchstart', (e) => {
       touch.touches = e.touches
       e.preventDefault()

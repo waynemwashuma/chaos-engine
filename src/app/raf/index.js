@@ -10,11 +10,10 @@ class RAFUpdater {
 
 export class RAFPlugin {
   register(manager) {
-    manager.setResource("virtualclock", new VirtualClock())
-    manager.setResource("rafupdater", new RAFUpdater())
-    manager.registry.setResource("delta",new Delta(0))
+    manager.setResource(new VirtualClock())
+    manager.setResource(new RAFUpdater())
+    manager.registry.setResource(new Delta(0))
     manager.registry.events.add("init", playRaf)
-
     function playRaf(accumulate) {
       manager.registry.events.trigger("updateStart")
       const clock = manager.registry.getResource("virtualclock")
@@ -25,7 +24,7 @@ export class RAFPlugin {
       if (!fuzzyGreater(raf.accumulate, raf.frameRate,0.00001)) return
       manager.registry.update(0.016)
       manager.registry.events.trigger("updateEnd", raf.accumulate)
-      manager.registry.setResource("delta",new Delta(delta))
+      manager.registry.setResource(new Delta(delta))
       raf.accumulate = 0
       raf.id = id
     }

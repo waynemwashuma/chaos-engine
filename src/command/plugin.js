@@ -1,7 +1,7 @@
 export class CommandQueue extends Array {}
 export class CommandsPlugin {
   register(manager) {
-    manager.setResource("commandqueue", new CommandQueue())
+    manager.setResource( new CommandQueue())
     manager.registerSystem(executeCommands)
     manager.registerSystem(clearCommandQueue)
   }

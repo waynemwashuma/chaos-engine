@@ -1,11 +1,15 @@
-import { Broadphase,NaiveBroadphase } from "./broadphases/index.js"
-import { NarrowPhase,SATNarrowphase } from "./narrowphase/index.js"
+import { Broadphase, NaiveBroadphase } from "./broadphases/index.js"
+import { NarrowPhase, SATNarrowphase } from "./narrowphase/index.js"
 import { Vector2 } from "../math/index.js"
 import { Body2D } from "./bodies/index.js"
 import { Settings } from './settings.js';
 import { CollisionManifold } from './narrowphase/index.js';
 import { Intergrator2DPlugin } from "../intergrator/index.js"
 import { Manager } from "../ecs/index.js";
+
+export class Gravity extends Vector2 {}
+export class CollisionPairs extends Array{}
+export class Contacts extends Array{}
 
 export class Physics2DPlugin {
   /**
@@ -24,7 +28,12 @@ export class Physics2DPlugin {
    */
   register(manager) {
     if (this.enableGravity) {
-      manager.setResource("gravity",this.gravity)
+      manager.setResource(
+        new Gravity(
+          this.gravity.x,
+          this.gravity.y
+        )
+      )
       manager.registerSystem(applyGravity)
     }
     manager.registerPlugin(this.intergrator)
@@ -43,11 +52,11 @@ export class Broadphase2DPlugin {
     this.broadphase = broadphase
   }
   /**
-  * @param {Manager} manager
-  */
+   * @param {Manager} manager
+   */
   register(manager) {
-    manager.setResource("collisionPairs",[])
-    manager.setResource("broadphase",this.broadphase)
+    manager.setResource(new CollisionPairs())
+    manager.setResource(this.broadphase)
     manager.registerSystem(naivebroadphaseUpdate)
   }
 }
@@ -63,8 +72,8 @@ export class Narrowphase2DPlugin {
    * @param {Manager} manager
    */
   register(manager) {
-    manager.setResource("contacts",[])
-    manager.setResource("narrowphase",this.narrowphase)
+    manager.setResource(new Contacts())
+    manager.setResource(this.narrowphase)
 
     if (this.narrowphase instanceof SATNarrowphase) {
       manager.registerSystem(satNarrowphaseUpdate)
@@ -75,10 +84,10 @@ export class Narrowphase2DPlugin {
  * @param {Manager} manager
  */
 export function naivebroadphaseUpdate(manager) {
-  const [entities,bounds] = manager.query("entity","boundingbox").raw()
-  const broadphase = manager.getResource("broadphase")
-  broadphase.update(entities,bounds)
-  const pairs = manager.getResource("collisionPairs")
+  const [entities, bounds] = manager.query("entity", "boundingbox").raw()
+  const broadphase = manager.getResource("naivebroadphase")
+  broadphase.update(entities, bounds)
+  const pairs = manager.getResource("collisionpairs")
   pairs.length = 0
   broadphase.getCollisionPairs(pairs)
 }
@@ -86,19 +95,19 @@ export function naivebroadphaseUpdate(manager) {
  * @param {Manager} manager
  */
 export function satNarrowphaseUpdate(manager) {
-  const narrowphase = manager.getResource("narrowphase")
-  const pairs = manager.getResource("collisionPairs")
+  const narrowphase = manager.getResource("satnarrowphase")
+  const pairs = manager.getResource("collisionpairs")
 
   const contacts = manager.getResource("contacts")
   contacts.length = 0
-  narrowphase.getCollisionPairs(manager,pairs,contacts)
+  narrowphase.getCollisionPairs(manager, pairs, contacts)
 }
 /**
  * @param {Manager} manager
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const [bodies,movables] = manager.query("body2d","movable").raw()
+  const [bodies, movables] = manager.query("body2d", "movable").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
@@ -116,7 +125,7 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const [transform,bounds,bodies] = manager.query("transform","boundingbox","body2d").raw()
+  const [transform, bounds, bodies] = manager.query("transform", "boundingbox", "body2d").raw()
 
   for (let i = 0; i < bodies.length; i++) {
     for (let j = 0; j < bodies[i].length; j++) {
@@ -139,8 +148,8 @@ export function collisionResponse(manager) {
 
   for (let i = 0; i < contacts.length; i++) {
     const manifold = contacts[i]
-    const [transformA,movableA,bodyA] = manager.get(manifold.entityA,"transform","movable","body2d")
-    const [transformB,movableB,bodyB] = manager.get(manifold.entityB,"transform","movable","body2d")
+    const [transformA, movableA, bodyA] = manager.get(manifold.entityA, "transform", "movable", "body2d")
+    const [transformB, movableB, bodyB] = manager.get(manifold.entityB, "transform", "movable", "body2d")
 
     if (Settings.warmStarting)
       CollisionManifold.warmstart(
@@ -164,8 +173,8 @@ export function collisionResponse(manager) {
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
       const manifold = contacts[j]
-      const [movableA,bodyA] = manager.get(manifold.entityA,"movable","body2d")
-      const [movableB,bodyB] = manager.get(manifold.entityB,"movable","body2d")
+      const [movableA, bodyA] = manager.get(manifold.entityA, "movable", "body2d")
+      const [movableB, bodyB] = manager.get(manifold.entityB, "movable", "body2d")
 
       CollisionManifold.solve(
         manifold,

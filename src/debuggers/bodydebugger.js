@@ -32,7 +32,7 @@ export class Body2DDebugger {
     const { options } = this
     if (options.clearViewport)
       manager.registerSystem(manager => {
-        const ctx = manager.getResource("ctx")
+        const ctx = manager.getResource("canvasrenderingcontext2d")
         const viewport = manager.getResource("viewport")
 
         ctx.clearRect(0, 0, viewport.width, viewport.height)
@@ -48,7 +48,7 @@ export class Body2DDebugger {
 }
 
 function drawShapes(manager) {
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
   const query = manager.query("body2d")
   query.each(body => {
     const shape = body.shape
@@ -73,7 +73,7 @@ function drawShapes(manager) {
 
 function drawArms(manager) {
   const contacts = manager.getResource("contacts")
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
 
   ctx.beginPath()
   for (let i = 0; i < contacts.length; i++) {
@@ -90,7 +90,7 @@ function drawArms(manager) {
 }
 
 function drawContacts(manager) {
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
   const clmd = manager.getResource("contacts")
   for (let i = 0; i < clmd.length; i++) {
     let [p1, p2] = clmd[i].contactData.contactPoints
@@ -105,7 +105,7 @@ function drawContacts(manager) {
 
 function drawVelocity(manager) {
   const query = manager.query("transform", "movable")
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
   ctx.beginPath()
   ctx.strokeStyle = "cyan"
   query.each((transform, movable) => {
@@ -117,7 +117,7 @@ function drawVelocity(manager) {
 
 function drawBounds(manager) {
   const query = manager.query('bound')
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
   ctx.beginPath()
   ctx.lineWidth = 3
   ctx.strokeStyle = "red"
@@ -137,7 +137,7 @@ function drawBounds(manager) {
 
 function drawPosition(manager) {
   const query = manager.query("transform")
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
 
   query.each(transform => {
     const position = transform.position
