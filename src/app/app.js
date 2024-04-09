@@ -33,8 +33,8 @@ export class App {
     this.registry.registerSystem(system)
     return this
   }
-  setResource(name, resource) {
-    this.registry.setResource(name, resource)
+  setResource(resource) {
+    this.registry.setResource(resource)
     return this
   }
 }
