@@ -60,7 +60,7 @@ export class MousePlugin {
     if (!eh) return error("The resource `DOMEventHandler()` is required to be set first before `MousePlugin()` is registered.")
 
     const mouse = new Mouse()
-    manager.setResource("mouse", mouse)
+    manager.setResource(mouse)
     eh.add('click', e => ++this.clickCount)
     eh.add('mousedown', e => {
       switch (e.button) {

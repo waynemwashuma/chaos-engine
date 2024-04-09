@@ -93,9 +93,8 @@ export class Registry {
     this.events.trigger("clear", this)
     this._table.clear()
   }
-  update(dt = 0.016) {
+  update() {
     const systems = this._systems;
-    //this.setResource("delta", dt)
     for (let i = 0; i < systems.length; i++) {
       systems[i](this);
     }

@@ -6,7 +6,7 @@ import { deprecate } from "../logger/index.js"
 
 export class InputPlugin {
   register(manager) {
-    manager.setResource("domeventhandler", new DOMEventHandler())
+    manager.setResource(new DOMEventHandler())
     manager.registerPlugin(new TouchPlugin())
     manager.registerPlugin(new MousePlugin())
     manager.registerPlugin(new KeyboardPlugin())
