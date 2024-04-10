@@ -1,15 +1,21 @@
 import { Registry } from "../ecs/index.js"
-import { throws } from "../logger/index.js"
+import { assert } from "../logger/index.js"
+const registererror = "Systems,`Plugin`s or resources should be registered or set before `App().run()`"
 
 export class App {
   registry = new Registry()
   events
   #startups = []
+  #updates = []
   _initialized = false
   constructor() {
     this.events = this.registry.events
   }
   run() {
+    this._initialized = true
+    for (let i = 0; i < this.#updates.length; i++) {
+      this.registry.registerSystem(this.#updates[i])
+    }
     for (let i = 0; i < this.#startups.length; i++) {
       this.#startups[i](this.registry)
     }
@@ -37,11 +43,17 @@ export class App {
     this.registry.registerSystem(system)
     return this
   }
-  registerStartupSystem(system){
+  registerUpdateSystem(system) {
+    assert(!this._initialized, registererror)
+    this.#updates.push(system)
+  }
+  registerStartupSystem(system) {
+    assert(!this._initialized, registererror)
     this.#startups.push(system)
     return this
   }
   setResource(resource) {
+    assert(!this._initialized, registererror)
     this.registry.setResource(resource)
     return this
   }
