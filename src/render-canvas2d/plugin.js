@@ -1,14 +1,12 @@
 import { Manager } from "../ecs/index.js"
 import { Renderer2D } from "./canvas.js"
-import { Viewport, Sprite, Material, Camera2D } from "../render/index.js"
-
+import { Viewport, Sprite, Material } from "../render/index.js"
+import { Transform } from "../intergrator/index.js"
 export class Renderer2DPlugin {
   constructor(options = {}) {
-    if(!options.camera)
-    options.camera = new Camera2D()
     if (!options.viewport)
       options.viewport = new Viewport()
-      
+
     this.renderer = options.viewport
     this.camera = options.camera
     this.enableSorting = options.enableSorting ?? false
@@ -21,7 +19,6 @@ export class Renderer2DPlugin {
   register(manager) {
     manager.setResource(this.renderer)
     manager.setResource(this.renderer.domElement.getContext("2d"))
-    manager.setResource(this.camera)
     if (this.enableSorting)
       manager.registerSystem(updateSortedSprites)
     else
@@ -33,20 +30,24 @@ function updateSprites(manager) {
   const [transforms, sprites] = manager.query("transform", "sprite").raw()
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
+  /**@type {CanvasRenderingContext2D}*/
   const ctx = manager.getResource("canvasrenderingcontext2d")
-  const camera = manager.getResource("camera2d")
+  const camquery = manager.query("transform", "camera").single()
+  if(!camquery)return 
+  const camtransform = camquery[0]
+  ctx.clearRect(0, 0, viewport.width, viewport.height)
+  ctx.save()
 
-  Renderer2D.clear(ctx, viewport.width, viewport.height)
+  ctx.translate(
+    camtransform.position.x,
+    camtransform.position.y
+  )
   ctx.rotate(
-    camera.transform.orientation
+    camtransform.orientation
   )
   ctx.scale(
-    camera.transform.scale.x,
-    camera.transform.scale.y
-  )
-  ctx.translate(
-    camera.transform.position.x,
-    camera.transform.position.y
+    camtransform.scale.x,
+    camtransform.scale.y
   )
   for (let i = 0; i < sprites.length; i++) {
     for (let j = 0; j < sprites[i].length; j++) {
@@ -60,6 +61,7 @@ function updateSprites(manager) {
       )
     }
   }
+  ctx.restore()
 }
 
 function updateSortedSprites(manager) {
@@ -69,8 +71,7 @@ function updateSortedSprites(manager) {
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
   const ctx = manager.getResource("canvasrenderingcontext2d")
-  const camera = manager.getResource("camera2d")
-
+  const [camtransform, _] = manager.query("transform", "camera").single()
   quickSort(
     sprites,
     (i, j) => {

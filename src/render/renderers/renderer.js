@@ -1,4 +1,3 @@
-import { Camera2D } from "../camera.js"
 import { deprecate } from "../../logger/index.js"
 
 export class Viewport {
@@ -84,7 +83,6 @@ export class Renderer extends Viewport {
     super(canvas)
     deprecate("Renderer()", "Viewport()")
     this.domElement = canvas
-    this.camera = new Camera2D()
   }
   /**
    * Attaches the renderer to a given html element by its selector.
