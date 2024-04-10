@@ -1,5 +1,5 @@
 import { Registry } from "../ecs/index.js"
-import { assert } from "../logger/index.js"
+import { assert,deprecate } from "../logger/index.js"
 const registererror = "Systems,`Plugin`s or resources should be registered or set before `App().run()`"
 
 export class App {
@@ -36,12 +36,12 @@ export class App {
     return this.registerPlugin(debug)
   }
   /**
+   * @deprecated
    * @param {SystemFunc} system
    */
   registerSystem(system) {
-    if (this._initialized) throws("`App().registerSystem()` cannot be called after `App().run()`")
-    this.registry.registerSystem(system)
-    return this
+    deprecate("App().registerSystem()","App().registerUpdateSystem()")
+    this.registerUpdateSystem(system)
   }
   registerUpdateSystem(system) {
     assert(!this._initialized, registererror)
