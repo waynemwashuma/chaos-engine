@@ -5,7 +5,7 @@ import { Utils } from "../../utils/index.js"
  */
 class Archetype {
   /**
-   * @type {Map<string,any>}
+   * @type {Map<string,any[]>}
    */
   components = new Map()
   /**
@@ -26,63 +26,59 @@ class Archetype {
     for (let i = 0; i < components.length; i++) {
       //console.log(components[i].constructor.name.toLowerCase())
       this.components.get(components[i].constructor.name.toLowerCase()).push(components[i])
-  }
-  entities.push(entity)
-  return entities.length - 1
-}
-/**
- * @param {number} index
- * @returns {Entity | undefined}
- */
-remove(index) {
-  const entities = this.components.get("entity")
-  for (let name in this.keys) {
-    Utils.removeElement(
-      this.components.get(this.keys[name]),
-      index
-    )
-  }
-  Utils.removeElement(entities, index)
-  return this.components.get("entity")[index]
-}
-/**
- * @param {number} index
- * @param {{[x:string] : any}} compnames
- */
-get(index, compnames) {
-  const comp = []
-  for (let i = 0; i < compnames.length; i++) {
-    const list = this.getComponentLists(compnames[i])
-    if (list == void 0) {
-      comp.push(null)
-      continue
     }
-    comp.push(
-      list[index]
-    )
+    entities.push(entity)
+    return entities.length - 1
   }
-  return comp
-}
-/**
- * @param {string} name
- * @param {any[]} list
- */
-setComponentList(name, list) {
-  this.components.set(name, list)
-  this.keys.push(name)
-}
-/**
- * @param {string} name
- */
-getComponentLists(name) {
-  return this.components.get(name)
-}
-/**
- * @param {string} name
- */
-hasComponentList(name) {
-  return this.components.has(name)
-}
+  /**
+   * @param {number} index
+   * @returns {Entity | undefined}
+   */
+  remove(index) {
+    const entities = this.components.get("entity")
+    for (let name in this.keys) {
+      Utils.removeElement(
+        this.components.get(this.keys[name]),
+        index
+      )
+    }
+    Utils.removeElement(entities, index)
+    return this.components.get("entity")[index]
+  }
+  /**
+   * @param {number} index
+   * @param {string[]} compnames
+   */
+  get(index, compnames) {
+    const comp = []
+    for (let i = 0; i < compnames.length; i++) {
+      const list = this.getComponentLists(compnames[i])
+      comp.push(
+        list[index]
+      )
+    }
+    return comp
+  }
+  /**
+   * @param {string} name
+   * @param {any[]} list
+   */
+  setComponentList(name, list) {
+    this.components.set(name, list)
+    this.keys.push(name)
+  }
+  /**
+   * @param {string} name
+   */
+  getComponentLists(name) {
+    return this.components.get(name)
+  }
+  /**
+   * @param {string} name
+   */
+  hasComponentList(name) {
+    return this.components.has(name)
+  }
 }
 export class NaiveArchTypeTable {
   /**
@@ -183,14 +179,18 @@ export class NaiveArchTypeTable {
     this.entities[entity + 1] = -1
   }
   /**
+   * @template {Tuple} T
    * @param {Entity} entity
    * @param {string[]} compnames
+   * @returns {T | null}
    */
   get(entity, compnames) {
     const archid = this.entities[entity]
     const index = this.entities[entity + 1]
-    if (archid === -1) return []
-    return this.list[archid].get(index, compnames)
+    const archetype = this.list[archid]
+    if (!archetype) return null
+    if (!checkArchetype(archetype, compnames)) return null
+    return archetype.get(index, compnames)
   }
   /**
    * @param {string[]} compnames
@@ -216,5 +216,13 @@ export class NaiveArchTypeTable {
   clear() {
     this.list = []
   }
+}
+
+function checkArchetype(archetype, comps) {
+  for (let i = 0; i < comps.length; i++) {
+    if (!archetype.components.has(comps[i]))
+      return false
+  }
+  return true
 }
 export { NaiveArchTypeTable as ArchetypeTable }
