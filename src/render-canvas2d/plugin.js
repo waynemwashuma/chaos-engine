@@ -2,7 +2,8 @@ import { Manager } from "../ecs/index.js"
 import { Renderer2D } from "./canvas.js"
 import { Viewport, Sprite, Material } from "../render/index.js"
 import { Transform } from "../intergrator/index.js"
-export class Renderer2DPlugin {
+import { deprecate } from "../logger/index.js"
+export class Canvas2DRendererPlugin {
   constructor(options = {}) {
     if (!options.viewport)
       options.viewport = new Viewport()
@@ -33,7 +34,7 @@ function updateSprites(manager) {
   /**@type {CanvasRenderingContext2D}*/
   const ctx = manager.getResource("canvasrenderingcontext2d")
   const camquery = manager.query("transform", "camera").single()
-  if(!camquery)return 
+  if (!camquery) return
   const camtransform = camquery[0]
   ctx.clearRect(0, 0, viewport.width, viewport.height)
   ctx.save()
@@ -135,7 +136,12 @@ function quickSort(arr, compareFunc, swapFunc, min = 0, max = arr.length - 1) {
     quickSort(arr, compareFunc, swapFunc, i + 2, max)
   }
 }
-
+export class Renderer2DPlugin extends Canvas2DRendererPlugin {
+  constructor() {
+    deprecate("Renderer2DPlugin()", "Canvas2DRendererPlugin()")
+    super(...arguments)
+  }
+}
 /**
  * @callback CompareFunc
  * @param {number} i
