@@ -29,24 +29,25 @@ export function init(selector) {
   window.onorientationchange = () => {
     Viewport.set(viewport, innerWidth, innerHeight * 0.5)
   }
-  manager.registry.create(createCamera2D())
   manager
     .registerPlugin(new RAFPlugin())
     .registerPlugin(new Physics2DPlugin())
     .registerPlugin(new Renderer2DPlugin({
       viewport
     }))
-    .registerDebugger(new FPSDebugger())
     .registerDebugger(new Body2DDebugger({
       clearRenderer: false,
       drawCollisionArm: false
     }))
+    .registerStartupSystem(setupCamera)
+    .registerDebugger(new FPSDebugger())
     .run()
+
   play(Storage.get("setup") || "")
 }
 export function play(name) {
   manager.registry.clear()
-  manager.registry.create(createCamera2D())
+  setupCamera(manager.registry)
   Storage.set("setup", name)
   if (examples.has(name))
     examples.get(name)(manager.registry)
@@ -55,6 +56,9 @@ export function register(n, f) {
   examples.set(n, f)
 }
 
+function setupCamera(manager) {
+  manager.create(createCamera2D())
+}
+
 soundloader.load("assets/hit.mp3")
 imageloader.load("assets/warrior.png")
-console.log(manager)

@@ -9,6 +9,8 @@ import { circlestacking } from "./circlestack.js"
 import { triangle } from "./triangle.js"
 import { friction } from "./friction.js"
 import { restitution } from "./restitution.js"
+import { circlerestitution } from "./restitutioncircle.js"
+
 //import { animation } from "./animation.js"
 
 
@@ -35,6 +37,8 @@ demos.register("circlestacking", circlestacking)
 demos.register("pyramid", pyramid)
 demos.register("random", random)
 demos.register("restitution", restitution)
+demos.register("circlerestitution", circlerestitution)
+
 demos.register("friction", friction)
 
 //Animation
