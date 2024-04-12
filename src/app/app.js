@@ -11,13 +11,13 @@ export class App {
   constructor() {
     this.events = this.registry.events
   }
-  run() {
+  async run() {
     this._initialized = true
     for (let i = 0; i < this.#updates.length; i++) {
       this.registry.registerSystem(this.#updates[i])
     }
     for (let i = 0; i < this.#startups.length; i++) {
-      this.#startups[i](this.registry)
+      await this.#startups[i](this.registry)
     }
     this.registry.events.trigger("init")
     return this
