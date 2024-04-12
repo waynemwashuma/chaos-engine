@@ -1,4 +1,3 @@
-import { assert } from "../logger/index.js"
 /**
  * @template T
  */
@@ -41,7 +40,6 @@ export class Query {
     }
   }
   /**
-   * @template {Tuple} T
    * @param {EachCombinationFunc<T>} callback
    */
   eachCombination(callback) {
@@ -65,10 +63,12 @@ export class Query {
       }
     }
   }
+  /**
+   * @returns {T | null}
+  */
   single() {
     const components = new Array(this.number)
-
-    assert(this.components && this.components[0][0] && this.components[0][0][0], `No entity with component types of \"${ this.type.join("\",\"")}\" found on \`Query().single()\``)
+    if(!this.components && this.components[0][0] && this.components[0][0][0])return null
 
     for (let i = 0; i < this.number; i++) {
       components[i] = this.components[i][0][0]
