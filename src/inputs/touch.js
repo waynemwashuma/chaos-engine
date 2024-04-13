@@ -1,5 +1,3 @@
-import { DOMEventHandler } from "../events/index.js"
-
 /**
  * Handles the touch input of an application from a smartphone,tablet or PCs with touchscreens.
  * 

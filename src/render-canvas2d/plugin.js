@@ -1,7 +1,6 @@
 import { Manager } from "../ecs/index.js"
 import { Renderer2D } from "./canvas.js"
 import { Viewport, Sprite, Material } from "../render/index.js"
-import { Transform } from "../intergrator/index.js"
 import { deprecate } from "../logger/index.js"
 export class Canvas2DRendererPlugin {
   constructor(options = {}) {

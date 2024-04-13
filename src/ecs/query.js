@@ -1,5 +1,5 @@
 /**
- * @template T
+ * @template {Tuple} T
  */
 export class Query {
   /**
@@ -11,7 +11,7 @@ export class Query {
    */
   number = 0
   /**
-   * @type {T | null}
+   * @type {any[][] | null}
    */
   components = null
   /**
@@ -25,7 +25,7 @@ export class Query {
     return this.components
   }
   /**
-   * @param {(EachFunc<T>} callback
+   * @param {EachFunc<T>} callback
    */
   each(callback) {
     const components = new Array(this.number)
@@ -68,7 +68,7 @@ export class Query {
   */
   single() {
     const components = new Array(this.number)
-    if(!this.components && this.components[0][0] && this.components[0][0][0])return null
+    if(!this.components || this.components[0][0] && !this.components[0][0][0])return null
 
     for (let i = 0; i < this.number; i++) {
       components[i] = this.components[i][0][0]
