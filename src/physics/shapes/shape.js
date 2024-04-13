@@ -66,6 +66,14 @@ export class Shape2D {
     ])
   }
   /**
+   * @param {number} length
+   */
+  static line(length) {
+    const start = new Vector2(length / 2)
+    const end = new Vector2(-length / 2)
+    return new Shape2D([start, end])
+  }
+  /**
    * Returns the normals of the faces when rotated.
    * @param {Shape2D} shape
    * @param {Shape2D} refshape
