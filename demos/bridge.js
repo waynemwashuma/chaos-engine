@@ -17,7 +17,7 @@ export function bridge(manager) {
   let pin2 = createEntity(350, 200)
     .attach("body2d",new Box(20, 20))
     .attach("sprite",new BodySprite())
-  let chain = createChain(50, 200, 50, 10, 5, 50, pin1, pin2)
+  let chain = createChain(50, 200, 50, 10, 5, pin1, pin2)
 
   pin1.get("body2d").mass = 0
   pin2.get("body2d").mass = 0
@@ -28,7 +28,7 @@ export function bridge(manager) {
   chain.constraints.forEach(b => world.addConstraint(b))
 }
 
-function createChain(x, y, w, h, number, spacing, pin1, pin2) {
+function createChain(x, y, w, h, number, pin1, pin2) {
   let prev = new Box(w, h),
     bodies = [
       createEntity(x, y)

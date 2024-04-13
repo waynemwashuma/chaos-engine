@@ -1,6 +1,5 @@
 import { MaterialType } from "./types.js"
 import { Material } from "././material.js"
-import { Vector2 } from "../../math/index.js"
 import { deprecate } from "../../logger/index.js"
 
 /**

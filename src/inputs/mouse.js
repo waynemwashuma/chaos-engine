@@ -1,4 +1,3 @@
-import { DOMEventHandler } from "../events/index.js"
 import { BoundingBox, Vector2 } from "../math/index.js"
 /**
  * This handles all inputs from mouse and touchpad on PC and laptop.
