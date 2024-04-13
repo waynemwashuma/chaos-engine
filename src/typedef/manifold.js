@@ -31,8 +31,8 @@
  * @property { Vector2} axis
  * @property { Vector2[]} verticesA
  * @property { Vector2[]} verticesB
- * @property {Shape} vertShapeA
- * @property {Shape} vertShapeB
+ * @property {Shape2D} vertShapeA
+ * @property {Shape2D} vertShapeB
  * @property {number} contactNo
  * @property {number} indexA
  * @property {number} indexB

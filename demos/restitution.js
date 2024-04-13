@@ -2,11 +2,11 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Body2D,
-  Rectangle,
   Sprite,
   BoxGeometry,
-  BasicMaterial
+  BasicMaterial,
+  Rectangle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 import { viewport } from "./demo.js"
@@ -25,7 +25,7 @@ export function restitution(manager) {
 
 function stackHorizontal(x, y, w, h, no, spacing, manager) {
   for (let i = 1; i <= no; i++) {
-    const body = new Body2D(new Rectangle(w, h))
+    const body = createRawRigidBody2D(new Rectangle(w, h))
     body.restitution = i / no
     manager.create([
     new Transform(x + (w + spacing) * i, y),

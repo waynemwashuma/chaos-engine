@@ -2,22 +2,21 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Body2D,
-  Rectangle,
   Sprite,
   BoxGeometry,
-  BasicMaterial
+  BasicMaterial,
+  Rectangle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 
 export function box(manager) {
   const rect = manager.getResource("viewport")
-  
   manager.create([
-    new Transform(1000, 300),
+    new Transform(rect.width/2, 300),
     new Movable(0,0),
     new BoundingBox(),
-    new Body2D(new Rectangle(50, 50)),
+    ...createRawRigidBody2D(new Rectangle(50,50)),
     new Sprite(
       new BoxGeometry(50, 50),
       new BasicMaterial()

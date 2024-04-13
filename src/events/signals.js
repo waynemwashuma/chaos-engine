@@ -1,4 +1,4 @@
-/**
+  /**
  * @template T
  */
 export class Signal {

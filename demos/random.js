@@ -3,13 +3,13 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Body2D,
-  Rectangle,
-  Circle,
   Sprite,
   BoxGeometry,
   CircleGeometry,
-  BasicMaterial
+  BasicMaterial,
+  Rectangle,
+  Circle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makeContainer } from "./utils.js"
 import { viewport } from "./demo.js"
@@ -19,9 +19,9 @@ export function random(manager) {
   let count = 0
   setInterval(() => {
     if (count > maxCount) return
-    randomEntities(1, manager)
+    randomEntities(1,manager)
     count++
-  }, 100)
+  },100)
   makeContainer(
     manager,
     viewport.width - 100,
@@ -33,28 +33,28 @@ export function random(manager) {
   manager.getResource("gravity").y = 900
 }
 
-function randomEntities(n, manager) {
+function randomEntities(n,manager) {
   const width = viewport.width - 100,
     height = viewport.height - 100
   for (let i = 0; i < n; i++) {
     const props = rand()
     const x = width / 2,
       y = height * 0.2,
-      w = rand(50, 100),
-      h = rand(50, 100)
-    const [body, geometry] = (props <= 0.5) ?
-    [new Body2D(new Rectangle(w, h)), new BoxGeometry(w, h)] :
-    [new Body2D(new Circle(w / 2)), new CircleGeometry(w / 2)]
+      w = rand(50,100),
+      h = rand(50,100)
+    const [body,geometry] = (props <= 0.5) ?
+      [createRawRigidBody2D(new Rectangle(w,h)),new BoxGeometry(w,h)] :
+      [createRawRigidBody2D(new Circle(w / 2)),new CircleGeometry(w / 2)]
     manager.create([
-    new Transform(x, y),
-    new Movable(),
-    new BoundingBox(),
-    body,
-    new Sprite(
+      new Transform(x,y),
+      new Movable(),
+      new BoundingBox(),
+      ...body,
+      new Sprite(
         geometry,
         new BasicMaterial()
       )
-  ])
-  
+    ])
+
   }
 }

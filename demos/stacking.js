@@ -2,12 +2,11 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Box,
-  Body2D,
-  Rectangle,
   Sprite,
   BoxGeometry,
-  BasicMaterial
+  BasicMaterial,
+  Rectangle,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 import { viewport } from "./demo.js"
@@ -35,7 +34,7 @@ function stack(x, y, w, h, no, spacing, manager) {
     new Transform(x, y + (h + spacing) * i),
     new Movable(),
     new BoundingBox(),
-    new Body2D(new Rectangle(w, h)),
+    ...createRawRigidBody2D(new Rectangle(w, h)),
     new Sprite(
         new BoxGeometry(w, h),
         new BasicMaterial()

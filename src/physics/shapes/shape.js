@@ -1,12 +1,12 @@
 import { Vector2 } from "../../math/index.js"
 import { Geometry } from "./geometry.js"
 import { ShapeType } from "../settings.js"
-
+import { deprecate } from "../../logger/index.js"
 /**
  * This class makes a body tangible
  * to collision detection and response.Without it,the body will not be able to interact with other bodies.
  */
-export class Shape {
+export class Shape2D {
   /**
    * Used to determine what type of shape this is.
    * 
@@ -41,15 +41,15 @@ export class Shape {
   }
   /**
    * Returns the normals of the faces when rotated.
-   * @param {Shape} shape
-   * @param {Shape} refshape
+   * @param {Shape2D} shape
+   * @param {Shape2D} refshape
    * @param {Vector2[]} [out] An array where results are stored.
    * @returns {Vector2[]}
    */
   static getNormals(shape, refshape, out = []) {
-    if (shape.type === Shape.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, out)
+    if (shape.type === Shape2D.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, out)
     let vertex = null
-    if (refshape.type === Shape.POLYGON)
+    if (refshape.type === Shape2D.POLYGON)
       vertex = getNearVertex(shape.vertices[0], shape.vertices)
     if (!vertex)
       vertex = refshape.vertices[0]
@@ -64,8 +64,7 @@ export class Shape {
   /**
    * Transforms the local coordinates of the vertices to world coordinates.
    * 
-   * @template {Shape} T
-   * @param {T} shape
+   * @param {Shape2D} shape
    * @param {Vector2} position the world position of the body
    * @param {number} angle the orientation of body
    * @param {Vector2} scale the scale of the body
@@ -87,14 +86,14 @@ export class Shape {
 
   /**
    * Returns the world coordinates of the vertices.
-   * @template {Shape} T
+   * @template {Shape2D} T
    * @param {T} shape
    * @param { Vector2 } axis
    * @param { Vector2[] } out
    * @returns { Vector2[] }
    */
   static getVertices(shape, axis, out = []) {
-    if (shape.type === Shape.POLYGON)
+    if (shape.type === Shape2D.POLYGON)
       return shape.vertices
 
     const v1 = Vector2.multiplyScalar(axis, -shape.vertices[1].x)
@@ -102,7 +101,7 @@ export class Shape {
 
     Vector2.add(v1, shape.vertices[0], v1)
     Vector2.add(v2, shape.vertices[0], v2)
-    
+
     // @ts-ignore
     out[0] = v1
     // @ts-ignore
@@ -112,10 +111,10 @@ export class Shape {
   }
   /**
    * TODO - Actually implement this
-   * @param {Shape} shape
+   * @param {Shape2D} shape
    */
-  static getArea(shape){
-    if(shape.type === Shape.POLYGON){
+  static getArea(shape) {
+    if (shape.type === Shape2D.POLYGON) {
       return 0
     }
     return 0
@@ -123,13 +122,13 @@ export class Shape {
   /**
    * Calculates the inertia of a given shape.
    * 
-   * @param {Shape} shape
+   * @param {Shape2D} shape
    * @param {number} mass
    * @returns {number}
    */
   static calcInertia(shape, mass) {
     const vertices = shape.vertices
-    if (shape.type === Shape.CIRCLE) {
+    if (shape.type === Shape2D.CIRCLE) {
       const radius = vertices[1].x
       return mass * (radius * radius) * 0.5
     }
@@ -150,7 +149,16 @@ export class Shape {
   static CIRCLE = 0
   static POLYGON = 1
 }
-
+/**
+ * @deprecated
+ */
+export class Shape extends Shape2D {
+  constructor() {
+    deprecate("Shape()", "Shape2D()")
+    //@ts-ignore
+    super(...arguments)
+  }
+}
 /**
  * @param {Vector2} position
  * @param {Vector2[]} vertices
