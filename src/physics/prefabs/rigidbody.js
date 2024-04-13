@@ -20,10 +20,10 @@ export function createRawRigidBody2D(
   properties.group = group
   properties.layer = layer
   properties.restitution = restitution
-  properties.kineticfriction = kineticfriction
+  properties.kineticFriction = kineticfriction
   
-  return {
-    physicsproperties:properties,
-    shape2d:shape
-  }
+  return [
+    properties,
+    shape
+  ]
 }
