@@ -17,7 +17,7 @@ export class Query {
   /**
    * @param {string[]} componentTypes
    */
-  constructor(...componentTypes) {
+  constructor(componentTypes) {
     this.type = componentTypes
     this.number = componentTypes.length
   }

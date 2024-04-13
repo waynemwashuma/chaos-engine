@@ -33,7 +33,7 @@ export class Intergrator2DPlugin {
  * @param {Manager} manager
  */
 export function dampenVelocity(manager) {
-  const [movables] = manager.query("movable").raw()
+  const [movables] = manager.query(["movable"]).raw()
   const linear = 1 - manager.getResource("lineardamping")
   const angular = 1 - manager.getResource("angulardamping")
   for (let i = 0; i < movables.length; i++) {
@@ -48,7 +48,7 @@ export function dampenVelocity(manager) {
  * @param {Manager} manager
  */
 export function updateTransformVerlet(manager) {
-  const [transforms,movables] = manager.query("transform","movable").raw()
+  const [transforms,movables] = manager.query(["transform","movable"]).raw()
   const dt = 1 / 60// manager.getResource("delta")
 
   for (let i = 0; i < transforms.length; i++) {
@@ -65,7 +65,7 @@ export function updateTransformVerlet(manager) {
  * @param {Manager} manager
  */
 export function updateTransformEuler(manager) {
-  const [transforms,movables] = manager.query("transform","movable").raw()
+  const [transforms,movables] = manager.query(["transform","movable"]).raw()
   const dt = manager.getResource("delta")
 
   for (let i = 0; i < transforms.length; i++) {

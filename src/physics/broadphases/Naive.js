@@ -55,7 +55,7 @@ export class NaiveBroadphase2DPlugin {
 function getCollisionPairs(manager) {
   const broadphase = manager.getResource("naivebroadphase2d")
   const pairs = manager.getResource("collisionpairs")
-  const query = manager.query("entity","boundingbox")
+  const query = manager.query(["entity","boundingbox"])
   const entities = query.raw()[0].reduce((a,b) => a.concat(b),[])
   const bounds = query.raw()[1].reduce((a,b) => a.concat(b),[])
 
