@@ -27,17 +27,16 @@ export class Canvas2DRendererPlugin {
 }
 
 function updateSprites(manager) {
-  const [transforms, sprites] = manager.query("transform", "sprite").raw()
+  const [transforms, sprites] = manager.query(["transform", "sprite"]).raw()
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
   /**@type {CanvasRenderingContext2D}*/
   const ctx = manager.getResource("canvasrenderingcontext2d")
-  const camquery = manager.query("transform", "camera").single()
+  const camquery = manager.query(["transform", "camera"]).single()
   if (!camquery) return
   const camtransform = camquery[0]
   ctx.clearRect(0, 0, viewport.width, viewport.height)
   ctx.save()
-
   ctx.translate(
     camtransform.position.x,
     camtransform.position.y
@@ -65,13 +64,13 @@ function updateSprites(manager) {
 }
 
 function updateSortedSprites(manager) {
-  const [transform, sprite] = manager.query("transform", "sprite").raw()
+  const [transform, sprite] = manager.query(["transform", "sprite"]).raw()
   const transforms = transform.slice().flat()
   const sprites = sprite.slice().flat()
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
   const ctx = manager.getResource("canvasrenderingcontext2d")
-  const [camtransform, _] = manager.query("transform", "camera").single()
+  const [camtransform, _] = manager.query(["transform", "camera"]).single()
   quickSort(
     sprites,
     (i, j) => {
