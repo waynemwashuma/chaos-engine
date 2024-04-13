@@ -62,7 +62,7 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const query = manager.query("transform","rectangle")
+  const query = manager.query("transform","shape2d")
 
   query.each((transform,shape) => {
     Shape2D.update(
