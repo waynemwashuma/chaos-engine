@@ -1,4 +1,3 @@
-import { DOMEventHandler } from "../events/index.js";
 import { error } from "../logger/index.js";
 
 /**
@@ -56,7 +55,7 @@ export class KeyboardPlugin {
  */
 function normalizeKey(keycode) {
   const r = keycode.includes('Key') ?
-    r.slice(3, r.length) :
+    keycode.slice(3, keycode.length) :
     keycode
   return r.toUpperCase()
 }

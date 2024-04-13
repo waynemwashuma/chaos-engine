@@ -65,12 +65,12 @@ function renderBasic(ctx, material, path) {
 
 function renderText(ctx, material) {
   const text = Material.getUniform(material, 'text')
-  const center = Material.getUniform(material, 'center')
+  const textAlign = Material.getUniform(material, 'center')
   const font = Material.getUniform(material, 'font')
   const fill = Material.getUniform(material, 'fill')
   const stroke = Material.getUniform(material, 'stroke')
   
-  ctx.textAlign = "center"
+  ctx.textAlign = textAlign
   ctx.fillStyle = fill
   ctx.strokeStyle = stroke
   ctx.font = font

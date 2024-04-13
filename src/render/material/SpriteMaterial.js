@@ -53,10 +53,6 @@ export class SpriteMaterial extends Material {
     deprecate("SpriteMaterial().height")
     return this._uniforms["height"].value
   }
-  set width(x) {
-    deprecate("SpriteMaterial().width")
-    this._uniforms["width"] = x
-  }
   /**
    * 
    * @deprecated

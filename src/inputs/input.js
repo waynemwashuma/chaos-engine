@@ -1,6 +1,6 @@
-import { Keyboard, KeyboardPlugin } from "./keyboard.js";
-import { Mouse, MousePlugin } from "./mouse.js";
-import { Touch, TouchPlugin } from "./touch.js";
+import { KeyboardPlugin } from "./keyboard.js";
+import { MousePlugin } from "./mouse.js";
+import { TouchPlugin } from "./touch.js";
 import { DOMEventHandler } from "../events/index.js"
 import { deprecate } from "../logger/index.js"
 
