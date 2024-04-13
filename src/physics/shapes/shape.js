@@ -82,11 +82,9 @@ export class Shape2D {
    */
   static getNormals(shape, refshape, out = []) {
     if (shape.type === Shape2D.POLYGON) return Geometry.getNormals(shape.geometry, shape.angle, out)
-    let vertex = null
+    let vertex = refshape.vertices[0]
     if (refshape.type === Shape2D.POLYGON)
-      vertex = getNearVertex(shape.vertices[0], shape.vertices)
-    if (!vertex)
-      vertex = refshape.vertices[0]
+      vertex = refshape.vertices[getNearVertex(shape.vertices[0], shape.vertices)]
     const normal = Vector2.copy(vertex)
     Vector2.sub(normal, shape.vertices[0], normal)
     Vector2.normalize(normal, normal)
@@ -198,12 +196,12 @@ export class Shape extends Shape2D {
  * @param {Vector2[]} vertices
  */
 function getNearVertex(position, vertices) {
-  let vertex = Vector2.ZERO
+  let vertex = 0
   let min = -Infinity
   for (let i = 0; i < vertices.length; i++) {
     const a = Vector2.distanceToSquared(vertices[i], position)
     if (min > a) {
-      vertex = vertices[i]
+      vertex = i
       min = a
     }
   }
