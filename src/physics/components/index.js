@@ -7,5 +7,5 @@ export class PhysicsProperties {
   group = 0
   sleep = false
   restitution= 0.7
-  kineticfriction = 0.6
+  kineticFriction = 0.6
 }
