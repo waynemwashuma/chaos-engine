@@ -47,6 +47,25 @@ export class Shape2D {
     return new Shape2D([v1, v2, v3, v4])
   }
   /**
+   * @param {number} base Length of one side.
+   * @param {number} height Length of a second side.
+   * @param {number} angle The angle between the two sides.
+   */
+  static triangle(base, height, angle) {
+    const l1 = new Vector2(base)
+    const l2 = Vector2.fromAngle(angle)
+    Vector2.multiplyScalar(l2, -height / Math.sin(angle), l2)
+
+    const center = new Vector2(-(l1.x + l2.x) / 3, -l2.y / 3)
+    return new Shape2D([
+      center,
+      // @ts-ignore
+      Vector2.add(l1, center, l1),
+      // @ts-ignore
+      Vector2.add(l2, center, l2)
+    ])
+  }
+  /**
    * Returns the normals of the faces when rotated.
    * @param {Shape2D} shape
    * @param {Shape2D} refshape
