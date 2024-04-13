@@ -39,6 +39,13 @@ export class Shape2D {
     this.vertices = vertices.map(v => Vector2.copy(v))
     this.geometry = new Geometry(vertices)
   }
+  static rectangle(width, height) {
+    let v1 = new Vector2(-width / 2, -height / 2)
+    let v2 = new Vector2(-width / 2, height / 2)
+    let v3 = new Vector2(width / 2, height / 2)
+    let v4 = new Vector2(width / 2, -height / 2)
+    return new Shape2D([v1, v2, v3, v4])
+  }
   /**
    * Returns the normals of the faces when rotated.
    * @param {Shape2D} shape
