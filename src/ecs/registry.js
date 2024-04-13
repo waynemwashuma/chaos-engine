@@ -65,9 +65,9 @@ export class Registry {
    * @param { string[]  } compNames
    * @returns {Query<T>}
    */
-  query(...compNames) {
+  query(compNames) {
     //TODO - Maybe cache the query?
-    const query = new Query(...compNames)
+    const query = new Query(compNames)
     query.components = this._table.query(compNames)
     return query
   }
