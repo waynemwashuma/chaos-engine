@@ -1,8 +1,13 @@
 import { Shape2D } from "../physics/index.js"
-import {  Vector2 } from "../math/index.js"
+import { Vector2 } from "../math/index.js"
 import { circle, vertices, stroke } from "../render/index.js"
 import { Manager } from "../ecs/index.js"
 import { deprecate } from "../logger/index.js"
+
+const shapequery = ["shape2d"]
+const transformquery = ["transform"]
+const velocityquery = ["transform","movable"]
+const boundquery = ["boundingbox"]
 
 /**
  * @deprecated
@@ -30,26 +35,74 @@ export class Body2DDebugger {
   }
   register(manager) {
     const { options } = this
-    if (options.clearViewport)
-      manager.registerSystem(manager => {
-        const ctx = manager.getResource("ctx")
-        const viewport = manager.getResource("viewport")
-
-        ctx.clearRect(0, 0, viewport.width, viewport.height)
-      })
+    options.drawShape = options.drawShape ?? true
+    if (options.clearViewport) manager.registerSystem(clearViewport)
     if (options.drawPosition) manager.registerSystem(drawPosition)
     if (options.drawBounds) manager.registerSystem(drawBounds)
-    if (options.drawShapes) manager.registerSystem(drawShapes)
+    if (options.drawShape) manager.registerSystem(drawShapes)
     if (options.drawCollisionArm) manager.registerSystem(drawArms)
     if (options.drawContacts) manager.registerSystem(drawContacts)
-    if (options.drawPosition)
-      if (options.drawVelocity) manager.registerSystem(drawVelocity)
+    if (options.drawPosition) manager.registerSystem(drawPosition)
+    if (options.drawVelocity) manager.registerSystem(drawVelocity)
   }
+}
+
+function clearViewport(manager) {
+  const ctx = manager.getResource("canvasrenderingcontext2d")
+  const viewport = manager.getResource("viewport")
+
+  ctx.clearRect(0, 0, viewport.width, viewport.height)
+}
+
+function drawBounds(manager) {
+  const query = manager.query(boundquery)
+  const ctx = manager.getResource("canvasrenderingcontext2d")
+  ctx.beginPath()
+  ctx.lineWidth = 3
+  ctx.strokeStyle = "red"
+  query.each(bound => {
+    const w = (bound.max.x - bound.min.x)
+    const h = (bound.max.y - bound.min.y)
+    ctx.strokeRect(
+      bound.min.x,
+      bound.min.y,
+      w,
+      h
+    )
+    ctx.closePath()
+    ctx.stroke()
+  })
+}
+
+function drawPosition(manager) {
+  const query = manager.query(transformquery)
+  const ctx = manager.getResource("canvasrenderingcontext2d")
+
+  query.each(transform => {
+    const position = transform.position
+    ctx.beginPath()
+    circle(ctx, position.x, position.y, 4)
+    ctx.fillStyle = "white"
+    ctx.fill()
+    ctx.closePath()
+  })
+}
+
+function drawVelocity(manager) {
+  const query = manager.query(velocityquery)
+  const ctx = manager.getResource("canvasrenderingcontext2d")
+  ctx.beginPath()
+  ctx.strokeStyle = "cyan"
+  query.each((transform, movable) => {
+    drawArm(ctx, transform.position, movable.velocity)
+  })
+  ctx.stroke()
+  ctx.closePath()
 }
 
 function drawShapes(manager) {
   const ctx = manager.getResource("canvasrenderingcontext2d")
-  const query = manager.query("shape2d")
+  const query = manager.query(shapequery)
   query.each(shape => {
     ctx.beginPath()
     if (shape.type === Shape2D.CIRCLE) {
@@ -72,7 +125,7 @@ function drawShapes(manager) {
 
 function drawArms(manager) {
   const contacts = manager.getResource("contacts")
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
 
   ctx.beginPath()
   for (let i = 0; i < contacts.length; i++) {
@@ -89,7 +142,7 @@ function drawArms(manager) {
 }
 
 function drawContacts(manager) {
-  const ctx = manager.getResource("ctx")
+  const ctx = manager.getResource("canvasrenderingcontext2d")
   const clmd = manager.getResource("contacts")
   for (let i = 0; i < clmd.length; i++) {
     let [p1, p2] = clmd[i].contactData.contactPoints
@@ -100,52 +153,6 @@ function drawContacts(manager) {
     ctx.fill()
     ctx.closePath()
   }
-}
-
-function drawVelocity(manager) {
-  const query = manager.query("transform", "movable")
-  const ctx = manager.getResource("ctx")
-  ctx.beginPath()
-  ctx.strokeStyle = "cyan"
-  query.each((transform, movable) => {
-    drawArm(ctx, transform.position, movable.velocity)
-  })
-  ctx.stroke()
-  ctx.closePath()
-}
-
-function drawBounds(manager) {
-  const query = manager.query('bound')
-  const ctx = manager.getResource("ctx")
-  ctx.beginPath()
-  ctx.lineWidth = 3
-  ctx.strokeStyle = "red"
-  query.each(bound => {
-    const w = (bound.max.x - bound.min.x)
-    const h = (bound.max.y - bound.min.y)
-    ctx.strokeRect(
-      bound.min.x,
-      bound.min.y,
-      w,
-      h
-    )
-    ctx.closePath()
-    ctx.stroke()
-  })
-}
-
-function drawPosition(manager) {
-  const query = manager.query("transform")
-  const ctx = manager.getResource("ctx")
-
-  query.each(transform => {
-    const position = transform.position
-    ctx.beginPath()
-    circle(ctx, position.x, position.y, 4)
-    ctx.fillStyle = "white"
-    ctx.fill()
-    ctx.closePath()
-  })
 }
 
 /**
@@ -179,6 +186,8 @@ function drawArmRaw(ctx, position, arm) {
  * @property {boolean} [drawBounds=false]
  * @property {boolean} [drawPosition=false]
  * @property {boolean} [drawVelocity=false]
+ * @property {boolean} [drawShape=true]
  * @property {boolean} [drawCollisionArm=false]
- * @property {boolean} [drawContacts]
+ * @property {boolean} [drawContacts=false]
+ * @property {boolean} [clearViewport=false]
  */
