@@ -73,6 +73,20 @@ export class Shape2D {
     const end = new Vector2(-length / 2)
     return new Shape2D([start, end])
   }
+    /**
+   * @param {number} radius 
+   */
+  static circle(radius) {
+    //the first vertex is position
+    //the second vertex x-position is radius
+    //
+    const shape = new Shape2D([
+      new Vector2(),
+      new Vector2(radius, radius)
+    ])
+    shape.type = Shape2D.CIRCLE
+    return shape
+  }
   /**
    * Returns the normals of the faces when rotated.
    * @param {Shape2D} shape
