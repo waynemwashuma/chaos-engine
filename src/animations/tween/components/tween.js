@@ -1,4 +1,4 @@
-import { Interpolation, Easing, Angle, Color, Vector2 } from "../../math/index.js"
+import { Interpolation, Easing, Angle, Color, Vector2 } from "../../../math/index.js"
 /**
  * Component responsible for animations.
  * 
@@ -13,10 +13,6 @@ export class Tween {
    * @type {boolean}
    */
   _repeat = false
-  /**
-   * @type {boolean}
-   */
-  active = false
   /**
    * @type {T}
    * @private
@@ -62,7 +58,7 @@ export class Tween {
    * @param {T} to
    * @param {T} from
    */
-  constructor(to,from,into) {
+  constructor(to, from, into) {
     this._into = into
     this._to = to
     this._from = from
@@ -125,20 +121,16 @@ export class Tween {
    * @param {Tween<U>} tween
    * @param {number} dt
    */
-  static update(tween,dt) {
-    if (!tween.active) return
-
+  static update(tween, dt) {
     tween._timeTaken += dt
     if (tween._timeTaken >= tween._duration) {
+      tween._timeTaken = tween._duration
       if (tween._next) {
         tween.stop()
         tween._next.play()
       }
       if (tween._repeat) {
         tween._timeTaken = 0
-      } else {
-        tween._timeTaken = tween._duration
-        tween.active = false
       }
     }
     let t = tween._easingFunction(
@@ -216,7 +208,7 @@ function NoUpdateThrow(lerpFunc, to, from, t, into) {
  * 
  * @returns {void}
  */
- 
+
 /**
  * @callback LerpFunc
  * @param {number} p0
@@ -224,4 +216,3 @@ function NoUpdateThrow(lerpFunc, to, from, t, into) {
  * @param {number} t
  * @returns {number}
  */
- 
