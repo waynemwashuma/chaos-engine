@@ -6,22 +6,19 @@ export class Clock {
   /**
    * Last time the clock was updated
    * 
-   * @private
    * @type {number}
    */
   start = performance.now()
   /**
-   * @private
    * @type {number}
    */
   lastTick = 0
   /**
    * Difference between the last call in the last frame and current call.
    * 
-   * @private
    * @type {number} 
    */
-  dt = 0
+  delta = 0
   /**
    * Updates the clock
    * @deprecated
@@ -38,7 +35,7 @@ export class Clock {
    */
   static start(clock) {
     clock.start = performance.now()
-    clock.dt = 0
+    clock.delta = 0
   }
   /**
    * Gets the elapsed time of the clock
@@ -54,7 +51,7 @@ export class Clock {
    * @param {Clock} clock
    */
   static getDelta(clock) {
-    return clock.dt
+    return clock.delta
   }
   /**
    * Gets the frameRate of the clock
@@ -62,7 +59,7 @@ export class Clock {
    * @param {Clock} clock
    */
   static getFrameRate(clock) {
-    return 1000 / clock.dt
+    return 1000 / clock.delta
   }
   /**
    * Updates the clock
@@ -71,8 +68,8 @@ export class Clock {
    * @param {number} [accumulate]
    */
   static update(clock, accumulate = performance.now()) {
-    clock.dt = accumulate - clock.lastTick
+    clock.delta = (accumulate - clock.lastTick) / 1000
     clock.lastTick = accumulate
-    return clock.dt / 1000
+    return clock.delta
   }
 }
