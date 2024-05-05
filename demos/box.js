@@ -2,32 +2,25 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Sprite,
-  BoxGeometry,
-  BasicMaterial,
-  Rectangle,
+  Shape2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import {viewport} from "./demo.js"
 
 export function box(manager) {
-  
-  manager.create({
-    "transform": new Transform(1000, 300), //,Math.PI/9),
-    "movable": new Movable(0,0),
-    "bound": new BoundingBox(),
-    ...createRawRigidBody2D(new Rectangle(50,50)),
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
+  const rect = manager.getResource("viewport")
+  manager.create([
+    new Transform(rect.width/2, 300),
+    new Movable(0,0),
+    new BoundingBox(),
+    ...createRawRigidBody2D(Shape2D.rectangle(50,50))
+  ])
   makePlatform(
     manager,
-    viewport.width / 2,
-    viewport.height * 0.8,
-    viewport.width,
+    rect.width / 2,
+    rect.height * 0.8,
+    rect.width,
     50)
   manager.getResource("gravity").y = 900
+  //console.log(manager)
 }

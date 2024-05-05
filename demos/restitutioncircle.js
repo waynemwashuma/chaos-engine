@@ -3,15 +3,13 @@ import {
   Movable,
   BoundingBox,
   Body2D,
-  Circle,
-  Sprite,
-  CircleGeometry,
-  BasicMaterial
+  Shape2D,
+  createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import { viewport } from "./demo.js"
-export function circlerestitution(manager) {
 
+export function circlerestitution(manager) {
+const viewport = manager.getResource("viewport")
   stackHorizontal(100, 500, 25, 5, 100, manager)
   makePlatform(
     manager,
@@ -25,17 +23,11 @@ export function circlerestitution(manager) {
 
 function stackHorizontal(x, y, r, no, spacing, manager) {
   for (let i = 1; i <= no; i++) {
-    const body = new Body2D(new Circle(r))
-    body.restitution = i / no
     manager.create([
     new Transform(x + (r + spacing) * i, y),
     new Movable(),
     new BoundingBox(),
-    body,
-    new Sprite(
-        new CircleGeometry(r),
-        new BasicMaterial()
-      )
+    ...createRawRigidBody2D(Shape2D.circle(r),1,i/no)
     ])
   }
 }

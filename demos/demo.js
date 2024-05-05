@@ -2,8 +2,9 @@ import {
   App,
   Viewport,
   RAFPlugin,
-  Renderer2DPlugin,
+  Canvas2DRendererPlugin,
   Physics2DPlugin,
+  TweenPlugin,
   FPSDebugger,
   Body2DDebugger,
   Storage,
@@ -16,34 +17,22 @@ import {
 const loadmanager = new LoadManager()
 const imageloader = new ImageLoader(loadmanager)
 const soundloader = new SoundLoader(loadmanager)
+
 export const examples = new Map()
 export const manager = new App()
-export const viewport = new Viewport()
 
 export function init(selector) {
-  Viewport.bindTo(viewport, document.querySelector("#can"))
-  Viewport.set(viewport, innerWidth, innerHeight * 0.5)
-  window.onresize = () => {
-    Viewport.set(viewport, innerWidth, innerHeight * 0.5)
-  }
-  window.onorientationchange = () => {
-    Viewport.set(viewport, innerWidth, innerHeight * 0.5)
-  }
   manager
     .registerPlugin(new RAFPlugin())
     .registerPlugin(new Physics2DPlugin())
-    .registerPlugin(new Renderer2DPlugin({
-      viewport
-    }))
-    .registerDebugger(new Body2DDebugger({
-      clearRenderer: false,
-      drawCollisionArm: false
-    }))
-    .registerStartupSystem(setupCamera)
+    .registerPlugin(new Canvas2DRendererPlugin())
+    .registerPlugin(new TweenPlugin())
+    .registerDebugger(new Body2DDebugger())
     .registerDebugger(new FPSDebugger())
+    .registerStartupSystem(loadAssets)
+    .registerStartupSystem(setupViewport)
+    .registerStartupSystem(setupCamera)
     .run()
-
-  play(Storage.get("setup") || "")
 }
 export function play(name) {
   manager.registry.clear()
@@ -60,5 +49,20 @@ function setupCamera(manager) {
   manager.create(createCamera2D())
 }
 
-soundloader.load("assets/hit.mp3")
-imageloader.load("assets/warrior.png")
+function setupViewport(manager) {
+  const viewport = manager.getResource("viewport")
+
+  viewport.bindTo(document.querySelector("#can"))
+  viewport.set(innerWidth, innerHeight * 0.5)
+  window.onresize = () => {
+    viewport.set(innerWidth, innerHeight * 0.5)
+  }
+  window.onorientationchange = () => {
+    viewport.set(innerWidth, innerHeight * 0.5)
+  }
+}
+
+async function loadAssets(manager) {
+  await soundloader.load("assets/hit.mp3")
+  await imageloader.load("assets/warrior.png")
+}

@@ -2,83 +2,15 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Sprite,
-  BoxGeometry,
-  BasicMaterial,
-  Rectangle,
+  Shape2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import {viewport} from "./demo.js"
-export function restitution(manager) {
 
-  const body1 = createRawRigidBody2D(new Rectangle(50, 50),1,1)
-  const body2 = createRawRigidBody2D(new Rectangle(50, 50),1,0.8)
-  const body3 = createRawRigidBody2D(new Rectangle(50, 50),1,0.6)
-  const body4 = createRawRigidBody2D(new Rectangle(50, 50),1,0.4)
-  const body5 = createRawRigidBody2D(new Rectangle(50, 50),1,0.2)
-  const body6 = createRawRigidBody2D(new Rectangle(50, 50),1,0)
+export function restitution(manager) {
+  const viewport = manager.getResource("viewport")
   
-  manager.create({
-    "transform": new Transform(100, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...body1,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(200, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...body2,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(300, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...body3,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(400, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...body4,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(500, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...body5,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
-  manager.create({
-    "transform": new Transform(600, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...body6,
-    "sprite": new Sprite(
-      new BoxGeometry(50, 50),
-      new BasicMaterial()
-    )
-  })
+  stackHorizontal(100, 500, 50, 50, 5, 100, manager)
   makePlatform(
     manager,
     viewport.width / 2,
@@ -87,4 +19,15 @@ export function restitution(manager) {
     50
   )
   manager.getResource("gravity").y = 900
+}
+
+function stackHorizontal(x, y, w, h, no, spacing, manager) {
+  for (let i = 1; i <= no; i++) {
+    manager.create([
+    new Transform(x + (w + spacing) * i, y),
+    new Movable(),
+    new BoundingBox(),
+    ...createRawRigidBody2D(Shape2D.rectangle(w, h),1,i/no),
+    ])
+  }
 }

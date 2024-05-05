@@ -2,26 +2,20 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Sprite,
-  CircleGeometry,
-  BasicMaterial,
   createRawRigidBody2D,
-  Circle
+  Shape2D
 } from  "/src/index.js"
 import {makePlatform} from "./utils.js"
-import {viewport} from "./demo.js"
 
 export function circle(manager) {
-  manager.create({
-    "transform": new Transform(viewport.width/2, 300),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...createRawRigidBody2D(new Circle(30)),
-    "sprite": new Sprite(
-      new CircleGeometry(30),
-      new BasicMaterial()
-    )
-  })
+    const viewport = manager.getResource("viewport")
+
+  manager.create([
+    new Transform(viewport.width/2, 300),
+    new Movable(),
+    new BoundingBox(),
+    ...createRawRigidBody2D(Shape2D.circle(30))
+  ])
   makePlatform(
     manager,
     viewport.width/2,

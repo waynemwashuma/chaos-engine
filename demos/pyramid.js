@@ -2,18 +2,15 @@ import {
   Transform,
   Movable,
   BoundingBox,
-  Rectangle,
-  Sprite,
-  BoxGeometry,
-  BasicMaterial,
+  Shape2D,
   createRawRigidBody2D,
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
-import {viewport} from "./demo.js"
 
 export function pyramid(manager) {
+  const viewport = manager.getResource("viewport")
   const viewX = viewport.width / 2
-  stackpyramid(viewX, 100, 50, 50, 10, 0, manager)
+  stackpyramid(viewX,100,50,50,10,0,manager)
   manager.getResource("gravity").y = 900
 
   makePlatform(
@@ -25,24 +22,20 @@ export function pyramid(manager) {
   )
 }
 
-function stackpyramid(x, y, w, h, no, spacing, manager) {
+function stackpyramid(x,y,w,h,no,spacing,manager) {
   let dx = x - (w / 2 * no)
   for (var j = no; j > 0; j--) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
-      manager.create({
-        "transform": new Transform(
+      manager.create([
+        new Transform(
           dx + w * i,
           y + (h + spacing) * j
         ),
-        "movable": new Movable(),
-        "bound": new BoundingBox(),
-        ...createRawRigidBody2D(new Rectangle(w,h)),
-        "sprite": new Sprite(
-          new BoxGeometry(w, h),
-          new BasicMaterial()
-        )
-      })
+        new Movable(),
+        new BoundingBox(),
+        ...createRawRigidBody2D(Shape2D.rectangle(w,h))
+      ])
     }
   }
 }
