@@ -2,11 +2,9 @@ import {
   Transform,
   Movable,
   BoundingBox,
+  Shape2D,
   createRawRigidBody2D,
-  Rectangle,
-  Sprite,
-  BoxGeometry,
-  BasicMaterial
+  createTransform2D
 } from "/src/index.js"
 
 export function makePlatform(
@@ -57,15 +55,12 @@ export function makeContainer(
 }
 
 function createStaticBox(x, y, w, h) {
-  const box = {
-    "transform": new Transform(x, y),
-    "movable": new Movable(),
-    "bound": new BoundingBox(),
-    ...createRawRigidBody2D(new Rectangle(w,h),0,1,1),
-    "sprite": new Sprite(
-      new BoxGeometry(w, h),
-      new BasicMaterial()
-    )
-  }
+  const box = [
+    ...createTransform2D(x, y),
+    new Transform(x, y),
+    new Movable(),
+    new BoundingBox(),
+    ...createRawRigidBody2D(Shape2D.rectangle(w, h), 0, 1, 1)
+  ]
   return box
 }

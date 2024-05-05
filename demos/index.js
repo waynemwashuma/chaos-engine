@@ -10,8 +10,8 @@ import { triangle } from "./triangle.js"
 import { friction } from "./friction.js"
 import { restitution } from "./restitution.js"
 import { circlerestitution } from "./restitutioncircle.js"
-
-//import { animation } from "./animation.js"
+import { Storage } from '../src/index.js';
+import { animation } from "./animation.js"
 
 
 /*
@@ -38,11 +38,10 @@ demos.register("pyramid", pyramid)
 demos.register("random", random)
 demos.register("restitution", restitution)
 demos.register("circlerestitution", circlerestitution)
-
 demos.register("friction", friction)
 
 //Animation
-//demos.register("animation", animation)
+demos.register("animation", animation)
 /*
 
 demos.register("constraints", constraint)
@@ -61,7 +60,7 @@ demos.register("seeker", seeker)
 */
 
 demos.init("#can")
-
+demos.play(Storage.get("setup") || "material")
 main()
 
 function main() {
@@ -76,13 +75,15 @@ function main() {
   demoOption.onchange = () => {
     demos.play(demoOption.value)
   }
-  createCheckbox("pause", "Pause", (ev) => {
-    ev.currentTarget.checked ? demos.manager.pause() : demos.manager.play()
-  },optionTab)
-  //const slider = createSlider("slide","slide",0,100,()=>{},optionTab)
+  createCheckbox("pause", "Pause", pauseOrplay, optionTab)
+  const slider = createSlider("slide","slide",0,100,()=>{},optionTab)
 }
 
-function createCheckbox(id, text,onInput, parent) {
+function pauseOrplay(ev) {
+  ev.currentTarget.checked ? demos.manager.pause() : demos.manager.play()
+}
+//UI functions
+function createCheckbox(id, text, onInput, parent) {
   const p = document.createElement("p")
   p.id = id;
   p.classList.add("checkbox")
@@ -94,15 +95,16 @@ function createCheckbox(id, text,onInput, parent) {
   if (parent) parent.append(p)
   return p
 }
-function createSlider(id,text,min,max,onInput,parent){
+
+function createSlider(id, text, min, max, onInput, parent) {
   const p = document.createElement("p")
   p.id = id;
-    p.classList.add("checkbox")
+  p.classList.add("checkbox")
   const slider = p.appendChild(document.createElement("input"))
   const label = p.appendChild(document.createElement("label"))
   label.appendChild(document.createTextNode(text))
   if (parent) parent.append(p)
-  
+
   slider.oninput = onInput
   slider.type = "range"
   slider.min = min
