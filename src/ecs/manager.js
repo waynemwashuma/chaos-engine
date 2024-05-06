@@ -1,5 +1,5 @@
 import { ArchetypeTable } from "../dataStructures/index.js"
-import { Clock } from "../math/index.js"
+import { Clock } from "../time/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { Query } from "./query.js"
 export class Manager {
