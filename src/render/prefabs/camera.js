@@ -1,6 +1,6 @@
-import { Transform } from "../../intergrator/index.js"
-export class CameraOffset2D extends Transform{}
+import { createTransform2D } from "../../transform/index.js"
+
 export class Camera{}
 export function createCamera2D(x, y, a, sX, sY) {
-  return [new Transform(x,y,a),new CameraOffset2D(),new Camera()]
+  return [...createTransform2D(x,y,a),new Camera()]
 }
