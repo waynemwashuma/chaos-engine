@@ -1,4 +1,4 @@
-import { Clock } from "../../math/index.js"
+import { Clock } from "../../time/index.js"
 
 export class VirtualClock extends Clock {}
 export class Delta extends Number{}
