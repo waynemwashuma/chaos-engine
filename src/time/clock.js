@@ -19,6 +19,10 @@ export class Clock {
    */
   delta = 0
   /**
+   * @type {number}
+   */
+  fps = 0
+  /**
    * Updates the clock
    * @deprecated
    * @param {number} [accumulate]
@@ -68,8 +72,9 @@ export class Clock {
    */
   static update(clock, accumulate = performance.now()) {
     clock.delta = (accumulate - clock.lastTick) / 1000
-    clock.lastTick = accumulate
+    clock.fps = clock.delta ? 1 / clock.delta : 0
     clock.elapsed += clock.delta
+    clock.lastTick = accumulate
     return clock.delta
   }
 }
