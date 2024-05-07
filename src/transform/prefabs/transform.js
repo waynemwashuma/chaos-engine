@@ -1,6 +1,6 @@
 import { Position2D, Orientation2D, Scale2D } from "../components/index.js"
 
-export function createTransform(
+export function createTransform2D(
   dx = 0,
   dy = 0,
   a = 0,
