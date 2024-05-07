@@ -1,14 +1,16 @@
 /**
  * @template T
+ * @template [U = string]
  */
 export class IndexedList {
   /**
    * @private
-   * @type {Map<string,number>}
+   * @type {Map<U,number>}
    */
   _keys = new Map()
   /**
-   * @type {string[]}
+   * @private
+   * @type {U[]}
    */
   _actualKeys = []
   /**
@@ -17,7 +19,7 @@ export class IndexedList {
    */
   _list = []
   /**
-   * @param {string} name
+   * @param {U} name
    */
   get(name) {
     const index = this._keys.get(name)
@@ -25,7 +27,7 @@ export class IndexedList {
     return this._list[index]
   }
   /**
-   * @param {string} name
+   * @param {U} name
    * @param {T} value
    */
   set(name, value) {
@@ -44,7 +46,7 @@ export class IndexedList {
     this._keys.delete(name)
   }
   /**
-   * @returns {string[]}
+   * @returns {U[]}
    */
   keys() {
     return this._actualKeys
@@ -56,7 +58,7 @@ export class IndexedList {
     return this._list
   }
   /**
-   * @param {string} name
+   * @param {U} name
    */
   has(name) {
     return this._keys.has(name)
