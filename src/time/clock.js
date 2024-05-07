@@ -4,11 +4,10 @@ import { deprecate } from "../logger/index.js"
  */
 export class Clock {
   /**
-   * Last time the clock was updated
    * 
    * @type {number}
    */
-  start = performance.now()
+  elapsed = 0
   /**
    * @type {number}
    */
@@ -70,6 +69,7 @@ export class Clock {
   static update(clock, accumulate = performance.now()) {
     clock.delta = (accumulate - clock.lastTick) / 1000
     clock.lastTick = accumulate
+    clock.elapsed += clock.delta
     return clock.delta
   }
 }
