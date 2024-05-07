@@ -75,6 +75,13 @@ export class Query {
     }
     return components
   }
+  count(){
+    let sum = 0
+    for (let i = 0; i < this.components[0].length; i++) {
+      sum += this.components[0][i].length
+    }
+    return sum
+  }
 }
 
 /**
