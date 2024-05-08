@@ -23,7 +23,7 @@ export class IndexedList {
    */
   get(name) {
     const index = this._keys.get(name)
-    if(!index)return undefined
+    if(index == undefined)return undefined
     return this._list[index]
   }
   /**
@@ -40,7 +40,7 @@ export class IndexedList {
    */
   remove(name) {
     const index = this._keys.get(name)
-    if(!index)return
+    if(index == undefined)return
     this._actualKeys.splice(index, 1)
     this._list.splice(index, 1)
     this._keys.delete(name)
