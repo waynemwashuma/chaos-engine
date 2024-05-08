@@ -23,21 +23,21 @@ function renderSprites(manager) {
   const viewport = manager.getResource("viewport")
   /**@type {CanvasRenderingContext2D}*/
   const ctx = manager.getResource("canvasrenderingcontext2d")
-  const camquery = manager.query(["transform", "camera"]).single()
-  assert(camquery, "Please add a camera entity to the scene.")
-  const camtransform = camquery[0]
+  const camera = manager.query(["position2d", "orientation2d", "scale2d", "camera"]).single()
+  assert(camera, "Please add a camera entity to the scene.")
+  const [position, orientation, scale] = camera
   ctx.clearRect(0, 0, viewport.width, viewport.height)
   ctx.save()
   ctx.translate(
-    camtransform.position.x,
-    camtransform.position.y
+    position.x,
+    position.y
   )
   ctx.rotate(
-    camtransform.orientation
+    orientation.value
   )
   ctx.scale(
-    camtransform.scale.x,
-    camtransform.scale.y
+    scale.x,
+    scale.y
   )
 
   query.each(([position, orient, scale, geometry, material]) => {

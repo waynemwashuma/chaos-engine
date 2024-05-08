@@ -1,5 +1,4 @@
-import { Movable } from "../../intergrator/movableComponent.js"
-import { Vector2, clamp } from "../../math/index.js"
+import { Vector2, Angle, clamp } from "../../math/index.js"
 import { Body2D } from "../bodies/index.js"
 import { Settings } from "../settings.js"
 /**
@@ -14,13 +13,21 @@ export class CollisionManifold {
    */
   entityB
   /**
-   * @type {Movable}
+   * @type {Vector2}
    */
-  movableA
+  velocityA
   /**
-   * @type {Movable}
+   * @type {Vector2}
    */
-  movableB
+  velocityB
+  /**
+   * @type {Angle}
+   */
+  rotationA
+  /**
+   * @type {Angle}
+   */
+  rotationB
   /**
    * @type {Vector2}
    */
@@ -78,6 +85,22 @@ export class CollisionManifold {
    */
   tLambda = [0, 0]
   /**
+   * @type {number}
+   */
+  invmassA = 0
+  /**
+   * @type {number}
+   */
+  invmassB = 0
+  /**
+   * @type {number}
+   */
+  invinertiaA = 0
+  /**
+   * @type {number}
+   */
+  invinertiaB = 0
+  /**
    * @param {Entity} a
    * @param {Entity} b
    * @param {Movable} mA
@@ -85,14 +108,14 @@ export class CollisionManifold {
    * @param {Body2D} bA
    * @param {Body2D} bA
    */
-  constructor(a, b, pA, pB, mA, mB, prA, prB) {
+  constructor(a, b, pA, pB, vA, vB, rA, rB) {
     this.entityA = a
     this.entityB = b
-    this.movableA = mA
-    this.movableB = mB
-    this.propA = prA
-    this.propB =prB
-      this.positionA = pA
+    this.velocityA = vA
+    this.velocityB = vB
+    this.rotationA = rA
+    this.rotationB = rB
+    this.positionA = pA
     this.positionB = pB
   }
   /**
@@ -103,23 +126,23 @@ export class CollisionManifold {
    */
   static applyImpulse(
     jacobian,
-    movableA,
-    movableB,
+    velocityA,
+    velocityB,
+    rotationA,
+    rotationB,
     invmassA,
     invmassB,
     invinertiaA,
     invinertiaB,
     lambda
   ) {
-    const velA = movableA.velocity
-    const velB = movableB.velocity
     const va = Vector2.multiplyScalar(jacobian.va, invmassA * lambda)
     const vb = Vector2.multiplyScalar(jacobian.vb, invmassB * lambda)
 
-    Vector2.add(velA, va, velA)
-    Vector2.add(velB, vb, velB)
-    movableA.rotation += invinertiaA * jacobian.wa * lambda
-    movableB.rotation += invinertiaB * jacobian.wb * lambda
+    Vector2.add(velocityA, va, velocityA)
+    Vector2.add(velocityB, vb, velocityB)
+    rotationA.value += invinertiaA * jacobian.wa * lambda
+    rotationB.value += invinertiaB * jacobian.wb * lambda
   }
   /**
    * @param {CollisionManifold} manifold
@@ -142,15 +165,16 @@ export class CollisionManifold {
     inv_dt
   ) {
     const { axis, overlap, tangent, contactPoints, contactNo } = manifold.contactData
+    const { invmassA, invmassB, invinertiaA, invinertiaB } = manifold
 
     for (let i = 0; i < contactNo; i++) {
       manifold.impulse[i] = 0
       manifold.tImpulse[i] = 0
       const ca1 = Vector2.sub(contactPoints[i], positionA)
       const ca2 = Vector2.sub(contactPoints[i], positionB)
-      const va = Vector2.crossScalar(ca1, rotationA)
+      const va = Vector2.crossScalar(ca1, rotationA.value)
       Vector2.add(va, velocityA, va)
-      const vb = Vector2.crossScalar(ca2, rotationB)
+      const vb = Vector2.crossScalar(ca2, rotationB.value)
       Vector2.add(vb, velocityB, vb)
       const relativeVelocity = Vector2.sub(vb, va, vb)
 
@@ -174,55 +198,46 @@ export class CollisionManifold {
       manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
       manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity, 0.0);
       const k =
-        propA.invmass +
-        propB.invmass +
-        manifold.nJacobian[i].wa * propA.invinertia * manifold.nJacobian[i].wa +
-        manifold.nJacobian[i].wb * propB.invinertia * manifold.nJacobian[i].wb;
+        invmassA +
+        invmassB +
+        manifold.nJacobian[i].wa * invinertiaA * manifold.nJacobian[i].wa +
+        manifold.nJacobian[i].wb * invinertiaB * manifold.nJacobian[i].wb;
       manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
     }
   }
   /**
    * @param {CollisionManifold} manifold
-   * @param {Movable} movableA
-   * @param {Movable} movableB
    */
   static solve(
-    manifold,
-    movableA,
-    movableB,
-    invmassA,
-    invmassB,
-    invinertiaA,
-    invinertiaB,
+    manifold
   ) {
-    const { contactNo } = manifold.contactData
-
-    for (let i = 0; i < contactNo; i++) {
+    const { velocityA, velocityB, rotationA, rotationB, invmassA, invmassB, invinertiaA, invinertiaB } = manifold
+    for (let i = 0; i < manifold.contactData.contactNo; i++) {
       const nvaDot = Vector2.dot(
         manifold.nJacobian[i].va,
-        movableA.velocity
+        velocityA
       )
       const nvbDot = Vector2.dot(
         manifold.nJacobian[i].vb,
-        movableB.velocity
+        velocityB
       )
       const tvaDot = Vector2.dot(
         manifold.tJacobian[i].va,
-        movableA.velocity
+        velocityA
       )
       const tvbDot = Vector2.dot(
         manifold.tJacobian[i].vb,
-        movableB.velocity
+        velocityB
       )
       const jv = nvaDot +
-        manifold.nJacobian[i].wa * movableA.rotation +
+        manifold.nJacobian[i].wa * rotationA.value +
         nvbDot +
-        manifold.nJacobian[i].wb * movableB.rotation;
+        manifold.nJacobian[i].wb * rotationB.value;
       const jt =
         tvaDot +
-        manifold.tJacobian[i].wa * movableA.rotation +
+        manifold.tJacobian[i].wa * rotationA.value +
         tvbDot +
-        manifold.tJacobian[i].wb * movableB.rotation;
+        manifold.tJacobian[i].wb * rotationB.value;
       let nLambda = manifold.effectiveMass[i] * -(jv + manifold.nbias[i]);
       let tLambda = manifold.effectiveMass[i] * -(jt);
       const oldImpulse = manifold.impulse[i]
@@ -247,12 +262,14 @@ export class CollisionManifold {
         //if (Math.abs(manifold.tImpulse[i]) > 3000) throw console.log(manifold, jt)
       }
     }
-    for (let i = 0; i < contactNo; i++) {
+    for (let i = 0; i < manifold.contactData.contactNo; i++) {
 
       CollisionManifold.applyImpulse(
         manifold.nJacobian[i],
-        movableA,
-        movableB,
+        manifold.velocityA,
+        manifold.velocityB,
+        manifold.rotationA,
+        manifold.rotationB,
         invmassA,
         invmassB,
         invinertiaA,
@@ -262,8 +279,10 @@ export class CollisionManifold {
       if (manifold.nLambda[i] <= 0) continue
       CollisionManifold.applyImpulse(
         manifold.tJacobian[i],
-        movableA,
-        movableB,
+        manifold.velocityA,
+        manifold.velocityB,
+        manifold.rotationA,
+        manifold.rotationB,
         invmassA,
         invmassB,
         invinertiaA,

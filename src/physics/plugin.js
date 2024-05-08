@@ -47,14 +47,14 @@ export class Physics2DPlugin {
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const query = manager.query(["movable","physicsproperties"])
+  const query = manager.query(["acceleration2d","physicsproperties"])
   
-  query.each(([movable,properties]) => {
+  query.each(([acceleration,properties]) => {
     if (properties.invmass == 0) return
     Vector2.add(
-      movable.acceleration,
+      acceleration,
       gravity,
-      movable.acceleration
+      acceleration
     )
   })
 }
@@ -62,14 +62,14 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const query = manager.query(["transform","shape2d"])
+  const query = manager.query(["position2d", "orientation2d", "scale2d","shape2d"])
 
-  query.each(([transform,shape]) => {
+  query.each(([position,orientation,scale,shape]) => {
     Shape2D.update(
       shape,
-      transform.position,
-      transform.orientation,
-      transform.scale
+      position,
+      orientation.value,
+      scale
     )
   })
 }
@@ -112,15 +112,17 @@ export function updateBounds(manager) {
  * @param {Manager} manager
  */
 export function collisionResponse(manager) {
-  const dt = manager.getResource("delta")
+  const dt = manager.getResource("virtualclock").delta
   const inv_dt = dt == 0 ? 0 : 1 / dt
   const contacts = manager.getResource("contacts")
   for (let i = 0; i < contacts.length; i++) {
     const {
       positionA,
       positionB,
-      movableA,
-      movableB,
+      velocityA,
+      velocityB,
+      rotationA,
+      rotationB,
       propA,
       propB
     } = contacts[i]
@@ -129,10 +131,10 @@ export function collisionResponse(manager) {
       contacts[i],
       positionA,
       positionB,
-      movableA.velocity,
-      movableB.velocity,
-      movableA.rotation,
-      movableB.rotation,
+      velocityA,
+      velocityB,
+      rotationA,
+      rotationB,
       propA,
       propB,
       inv_dt
@@ -140,21 +142,8 @@ export function collisionResponse(manager) {
   }
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
-      const {
-        movableA,
-        movableB,
-        propA,
-        propB
-      } = contacts[j]
-
       CollisionManifold.solve(
-        contacts[j],
-        movableA,
-        movableB,
-        propA.invmass,
-        propB.invmass,
-        propA.invinertia,
-        propB.invinertia,
+        contacts[j]
       )
     }
   }
