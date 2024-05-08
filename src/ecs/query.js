@@ -1,5 +1,3 @@
-import { IndexedList } from "../dataStructures/index.js"
-
 /**
  * @template {Tuple} T
  */
@@ -17,9 +15,9 @@ export class Query {
    */
   components = []
   /**
-   * @type {IndexedList<number,ArchetypeId>}
+   * @type {Map<ArchetypeId,number>}
    */
-  archmapper = new IndexedList()
+  archmapper = new Map()
   /**
    * @param {Registry} registry
    * @param {string[]} descriptors
@@ -33,6 +31,23 @@ export class Query {
   }
   raw() {
     return this.components
+  }
+  /**
+   * @param {Entity} entity
+   * @returns {T | null}
+   */
+  get(entity) {
+    const tableid = this.archmapper.get(
+      this.registry._table.entities[entity]
+    )
+    if (tableid == undefined) return null
+    const index = this.registry._table.entities[entity + 1]
+    const components = new Array(this.descriptors.length)
+    for (let i = 0; i < this.descriptors.length; i++) {
+      components[i] = this.components[i][tableid][index]
+    }
+
+    return components
   }
   /**
    * @param {EachFunc<T>} callback
