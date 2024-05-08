@@ -19,6 +19,8 @@ const
   tmp4 = new Vector2(),
   tmp5 = new Vector2()
 
+export class Contacts extends Array {}
+
 export class SATNarrowphase2D {
   /**
    * @param {CollisionPair[]} contactList 
@@ -36,8 +38,8 @@ export class SATNarrowphase2DPlugin {
    * @param {Manager} manager
    */
   register(manager) {
-    manager.setResource("contacts", [])
-    manager.setResource("satnarrowphase2d", new SATNarrowphase2D())
+    manager.setResource(new Contacts())
+    manager.setResource(new SATNarrowphase2D())
 
     manager.registerSystem(getSATContacts)
   }
@@ -51,12 +53,14 @@ function getSATContacts(manager) {
   const pairs = manager.getResource("collisionpairs")
   const contacts = manager.getResource("contacts")
   contacts.length = 0
-
   for (let i = 0; i < pairs.length; i++) {
     const { entityA, entityB } = pairs[i]
-    const [transformA, movableA, shapeA, propertiesA] = manager.get(entityA, "transform", "movable", "shape2d","physicsproperties")
-    const [transformB, movableB, shapeB, propertiesB] = manager.get(entityB, "transform", "movable", "shape2d","physicsproperties")
-    if (!canCollide(propertiesA,propertiesB))
+    const getA = manager.get(entityA, "position2d", "velocity2d", "rotation2d", "shape2d", "physicsproperties")
+    const getB = manager.get(entityB, "position2d", "velocity2d", "rotation2d", "shape2d", "physicsproperties")
+    if (!getA || !getB) continue
+    const [positionA, velocityA, rotationA,shapeA, propertiesA] = getA
+    const [positionB, velocityB, rotationB, shapeB, propertiesB] = getB
+    if (!canCollide(propertiesA, propertiesB))
       continue
 
     propertiesA.sleep = false
@@ -66,12 +70,12 @@ function getSATContacts(manager) {
       narrowphase.clmdrecord.set(id, new CollisionManifold(
         entityA,
         entityB,
-        transformA.position,
-        transformB.position,
-        movableA,
-        movableB,
-        propertiesA,
-        propertiesB
+        positionA,
+        positionB,
+        velocityA,
+        velocityB,
+        rotationA,
+        rotationB
       ))
     const manifold = narrowphase.clmdrecord.get(id)
     const collisionData = manifold.contactData
@@ -81,9 +85,12 @@ function getSATContacts(manager) {
     shapesInBodyCollided(shapeA, shapeB, propertiesA.invmass, propertiesB.invmass, collisionData)
     if (collisionData.overlap < 0 || !collisionData.done) continue
     manifold.restitution = propertiesA.restitution < propertiesB.restitution ? propertiesA.restitution : propertiesB.restitution
-    //manifold.staticFriction = bodyA.staticFriction < bodyB.staticFriction ? bodyA.staticFriction : bodyB.staticFriction
-    manifold.kineticFriction = propertiesA.kineticfriction < propertiesB.kineticfriction ? propertiesA.kineticfriction : propertiesB.kineticfriction
-    
+    //manifold.staticFriction = propertiesA.staticFriction < propertiesB.staticFriction ? propertiesA.staticFriction : propertiesB.staticFriction
+    manifold.kineticFriction = propertiesA.kineticFriction < propertiesB.kineticFriction ? propertiesA.kineticFriction : propertiesB.kineticFriction
+    manifold.invmassA = propertiesA.invmass
+    manifold.invmassB = propertiesB.invmass
+    manifold.invinertiaA = propertiesA.invinertia
+    manifold.invinertiaB = propertiesB.invinertia
     contacts.push(manifold)
   }
 }

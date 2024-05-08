@@ -1,9 +1,9 @@
-import { verlet,euler } from "./intergrator.js"
+import { verlet, euler } from "./intergrator.js"
 import { Vector2 } from "../math/index.js"
 import { Manager } from "../ecs/index.js"
 
-class LinearDamping extends Number{}
-class AngularDamping extends Number{}
+class LinearDamping extends Number {}
+class AngularDamping extends Number {}
 
 export class Intergrator2DPlugin {
   /**
@@ -39,7 +39,7 @@ export function dampenVelocity(manager) {
   for (let i = 0; i < movables.length; i++) {
     for (let j = 0; j < movables[i].length; j++) {
       const velocity = movables[i][j].velocity
-      Vector2.multiplyScalar(velocity,linear,velocity)
+      Vector2.multiplyScalar(velocity, linear, velocity)
       movables[i][j].rotation *= angular
     }
   }
@@ -48,37 +48,40 @@ export function dampenVelocity(manager) {
  * @param {Manager} manager
  */
 export function updateTransformVerlet(manager) {
-  const [transforms,movables] = manager.query(["transform","movable"]).raw()
-  const dt = 1 / 60// manager.getResource("delta")
+  const query = manager.query(["position2d", "velocity2d", "acceleration2d", "orientation2d", "rotation2d", "torque2d"])
+  const dt = 1 / 60
 
-  for (let i = 0; i < transforms.length; i++) {
-    for (let j = 0; j < transforms[i].length; j++) {
-      verlet(
-        transforms[i][j],
-        movables[i][j],
-        dt
-      )
-    }
-  }
+  query.each(([position, velocity, acceleration, orientation, rotation, torque]) => {
+    verlet(
+      position,
+      velocity,
+      acceleration,
+      orientation,
+      rotation,
+      torque,
+      dt
+    )
+  })
 }
 /**
  * @param {Manager} manager
  */
 export function updateTransformEuler(manager) {
-  const [transforms,movables] = manager.query(["transform","movable"]).raw()
-  const dt = manager.getResource("delta")
+  const query = manager.query(["position2d", "velocity2d", "acceleration2d", "orientation2d", "rotation2d", "torque2d"])
+  const dt = 1 / 60
 
-  for (let i = 0; i < transforms.length; i++) {
-    for (let j = 0; j < transforms[i].length; j++) {
-      euler(
-        transforms[i][j],
-        movables[i][j],
-        dt
-      )
-    }
-  }
+  query.each(([position, velocity, acceleration, orientation, rotation, torque]) => {
+    euler(
+      position,
+      velocity,
+      acceleration,
+      orientation,
+      rotation,
+      torque,
+      dt
+    )
+  })
 }
-
 /**
  * @typedef IntergratorPluginOptions
  * @property {boolean} [enableDamping]

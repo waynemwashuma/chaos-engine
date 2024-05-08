@@ -5,8 +5,8 @@ import { Manager } from "../ecs/index.js"
 import { deprecate } from "../logger/index.js"
 
 const shapequery = ["shape2d"]
-const transformquery = ["transform"]
-const velocityquery = ["transform","movable"]
+const transformquery = ["position2d"]
+const velocityquery = ["position2d","movable"]
 const boundquery = ["boundingbox"]
 
 /**
@@ -78,8 +78,7 @@ function drawPosition(manager) {
   const query = manager.query(transformquery)
   const ctx = manager.getResource("canvasrenderingcontext2d")
 
-  query.each(([transform]) => {
-    const position = transform.position
+  query.each(([position]) => {
     ctx.beginPath()
     circle(ctx, position.x, position.y, 4)
     ctx.fillStyle = "white"
@@ -93,8 +92,8 @@ function drawVelocity(manager) {
   const ctx = manager.getResource("canvasrenderingcontext2d")
   ctx.beginPath()
   ctx.strokeStyle = "cyan"
-  query.each(([transform, movable]) => {
-    drawArm(ctx, transform.position, movable.velocity)
+  query.each(([position, movable]) => {
+    drawArm(ctx, position, movable.velocity)
   })
   ctx.stroke()
   ctx.closePath()
