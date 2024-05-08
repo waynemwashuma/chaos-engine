@@ -201,7 +201,7 @@ export class NaiveArchTypeTable {
     const { descriptors, components } = query
     const archids = this._getArchetypeIds(query.descriptors, [])
     for (let i = 0; i < archids.length; i++) {
-      query.archmapper.set(i,archids[i])
+      query.archmapper.set(archids[i],i)
     }
     for (let i = 0; i < query.descriptors.length; i++) {
       for (let j = 0; j < archids.length; j++) {

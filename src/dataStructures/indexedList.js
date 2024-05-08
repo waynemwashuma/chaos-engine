@@ -23,7 +23,7 @@ export class IndexedList {
    */
   get(name) {
     const index = this._keys.get(name)
-    if(index == undefined)return undefined
+    if(index == void 0)return undefined
     return this._list[index]
   }
   /**
