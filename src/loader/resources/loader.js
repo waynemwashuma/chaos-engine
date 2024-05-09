@@ -1,5 +1,5 @@
 import { LoadManager } from './loadmanager.js';
-import { warn, error, throws } from '../logger/index.js';
+import { warn, error, throws } from '../../logger/index.js';
 import { getURLName, getURLExtension } from "./utils.js"
 
 /**

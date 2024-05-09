@@ -1,4 +1,4 @@
-import { DEVICE } from "../device/index.js"
+import { DEVICE } from "../../device/index.js"
 import { Loader } from "./loader.js"
 
 /**
