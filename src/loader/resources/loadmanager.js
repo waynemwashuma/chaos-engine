@@ -1,4 +1,4 @@
-import { error } from "../logger/index.js"
+import { error } from "../../logger/index.js"
 
 export class LoadManager {
   _total = 0
