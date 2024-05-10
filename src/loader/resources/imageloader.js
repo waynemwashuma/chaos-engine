@@ -1,8 +1,8 @@
 import { DEVICE } from "../../device/index.js"
 import { Loader } from "./loader.js"
-
+import { Picture } from "../../asset/index.js"
 /**
- * @extends {Loader<{buffer: ArrayBuffer;dimensions:Vector_like}>}
+ * @extends {Loader<Picture>}
  */
 export class ImageLoader extends Loader {
   /**
@@ -12,18 +12,16 @@ export class ImageLoader extends Loader {
     if (DEVICE.supportedImages.includes(extension)) return true
     return false
   }
+  placeholder() {
+    return Picture.PLACEHOLDER
+  }
   /**
    * @param {Response} request
    */
   async parse(request) {
-    if (!request.ok) return
-
     const raw = await request.arrayBuffer()
     const dimensions = await getDimensions(raw)
-    return {
-      buffer: raw,
-      dimensions
-    }
+    return new Picture(raw,dimensions)
   }
 }
 
@@ -43,6 +41,6 @@ function getDimensions(raw) {
       URL.revokeObjectURL(url)
     }
     img.src = url
-    
+
   })
 }
