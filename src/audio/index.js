@@ -1,2 +1,2 @@
-export * from "./audio.js"
 export * from "./manager.js"
+export * from "./plugin.js"
