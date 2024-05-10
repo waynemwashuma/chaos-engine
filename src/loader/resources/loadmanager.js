@@ -22,9 +22,6 @@ export class LoadManager {
    * @param {LoadManager} manager
    */
   static itemFinish(manager, request) {
-    if (!request.ok)
-      return LoadManager.itemError(manager, request)
-
     manager._sucessful += 1
     manager.onItemFinish(request)
   }
