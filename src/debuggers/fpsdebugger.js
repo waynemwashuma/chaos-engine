@@ -1,16 +1,12 @@
 import { Manager } from "../ecs/index.js"
-import { Perf } from "../utils/index.js"
 import { deprecate } from "../logger/index.js"
+import { Timer,TimerMode } from "../time/index.js"
 
+class RAFTimer extends Timer {}
 export class FPSDebugger {
   register(manager) {
     const container = document.body.appendChild(document.createElement("div"))
-    const timer = {
-      updateTime: 0.5,
-      timerDt: 0,
-      perf: new Perf()
-    }
-    
+
     container.id = "fps-container"
     container.style.position = "absolute"
     container.style.top = "0px"
@@ -20,28 +16,31 @@ export class FPSDebugger {
     container.style.background = "black"
     container.style.textAlign = "center"
     container.style.color = "white"
-    
-    manager.events.add("updateStart", dt => {
-      timer.perf.start()
-    })
-    manager.events.add("updateEnd", dt => {
-      timer.perf.end()
-      timer.timerDt += dt
-      if (timer.timerDt < timer.updateTime) return
-      const fps = timer.perf.fps().toFixed(0)
-      const afps = (1 / dt).toFixed(0)
-      container.innerHTML =
-        fps + " fps" +
-        "<br>" +
-        afps + " afps"
-      timer.timerDt = 0
-    })
+
+    manager.setResource(new RAFTimer(1,TimerMode.REPEAT))
+    manager.registerUpdateSystem(updateFPSCounter)
+    manager.registerUpdateSystem(updateRAFTimer)
   }
+}
+
+function updateFPSCounter(manager) {
+  const clock = manager.getResource("virtualclock")
+  const timer = manager.getResource("raftimer")
+  if (!timer.finished) return
+  const container = document.querySelector("#fps-container")
+  const fps = Math.round(clock.fps)
+  container.innerHTML = fps + " fps"
+}
+
+function updateRAFTimer(manager) {
+  const clock = manager.getResource("virtualclock")
+  const timer = manager.getResource("raftimer")
+  Timer.update(timer, clock.delta)
 }
 /**
  * @param {Manager} manager
  */
 export function fpsDebugger(manager) {
-  deprecate("fpsDebugger()","FPSDebugger()")
+  deprecate("fpsDebugger()", "FPSDebugger()")
   manager.registerPlugin(new FPSDebugger())
 }
