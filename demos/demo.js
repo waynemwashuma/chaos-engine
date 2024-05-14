@@ -1,33 +1,32 @@
 import {
   App,
   Viewport,
-  RAFPlugin,
+  TimePlugin,
   Canvas2DRendererPlugin,
   Physics2DPlugin,
+  AudioPlugin,
   TweenPlugin,
+  LoaderPlugin,
   FPSDebugger,
   Body2DDebugger,
   Storage,
-  LoadManager,
-  SoundLoader,
-  ImageLoader,
   createCamera2D
 } from "/src/index.js"
-
-const loadmanager = new LoadManager()
-const imageloader = new ImageLoader(loadmanager)
-const soundloader = new SoundLoader(loadmanager)
 
 export const examples = new Map()
 export const manager = new App()
 
 export function init(selector) {
   manager
-    .registerPlugin(new RAFPlugin())
+    .registerPlugin(new LoaderPlugin())
+    .registerPlugin(new TimePlugin())
     .registerPlugin(new Physics2DPlugin())
     .registerPlugin(new Canvas2DRendererPlugin())
     .registerPlugin(new TweenPlugin())
-    .registerDebugger(new Body2DDebugger())
+    .registerPlugin(new AudioPlugin())
+    .registerDebugger(new Body2DDebugger({
+      drawBounds: true,
+    }))
     .registerDebugger(new FPSDebugger())
     .registerStartupSystem(loadAssets)
     .registerStartupSystem(setupViewport)
@@ -62,7 +61,9 @@ function setupViewport(manager) {
   }
 }
 
-async function loadAssets(manager) {
-  await soundloader.load("assets/hit.mp3")
-  await imageloader.load("assets/warrior.png")
+function loadAssets(manager) {
+  const soundloader = manager.getResource("soundloader")
+  const imageloader = manager.getResource("imageloader")
+  soundloader.load("assets/hit.mp3")
+  imageloader.load("assets/warrior.png")
 }

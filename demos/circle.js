@@ -1,7 +1,7 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D,
   Shape2D
 } from  "/src/index.js"
@@ -11,8 +11,8 @@ export function circle(manager) {
     const viewport = manager.getResource("viewport")
 
   manager.create([
-    new Transform(viewport.width/2, 300),
-    new Movable(),
+    ...createTransform2D(viewport.width/2, 300),
+    ...createMovable2D(),
     new BoundingBox(),
     ...createRawRigidBody2D(Shape2D.circle(30))
   ])

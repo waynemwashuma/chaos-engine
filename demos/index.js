@@ -60,29 +60,35 @@ demos.register("seeker", seeker)
 */
 
 demos.init("#can")
-demos.play(Storage.get("setup") || "material")
+demos.play(Storage.get("setup") || "materials")
 main()
 
 function main() {
-  let optionTab = document.querySelector("#options-checkbox")
-  let demoOption = document.querySelector("#demos")
-  for (let n of demos.examples.keys()) {
-    let option = document.createElement("option")
-    option.value = n
-    option.innerHTML = n
-    demoOption.append(option)
-  }
-  demoOption.onchange = () => {
-    demos.play(demoOption.value)
-  }
+  const optionTab = document.querySelector("#options-checkbox")
+
+  createDropDown("demos", demos.examples.keys(), e => {
+    demos.play(e.target.value)
+  }, optionTab)
   createCheckbox("pause", "Pause", pauseOrplay, optionTab)
-  const slider = createSlider("slide","slide",0,100,()=>{},optionTab)
+  const slider = createSlider("slide", "slide", 0, 100, () => {}, optionTab)
 }
 
 function pauseOrplay(ev) {
   ev.currentTarget.checked ? demos.manager.pause() : demos.manager.play()
 }
 //UI functions
+function createDropDown(id, options, onChange, parent) {
+  const select = document.createElement("select")
+  for (let n of options) {
+    const option = document.createElement("option")
+    option.value = n
+    option.innerHTML = n
+    select.append(option)
+  }
+  select.onchange = onChange
+  if (parent) parent.append(select)
+}
+
 function createCheckbox(id, text, onInput, parent) {
   const p = document.createElement("p")
   p.id = id;

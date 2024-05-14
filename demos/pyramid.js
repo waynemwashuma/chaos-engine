@@ -1,8 +1,8 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
   Shape2D,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D,
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
@@ -28,11 +28,11 @@ function stackpyramid(x,y,w,h,no,spacing,manager) {
     dx += w / 2
     for (var i = 0; i < j; i++) {
       manager.create([
-        new Transform(
+        ...createTransform2D(
           dx + w * i,
           y + (h + spacing) * j
         ),
-        new Movable(),
+        ...createMovable2D(),
         new BoundingBox(),
         ...createRawRigidBody2D(Shape2D.rectangle(w,h))
       ])

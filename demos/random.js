@@ -1,9 +1,9 @@
 import {
   rand,
-  Transform,
-  Movable,
   BoundingBox,
   Shape2D,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makeContainer } from "./utils.js"
@@ -47,8 +47,8 @@ function randomEntities(n, width, height, manager) {
       createRawRigidBody2D(Shape2D.rectangle(w, h)) :
       createRawRigidBody2D(Shape2D.circle(w / 2))
     manager.create([
-      new Transform(x, y),
-      new Movable(),
+      ...createTransform2D(x, y),
+      ...createMovable2D(),
       new BoundingBox(),
       ...body
     ])

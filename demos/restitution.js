@@ -1,8 +1,8 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
   Shape2D,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
@@ -24,8 +24,8 @@ export function restitution(manager) {
 function stackHorizontal(x, y, w, h, no, spacing, manager) {
   for (let i = 1; i <= no; i++) {
     manager.create([
-    new Transform(x + (w + spacing) * i, y),
-    new Movable(),
+    ...createTransform2D(x + (w + spacing) * i, y),
+    ...createMovable2D(),
     new BoundingBox(),
     ...createRawRigidBody2D(Shape2D.rectangle(w, h),1,i/no),
     ])
