@@ -1,8 +1,8 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
   Shape2D,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
@@ -12,8 +12,8 @@ export function triangle(manager) {
   const angle = Math.PI / 2
   const base = 200
   manager.create([
-    new Transform(viewport.width / 2, 300),
-    new Movable(),
+    ...createTransform2D(viewport.width / 2, 300),
+    ...createMovable2D(),
     new BoundingBox(),
     ...createRawRigidBody2D(Shape2D.triangle(base, (base / 2) * Math.sin(angle), angle))
   ])

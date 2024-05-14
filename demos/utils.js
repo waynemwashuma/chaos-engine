@@ -1,9 +1,8 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
   Shape2D,
   createRawRigidBody2D,
+  createMovable2D,
   createTransform2D
 } from "/src/index.js"
 
@@ -57,8 +56,7 @@ export function makeContainer(
 function createStaticBox(x, y, w, h) {
   const box = [
     ...createTransform2D(x, y),
-    new Transform(x, y),
-    new Movable(),
+    ...createMovable2D(),
     new BoundingBox(),
     ...createRawRigidBody2D(Shape2D.rectangle(w, h), 0, 1, 1)
   ]

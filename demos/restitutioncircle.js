@@ -1,9 +1,9 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
   Body2D,
   Shape2D,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
@@ -24,8 +24,8 @@ const viewport = manager.getResource("viewport")
 function stackHorizontal(x, y, r, no, spacing, manager) {
   for (let i = 1; i <= no; i++) {
     manager.create([
-    new Transform(x + (r + spacing) * i, y),
-    new Movable(),
+    ...createTransform2D(x + (r + spacing) * i, y),
+    ...createMovable2D(),
     new BoundingBox(),
     ...createRawRigidBody2D(Shape2D.circle(r),1,i/no)
     ])

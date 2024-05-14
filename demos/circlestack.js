@@ -1,8 +1,8 @@
 import {
-  Transform,
-  Movable,
   BoundingBox,
   Shape2D,
+  createTransform2D,
+  createMovable2D,
   createRawRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
@@ -24,8 +24,8 @@ export function circlestacking(manager) {
 function stack(x, y, r, no, spacing, manager) {
   for (let i = 0; i < no; i++) {
     manager.create([
-      new Transform(x, y + (r * 2 + spacing) * i),
-      new Movable(),
+      ...createTransform2D(x, y + (r * 2 + spacing) * i),
+      ...createMovable2D(),
       new BoundingBox(),
       ...createRawRigidBody2D(Shape2D.circle(r))
     ])
