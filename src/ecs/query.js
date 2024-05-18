@@ -35,7 +35,7 @@ export class Query {
         for (let l = 0; l < this.number; l++) {
           components[l] = this.components[l][j][k]
         }
-        callback(...components)
+        callback(components)
       }
     }
   }
