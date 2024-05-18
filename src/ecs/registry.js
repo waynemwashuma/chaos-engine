@@ -1,4 +1,4 @@
-import { ArchetypeTable } from "../dataStructures/index.js"
+import { ArchetypeTable } from "./tables/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { Query } from "./query.js"
 
@@ -67,8 +67,8 @@ export class Registry {
    */
   query(compNames) {
     //TODO - Maybe cache the query?
-    const query = new Query(compNames)
-    query.components = this._table.query(compNames)
+    const query = new Query(this,compNames)
+    this._table.query(query)
     return query
   }
   /**
@@ -109,4 +109,3 @@ export class Registry {
     this._systems.push(sys)
   }
 }
-
