@@ -74,7 +74,7 @@ export function updateBodies(manager) {
   })
 }
 export function updateBounds(manager) {
-  const query = manager.query(["shape2d","bound"])
+  const query = manager.query(["shape2d","boundingbox"])
   query.each(([shape,bound]) => {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,

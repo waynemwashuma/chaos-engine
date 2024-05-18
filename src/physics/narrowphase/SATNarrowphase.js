@@ -52,11 +52,12 @@ function getSATContacts(manager) {
   const narrowphase = manager.getResource("satnarrowphase2d")
   const pairs = manager.getResource("collisionpairs")
   const contacts = manager.getResource("contacts")
+  const query = manager.query(["position2d", "velocity2d", "rotation2d", "shape2d", "physicsproperties"])
   contacts.length = 0
   for (let i = 0; i < pairs.length; i++) {
     const { entityA, entityB } = pairs[i]
-    const getA = manager.get(entityA, "position2d", "velocity2d", "rotation2d", "shape2d", "physicsproperties")
-    const getB = manager.get(entityB, "position2d", "velocity2d", "rotation2d", "shape2d", "physicsproperties")
+    const getA = query.get(entityA)
+    const getB = query.get(entityB)
     if (!getA || !getB) continue
     const [positionA, velocityA, rotationA,shapeA, propertiesA] = getA
     const [positionB, velocityB, rotationB, shapeB, propertiesB] = getB
