@@ -7,6 +7,8 @@ import { CollisionManifold } from './narrowphase/index.js';
 import { Intergrator2DPlugin } from "../intergrator/index.js"
 import { Manager } from "../ecs/index.js";
 
+export class Gravity extends Vector2 { }
+
 export class Physics2DPlugin {
   /**
    * @param {Physics2DPluginOptions} options
@@ -24,7 +26,12 @@ export class Physics2DPlugin {
    */
   register(manager) {
     if (this.enableGravity) {
-      manager.setResource("gravity", this.gravity)
+      manager.setResource(
+        new Gravity(
+          this.gravity.x,
+          this.gravity.y
+        )
+      )
       manager.registerSystem(applyGravity)
     }
     manager.registerPlugin(this.intergrator)
@@ -35,15 +42,14 @@ export class Physics2DPlugin {
     manager.registerSystem(collisionResponse)
   }
 }
-
 /**
  * @param {Manager} manager
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const query = manager.query("movable", "physicsproperties")
-
-  query.each((movable, properties) => {
+  const query = manager.query(["movable","physicsproperties"])
+  
+  query.each(([movable,properties]) => {
     if (properties.invmass == 0) return
     Vector2.add(
       movable.acceleration,
@@ -56,9 +62,9 @@ export function applyGravity(manager) {
  * @param {Manager} manager
  */
 export function updateBodies(manager) {
-  const query = manager.query("transform", "shape2d")
+  const query = manager.query(["transform","shape2d"])
 
-  query.each((transform, shape) => {
+  query.each(([transform,shape]) => {
     Shape2D.update(
       shape,
       transform.position,
@@ -68,8 +74,8 @@ export function updateBodies(manager) {
   })
 }
 export function updateBounds(manager) {
-  const query = manager.query("shape2d", "bound")
-  query.each((shape, bound) => {
+  const query = manager.query(["shape2d","bound"])
+  query.each(([shape,bound]) => {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
@@ -106,7 +112,8 @@ export function updateBounds(manager) {
  * @param {Manager} manager
  */
 export function collisionResponse(manager) {
-  const inv_dt = 1 / manager.getResource("delta")
+  const dt = manager.getResource("delta")
+  const inv_dt = dt == 0 ? 0 : 1 / dt
   const contacts = manager.getResource("contacts")
   for (let i = 0; i < contacts.length; i++) {
     const {
