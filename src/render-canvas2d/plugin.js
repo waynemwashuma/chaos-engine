@@ -2,13 +2,9 @@ import { Manager } from "../ecs/index.js"
 import { Viewport } from "../render/index.js"
 import { assert } from "../logger/index.js"
 import { drawImage } from "./canvas.js"
-import { MaterialType,Canvas2DMaterial } from "./components/index.js"
+import { MaterialType, Canvas2DMaterial } from "./components/index.js"
 export class Canvas2DRendererPlugin {
-  constructor(options = {}) {
-    this.renderer = options.viewport
-    this.camera = options.camera
-    this.enableSorting = options.enableSorting ?? false
-  }
+  constructor(options = {}) {}
   /**
    * @param {Manager} manager
    */
@@ -17,21 +13,18 @@ export class Canvas2DRendererPlugin {
     manager.setResource(viewport)
     document.body.append(viewport.domElement)
     manager.setResource(viewport.domElement.getContext("2d"))
-    if (this.enableSorting)
-      manager.registerSystem(renderSortedSprites)
-    else
-      manager.registerSystem(renderSprites)
+    manager.registerSystem(renderSprites)
   }
 }
 
 function renderSprites(manager) {
-  const query = manager.query(["transform", "buffergeometry", "canvas2dmaterial"])
+  const query = manager.query(["position2d", "orientation2d", "scale2d", "buffergeometry", "canvas2dmaterial"])
   const dt = manager.getResource("delta")
   const viewport = manager.getResource("viewport")
   /**@type {CanvasRenderingContext2D}*/
   const ctx = manager.getResource("canvasrenderingcontext2d")
   const camquery = manager.query(["transform", "camera"]).single()
-  assert(camquery,"Please add a camera entity to the scene.")
+  assert(camquery, "Please add a camera entity to the scene.")
   const camtransform = camquery[0]
   ctx.clearRect(0, 0, viewport.width, viewport.height)
   ctx.save()
@@ -47,75 +40,18 @@ function renderSprites(manager) {
     camtransform.scale.y
   )
 
-  query.each(([transform, geometry,material]) => {
+  query.each(([position, orient, scale, geometry, material]) => {
     ctx.save()
     ctx.beginPath()
-    ctx.translate(transform.position.x, transform.position.y)
-    ctx.rotate(transform.orientation)
-    ctx.scale(transform.scale.x, transform.scale.y)
+    ctx.translate(position.x, position.y)
+    ctx.rotate(orient)
+    ctx.scale(scale.x, scale.y)
     // @ts-ignore
     renderMaterial(ctx, material, geometry.drawable, dt)
     ctx.closePath()
     ctx.restore()
   })
   ctx.restore()
-}
-
-function renderSortedSprites(manager) {
-  const [transform, geometry, material] = manager.query(["transform", "buffergeometry", "canvas2dmaterial"]).raw()
-  const tra = transform.slice().flat()
-  const geo = geometry.slice().flat()
-  const mat = material.slice().flat()
-
-  const dt = manager.getResource("delta")
-  const viewport = manager.getResource("viewport")
-  const ctx = manager.getResource("canvasrenderingcontext2d")
-  
-  const camquery = manager.query(["transform", "camera"]).single()
-  assert(camquery,"Please add a camera entity to the scene.")
-  const camtransform = camquery[0]
-  quickSort(
-    mat,
-    (i, j) => {
-      return Canvas2DMaterial.getUniform(mat[i], "zIndex") <
-        Canvas2DMaterial.getUniform(mat[j], "zIndex")
-    },
-    (i, j) => {
-      const temp1 = mat[j]
-      const temp2 = tra[j]
-      const temp3 = geo[j]
-
-      mat[j] = mat[i]
-      mat[i] = temp1
-      tra[j] = tra[i]
-      tra[i] = temp2
-      geo[j] = geo[i]
-      geo[i] = temp3
-    }
-  )
-
-  ctx.clearRect(0, 0, viewport.width, viewport.height)
-  ctx.rotate(
-    camera.transform.orientation
-  )
-  ctx.scale(
-    camera.transform.scale.x,
-    camera.transform.scale.y
-  )
-  ctx.translate(
-    camera.transform.position.x,
-    camera.transform.position.y
-  )
-  for (let j = 0; j < sprites.length; j++) {
-    Sprite.render(
-      ctx,
-      sprites[j],
-      transforms[j].position,
-      transforms[j].orientation,
-      transforms[j].scale,
-      dt
-    )
-  }
 }
 
 function renderMaterial(ctx, material, path, dt) {
@@ -179,39 +115,3 @@ function renderImage(ctx, material) {
     height
   )
 }
-
-/**
- * @template T
- * @param {T[]} arr The array to sort.
- * @param {CompareFunc} compareFunc Makes comparisons on the elements on the array.Default is to return true if the lhs is less than rhs.
- * @param {SwapFunc} swapFunc Function to swap the elements in the array
- * @param {number} [min=0]
- * @param {number} [max=arr.length]
- */
-function quickSort(arr, compareFunc, swapFunc, min = 0, max = arr.length - 1) {
-  if (min < max) {
-    let i = min - 1
-    for (let j = min; j < max; j++) {
-      if (compareFunc(j, max)) {
-        i++
-        swapFunc(i, j)
-      }
-    }
-    swapFunc(i + 1, max)
-    quickSort(arr, compareFunc, swapFunc, min, i)
-    quickSort(arr, compareFunc, swapFunc, i + 2, max)
-  }
-}
-/**
- * @callback CompareFunc
- * @param {number} i
- * @param {number} j
- * @returns {boolean}
- */
-
-/**
- * @callback SwapFunc
- * @param {number} i
- * @param {number} j
- * @returns {void}
- */
