@@ -1,6 +1,6 @@
 import { Shape2D } from "../physics/index.js"
 import { Vector2 } from "../math/index.js"
-import { circle, vertices, stroke } from "../render/index.js"
+import { circle, vertices, stroke } from "../render-canvas2d/index.js"
 import { Manager } from "../ecs/index.js"
 import { deprecate } from "../logger/index.js"
 

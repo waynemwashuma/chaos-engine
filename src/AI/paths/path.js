@@ -1,5 +1,5 @@
 import { Vector2, clamp } from "../../math/index.js"
-import { vertices, stroke } from "../../render/index.js"
+import { vertices, stroke } from "../../render-canvas2d/index.js"
 
 let tmp = new Vector2()
 export class Path {
