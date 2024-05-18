@@ -1,26 +1,26 @@
-import { Registry } from "../ecs/index.js"
-import { assert,deprecate } from "../logger/index.js"
+import { Registry, Scheduler, ImmediateExecutor, RAFExecutor } from "../ecs/index.js"
+import { assert, deprecate } from "../logger/index.js"
 const registererror = "Systems,`Plugin`s or resources should be registered or set before `App().run()`"
 
 export class App {
   registry = new Registry()
+  scheduler = new Scheduler()
   events
-  #startups = []
-  #updates = []
+  #startups = 0
+  #updates = 0
   _initialized = false
   constructor() {
     this.events = this.registry.events
+    this.#startups = this.scheduler.set(
+      new ImmediateExecutor(this.registry)
+    )
+    this.#updates = this.scheduler.set(
+      new RAFExecutor(this.registry)
+    )
   }
-  async run() {
+  run() {
     this._initialized = true
-    for (let i = 0; i < this.#updates.length; i++) {
-      this.registry.registerSystem(this.#updates[i])
-    }
-    for (let i = 0; i < this.#startups.length; i++) {
-      await this.#startups[i](this.registry)
-    }
-    this.registry.events.trigger("init")
-    return this
+    this.scheduler.run(this.registry)
   }
   /**
    * @param {Plugin} plugin
@@ -40,16 +40,16 @@ export class App {
    * @param {SystemFunc} system
    */
   registerSystem(system) {
-    deprecate("App().registerSystem()","App().registerUpdateSystem()")
+    deprecate("App().registerSystem()", "App().registerUpdateSystem()")
     this.registerUpdateSystem(system)
   }
   registerUpdateSystem(system) {
     assert(!this._initialized, registererror)
-    this.#updates.push(system)
+    this.scheduler.get(this.#updates).add(system)
   }
   registerStartupSystem(system) {
     assert(!this._initialized, registererror)
-    this.#startups.push(system)
+    this.scheduler.get(this.#startups).add(system)
     return this
   }
   setResource(resource) {
