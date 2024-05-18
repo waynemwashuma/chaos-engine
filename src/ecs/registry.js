@@ -8,17 +8,10 @@ export class Registry {
    */
   _table = new ArchetypeTable()
   /**
-   * 
-   * @private
-   * @type {SystemFunc[]}
-   */
-  _systems = []
-  /**
    * @private
    * @type {Record<string,any>}
    */
   _resources = {}
-  //_unserializableResources = []
   events = new EventDispatcher()
   /**
    * Adds an entity to the manager and initializes it.
@@ -98,14 +91,5 @@ export class Registry {
     for (let i = 0; i < systems.length; i++) {
       systems[i](this);
     }
-  }
-  /**
-   * Used to register a system
-   *
-   * @param {SystemFunc} sys The system to be addad
-   * 
-   */
-  registerSystem(sys) {
-    this._systems.push(sys)
   }
 }
