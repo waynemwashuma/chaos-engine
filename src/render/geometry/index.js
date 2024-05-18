@@ -1,5 +1,0 @@
-export * from "./geometry.js"
-export * from "./circlegeometry.js"
-export * from "./boxgeometry.js"
-export * from "./trianglegeometry.js"
-export * from "./linegeometry.js"
