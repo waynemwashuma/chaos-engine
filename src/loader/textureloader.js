@@ -32,7 +32,7 @@ export class ImageLoader extends Loader {
  * @returns {Promise<Vector_like>}
  */
 function getDimensions(raw) {
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(new Blob([raw]))
     const img = new Image()
     img.onload = e => {
@@ -40,8 +40,9 @@ function getDimensions(raw) {
         x: img.width,
         y: img.height
       })
+      URL.revokeObjectURL(url)
     }
     img.src = url
-    URL.revokeObjectURL(url)
+    
   })
 }
