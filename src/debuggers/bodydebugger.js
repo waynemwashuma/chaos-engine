@@ -60,7 +60,7 @@ function drawBounds(manager) {
   ctx.beginPath()
   ctx.lineWidth = 3
   ctx.strokeStyle = "red"
-  query.each(bound => {
+  query.each(([bound]) => {
     const w = (bound.max.x - bound.min.x)
     const h = (bound.max.y - bound.min.y)
     ctx.strokeRect(
@@ -78,7 +78,7 @@ function drawPosition(manager) {
   const query = manager.query(transformquery)
   const ctx = manager.getResource("canvasrenderingcontext2d")
 
-  query.each(transform => {
+  query.each(([transform]) => {
     const position = transform.position
     ctx.beginPath()
     circle(ctx, position.x, position.y, 4)
@@ -93,7 +93,7 @@ function drawVelocity(manager) {
   const ctx = manager.getResource("canvasrenderingcontext2d")
   ctx.beginPath()
   ctx.strokeStyle = "cyan"
-  query.each((transform, movable) => {
+  query.each(([transform, movable]) => {
     drawArm(ctx, transform.position, movable.velocity)
   })
   ctx.stroke()
@@ -103,7 +103,7 @@ function drawVelocity(manager) {
 function drawShapes(manager) {
   const ctx = manager.getResource("canvasrenderingcontext2d")
   const query = manager.query(shapequery)
-  query.each(shape => {
+  query.each(([shape]) => {
     ctx.beginPath()
     if (shape.type === Shape2D.CIRCLE) {
       circle(

@@ -47,7 +47,7 @@ function renderSprites(manager) {
     camtransform.scale.y
   )
 
-  query.each((transform, geometry,material) => {
+  query.each(([transform, geometry,material]) => {
     ctx.save()
     ctx.beginPath()
     ctx.translate(transform.position.x, transform.position.y)
