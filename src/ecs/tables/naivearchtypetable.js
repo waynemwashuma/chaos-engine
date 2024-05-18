@@ -116,8 +116,9 @@ export class NaiveArchTypeTable {
   /**
    * @private
    * @param {string[]} comps
+   * @returns {ArchetypeId}
    */
-  _getArchetype(comps) {
+  _getArchetypeId(comps) {
     for (let i = 0; i < this.list.length; i++) {
       if (this._ArcheTypeHasOnly(this.list[i], comps)) {
         return i
@@ -128,9 +129,10 @@ export class NaiveArchTypeTable {
   /**
    * @private
    * @param {string[]} comps
+   * @param {ArchetypeId[]} filtered
+   * @returns {ArchetypeId[]}
    */
-  _getArchetypes(comps) {
-    const filtered = []
+  _getArchetypeIds(comps, filtered) {
     for (let i = 0; i < this.list.length; i++) {
       let hasComponents = true
       for (let j = 0; j < comps.length; j++) {
@@ -140,7 +142,7 @@ export class NaiveArchTypeTable {
         }
       }
       if (hasComponents)
-        filtered.push(this.list[i])
+        filtered.push(i)
     }
     return filtered
   }
@@ -157,7 +159,7 @@ export class NaiveArchTypeTable {
       keys.push(components[i].constructor.name.toLowerCase())
     }
     let archindex =
-      this._getArchetype(keys)
+      this._getArchetypeId(keys)
     archindex = archindex === -1 ? this._createArchetype(keys) : archindex
     const index = this.list[archindex].insert(entity, components)
     this.entities[entity] = archindex
@@ -193,25 +195,21 @@ export class NaiveArchTypeTable {
     return archetype.get(index, compnames)
   }
   /**
-   * @param {string[]} compnames
-   * @param {any[]} out 
+   * @param {Query} query
    */
-  query(compnames, out = []) {
-    let archetypes = this._getArchetypes(compnames)
-    for (let i = 0; i < compnames.length; i++) {
-      out[i] = []
+  query(query) {
+    const { descriptors, components } = query
+    const archids = this._getArchetypeIds(query.descriptors, [])
+    for (let i = 0; i < archids.length; i++) {
+      query.archmapper.set(i,archids[i])
     }
-    for (let i = 0; i < compnames.length; i++) {
-      for (let j = 0; j < archetypes.length; j++) {
+    for (let i = 0; i < query.descriptors.length; i++) {
+      for (let j = 0; j < archids.length; j++) {
         /** @type {[]}*/
-        const bin = archetypes[j].getComponentLists(compnames[i])
-        out[i].push(bin)
-        /*for (let k = 0; k < bin.length; k++) {
-          out[i].push(bin[k])
-        }*/
+        const bin = this.list[archids[j]].getComponentLists(query.descriptors[i])
+        components[i].push(bin)
       }
     }
-    return out
   }
   clear() {
     this.list = []
