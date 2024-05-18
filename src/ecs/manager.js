@@ -1,4 +1,4 @@
-import { ArchetypeTable } from "../dataStructures/index.js"
+import { ArchetypeTable } from "./tables/index.js"
 import { Clock } from "../time/index.js"
 import { EventDispatcher } from "../events/index.js"
 import { Query } from "./query.js"
