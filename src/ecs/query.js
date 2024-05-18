@@ -5,6 +5,10 @@ import { IndexedList } from "../dataStructures/index.js"
  */
 export class Query {
   /**
+   * @type {Registry}
+   */
+  registry
+  /**
    * @type {string[]}
    */
   descriptors
@@ -20,7 +24,8 @@ export class Query {
    * @param {Registry} registry
    * @param {string[]} descriptors
    */
-  constructor(descriptors) {
+  constructor(registry, descriptors) {
+    this.registry = registry
     this.descriptors = descriptors
     for (let i = 0; i < descriptors.length; i++) {
       this.components[i] = []
