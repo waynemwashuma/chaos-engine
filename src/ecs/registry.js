@@ -1,5 +1,4 @@
 import { ArchetypeTable } from "./tables/index.js"
-import { EventDispatcher } from "../events/index.js"
 import { Query } from "./query.js"
 
 export class Registry {
@@ -12,7 +11,6 @@ export class Registry {
    * @type {Record<string,any>}
    */
   _resources = {}
-  events = new EventDispatcher()
   /**
    * Adds an entity to the manager and initializes it.
    * @template {Tuple} T
@@ -20,7 +18,6 @@ export class Registry {
    */
   create(components) {
     const entity = this._table.insert(components)
-    this.events.trigger("add",entity)
     return entity
   }
   /**
@@ -40,7 +37,6 @@ export class Registry {
    * @param {Entity} entity The entity to remove
    */
   remove(entity) {
-    this.events.trigger("remove",entity)
     this._table.remove(entity)
   }
   /**
@@ -83,7 +79,6 @@ export class Registry {
    * This removes all of the entities and components from the manager
    */
   clear() {
-    this.events.trigger("clear", this)
     this._table.clear()
   }
   update() {
