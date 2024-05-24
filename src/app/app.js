@@ -6,7 +6,7 @@ const registererror = "Systems,`Plugin`s or resources should be registered or se
  * @readonly
  * @enum {string}
  */
-const AppSchedule = {
+export const AppSchedule = {
   MainUpdate: "mainupdate",
   Startup: "startup"
 }
