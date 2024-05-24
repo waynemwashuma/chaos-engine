@@ -20,12 +20,17 @@ export class Physics2DPlugin {
     this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
     this.intergrator = options.intergrator || new Intergrator2DPlugin(options.intergratorOpt)
     this.autoUpdateBounds = options.autoUpdateBounds ?? true
+    options.profile = options.profile ?? false
+    this.options = options
   }
   /**
    * @param {Manager} manager
    */
   register(manager) {
+    const profile = this.options.profile = this.options.profile && manager.hasResource("profiler")
+    
     if (this.enableGravity) {
+      if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("gravity  "))
       manager.setResource(
         new Gravity(
           this.gravity.x,
@@ -33,13 +38,24 @@ export class Physics2DPlugin {
         )
       )
       manager.registerSystem(applyGravity)
+      if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("gravity"))
     }
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("intergrator"))
     manager.registerPlugin(this.intergrator)
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("intergrator"))
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("update_body"))
     manager.registerSystem(updateBodies)
     if (this.autoUpdateBounds) manager.registerSystem(updateBounds)
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("update_body"))
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("broadphase"))
     manager.registerPlugin(this.broadphase)
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("broadphase"))
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("narrowphase"))
     manager.registerPlugin(this.narrowphase)
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("narrowphase"))
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("collision response"))
     manager.registerSystem(collisionResponse)
+    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("collision response"))
   }
 }
 /**
