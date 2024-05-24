@@ -13,10 +13,8 @@ export const AppSchedule = {
 export class App {
   registry = new Registry()
   scheduler = new Scheduler()
-  events
   _initialized = false
   constructor() {
-    this.events = this.registry.events
     this.scheduler.set(
       AppSchedule.Startup,
       new ImmediateExecutor(this.registry)
