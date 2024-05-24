@@ -81,10 +81,4 @@ export class Registry {
   clear() {
     this._table.clear()
   }
-  update() {
-    const systems = this._systems;
-    for (let i = 0; i < systems.length; i++) {
-      systems[i](this);
-    }
-  }
 }
