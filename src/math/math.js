@@ -136,3 +136,10 @@ export function wrapAngle(x) {
   }
   return a
 }
+/**
+ * @param {number} v
+ * @param {number} max
+ */
+export function wrap(v, max) {
+  return v % max
+}
