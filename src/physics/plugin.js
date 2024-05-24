@@ -30,7 +30,7 @@ export class Physics2DPlugin {
     const profile = this.options.profile = this.options.profile && manager.hasResource("profiler")
     
     if (this.enableGravity) {
-      if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("gravity"))
+      if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("gravity  "))
       manager.setResource(
         new Gravity(
           this.gravity.x,
