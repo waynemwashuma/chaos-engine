@@ -2,19 +2,27 @@ import { Registry, Scheduler, ImmediateExecutor, RAFExecutor } from "../ecs/inde
 import { assert, deprecate } from "../logger/index.js"
 const registererror = "Systems,`Plugin`s or resources should be registered or set before `App().run()`"
 
+/**
+ * @readonly
+ * @enum {string}
+ */
+export const AppSchedule = {
+  MainUpdate: "mainupdate",
+  Startup: "startup"
+}
 export class App {
   registry = new Registry()
   scheduler = new Scheduler()
   events
-  #startups = 0
-  #updates = 0
   _initialized = false
   constructor() {
     this.events = this.registry.events
-    this.#startups = this.scheduler.set(
+    this.scheduler.set(
+      AppSchedule.Startup,
       new ImmediateExecutor(this.registry)
     )
-    this.#updates = this.scheduler.set(
+    this.scheduler.set(
+      AppSchedule.MainUpdate,
       new RAFExecutor(this.registry)
     )
   }
@@ -45,11 +53,11 @@ export class App {
   }
   registerUpdateSystem(system) {
     assert(!this._initialized, registererror)
-    this.scheduler.get(this.#updates).add(system)
+    this.scheduler.get(AppSchedule.MainUpdate).add(system)
   }
   registerStartupSystem(system) {
     assert(!this._initialized, registererror)
-    this.scheduler.get(this.#startups).add(system)
+    this.scheduler.get(AppSchedule.Startup).add(system)
     return this
   }
   setResource(resource) {
