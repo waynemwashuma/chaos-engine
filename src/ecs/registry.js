@@ -56,7 +56,7 @@ export class Registry {
    */
   query(compNames) {
     //TODO - Maybe cache the query?
-    const query = new Query(this,compNames)
+    const query = new Query(this, compNames)
     this._table.query(query)
     return query
   }
@@ -67,6 +67,13 @@ export class Registry {
    */
   getResource(name) {
     return this._resources[name]
+  }
+  /**
+   * @param {string} name
+   * @returns {boolean}
+   */
+  hasResource(name) {
+    return !!this._resources[name]
   }
   /**
    * @template T

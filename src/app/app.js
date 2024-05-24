@@ -63,4 +63,7 @@ export class App {
     this.registry.setResource(resource)
     return this
   }
+  hasResource(resource){
+    this.registry.hasResource(resource)
+  }
 }
