@@ -1,32 +1,36 @@
 import { Schedule } from "./schedule.js"
 import { Executor } from "./executors/index.js"
+import { IndexedList } from "../../dataStructures/index.js"
 
 export class Scheduler {
   /**
-   * @type {Executor[]}
+   * @type {IndexedList<Executor>}
    */
-  executors = []
+  executors = new IndexedList()
   /**
+   * @param {string} label
    * @param {Executor} executor
    */
-  set(executor) {
-    return this.executors.push(executor) - 1
+  set(label, executor) {
+    this.executors.set(label,executor)
   }
   /**
-   * @param {ScheduleId} id
+   * @param {string} label
    * @returns {Schedule}
    */
-  get(id) {
-    return this.executors[id].schedule
+  get(label) {
+    return this.executors.get(label).schedule
   }
   run() {
-    for (let i = 0; i < this.executors.length; i++) {
-      this.executors[i].start()
+    const executors = this.executors.values()
+    for (let i = 0; i < executors.length; i++) {
+      executors[i].start()
     }
   }
   stop() {
-    for (let i = 0; i < this.executors.length; i++) {
-      this.executors[i].stop()
+    const executors = this.executors.values()
+    for (let i = 0; i < executors.length; i++) {
+      executors[i].stop()
     }
   }
 }
