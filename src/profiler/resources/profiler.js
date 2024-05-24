@@ -1,5 +1,4 @@
 import { assert } from "../../logger/index.js"
-const labelerror = "The label provided has not been set into `Profiler()`.Use `Profiler().set()` to set the label.The label is "
 export class Profile {
   lastTick = 0
   delta = 0
@@ -14,7 +13,9 @@ export class Profiler {
    * @param {string} label
    */
   set(label) {
-    this.profiles.set(label, new Profile())
+    const profile = new Profile()
+    this.profiles.set(label, profile)
+    return profile
   }
   /**
    * @param {string} label
@@ -27,10 +28,7 @@ export class Profiler {
    * @param {string} label
    */
   start(label) {
-    const profile = this.get(label)
-    
-    assert(profile, labelerror + `"${label}"`)
-
+    const profile = this.profiles.has(label) ? this.get(label) : this.set(label)
     profile.lastTick = performance.now()
   }
   /**
@@ -38,9 +36,9 @@ export class Profiler {
    */
   end(label) {
     const profile = this.get(label)
-    
-    assert(profile, labelerror + `"${label}"`)
-    
+
+    if (!profile) return
+
     profile.delta = performance.now() - profile.lastTick
   }
 }
