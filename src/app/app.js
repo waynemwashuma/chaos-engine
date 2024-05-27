@@ -52,6 +52,7 @@ export class App {
   registerUpdateSystem(system) {
     assert(!this._initialized, registererror)
     this.scheduler.get(AppSchedule.MainUpdate).add(system)
+    return this
   }
   registerStartupSystem(system) {
     assert(!this._initialized, registererror)
