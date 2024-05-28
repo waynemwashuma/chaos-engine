@@ -33,6 +33,34 @@ export class Bitset {
     Bitset.set(this, index)
   }
   /**
+   * @param {Bitset} other
+   * @returns {this}
+   */
+  and(other) {
+    return Bitset.and(this, other, this)
+  }
+  /**
+   * @param {Bitset} other
+   * @returns {this}
+   */
+  or(other) {
+    return Bitset.or(this, other, this)
+  }
+  /**
+   * @param {Bitset} other
+   * @returns {this}
+   */
+  xor(other) {
+    return Bitset.xor(this, other, this)
+  }
+  /**
+   * @param {Bitset} other
+   * @returns {this}
+   */
+  not() {
+    return Bitset.not(this, this)
+  }
+  /**
    * @param {number} index
    */
   clear(index) {
@@ -91,5 +119,55 @@ export class Bitset {
 
     bitset.data = data
     bitset.size = size
+  }
+  /**
+   * @param {Bitset} bitset1
+   * @param {Bitset} bitset2
+   * @param {Bitset} out
+   * @returns {Bitset}
+   */
+  static and(bitset1, bitset2, out = new Bitset(bitset1.size)) {
+    assert(bitset1.size === bitset2.size, "`Bitset`s should be of equal size to apply OR operation.")
+    for (let i = 0; i < bitset1.size; i++) {
+      out.data[i] = bitset1.data[i] & bitset2.data[i]
+    }
+    return out
+  }
+  /**
+   * @param {Bitset} bitset1
+   * @param {Bitset} bitset2
+   * @param {Bitset} out
+   * @returns {Bitset}
+   */
+  static or(bitset1, bitset2, out = new Bitset(bitset1.size)) {
+    assert(bitset1.size === bitset2.size, "`Bitset`s should be of equal size to apply OR operation.")
+    for (let i = 0; i < bitset1.size; i++) {
+      out.data[i] = bitset1.data[i] | bitset2.data[i]
+    }
+    return out
+  }
+  /**
+   * @param {Bitset} bitset1
+   * @param {Bitset} bitset2
+   * @param {Bitset} out
+   * @returns {Bitset}
+   */
+  static xor(bitset1, bitset2, out = new Bitset(bitset1.size)) {
+    assert(bitset1.size === bitset2.size, "`Bitset`s should be of equal size to apply OR operation.")
+    for (let i = 0; i < bitset1.size; i++) {
+      out.data[i] = bitset1.data[i] ^ bitset2.data[i]
+    }
+    return out
+  }
+  /**
+   * @param {Bitset} bitset
+   * @param {Bitset} out
+   * @returns {Bitset}
+   */
+  static not(bitset, out = new Bitset(bitset.size)) {
+    for (let i = 0; i < bitset.size; i++) {
+      out.data[i] = ~bitset.data[i]
+    }
+    return out
   }
 }
