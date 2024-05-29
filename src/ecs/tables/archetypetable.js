@@ -80,7 +80,8 @@ class Archetype {
     return this.components.has(name)
   }
 }
-export class NaiveArchTypeTable {
+
+export class ArchetypeTable {
   /**
    * @type {Archetype[]}
    */
@@ -92,7 +93,7 @@ export class NaiveArchTypeTable {
   constructor() {}
   /**
    * @private
-   * @param {{[x:string] : any}} comps
+   * @param {{string[]}comps
    */
   _createArchetype(comps) {
     const archetype = new Archetype()
@@ -104,7 +105,7 @@ export class NaiveArchTypeTable {
   /**
    * @private
    * @param {Archetype} archetype
-   * @param {{[x:string] : any}} comps
+   * @param {string[]} comps
    */
   _ArcheTypeHasOnly(archetype, comps) {
     if (comps.length !== archetype.components.size - 1) return false
@@ -201,7 +202,7 @@ export class NaiveArchTypeTable {
     const { descriptors, components } = query
     const archids = this._getArchetypeIds(query.descriptors, [])
     for (let i = 0; i < archids.length; i++) {
-      query.archmapper.set(archids[i],i)
+      query.archmapper.set(archids[i], i)
     }
     for (let i = 0; i < query.descriptors.length; i++) {
       for (let j = 0; j < archids.length; j++) {
@@ -223,4 +224,3 @@ function checkArchetype(archetype, comps) {
   }
   return true
 }
-export { NaiveArchTypeTable as ArchetypeTable }
