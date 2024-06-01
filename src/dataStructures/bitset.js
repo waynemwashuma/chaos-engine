@@ -1,7 +1,11 @@
 import { assert } from "../logger/index.js"
 
 const indexerror = "Tried to index into `Bitset()` futher than its size."
+const oplengtherror = "`Bitset`s should be of equal size to apply the operation."
+
+//Must match with the bit length of element in the typed array.
 const WORD_LENGTH = 32
+const WORD_LOG = Math.log2(WORD_LENGTH)
 
 export class Bitset {
   /**
@@ -80,8 +84,8 @@ export class Bitset {
   static get(bitset, index) {
     assert(index < bitset.size, indexerror)
 
-    const indexer = Math.floor(index / WORD_LENGTH)
-    const mask = 1 << (index % WORD_LENGTH)
+    const indexer = index >>> WORD_LOG
+    const mask = 1 << index
 
     return (bitset.data[indexer] & mask) != 0
   }
@@ -92,20 +96,20 @@ export class Bitset {
   static set(bitset, index) {
     assert(index < bitset.size, indexerror)
 
-    const indexer = Math.floor(index / WORD_LENGTH)
-    const mask = 1 << (index % WORD_LENGTH)
+    const indexer = index >>> WORD_LOG
+    const mask = 1 << index
 
     bitset.data[indexer] |= mask
   }
   /**
    * @param {Bitset} bitset
-   * @param {number} size
+   * @param {number} index
    */
   static clear(bitset, index) {
     assert(index < bitset.size, indexerror)
 
-    const indexer = Math.floor(index / WORD_LENGTH)
-    const mask = 1 << (index % WORD_LENGTH)
+    const indexer = index >>> WORD_LOG
+    const mask = 1 << index
 
     bitset.data[indexer] &= ~mask
   }
@@ -127,7 +131,7 @@ export class Bitset {
    * @returns {Bitset}
    */
   static and(bitset1, bitset2, out = new Bitset(bitset1.size)) {
-    assert(bitset1.size === bitset2.size, "`Bitset`s should be of equal size to apply OR operation.")
+    assert(bitset1.size === bitset2.size,oplengtherror + "`Bitset.and()`")
     for (let i = 0; i < bitset1.size; i++) {
       out.data[i] = bitset1.data[i] & bitset2.data[i]
     }
@@ -140,7 +144,7 @@ export class Bitset {
    * @returns {Bitset}
    */
   static or(bitset1, bitset2, out = new Bitset(bitset1.size)) {
-    assert(bitset1.size === bitset2.size, "`Bitset`s should be of equal size to apply OR operation.")
+    assert(bitset1.size === bitset2.size,oplengtherror + "`Bitset.or()`")
     for (let i = 0; i < bitset1.size; i++) {
       out.data[i] = bitset1.data[i] | bitset2.data[i]
     }
@@ -153,7 +157,7 @@ export class Bitset {
    * @returns {Bitset}
    */
   static xor(bitset1, bitset2, out = new Bitset(bitset1.size)) {
-    assert(bitset1.size === bitset2.size, "`Bitset`s should be of equal size to apply OR operation.")
+    assert(bitset1.size === bitset2.size,oplengtherror + "`Bitset.xor()`")
     for (let i = 0; i < bitset1.size; i++) {
       out.data[i] = bitset1.data[i] ^ bitset2.data[i]
     }
