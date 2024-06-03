@@ -12,12 +12,26 @@ export class Registry {
    */
   _resources = {}
   /**
-   * Adds an entity to the manager and initializes it.
+   * Adds an entity to the registry.
+   * 
    * @template {Tuple} T
    * @param {T} components The entity to add
+   * @returns {Entity}
    */
   create(components) {
     const entity = this._table.insert(components)
+    return entity
+  }
+  /**
+   * Inserts components into an entity.
+   * 
+   * @template {Tuple} T
+   * @param {Entity} entity
+   * @param {T} components The entity to add
+   * @returns {Entity}
+   */
+  insert(entity, components) {
+    this._table.append(entity,components)
     return entity
   }
   /**
