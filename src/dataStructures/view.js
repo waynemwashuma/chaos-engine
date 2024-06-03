@@ -28,6 +28,25 @@ export class View {
     this.offset = offset
     this.length = length
 
-    assert(offset + length < arr.length,"The `View()`'s range is beyond the range of the provided array.")
+    assert(offset + length < arr.length, "The `View()`'s range is beyond the range of the provided array.")
+  }
+}
+
+export class RawView {
+  /**
+   * @type {number}
+   */
+  length = 0
+  /**
+   * @type {number}
+   */
+  offset = 0
+    /**
+   * @param {number} offset
+   * @param {number} length
+   */
+  constructor(offset, length) {
+    this.offset = offset
+    this.length = length
   }
 }
