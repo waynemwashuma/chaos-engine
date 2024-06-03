@@ -188,7 +188,6 @@ export class ArchetypeTable {
     const tableid = this.entities[entity + 1]
     const extracted = this.list[archid].extract(tableid)
     components.push(...extracted)
-    console.log(entity,extracted)
     this.remove(entity)
     
     const keys = []
