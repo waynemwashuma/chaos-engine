@@ -1,4 +1,5 @@
 import { Registry, Scheduler, ImmediateExecutor, RAFExecutor } from "../ecs/index.js"
+import { CommandsPlugin } from "../command/index.js"
 import { assert, deprecate } from "../logger/index.js"
 const registererror = "Systems,`Plugin`s or resources should be registered or set before `App().run()`"
 
@@ -25,6 +26,7 @@ export class App {
     )
   }
   run() {
+    this.registerPlugin(new CommandsPlugin())
     this._initialized = true
     this.scheduler.run(this.registry)
   }
@@ -64,7 +66,7 @@ export class App {
     this.registry.setResource(resource)
     return this
   }
-  hasResource(resource){
+  hasResource(resource) {
     return this.registry.hasResource(resource)
   }
 }
