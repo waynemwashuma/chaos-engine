@@ -11,7 +11,7 @@ function executeCommands(manager) {
   const queue = manager.getResource("commandqueue")
 
   for (let i = 0; i < queue.length; i++) {
-    queue[i].execute()
+    queue[i].execute(manager)
   }
 }
 
