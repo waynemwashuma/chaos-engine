@@ -29,6 +29,7 @@ export class App {
     this.registerPlugin(new CommandsPlugin())
     this._initialized = true
     this.scheduler.run(this.registry)
+    return this
   }
   /**
    * @param {Plugin} plugin
