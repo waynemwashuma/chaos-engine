@@ -37,6 +37,12 @@ export class Bitset {
     Bitset.set(this, index)
   }
   /**
+   * @param {number} index
+   */
+  reset(index) {
+    Bitset.reset(this, index)
+  }
+  /**
    * @param {Bitset} other
    * @returns {this}
    */
@@ -68,7 +74,7 @@ export class Bitset {
    * @param {number} index
    */
   clear(index) {
-    Bitset.clear(this, index)
+    Bitset.clear(this)
   }
   /**
    * @param {number} size
@@ -105,7 +111,7 @@ export class Bitset {
    * @param {Bitset} bitset
    * @param {number} index
    */
-  static clear(bitset, index) {
+  static reset(bitset, index) {
     assert(index < bitset.size, indexerror)
 
     const indexer = index >>> WORD_LOG
@@ -115,12 +121,20 @@ export class Bitset {
   }
   /**
    * @param {Bitset} bitset
+   */
+  static clear(bitset) {
+    for (let i = 0; i < bitset.data.length; i++) {
+      bitset.data[i] = 0
+    }
+  }
+  /**
+   * @param {Bitset} bitset
    * @param {number} size
    */
   static resize(bitset, size) {
     const length = Math.ceil(size / WORD_LENGTH)
-    if(length < bitset.data.length)return
-    
+    if (length < bitset.data.length) return
+
     const data = new Uint32Array(length)
     data.set(bitset.data)
 
@@ -134,7 +148,7 @@ export class Bitset {
    * @returns {Bitset}
    */
   static and(bitset1, bitset2, out = new Bitset(bitset1.size)) {
-    assert(bitset1.size === bitset2.size,oplengtherror + "`Bitset.and()`")
+    assert(bitset1.size === bitset2.size, oplengtherror + "`Bitset.and()`")
     for (let i = 0; i < bitset1.size; i++) {
       out.data[i] = bitset1.data[i] & bitset2.data[i]
     }
@@ -147,7 +161,7 @@ export class Bitset {
    * @returns {Bitset}
    */
   static or(bitset1, bitset2, out = new Bitset(bitset1.size)) {
-    assert(bitset1.size === bitset2.size,oplengtherror + "`Bitset.or()`")
+    assert(bitset1.size === bitset2.size, oplengtherror + "`Bitset.or()`")
     for (let i = 0; i < bitset1.size; i++) {
       out.data[i] = bitset1.data[i] | bitset2.data[i]
     }
@@ -160,7 +174,7 @@ export class Bitset {
    * @returns {Bitset}
    */
   static xor(bitset1, bitset2, out = new Bitset(bitset1.size)) {
-    assert(bitset1.size === bitset2.size,oplengtherror + "`Bitset.xor()`")
+    assert(bitset1.size === bitset2.size, oplengtherror + "`Bitset.xor()`")
     for (let i = 0; i < bitset1.size; i++) {
       out.data[i] = bitset1.data[i] ^ bitset2.data[i]
     }
