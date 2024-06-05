@@ -1,6 +1,5 @@
 import { verlet, euler } from "./intergrator.js"
 import { Vector2 } from "../math/index.js"
-import { Manager } from "../ecs/index.js"
 
 class LinearDamping extends Number {}
 class AngularDamping extends Number {}
@@ -18,7 +17,7 @@ export class Intergrator2DPlugin {
     this.options = options
   }
   /**
-   * @param {Manager} manager
+   * @param {App} manager
    */
   register(manager) {
     if (this.options.enableDamping) {
@@ -30,7 +29,7 @@ export class Intergrator2DPlugin {
   }
 }
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function dampenVelocity(manager) {
   const [movables] = manager.query(["movable"]).raw()
@@ -45,7 +44,7 @@ export function dampenVelocity(manager) {
   }
 }
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function updateTransformVerlet(manager) {
   const query = manager.query(["position2d", "velocity2d", "acceleration2d", "orientation2d", "rotation2d", "torque2d"])
@@ -64,7 +63,7 @@ export function updateTransformVerlet(manager) {
   })
 }
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function updateTransformEuler(manager) {
   const query = manager.query(["position2d", "velocity2d", "acceleration2d", "orientation2d", "rotation2d", "torque2d"])
