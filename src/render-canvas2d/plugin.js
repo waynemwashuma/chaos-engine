@@ -1,4 +1,3 @@
-import { Manager } from "../ecs/index.js"
 import { Viewport } from "../render/index.js"
 import { assert } from "../logger/index.js"
 import { drawImage } from "./canvas.js"
@@ -6,7 +5,7 @@ import { MaterialType, Canvas2DMaterial } from "./components/index.js"
 export class Canvas2DRendererPlugin {
   constructor(options = {}) {}
   /**
-   * @param {Manager} manager
+   * @param {App} manager
    */
   register(manager) {
     const viewport = new Viewport()

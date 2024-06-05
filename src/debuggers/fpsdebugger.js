@@ -1,4 +1,3 @@
-import { Manager } from "../ecs/index.js"
 import { deprecate } from "../logger/index.js"
 import { Timer,TimerMode } from "../time/index.js"
 
@@ -38,7 +37,7 @@ function updateRAFTimer(manager) {
   Timer.update(timer, clock.delta)
 }
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function fpsDebugger(manager) {
   deprecate("fpsDebugger()", "FPSDebugger()")

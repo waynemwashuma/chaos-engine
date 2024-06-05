@@ -2,7 +2,7 @@ import { deprecate,throws } from "../logger/index.js"
 
 /**
  * @deprecated
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function raycastDebugger(manager) {
   deprecate("raycastDebugger()")
