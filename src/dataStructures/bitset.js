@@ -118,7 +118,10 @@ export class Bitset {
    * @param {number} size
    */
   static resize(bitset, size) {
-    const data = new Uint32Array(Math.ceil(size / WORD_LENGTH))
+    const length = Math.ceil(size / WORD_LENGTH)
+    if(length < bitset.data.length)return
+    
+    const data = new Uint32Array(length)
     data.set(bitset.data)
 
     bitset.data = data
