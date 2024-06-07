@@ -1,5 +1,6 @@
 import { ArchetypeTable } from "./tables/index.js"
 import { Query } from "./query.js"
+import { TypeStore } from "./typestore.js"
 
 export class Registry {
   /**
@@ -11,6 +12,11 @@ export class Registry {
    * @type {Record<string,any>}
    */
   _resources = {}
+  /**
+   * @private
+   * @type {TypeStore}
+   */
+  _typestore = new TypeStore()
   /**
    * Adds an entity to the registry.
    * 
@@ -31,7 +37,7 @@ export class Registry {
    * @returns {Entity}
    */
   insert(entity, components) {
-    this._table.append(entity,components)
+    this._table.append(entity, components)
     return entity
   }
   /**
@@ -95,6 +101,12 @@ export class Registry {
    */
   setResource(resource) {
     this._resources[resource.constructor.name.toLowerCase()] = resource
+  }
+  /**
+   * @param {Function} type
+  */
+  registerType(type){
+    this._typestore.set(type)
   }
   /**
    * This removes all of the entities and components from the manager
