@@ -62,6 +62,12 @@ export class App {
     this.scheduler.get(AppSchedule.Startup).add(system)
     return this
   }
+  /**
+   * @param {Function} type
+   */
+  registerType(type){
+    this.registry.registerType(type)
+  }
   setResource(resource) {
     assert(!this._initialized, registererror)
     this.registry.setResource(resource)
