@@ -1,4 +1,4 @@
-import { Vector2 } from "./vector.js";
+import { Vector2 } from "./vector2.js";
 import { deprecate } from "../logger/index.js"
 /**
  * A class that is used to transform positions through rotation, scaling and translation.
