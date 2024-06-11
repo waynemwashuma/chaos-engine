@@ -3,24 +3,28 @@
  */
 export class Query {
   /**
+   * @private
    * @type {Registry}
    */
   registry
   /**
+   * @readonly
    * @type {string[]}
    */
   descriptors
   /**
+   * @private
    * @type {any[][]}
    */
   components = []
   /**
+   * @private
    * @type {Map<ArchetypeId,number>}
    */
   archmapper = new Map()
   /**
    * @param {Registry} registry
-   * @param {string[]} descriptors
+   * @param {ComponentId[]} descriptors
    */
   constructor(registry, descriptors) {
     this.registry = registry
@@ -38,10 +42,10 @@ export class Query {
    */
   get(entity) {
     const tableid = this.archmapper.get(
-      this.registry._table.entities[entity]
+      this.registry.table.entities[entity]
     )
     if (tableid == undefined) return null
-    const index = this.registry._table.entities[entity + 1]
+    const index = this.registry.table.entities[entity + 1]
     const components = new Array(this.descriptors.length)
     for (let i = 0; i < this.descriptors.length; i++) {
       components[i] = this.components[i][tableid][index]
@@ -93,8 +97,7 @@ export class Query {
    */
   single() {
     const components = new Array(this.descriptors.length)
-    if (!this.components || this.components[0][0] && !this.components[0][0][0]) return null
-
+    if (!this.components[0] || !this.components[0][0] || !this.components[0][0][0]) return null
     for (let i = 0; i < this.descriptors.length; i++) {
       components[i] = this.components[i][0][0]
     }
