@@ -1,99 +1,33 @@
 import { Utils } from "../../utils/index.js"
+import { assert } from "../../logger/index.js"
+// Ensure that the `ComponentId` of `Entity` matches this or havoc will ensue.
+const entityid = 0
 
-/**
- * @template {Tuple} T
- */
+
 class Archetype {
   /**
-   * @type {Map<string,any[]>}
+   * @type {Map<ComponentId,any[]>}
    */
   components = new Map()
-  /**
-   * @type {string[]}
-   */
-  keys = []
-  constructor() {
-    this.components.set("entity", [])
-    //this.keys.push("entity")
-  }
+  constructor() {}
   /**
    * @param {Entity} entity
-   * @param {{[x:string]:any}} components
-   */
-  insert(entity, components) {
-    const entities = this.getComponentLists("entity")
-
-    for (let i = 0; i < components.length; i++) {
-      //console.log(components[i].constructor.name.toLowerCase())
-      this.components.get(components[i].constructor.name.toLowerCase()).push(components[i])
-    }
-    entities.push(entity)
-    return entities.length - 1
-  }
-  /**
-   * @param {Entity} entity
-   * @returns {T}
+   * @returns {[ComponentId[],any[]]}
    */
   extract(index) {
-    const components = new Array(this.keys.length)
-    for (let i = 0; i < this.keys.length; i++) {
-      components[i] = this.components.get(this.keys[i])[index]
+    const keys = []
+    const components = []
+    for (const [key, list] of this.components) {
+      keys.push(key)
+      components.push(list[index])
     }
-    return components
-  }
-  /**
-   * @param {number} index
-   * @returns {Entity | undefined}
-   */
-  remove(index) {
-    const entities = this.components.get("entity")
-    for (let name in this.keys) {
-      Utils.removeElement(
-        this.components.get(this.keys[name]),
-        index
-      )
-    }
-    Utils.removeElement(entities, index)
-    return this.components.get("entity")[index]
-  }
-  /**
-   * @param {number} index
-   * @param {string[]} compnames
-   */
-  get(index, compnames) {
-    const comp = []
-    for (let i = 0; i < compnames.length; i++) {
-      const list = this.getComponentLists(compnames[i])
-      comp.push(
-        list[index]
-      )
-    }
-    return comp
-  }
-  /**
-   * @param {string} name
-   * @param {any[]} list
-   */
-  setComponentList(name, list) {
-    this.components.set(name, list)
-    this.keys.push(name)
-  }
-  /**
-   * @param {string} name
-   */
-  getComponentLists(name) {
-    return this.components.get(name)
-  }
-  /**
-   * @param {string} name
-   */
-  hasComponentList(name) {
-    return this.components.has(name)
+    return [keys, components]
   }
 }
 
 export class ArchetypeTable {
   /**
+   * @private
    * @type {Archetype[]}
    */
   list = []
@@ -101,38 +35,34 @@ export class ArchetypeTable {
    * @type {number[]}
    */
   entities = []
-  constructor() {}
   /**
-   * @private
-   * @param {{string[]}comps
+   * @param {{ComponentId[]}comps
    */
-  _createArchetype(comps) {
+  createArchetype(comps) {
     const archetype = new Archetype()
     for (let i = 0; i < comps.length; i++) {
-      archetype.setComponentList(comps[i], [])
+      archetype.components.set(comps[i], [])
     }
     return this.list.push(archetype) - 1
   }
   /**
-   * @private
    * @param {Archetype} archetype
-   * @param {string[]} comps
+   * @param {ComponentId[]} comps
    */
-  _ArcheTypeHasOnly(archetype, comps) {
-    if (comps.length !== archetype.components.size - 1) return false
+  archetypeHasOnly(archetype, comps) {
+    if (comps.length !== archetype.components.size) return false
     for (let i = 0; i < comps.length; i++) {
       if (!archetype.components.has(comps[i])) return false
     }
     return true
   }
   /**
-   * @private
-   * @param {string[]} comps
+   * @param {ComponentId[]} comps
    * @returns {ArchetypeId}
    */
-  _getArchetypeId(comps) {
+  getArchetypeId(comps) {
     for (let i = 0; i < this.list.length; i++) {
-      if (this._ArcheTypeHasOnly(this.list[i], comps)) {
+      if (this.archetypeHasOnly(this.list[i], comps)) {
         return i
       }
     }
@@ -144,11 +74,11 @@ export class ArchetypeTable {
    * @param {ArchetypeId[]} filtered
    * @returns {ArchetypeId[]}
    */
-  _getArchetypeIds(comps, filtered) {
+  getArchetypeIds(comps, filtered) {
     for (let i = 0; i < this.list.length; i++) {
       let hasComponents = true
       for (let j = 0; j < comps.length; j++) {
-        if (!this.list[i].hasComponentList(comps[j])) {
+        if (!this.list[i].components.has(comps[j])) {
           hasComponents = false
           break
         }
@@ -160,46 +90,63 @@ export class ArchetypeTable {
   }
   /**
    * @template {Tuple} T
+   * @param {ArchetypeId} id
+   * @param {Entity} entity
+   * @param {ComponentId[]} keys
+   * @param {T} comps
+   */
+  insertIntoArchetype(id, entity, keys, components) {
+    const archetype = this.list[id]
+    const index = archetype.components.get(0).length
+    for (let i = 0; i < components.length; i++) {
+      archetype.components.get(keys[i]).push(components[i])
+    }
+    this.entities[entity] = id
+    this.entities[entity + 1] = index
+  }
+  /**
+   * @param {ArchetypeId} id
+   * @param {number} index
+   * @returns {Entity | undefined}
+   */
+  removeFromArchetype(id, index) {
+    const archetype = this.list[id]
+    for (const list of archetype.components.values()) {
+      Utils.removeElement(list, index)
+    }
+    return archetype.components.get(0)[index]
+  }
+  /**
+   * @template {Tuple} T
    * @param {T} components
+   * @param {ComponentId[]} ids
    * @returns {Entity}
    */
-  insert(components) {
+  insert(components, ids) {
     const entity = this.entities.length
-    //components.entity = entity
-    const keys = []
-    for (let i = 0; i < components.length; i++) {
-      keys.push(components[i].constructor.name.toLowerCase())
-    }
-    let archindex =
-      this._getArchetypeId(keys)
-    archindex = archindex === -1 ? this._createArchetype(keys) : archindex
-    const index = this.list[archindex].insert(entity, components)
-    this.entities[entity] = archindex
-    this.entities[entity + 1] = index
-    
+    ids.push(0)
+    components.push(entity)
+    const archid = this.resolveArchetypeFor(ids)
+    this.insertIntoArchetype(archid, entity, ids, components)
     return entity
   }
   /**
-   * @param {T} components
+   * @template {Tuple} T
    * @param {Entity} entity
+   * @param {T} components
+   * @param {ComponentId[]} ids
    */
-  append(entity, components) {
+  append(entity, components, ids) {
     const archid = this.entities[entity]
     const tableid = this.entities[entity + 1]
-    const extracted = this.list[archid].extract(tableid)
-    components.push(...extracted)
-    this.remove(entity)
-    
-    const keys = []
-    for (let i = 0; i < components.length; i++) {
-      keys.push(components[i].constructor.name.toLowerCase())
-    }
-    let archindex =
-      this._getArchetypeId(keys)
-    archindex = archindex === -1 ? this._createArchetype(keys) : archindex
-    const index = this.list[archindex].insert(entity, components)
-    this.entities[entity] = archindex
-    this.entities[entity + 1] = index
+    const [keys, extracted] = this.list[archid].extract(tableid)
+    this.removeFromArchetype(archid, tableid)
+    keys.push(...ids)
+    extracted.push(...components)
+    const archid2 =
+      this.resolveArchetypeFor(keys)
+
+    this.insertIntoArchetype(archid2, entity, keys, extracted)
   }
   /**
    * @param {Entity} entity
@@ -208,39 +155,39 @@ export class ArchetypeTable {
     const archid = this.entities[entity]
     const tableid = this.entities[entity + 1]
 
-    const swapped = this.list[archid].remove(tableid)
+    const swapped = this.removeFromArchetype(archid, tableid)
     if (swapped)
       this.entities[swapped + 1] = this.entities[entity + 1]
     this.entities[entity] = -1
     this.entities[entity + 1] = -1
   }
   /**
-   * @template {Tuple} T
+   * @template T
    * @param {Entity} entity
-   * @param {string[]} compnames
+   * @param {ComponentId} compname
    * @returns {T | null}
    */
-  get(entity, compnames) {
+  get(entity, compname) {
     const archid = this.entities[entity]
     const index = this.entities[entity + 1]
     const archetype = this.list[archid]
     if (!archetype) return null
-    if (!checkArchetype(archetype, compnames)) return null
-    return archetype.get(index, compnames)
+    if (archetype.components.has(compname)) return null
+    return archetype.components.get(compname)[index]
   }
   /**
    * @param {Query} query
    */
   query(query) {
     const { descriptors, components } = query
-    const archids = this._getArchetypeIds(query.descriptors, [])
+    const archids = this.getArchetypeIds(query.descriptors, [])
     for (let i = 0; i < archids.length; i++) {
       query.archmapper.set(archids[i], i)
     }
     for (let i = 0; i < query.descriptors.length; i++) {
       for (let j = 0; j < archids.length; j++) {
         /** @type {[]}*/
-        const bin = this.list[archids[j]].getComponentLists(query.descriptors[i])
+        const bin = this.list[archids[j]].components.get(query.descriptors[i])
         components[i].push(bin)
       }
     }
