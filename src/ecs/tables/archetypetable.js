@@ -36,7 +36,7 @@ export class ArchetypeTable {
    */
   entities = []
   /**
-   * @param {{ComponentId[]}comps
+   * @param {ComponentId[]} comps
    */
   createArchetype(comps) {
     const archetype = new Archetype()
@@ -67,6 +67,16 @@ export class ArchetypeTable {
       }
     }
     return -1
+  }
+  /**
+   * @param {ComponentId[]} ids
+  */
+  resolveArchetypeFor(ids){
+    for (let i = 0; i < this.list.length; i++) {
+      const hasit = this.archetypeHasOnly(this.list[i],ids)
+      if(hasit)return i
+    }
+    return this.createArchetype(ids)
   }
   /**
    * @private
