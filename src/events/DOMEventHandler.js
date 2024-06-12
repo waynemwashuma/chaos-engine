@@ -13,9 +13,9 @@ export class DOMEventHandler {
    * A dictionary of the main callback functions
    * 
    * @private
-   * @type Object<keyof DocumentEventMap,function>
+   * @type {Object<keyof DocumentEventMap,function>}
    */
-  _evHandlers = {}
+  evlisteners = {}
   /**
    * @type {HTMLElement}
   */
@@ -43,7 +43,7 @@ export class DOMEventHandler {
       }
     }
     this.target.addEventListener(e, listener)
-    this._evHandlers[e] = listener
+    this.evlisteners[e] = listener
   }
   /**
    * Removes an eventlistener.
@@ -62,9 +62,9 @@ export class DOMEventHandler {
    * @param {keyof DocumentEventMap} e Name of the DOMEvent.
    */
   disposeEvent(e) {
-    document.removeEventListener(e, this._evHandlers[e])
+    document.removeEventListener(e, this.evlisteners[e])
     delete this.handlers[e]
-    delete this._evHandlers[e]
+    delete this.evlisteners[e]
   }
   /**
    * Clears all eventlisteners of every event registered.
@@ -75,9 +75,15 @@ export class DOMEventHandler {
       this.disposeEvent(ev)
     }
   }
-  /* 
-  Donno why this is here,but i do know past me has a reason for this being here.
-  Ill leave it for now.
+  /**
+   * @param {HTMLElement} element
   */
-  init() {}
+  bindTo(element){
+    for (let ev in this.evlisteners) {
+      const listener = this.evlisteners[name]
+      this.target.removeEventListener(name,listener)
+      element.addEventListener(name,listener)
+    }
+    this.target = element
+  }
 }
