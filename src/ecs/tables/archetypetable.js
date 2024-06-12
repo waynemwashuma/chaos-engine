@@ -109,7 +109,6 @@ export class ArchetypeTable {
       keys.push(key)
       components.push(list[index])
     }
-    this.remove(id, index)
     return [keys, components]
   }
   /**
