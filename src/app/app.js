@@ -72,6 +72,14 @@ export class App {
     this.registry.registerType(type)
     return this
   }
+  /**
+   * @param {Function} component
+   * @param {ComponentHooks} hooks
+   */
+  setComponentHooks(component, hooks) {
+    this.registry.setComponentHooks(component.name.toLowerCase(),hooks)
+    return this
+  }
   setResource(resource) {
     assert(!this._initialized, registererror)
     this.registry.setResource(resource)
