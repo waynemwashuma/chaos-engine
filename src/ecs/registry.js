@@ -12,12 +12,12 @@ export class Registry {
    * @private
    * @type {Record<string,any>}
    */
-  _resources = {}
+  resources = {}
   /**
    * @private
    * @type {TypeStore}
    */
-  _typestore = new TypeStore()
+  typestore = new TypeStore()
   /**
    * @private
    * @type {number[]}
@@ -26,7 +26,7 @@ export class Registry {
   constructor() {
     //Because the type `Entity` is a typedef, not an actual class.
     //@tsignore
-    this._typestore.set({
+    this.typestore.set({
       name: "entity"
     })
   }
@@ -38,7 +38,7 @@ export class Registry {
     const ids = []
     for (let i = 0; i < components.length; i++) {
       const name = components[i].constructor.name.toLowerCase()
-      const id = this._typestore.getId(name)
+      const id = this.typestore.getId(name)
 
       if (!id) return null
       ids.push(id)
@@ -129,7 +129,7 @@ export class Registry {
   get(entity, compName) {
     const archid = this.entities[entity]
     const index = this.entities[entity + 1]
-    const id = this._typestore.getId(compName)
+    const id = this.typestore.getId(compName)
     assert(id, `The component ${compName} is not registered into the \`Registry\`.Use \`Registry.registerType()\` to register it.`)
     return this.table.get(archid, index, compNames)
   }
@@ -142,7 +142,7 @@ export class Registry {
     const ids = []
     for (let i = 0; i < compNames.length; i++) {
       const name = compNames[i]
-      const id = this._typestore.getId(name)
+      const id = this.typestore.getId(name)
       assert(id !== undefined, `The component "${name}" has not been registered into the \`Registry\`.Use \`App.registerType()\` or \`Registry.registerType()\`to add it.`)
       ids.push(id)
     }
@@ -156,27 +156,27 @@ export class Registry {
    * @returns {T}
    */
   getResource(name) {
-    return this._resources[name]
+    return this.resources[name]
   }
   /**
    * @param {string} name
    * @returns {boolean}
    */
   hasResource(name) {
-    return !!this._resources[name]
+    return !!this.resources[name]
   }
   /**
    * @template T
    * @param {T} resource
    */
   setResource(resource) {
-    this._resources[resource.constructor.name.toLowerCase()] = resource
+    this.resources[resource.constructor.name.toLowerCase()] = resource
   }
   /**
    * @param {Function} type
    */
   registerType(type) {
-    this._typestore.set(type)
+    this.typestore.set(type)
   }
   /**
    * This removes all of the entities and components from the manager
