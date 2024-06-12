@@ -8,7 +8,7 @@ export class Executor {
   /**
    * @type {Schedule}
    */
-  schedule = new Schedule()
+  schedule
   /**
    * @type {number}
    */
@@ -20,11 +20,12 @@ export class Executor {
   /**
    * @param {Registry} registry
    * @param {number} time
-  */
-  constructor(registry, time = 0) {
+   */
+  constructor(schedule,registry, time = 0) {
+    this.schedule = schedule
     this.registry = registry
     this.time = time
   }
-  start() {}
+  start(_schedule) {}
   stop() {}
 }
