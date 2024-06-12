@@ -81,3 +81,13 @@ export function mixin(from, to, props = []) {
  * @param {any[]} _args
 */
 export function noop(..._args){}
+
+/**
+ * @readonly
+ * @enum {string}
+ */
+export const Dimension = {
+  two: "2d",
+  three: "3d",
+  both: "both"
+}
