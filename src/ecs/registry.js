@@ -46,6 +46,34 @@ export class Registry {
     return ids
   }
   /**
+   * @private
+   * @param {any[]}components
+   * @param {ComponentId[]} ids
+   * @param {Entity} entity
+   */
+  callAddComponentHook(components, ids, entity) {
+    for (let i = 0; i < ids.length; i++) {
+      const hook = this.typestore.getById(ids[i]).getHooks().add
+
+      if (hook)
+        hook(components[i], entity, this)
+    }
+  }
+  /**
+   * @private
+   * @param {any[]}components
+   * @param {ComponentId[]} ids
+   * @param {Entity} entity
+   */
+  callRemoveComponentHook(components, ids, entity) {
+    for (let i = 0; i < ids.length; i++) {
+      const hook = this.typestore.getById(ids[i]).getHooks().remove
+
+      if (hook)
+        hook(components[i], entity, this)
+    }
+  }
+  /**
    * Adds an entity to the registry.
    * 
    * @template {Tuple} T
@@ -60,6 +88,7 @@ export class Registry {
 
     ids.push(0)
     components.push(entity)
+    this.callAddComponentHook(components, ids, entity)
 
     const [id, index] = this.table.insert(components, ids)
 
@@ -80,6 +109,8 @@ export class Registry {
     const index1 = this.entities[entity + 1]
     const ids = this.getComponentIds(components)
     assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`Registry\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
+
+    this.callAddComponentHook(components, ids, entity)
 
     const [idextract, extract] = this.table.extract(archid, index1)
 
@@ -110,7 +141,9 @@ export class Registry {
   remove(entity) {
     const archid = this.entities[entity]
     const index = this.entities[entity + 1]
-
+    const [extractid,extract] = this.table.extract(archid,index)
+    
+    this.callRemoveComponentHook(extract,extractid,entity)
     this.table.remove(archid, index)
 
     //Because `Entity` is garanteed to be `ComponentId` of 0.
@@ -118,7 +151,7 @@ export class Registry {
 
     this.entities[entity] = -1
     this.entities[entity + 1] = -1
-    if (swapped)this.entities[swapped + 1] = index
+    if (swapped) this.entities[swapped + 1] = index
   }
   /**
    * @template T
