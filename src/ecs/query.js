@@ -42,10 +42,10 @@ export class Query {
    */
   get(entity) {
     const tableid = this.archmapper.get(
-      this.registry.table.entities[entity]
+      this.registry.entities[entity]
     )
     if (tableid == undefined) return null
-    const index = this.registry.table.entities[entity + 1]
+    const index = this.registry.entities[entity + 1]
     const components = new Array(this.descriptors.length)
     for (let i = 0; i < this.descriptors.length; i++) {
       components[i] = this.components[i][tableid][index]

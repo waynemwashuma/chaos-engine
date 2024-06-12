@@ -18,13 +18,17 @@ export class Registry {
    * @type {TypeStore}
    */
   _typestore = new TypeStore()
+  /**
+   * @private
+   * @type {number[]}
+   */
+  entities = []
   constructor() {
     //Because the type `Entity` is a typedef, not an actual class.
     //@tsignore
     this._typestore.set({
       name: "entity"
     })
-    this.table.types = this._typestore
   }
   /**
    * @param {any[]} components
@@ -49,9 +53,18 @@ export class Registry {
    * @returns {Entity}
    */
   create(components) {
+    const entity = this.entities.length
     const ids = this.getComponentIds(components)
+
     assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`ArchetypeTable\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
-    const entity = this.table.insert(components, ids)
+
+    ids.push(0)
+    components.push(entity)
+
+    const [id, index] = this.table.insert(components, ids)
+
+    this.entities[entity] = id
+    this.entities[entity + 1] = index
     return entity
   }
   /**
@@ -63,10 +76,20 @@ export class Registry {
    * @returns {Entity}
    */
   insert(entity, components) {
+    const archid = this.entities[entity]
+    const index1 = this.entities[entity + 1]
     const ids = this.getComponentIds(components)
-    assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`ArchetypeTable\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
-    this.table.append(entity, components, ids)
-    return entity
+    assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`Registry\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
+
+    const [idextract, extract] = this.table.extract(archid, index1)
+
+    extract.push(...components)
+    idextract.push(...ids)
+
+    const [id, index] = this.table.insert(extract, idextract)
+
+    this.entities[entity] = id
+    this.entities[entity + 1] = index
   }
   /**
    * @template {Tuple} T
@@ -85,7 +108,17 @@ export class Registry {
    * @param {Entity} entity The entity to remove
    */
   remove(entity) {
-    this.table.remove(entity)
+    const archid = this.entities[entity]
+    const index = this.entities[entity + 1]
+
+    this.table.remove(archid, index)
+
+    //Because `Entity` is garanteed to be `ComponentId` of 0.
+    const swapped = this.table.get(archid, index, 0)
+
+    this.entities[entity] = -1
+    this.entities[entity + 1] = -1
+    if (swapped)this.entities[swapped + 1] = index
   }
   /**
    * @template T
@@ -94,9 +127,11 @@ export class Registry {
    * @returns {T}
    */
   get(entity, compName) {
+    const archid = this.entities[entity]
+    const index = this.entities[entity + 1]
     const id = this._typestore.getId(compName)
     assert(id, `The component ${compName} is not registered into the \`Registry\`.Use \`Registry.registerType()\` to register it.`)
-    return this.table.get(entity, compNames)
+    return this.table.get(archid, index, compNames)
   }
   /**
    * @template T
