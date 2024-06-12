@@ -31,9 +31,15 @@ export class ComponentInfo {
   }
   /**
    * @returns {ComponentHooks}
-  */
-  getHooks(){
+   */
+  getHooks() {
     return this.hooks
+  }
+  /**
+   * @param {ComponentHooks} hooks
+   */
+  setHooks(hooks) {
+    this.hooks = hooks
   }
 }
 
