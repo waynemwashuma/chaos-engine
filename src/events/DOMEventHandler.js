@@ -17,6 +17,16 @@ export class DOMEventHandler {
    */
   _evHandlers = {}
   /**
+   * @type {HTMLElement}
+  */
+  target
+  /**
+   * @param {HTMLElement} target
+  */
+  constructor(target = document.body){
+    this.target = target
+  }
+  /**
    * Adds an eventlistener.
    * 
    * @param {keyof DocumentEventMap} e Name of the DOMEvent.
@@ -32,7 +42,7 @@ export class DOMEventHandler {
         handlers[i](event)
       }
     }
-    document.addEventListener(e, listener)
+    this.target.addEventListener(e, listener)
     this._evHandlers[e] = listener
   }
   /**
