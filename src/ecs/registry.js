@@ -212,6 +212,15 @@ export class Registry {
     this.typestore.set(type)
   }
   /**
+   * @param {string} componentname
+   * @param {ComponentHooks} hooks
+  */
+  setComponentHooks(componentname,hooks){
+    const info = this.typestore.get(componentname)
+    assert(info,`The component "${componentname}" has not been registered.Use \`Registry.registerType()\` to add it.`)
+    info.setHooks(hooks)
+  }
+  /**
    * This removes all of the entities and components from the manager
    */
   clear() {
