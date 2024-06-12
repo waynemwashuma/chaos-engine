@@ -12,12 +12,12 @@ export class BoundingCircle {
   r = 0
   /**
    * 
-   * @type {Vector_like}
+   * @type {Vector2}
    */
   pos = { x: 0, y: 0 }
   /**
    * @param {number} [r]
-   * @param {Vector_like} [position]
+   * @param {Vector2} [position]
    */
   constructor(position = {x:0,y:0},r = 0) {
     this.r = r

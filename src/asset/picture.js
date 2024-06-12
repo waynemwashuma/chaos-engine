@@ -7,12 +7,12 @@ export class Picture {
    */
   raw
   /**
-   * @type {Vector_like}
+   * @type {Vector2}
    */
   dimensions
   /**
    * @param {ArrayBuffer} buffer
-   * @param {Vector_like} dimensions
+   * @param {Vector2} dimensions
    */
   constructor(buffer, dimensions) {
     this.raw = buffer
