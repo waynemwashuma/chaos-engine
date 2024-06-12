@@ -77,3 +77,7 @@ export function mixin(from, to, props = []) {
     to[name] = from[name]
   }
 }
+/**
+ * @param {any[]} _args
+*/
+export function noop(..._args){}
