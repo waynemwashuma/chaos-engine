@@ -113,7 +113,7 @@ export class Registry {
     this.callAddComponentHook(components, ids, entity)
 
     const [idextract, extract] = this.table.extract(archid, index1)
-
+    this.table.remove(archid,index1)
     extract.push(...components)
     idextract.push(...ids)
 
