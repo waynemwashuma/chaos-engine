@@ -286,19 +286,19 @@ export class Vector2 {
     return this
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    */
   static magnitudeSquared(v) {
     return v.y ** 2 + v.x ** 2
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    */
   static magnitude(v) {
     return Math.sqrt(Vector2.magnitudeSquared(v));
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    * @param {number} length
    */
   static setMagnitude(v, length, out = new Vector2()) {
@@ -307,8 +307,8 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    */
   static distanceTo(v1, v2) {
     obj.x = v1.x - v2.x
@@ -318,8 +318,8 @@ export class Vector2 {
   /**
    * Calculates length squared of this vector to another vector
    * 
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    */
   static distanceToSquared(v1, v2) {
     obj.x = v1.x - v2.x
@@ -327,9 +327,9 @@ export class Vector2 {
     return Vector2.magnitudeSquared(obj)
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
-   * @param {Vector_like} [out]
+   * @param {Vector2} v1
+   * @param {Vector2} v2
+   * @param {Vector2} [out]
    */
   static add(v1, v2, out = new Vector2()) {
     out.x = v1.x + v2.x
@@ -337,9 +337,9 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
+   * @param {Vector2} v1
    * @param {number} n
-   * @param {Vector_like} [out]
+   * @param {Vector2} [out]
    */
   static addScalar(v1, n, out = new Vector2()) {
     out.x = v1.x + n
@@ -347,9 +347,9 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
-   * @param {Vector_like} [out]
+   * @param {Vector2} v1
+   * @param {Vector2} v2
+   * @param {Vector2} [out]
    */
   static sub(v1, v2, out = new Vector2()) {
     out.x = v1.x - v2.x
@@ -357,9 +357,9 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
+   * @param {Vector2} v1
    * @param {number} n
-   * @param {Vector_like} [out]
+   * @param {Vector2} [out]
    */
   static subScalar(v1, n, out = new Vector2()) {
     out.x = v1.x - n
@@ -367,9 +367,9 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
-   * @param {Vector_like} [out]
+   * @param {Vector2} v1
+   * @param {Vector2} v2
+   * @param {Vector2} [out]
    */
   static multiply(v1, v2, out = new Vector2()) {
     out.x = v1.x * v2.x
@@ -377,9 +377,9 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
+   * @param {Vector2} v1
    * @param {number} n
-   * @param {Vector_like} [out]
+   * @param {Vector2} [out]
    */
   static multiplyScalar(v1, n, out = new Vector2()) {
     out.x = v1.x * n
@@ -387,9 +387,9 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
-   * @param {Vector_like} [out]
+   * @param {Vector2} v1
+   * @param {Vector2} v2
+   * @param {Vector2} [out]
    */
   static divide(v1, v2, out = new Vector2()) {
     out.x = v1.x / v2.x
@@ -397,31 +397,31 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
+   * @param {Vector2} v1
    * @param {number} n
-   * @param {Vector_like} [out]
+   * @param {Vector2} [out]
    */
   static divideScalar(v1, n, out = new Vector2()) {
     return Vector2.multiplyScalar(v1, 1 / n, out)
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    */
   static dot(v1, v2) {
     return v1.x * v2.x + v1.y * v2.y
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    */
   static cross(v1, v2) {
     return v1.x * v2.y - v1.y * v2.x
   }
   /**
-   * @param {Vector_like} v1
+   * @param {Vector2} v1
    * @param {number} n
-   * @param {Vector_like} out
+   * @param {Vector2} out
    */
   static crossScalar(v1, n, out = new Vector2()) {
     out.x = v1.y * -n
@@ -429,8 +429,8 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v
-   * @param {Vector_like} [out=new Vector2()] 
+   * @param {Vector2} v
+   * @param {Vector2} [out=new Vector2()] 
    */
   static normalize(v, out = new Vector2()) {
     const length = Vector2.magnitude(v)
@@ -440,15 +440,15 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    */
   static equal(v1, v2) {
     return v1.x === v2.x && v1.y === v2.y
   }
   /**
-   * @param {Vector_like} v1
-   * @param {Vector_like} v2
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    */
   static absEqual(v1, v2) {
     return (
@@ -457,31 +457,31 @@ export class Vector2 {
     )
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    */
   static equalsZero(v) {
     return v.x === 0 && v.y === 0
   }
   /**
-   * @param {Vector_like} v
-   * @param {Vector_like} out
+   * @param {Vector2} v
+   * @param {Vector2} out
    */
   static normal(v, out = new Vector2()) {
     return Vector2.set(out, -v.y, v.x);
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    * @param {number} angle
-   * @param {Vector_like} out
+   * @param {Vector2} out
    */
   static rotate(v, angle, out = new Vector2()) {
     return Vector2.rotateFast(v, Math.cos(angle), Math.sin(angle), out)
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    * @param {number} cos
    * @param {number} sin
-   * @param {Vector_like} out
+   * @param {Vector2} out
    */
   static rotateFast(v, cos, sin, out = new Vector2()) {
     const x = v.x
@@ -490,8 +490,8 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v
-   * @param {Vector_like} [out=new Vector2()] 
+   * @param {Vector2} v
+   * @param {Vector2} [out=new Vector2()] 
    */
   static copy(v, out = new Vector2()) {
     out.x = v.x
@@ -499,7 +499,7 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    * @param {number} x
    * @param {number} y
    */
@@ -509,16 +509,16 @@ export class Vector2 {
     return v
   }
   /**
-   * @param {Vector_like} v
-   * @param {Vector_like} [out=new Vector2()] 
+   * @param {Vector2} v
+   * @param {Vector2} [out=new Vector2()] 
    */
   static reverse(v, out = new Vector2()) {
     return Vector2.multiplyScalar(v, -1, out)
   }
   /**
-   * @param {Vector_like} v
-   * @param {Vector_like} normal
-   * @param {Vector_like} [out]
+   * @param {Vector2} v
+   * @param {Vector2} normal
+   * @param {Vector2} [out]
    */
   static reflect(v, normal, out = new Vector2()) {
     const multiplier = Vector2.dot(v, normal) * 2
@@ -528,10 +528,10 @@ export class Vector2 {
     return out
   }
   /**
-   * @param {Vector_like} v
+   * @param {Vector2} v
    * @param {number} min
    * @param {number} max
-   * @param {Vector_like} out
+   * @param {Vector2} out
    */
   static clampMagnitude(v, min, max, out) {
     if (Vector2.equalsZero(v)) return Vector2.copy(v, out)

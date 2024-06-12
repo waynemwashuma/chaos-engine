@@ -9,3 +9,7 @@
 /**
  * @typedef {string} ComponentName
  */
+ 
+ /**
+ * @typedef {number} ArchetypeId
+ */

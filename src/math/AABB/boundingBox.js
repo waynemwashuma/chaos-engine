@@ -9,13 +9,13 @@ export class BoundingBox {
   /**
    * The upper limit of the bounding box
    * 
-   * @type {Vector_like}
+   * @type {Vector2}
    */
   max
   /**
    * The lower limit of the bounding box
    * 
-   * @type {Vector_like}
+   * @type {Vector2}
    */
   min
   /**
