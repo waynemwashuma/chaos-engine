@@ -1,4 +1,4 @@
-import { Command } from '../../command/command.js';
+import { Command } from './command.js';
 
 export class SpawnCommand extends Command {
   entity = 0
