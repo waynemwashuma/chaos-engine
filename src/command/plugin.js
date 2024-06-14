@@ -1,7 +1,8 @@
-export class CommandQueue extends Array {}
+import { CommandQueue } from "./resources/index.js"
+
 export class CommandsPlugin {
   register(manager) {
-    manager.setResource( new CommandQueue())
+    manager.setResource(new CommandQueue())
     manager.registerSystem(executeCommands)
     manager.registerSystem(clearCommandQueue)
   }
@@ -17,6 +18,6 @@ function executeCommands(manager) {
 
 function clearCommandQueue(manager) {
   const queue = manager.getResource("commandqueue")
-  
+
   queue.length = 0
 }
