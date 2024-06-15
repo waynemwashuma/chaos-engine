@@ -88,10 +88,10 @@ export class Registry {
 
     ids.push(0)
     components.push(entity)
-    this.callAddComponentHook(components, ids, entity)
 
     const [id, index] = this.table.insert(components, ids)
 
+    this.callAddComponentHook(components, ids, entity)
     this.entities[entity] = id
     this.entities[entity + 1] = index
     return entity
@@ -110,17 +110,18 @@ export class Registry {
     const ids = this.getComponentIds(components)
     assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`Registry\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
 
-    this.callAddComponentHook(components, ids, entity)
-
     const [idextract, extract] = this.table.extract(archid, index1)
-    this.table.remove(archid,index1)
+    this.table.remove(archid, index1)
     extract.push(...components)
     idextract.push(...ids)
 
     const [id, index] = this.table.insert(extract, idextract)
+    const swapped = this.table.get(archid, index1, 0)
 
+    this.callAddComponentHook(components, ids, entity)
     this.entities[entity] = id
     this.entities[entity + 1] = index
+    if (swapped) this.entities[swapped + 1] = index1
   }
   /**
    * @template {Tuple} T
@@ -141,9 +142,9 @@ export class Registry {
   remove(entity) {
     const archid = this.entities[entity]
     const index = this.entities[entity + 1]
-    const [extractid,extract] = this.table.extract(archid,index)
-    
-    this.callRemoveComponentHook(extract,extractid,entity)
+    const [extractid, extract] = this.table.extract(archid, index)
+
+    this.callRemoveComponentHook(extract, extractid, entity)
     this.table.remove(archid, index)
 
     //Because `Entity` is garanteed to be `ComponentId` of 0.
@@ -214,10 +215,10 @@ export class Registry {
   /**
    * @param {string} componentname
    * @param {ComponentHooks} hooks
-  */
-  setComponentHooks(componentname,hooks){
+   */
+  setComponentHooks(componentname, hooks) {
     const info = this.typestore.get(componentname)
-    assert(info,`The component "${componentname}" has not been registered.Use \`Registry.registerType()\` to add it.`)
+    assert(info, `The component "${componentname}" has not been registered.Use \`Registry.registerType()\` to add it.`)
     info.setHooks(hooks)
   }
   /**
