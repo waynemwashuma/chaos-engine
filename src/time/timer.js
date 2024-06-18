@@ -20,6 +20,15 @@ export class Timer {
     this.mode = mode
   }
   /**
+   * @param {number} dt
+   */
+  update(dt){
+    Timer.update(this,dt)
+  }
+  reset(){
+    Timer.reset(this)
+  }
+  /**
    * @param {Timer} timer
    * @param {number} dt
    */
