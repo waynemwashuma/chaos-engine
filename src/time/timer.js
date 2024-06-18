@@ -32,6 +32,13 @@ export class Timer {
         timer.elapsed = 0
     }
   }
+  /**
+   * @param {Timer} timer
+   */
+  static reset(timer){
+    timer.elapsed = 0
+    timer.finished = false
+  }
 }
 /**
  * @readonly
