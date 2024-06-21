@@ -1,8 +1,10 @@
 export class Command {
-  type = "command"
-  constructor(value) {
-    this.arguments = value
-  }
-  execute() {}
-  undo() {}
+  /**
+   * @param {Registry} registry
+   */
+  execute(registry) {}
+  /**
+   * @param {Registry} registry
+   */
+  undo(registry) {}
 }
