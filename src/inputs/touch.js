@@ -142,5 +142,4 @@ function touchcancel(e) {
     this.list[id] = null
   }
 
-  console.log(e.changedTouches)
 }
