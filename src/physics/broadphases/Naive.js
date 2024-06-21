@@ -1,7 +1,7 @@
-import { BoundingBox,boundsColliding } from "../../math/index.js"
+import { BoundingBox, boundsColliding } from "../../math/index.js"
 import { deprecate } from "../../logger/index.js"
 
-export class CollisionPairs extends Array { }
+export class CollisionPairs extends Array {}
 /**
  * Most basic broadphase.Should be used when number of bodies are few(i.e less than 100)
  */
@@ -22,9 +22,8 @@ export class NaiveBroadphase2D {
    * @param {Entity[]} target Empty array to store results.
    * @returns {Entity[]}
    */
-  query(bound,target) {
-    deprecate("NaiveBroadphase2D().query()","NaiveBroadphase2D.query()")
-    NaiveBroadphase2D.query(this,bounds,target)
+  query(bound, target) {
+    NaiveBroadphase2D.query(this, bounds, target)
   }
   /**
    * @inheritdoc
@@ -33,9 +32,9 @@ export class NaiveBroadphase2D {
    * @param {Entity[]} target Empty array to store results.
    * @returns {Entity[]}
    */
-  static query(broadphase,bound,target = []) {
+  static query(broadphase, bound, target = []) {
     for (let i = 0; i < this.entities.length; i++)
-      if (boundsColliding(bound,this.bounds[i]))
+      if (boundsColliding(bound, this.bounds[i]))
         target.push(this.entities[i])
     return target
   }
@@ -46,18 +45,20 @@ export class NaiveBroadphase2D {
  */
 export class NaiveBroadphase2DPlugin {
   register(manager) {
-    manager.setResource(new CollisionPairs())
-    manager.setResource(new NaiveBroadphase2D())
-    manager.registerSystem(getCollisionPairs)
+    manager
+      .registerType(BoundingBox)
+      .setResource(new CollisionPairs())
+      .setResource(new NaiveBroadphase2D())
+      .registerSystem(getCollisionPairs)
   }
 }
 
 function getCollisionPairs(manager) {
   const broadphase = manager.getResource("naivebroadphase2d")
   const pairs = manager.getResource("collisionpairs")
-  const query = manager.query(["entity","boundingbox"])
-  const entities = query.raw()[0].reduce((a,b) => a.concat(b),[])
-  const bounds = query.raw()[1].reduce((a,b) => a.concat(b),[])
+  const query = manager.query(["entity", "boundingbox"])
+  const entities = query.raw()[0].reduce((a, b) => a.concat(b), [])
+  const bounds = query.raw()[1].reduce((a, b) => a.concat(b), [])
 
   broadphase.entities = entities
   broadphase.bounds = bounds
@@ -65,7 +66,7 @@ function getCollisionPairs(manager) {
 
   for (let i = 0; i < entities.length; i++) {
     for (let j = i + 1; j < entities.length; j++) {
-      if (!boundsColliding(bounds[i],bounds[j]))
+      if (!boundsColliding(bounds[i], bounds[j]))
         continue
       pairs.push({
         entityA: entities[i],
@@ -81,6 +82,6 @@ function getCollisionPairs(manager) {
 export class NaiveBroadphase extends NaiveBroadphase2D {
   constructor() {
     super()
-    deprecate("NaiveBroadphase()","NaiveBroadphase2D()")
+    deprecate("NaiveBroadphase()", "NaiveBroadphase2D()")
   }
 }

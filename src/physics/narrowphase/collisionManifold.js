@@ -1,5 +1,4 @@
-import { Vector2, Angle, clamp } from "../../math/index.js"
-import { Body2D } from "../bodies/index.js"
+import { Vector2, Angle, clamp, sq } from "../../math/index.js"
 import { Settings } from "../settings.js"
 /**
  */
@@ -75,7 +74,11 @@ export class CollisionManifold {
   /**
    * @type {number[]}
    */
-  effectiveMass = [0, 0]
+  effectiveMassN = [0, 0]
+  /**
+   * @type {number}
+   */
+  effectiveMassT = [0, 0]
   /**
    * @type {number[]}
    */
@@ -148,8 +151,8 @@ export class CollisionManifold {
    * @param {CollisionManifold} manifold
    * @param {Movable} movableA
    * @param {Movable} movableB
-   * @param {Vector_like} positionA
-   * @param {Vector_like} positionB
+   * @param {Vector2} positionA
+   * @param {Vector2} positionB
    * @param {number} inv_dt
    */
   static prepare(
@@ -177,32 +180,37 @@ export class CollisionManifold {
       const vb = Vector2.crossScalar(ca2, rotationB.value)
       Vector2.add(vb, velocityB, vb)
       const relativeVelocity = Vector2.sub(vb, va, vb)
+      const normalVelocity = Vector2.dot(axis, relativeVelocity)
 
-      manifold.nbias[i] = 0.0;
       manifold.nJacobian[i].set(
         axis,
         Vector2.reverse(axis),
         Vector2.cross(ca1, axis),
         -Vector2.cross(ca2, axis)
-      );
+      )
 
-      //manifold.contactData.tangent.multiply(-Math.sign(manifold.contactData.tangent.dot(relativeVelocity)))
       manifold.tJacobian[i].set(
         tangent,
         Vector2.reverse(tangent),
         Vector2.cross(ca1, tangent),
         -Vector2.cross(ca2, tangent)
-      );
-      const normalVelocity = Vector2.dot(axis, relativeVelocity);
+      )
 
-      manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0);
-      manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity, 0.0);
-      const k =
+      manifold.nbias[i] = -(Settings.posDampen * inv_dt) * Math.max(overlap - Settings.penetrationSlop, 0.0)
+      manifold.nbias[i] += (manifold.restitution) * Math.min(normalVelocity, 0.0)
+      const kn =
         invmassA +
         invmassB +
         manifold.nJacobian[i].wa * invinertiaA * manifold.nJacobian[i].wa +
         manifold.nJacobian[i].wb * invinertiaB * manifold.nJacobian[i].wb;
-      manifold.effectiveMass[i] = k > 0.0 ? 1.0 / k : 0.0;
+      const kt =
+        invmassA +
+        invmassB +
+        manifold.tJacobian[i].wa * invinertiaA * manifold.tJacobian[i].wa +
+        manifold.tJacobian[i].wb * invinertiaB * manifold.tJacobian[i].wb;
+
+      manifold.effectiveMassN[i] = kn > 0.0 ? 1.0 / kn : 0.0;
+      manifold.effectiveMassT[i] = kt > 0.0 ? 1.0 / kt : 0.0;
     }
   }
   /**
@@ -238,29 +246,16 @@ export class CollisionManifold {
         manifold.tJacobian[i].wa * rotationA.value +
         tvbDot +
         manifold.tJacobian[i].wb * rotationB.value;
-      let nLambda = manifold.effectiveMass[i] * -(jv + manifold.nbias[i]);
-      let tLambda = manifold.effectiveMass[i] * -(jt);
+      let nLambda = manifold.effectiveMassN[i] * -(jv + manifold.nbias[i]);
+      let tLambda = manifold.effectiveMassT[i] * -(jt);
       const oldImpulse = manifold.impulse[i]
       const oldtImpulse = manifold.tImpulse[i]
-      if (Settings.impulseAccumulation) {
-        manifold.impulse[i] = Math.max(0.0, manifold.impulse[i] + nLambda);
-        manifold.tImpulse[i] = Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
-          tLambda :
-          tLambda * manifold.kineticFriction
-        manifold.nLambda[i] = manifold.impulse[i] - oldImpulse
-        manifold.tLambda[i] = manifold.tImpulse[i] - oldtImpulse
-      }
-      else {
-        manifold.impulse[i] = Math.max(0.0, nLambda);
-        const maxfriction = manifold.impulse[i] * manifold.kineticFriction
-        manifold.tImpulse[i] = clamp(tLambda, -maxfriction, maxfriction) //Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction ?
-        //tLambda :
-        //-manifold.impulse[i] * manifold.kineticFriction
-        manifold.nLambda[i] = manifold.impulse[i]
-        manifold.tLambda[i] = manifold.tImpulse[i]
-        //console.log(Math.abs(tLambda) <= manifold.impulse[i] * manifold.staticFriction)
-        //if (Math.abs(manifold.tImpulse[i]) > 3000) throw console.log(manifold, jt)
-      }
+
+      manifold.impulse[i] = Math.max(0.0, nLambda);
+      const maxfriction = manifold.impulse[i] * manifold.kineticFriction
+      manifold.tImpulse[i] = clamp(tLambda, -maxfriction, maxfriction)
+      manifold.nLambda[i] = manifold.impulse[i]
+      manifold.tLambda[i] = manifold.tImpulse[i]
     }
     for (let i = 0; i < manifold.contactData.contactNo; i++) {
 
@@ -276,7 +271,10 @@ export class CollisionManifold {
         invinertiaB,
         manifold.nLambda[i]
       )
-      if (manifold.nLambda[i] <= 0) continue
+      if (manifold.nLambda[i] <= 0) {
+        manifold.tLambda[i] = 0
+        continue
+      }
       CollisionManifold.applyImpulse(
         manifold.tJacobian[i],
         manifold.velocityA,
@@ -288,7 +286,82 @@ export class CollisionManifold {
         invinertiaA,
         invinertiaB,
         manifold.tLambda[i]
-      ) /***/
+      )
+    }
+  }
+  /**
+   * @param {CollisionManifold} manifold
+   */
+  static solveSimple(manifold, inv_dt) {
+
+    const normal = manifold.contactData.axis
+    const overlap = manifold.contactData.overlap
+    const penetration = (overlap + Settings.penetrationSlop) * inv_dt * Settings.posDampen
+    for (let i = 0; i < manifold.contactData.contactNo; i++) {
+      const armA = Vector2.sub(
+        manifold.contactData.contactPoints[i],
+        manifold.positionA
+      )
+      const armB = Vector2.sub(
+        manifold.contactData.contactPoints[i],
+        manifold.positionB
+      )
+
+      const ra = Vector2.crossScalar(
+        armA,
+        manifold.rotationA.value
+      )
+      const rb = Vector2.crossScalar(
+        armB,
+        manifold.rotationB.value
+      )
+      const va = Vector2.add(ra, manifold.velocityA)
+      const vb = Vector2.add(rb, manifold.velocityB)
+
+      const rv = Vector2.sub(vb, va)
+      const nv = Vector2.dot(rv, normal) 
+      const kn = 1 / (
+        manifold.invmassA +
+        manifold.invmassB +
+        sq(Vector2.cross(armA, normal)) * manifold.invinertiaA +
+        sq(Vector2.cross(armB, normal)) * manifold.invinertiaB
+      )
+      const j = (nv + penetration) * kn * ( manifold.restitution)
+      
+      manifold.impulse[i] = Math.max(j, 0.0)
+    }
+  }
+  /**
+   * @param {CollisionManifold} manifold
+   */
+  static applyImpulseSimple(manifold) {
+    const normal = manifold.contactData.axis
+    for (let i = 0; i < manifold.contactData.contactNo; i++) {
+      const armA = Vector2.sub(
+        manifold.contactData.contactPoints[i],
+        manifold.positionA
+      )
+      const armB = Vector2.sub(
+        manifold.contactData.contactPoints[i],
+        manifold.positionB
+      )
+      const jn = Vector2.multiplyScalar(normal, manifold.impulse[i])
+      applyImpulse(
+        manifold.velocityA,
+        manifold.rotationA,
+        armA,
+        jn,
+        manifold.invmassA,
+        manifold.invinertiaA
+      )
+      applyImpulse(
+        manifold.velocityB,
+        manifold.rotationB,
+        armB,
+        jn,
+        -manifold.invmassB,
+        -manifold.invinertiaB
+      )
     }
   }
 }
@@ -336,8 +409,8 @@ class Jacobian {
    */
   wb = 0
   /**
-   * @param {Vector_like} [va]
-   * @param {Vector_like} [vb]
+   * @param {Vector2} [va]
+   * @param {Vector2} [vb]
    * @param {number} [wa]
    * @param {number} [wb]
    */
@@ -345,8 +418,8 @@ class Jacobian {
     this.set(va, vb, wa, wb)
   }
   /**
-   * @param {Vector_like} [va]
-   * @param {Vector_like} [vb]
+   * @param {Vector2} [va]
+   * @param {Vector2} [vb]
    * @param {number} [wa]
    * @param {number } [wb]
    */
@@ -356,4 +429,18 @@ class Jacobian {
     if (wa) this.wa = wa
     if (wb) this.wb = wb
   }
+}
+
+function applyImpulse(velocity, rotation, arm, impulse, invMass, invInertia) {
+  applyVelocityImpulse(velocity, impulse, invMass)
+  applyAngularImpulse(rotation, arm, impulse, invInertia)
+}
+
+function applyVelocityImpulse(velocity, impulse, invMass) {
+  const jn = Vector2.multiplyScalar(impulse, invMass)
+  Vector2.add(velocity, jn, velocity)
+}
+
+function applyAngularImpulse(angle, arm, impulse, invInertia) {
+  angle.value += Vector2.cross(arm, impulse) * invInertia
 }

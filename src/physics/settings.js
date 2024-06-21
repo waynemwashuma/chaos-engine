@@ -18,23 +18,16 @@ export const Settings = {
   posDampen: 0.3,
   linearDamping: 0.001,
   angularDamping: 0.001,
-  velocitySolverIterations: 10,
+  velocitySolverIterations: 1,
   fixedFrameRate: 1 / 60,
-  penetrationSlop: 0.1,
-  positionCorrection: true,
-  warmStarting: false,
-  impulseAccumulation: false,
+  penetrationSlop: 0.01,
   separationTolerance: 0.1,
 
   //For all bodies
   type: BodyType.DYNAMIC,
   mass: 1,
-  restitution: 0.6,
+  restitution: 1,//0.6,
   staticFriction: 1,//0.4,
   kineticFriction: 0.5,//0.2,
   boundPadding: 0,
-  allowSleep: false,
-  aabbDetectionOnly: false,
-  collisionResponse: true,
-  autoUpdateBound: true
 }

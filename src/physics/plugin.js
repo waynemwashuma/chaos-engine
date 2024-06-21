@@ -1,13 +1,11 @@
 import { NaiveBroadphase2DPlugin } from "./broadphases/index.js"
 import { SATNarrowphase2DPlugin } from "./narrowphase/index.js"
 import { Vector2 } from "../math/index.js"
-import { Shape2D } from "./shapes/index.js"
 import { Settings } from './settings.js';
 import { CollisionManifold } from './narrowphase/index.js';
 import { Intergrator2DPlugin } from "../intergrator/index.js"
-import { Manager } from "../ecs/index.js";
-
-export class Gravity extends Vector2 { }
+import { Gravity } from "./resources/index.js"
+import { Shape2D, PhysicsProperties, RigidBody, SoftBody } from "./components/index.js"
 
 export class Physics2DPlugin {
   /**
@@ -18,19 +16,25 @@ export class Physics2DPlugin {
     this.enableGravity = options.enableGravity ?? true
     this.broadphase = options.broadphase || new NaiveBroadphase2DPlugin()
     this.narrowphase = options.narrowphase || new SATNarrowphase2DPlugin()
-    this.intergrator = options.intergrator || new Intergrator2DPlugin(options.intergratorOpt)
+    this.intergrator = options.intergrator || new Intergrator2DPlugin()
     this.autoUpdateBounds = options.autoUpdateBounds ?? true
     options.profile = options.profile ?? false
     this.options = options
   }
   /**
-   * @param {Manager} manager
+   * @param {Registry} manager
    */
   register(manager) {
     const profile = this.options.profile = this.options.profile && manager.hasResource("profiler")
-    
+
+    manager
+      .registerType(Shape2D)
+      .registerType(PhysicsProperties)
+      .registerType(RigidBody)
+      .registerType(SoftBody)
+
     if (this.enableGravity) {
-      if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("gravity  "))
+      if (profile) manager.registerSystem((r) => r.getResource('profiler').start("gravity  "))
       manager.setResource(
         new Gravity(
           this.gravity.x,
@@ -38,34 +42,34 @@ export class Physics2DPlugin {
         )
       )
       manager.registerSystem(applyGravity)
-      if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("gravity"))
+      if (profile) manager.registerSystem((r) => r.getResource('profiler').end("gravity"))
     }
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("intergrator"))
-    manager.registerPlugin(this.intergrator)
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("intergrator"))
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("update_body"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("update_body"))
     manager.registerSystem(updateBodies)
     if (this.autoUpdateBounds) manager.registerSystem(updateBounds)
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("update_body"))
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("broadphase"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("update_body"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("broadphase"))
     manager.registerPlugin(this.broadphase)
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("broadphase"))
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("narrowphase"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("broadphase"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("narrowphase"))
     manager.registerPlugin(this.narrowphase)
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("narrowphase"))
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').start("collision response"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("narrowphase"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("collision response"))
     manager.registerSystem(collisionResponse)
-    if(profile)manager.registerSystem((r)=>r.getResource('profiler').end("collision response"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("collision response"))
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("intergrator"))
+    manager.registerPlugin(this.intergrator)
+    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("intergrator"))
   }
 }
+
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function applyGravity(manager) {
   const gravity = manager.getResource("gravity")
-  const query = manager.query(["acceleration2d","physicsproperties"])
-  
-  query.each(([acceleration,properties]) => {
+  const query = manager.query(["acceleration2d", "physicsproperties"])
+  query.each(([acceleration, properties]) => {
     if (properties.invmass == 0) return
     Vector2.add(
       acceleration,
@@ -75,12 +79,12 @@ export function applyGravity(manager) {
   })
 }
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function updateBodies(manager) {
-  const query = manager.query(["position2d", "orientation2d", "scale2d","shape2d"])
+  const query = manager.query(["position2d", "orientation2d", "scale2d", "shape2d"])
 
-  query.each(([position,orientation,scale,shape]) => {
+  query.each(([position, orientation, scale, shape]) => {
     Shape2D.update(
       shape,
       position,
@@ -90,8 +94,8 @@ export function updateBodies(manager) {
   })
 }
 export function updateBounds(manager) {
-  const query = manager.query(["shape2d","boundingbox"])
-  query.each(([shape,bound]) => {
+  const query = manager.query(["shape2d", "boundingbox"])
+  query.each(([shape, bound]) => {
     let minX = Number.MAX_SAFE_INTEGER,
       minY = Number.MAX_SAFE_INTEGER,
       maxX = -Number.MAX_SAFE_INTEGER,
@@ -125,11 +129,12 @@ export function updateBounds(manager) {
   })
 }
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 export function collisionResponse(manager) {
-  const dt = manager.getResource("virtualclock").delta
-  const inv_dt = dt == 0 ? 0 : 1 / dt
+  const clock = manager.getResource("virtualclock")
+  const dt = clock.delta
+  const inv_dt = 60 //clock.fps
   const contacts = manager.getResource("contacts")
   for (let i = 0; i < contacts.length; i++) {
     const {
@@ -158,10 +163,17 @@ export function collisionResponse(manager) {
   }
   for (let i = 0; i < Settings.velocitySolverIterations; i++) {
     for (let j = 0; j < contacts.length; j++) {
-      CollisionManifold.solve(
-        contacts[j]
+      CollisionManifold.solveSimple(
+        contacts[j],
+        inv_dt
       )
     }
+    /**/
+    for (let j = 0; j < contacts.length; j++) {
+      CollisionManifold.applyImpulseSimple(
+        contacts[j]
+      )
+    } /**/
   }
 }
 
