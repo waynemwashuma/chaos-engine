@@ -1,3 +1,13 @@
+import {
+  Position2DTween,
+  Orientation2DTween,
+  Scale2DTween,
+  Position3DTween,
+  Orientation3DTween,
+  Scale3DTween,
+  TweenFlip,
+  TweenRepeat
+} from "./components/index.js"
 import { throws } from "../logger/index.js"
 import { Angle, Color, Vector2, lerp } from "../math/index.js"
 
@@ -12,6 +22,16 @@ export class TweenPlugin {
    * @param {Registry} manager
    */
   register(manager) {
+    manager
+      .registerType(Position2DTween)
+      .registerType(Orientation2DTween)
+      .registerType(Scale2DTween)
+      .registerType(Position3DTween)
+      .registerType(Orientation3DTween)
+      .registerType(Scale3DTween)
+      .registerType(TweenFlip)
+      .registerType(TweenRepeat)
+
     manager.registerSystem(updatePosition2DTween)
     generateTweenedFn(manager, "position2dtween")
     manager.registerSystem(updateOrientation2DTween)
@@ -118,6 +138,7 @@ function updatePosition3DTween(manager) {
     position.z = lerp(tween.from.z, tween.to.z, t)
   })
 }
+
 function updateOrientation3DTween(manager) {
   const query = manager.query(["orientation3d", "orientation3dtween"])
 
@@ -131,6 +152,7 @@ function updateOrientation3DTween(manager) {
     orientation.w = lerp(tween.from.w, tween.to.w, t)
   })
 }
+
 function updateScale3DTween(manager) {
   const query = manager.query(["scale3d", "scale3dtween"])
 
