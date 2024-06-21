@@ -2,6 +2,7 @@ import { Viewport } from "../render/index.js"
 import { assert } from "../logger/index.js"
 import { drawImage } from "./canvas.js"
 import { MaterialType, Canvas2DMaterial } from "./components/index.js"
+import { BufferGeometry, Camera } from "../render/index.js"
 export class Canvas2DRendererPlugin {
   constructor(options = {}) {}
   /**
@@ -9,10 +10,14 @@ export class Canvas2DRendererPlugin {
    */
   register(manager) {
     const viewport = new Viewport()
-    manager.setResource(viewport)
     document.body.append(viewport.domElement)
-    manager.setResource(viewport.domElement.getContext("2d"))
-    manager.registerSystem(renderSprites)
+    manager
+      .registerType(Camera)
+      .registerType(BufferGeometry)
+      .registerType(Canvas2DMaterial)
+      .setResource(viewport)
+      .setResource(viewport.domElement.getContext("2d"))
+      .registerSystem(renderSprites)
   }
 }
 
