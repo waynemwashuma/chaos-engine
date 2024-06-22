@@ -1,6 +1,5 @@
 import {
   BoundingBox,
-  Body2D,
   Shape2D,
   createTransform2D,
   createMovable2D,
