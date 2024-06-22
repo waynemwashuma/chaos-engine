@@ -1,29 +1,33 @@
 import {
-  PhysicsProperties
+  PhysicsProperties,
+  Shape2D
 } from "../components/index.js"
-import { Shape2D } from "../shapes/index.js"
 import { Settings } from "../settings.js"
+import { createTransform2D } from "../../transform/index.js"
+import { createMovable2D } from "../../movable/index.js"
+import { BoundingBox } from "../../math/index.js"
 
-
-export function createRawRigidBody2D(
-  shape,
+export function createRigidBody2D(
+  x = 0,
+  y = 0,
+  a = 0,
   mass = 1,
   restitution = Settings.restitution,
   kineticfriction = Settings.kineticFriction,
-  layer = 0,
+  mask = 2 ** 64 - 1,
   group = 0
 ) {
-  const inertia = Shape2D.calcInertia(shape, mass)
   const properties = new PhysicsProperties()
   properties.invmass = mass === 0 ? 0 : 1 / mass
-  properties.invinertia = inertia === 0 ? 0 : 1 / inertia
   properties.group = group
-  properties.layer = layer
+  properties.mask = mask
   properties.restitution = restitution
   properties.kineticFriction = kineticfriction
   
   return [
-    properties,
-    shape
+    ...createTransform2D(x,y,a),
+    ...createMovable2D(),
+    new BoundingBox(),
+    properties
   ]
 }
