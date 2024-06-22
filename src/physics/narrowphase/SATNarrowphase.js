@@ -1,10 +1,8 @@
 import { Vector2, clamp } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { CollisionData, CollisionManifold } from "./collisionManifold.js"
-import { Shape2D } from "../shapes/index.js"
+import { Shape2D } from "../components/index.js"
 import { Settings } from "../settings.js"
-import { Manager } from "../../ecs/index.js"
-import { Body2D } from "../bodies/index.js"
 import { canCollide, shapeContains, generatePairID } from "./utils.js"
 
 const
@@ -35,7 +33,7 @@ export class SATNarrowphase2D {
  */
 export class SATNarrowphase2DPlugin {
   /**
-   * @param {Manager} manager
+   * @param {App} manager
    */
   register(manager) {
     manager.setResource(new Contacts())
@@ -46,7 +44,7 @@ export class SATNarrowphase2DPlugin {
 }
 
 /**
- * @param {Manager} manager
+ * @param {Registry} manager
  */
 function getSATContacts(manager) {
   const narrowphase = manager.getResource("satnarrowphase2d")
@@ -154,7 +152,7 @@ function shapesInBodyCollided(shapeA, shapeB, invmassA, invmassB, out) {
 /**
  * @param {Shape2D} shapeB
  * @param {Shape2D} shapeA
- * @param {Vector_like[]} axes
+ * @param {Vector2[]} axes
  * @param {CollisionData} manifold
  */
 function projectShapesToAxes(shapeA, shapeB, axes, manifold) {
@@ -212,8 +210,8 @@ function projectShapesToAxes(shapeA, shapeB, axes, manifold) {
   return manifold
 }
 /**
- * @param {Vector_like[]} vertices
- * @param {Vector_like} axis
+ * @param {Vector2[]} vertices
+ * @param {Vector2} axis
  * @param {{ min: any; max: any; }} target
  */
 function projectVerticesToAxis(vertices, axis, out) {
