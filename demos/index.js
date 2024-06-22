@@ -2,6 +2,8 @@ import * as demos from "./demo.js"
 import { materials } from "./marterial.js"
 import { box } from "./box.js"
 import { random } from "./random.js"
+import { boxheap } from "./boxheap.js"
+import { circleheap } from "./circleheap.js"
 import { stacking } from "./stacking.js"
 import { pyramid } from "./pyramid.js"
 import { circle } from "./circle.js"
@@ -35,6 +37,8 @@ demos.register("triangle", triangle)
 demos.register("stack", stacking)
 demos.register("circlestacking", circlestacking)
 demos.register("pyramid", pyramid)
+demos.register("boxheap", boxheap)
+demos.register("circleheap", circleheap)
 demos.register("random", random)
 demos.register("restitution", restitution)
 demos.register("circlerestitution", circlerestitution)
