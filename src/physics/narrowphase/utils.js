@@ -1,4 +1,4 @@
-import { Shape2D } from "../shapes/index.js"
+import { Shape2D } from "../components/index.js"
 /**
  * @param {Body2D} a
  * @param {Body2D} b
