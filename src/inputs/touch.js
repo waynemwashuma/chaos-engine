@@ -105,7 +105,7 @@ function touchstart(e) {
  * @param {TouchEvent} e
  */
 function touchmove(e) {
-  for (let i = 0; i < e.changedTouches; i++) {
+  for (let i = 0; i < e.changedTouches.length; i++) {
     const touch = e.changedTouches.item(i)
     const id = touch.identifier
     const pointer = this.list[id]
