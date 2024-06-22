@@ -1,4 +1,4 @@
-import { Body2D, Shape2D } from "../physics/index.js"
+import { Shape2D } from "../physics/index.js"
 import { Ray } from "./ray.js"
 import { Vector2 } from "../math/index.js"
 import { RayCollisionResult, RayPoint } from "./raycastresult.js"
@@ -32,7 +32,7 @@ export class Raycast2D {
   /**
    * @template T
    * @param {Ray} ray
-   * @param {Vector_like} position
+   * @param {Vector2} position
    * @param {number} radius
    * @param {RayCollisionResult<T>} results 
    */
