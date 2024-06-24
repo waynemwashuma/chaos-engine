@@ -14,6 +14,12 @@ export class SpawnCommand extends Command {
     super()
     this.entity = entity
   }
+  /**
+   * @param {any} component
+   */
+  insert(component) {
+    this.components.push(component)
+  }
   execute(registry) {
     registry.insert(this.entity, this.components)
   }
