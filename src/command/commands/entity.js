@@ -20,6 +20,15 @@ export class SpawnCommand extends Command {
   insert(component) {
     this.components.push(component)
   }
+  /**
+   * @param {any[]} components
+   */
+  insertPrefab(components) {
+    this.components.push(...components)
+  }
+  /**
+   * @param {Registry} registry
+   */
   execute(registry) {
     registry.insert(this.entity, this.components)
   }
