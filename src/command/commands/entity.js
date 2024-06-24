@@ -1,12 +1,18 @@
 import { Command } from './command.js';
 
 export class SpawnCommand extends Command {
+  /**
+   * @readonly
+   * @type {Entity}
+   */
   entity = 0
+  /**
+   * @type {Any[]}
+   */
   components = []
-  constructor(entity, components) {
+  constructor(entity) {
     super()
     this.entity = entity
-    this.components = components
   }
   execute(registry) {
     registry.insert(this.entity, this.components)
