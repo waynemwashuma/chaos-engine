@@ -17,12 +17,23 @@ export class ComponentInfo {
    */
   name
   /**
+   * @private
+   * @type {ComponentHooks}
+   */
+  hooks = new ComponentHooks()
+  /**
    * @param {ComponentId} id
    * @param {Function} creator
    */
   constructor(id, name) {
     this.id = id
     this.name = name
+  }
+  /**
+   * @returns {ComponentHooks}
+  */
+  getHooks(){
+    return this.hooks
   }
 }
 
@@ -59,7 +70,7 @@ export class TypeStore {
    */
   get(name) {
     const id = this.getId(name)
-    if(id == void 0)return undefined
+    if (id == void 0) return undefined
     return this.getById(id)
   }
   /**
