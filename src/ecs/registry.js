@@ -56,7 +56,7 @@ export class Registry {
    */
   query(compNames) {
     //TODO - Maybe cache the query?
-    const query = new Query(this,compNames)
+    const query = new Query(this, compNames)
     this._table.query(query)
     return query
   }
