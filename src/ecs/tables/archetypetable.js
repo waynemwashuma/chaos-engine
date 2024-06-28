@@ -89,7 +89,7 @@ export class ArchetypeTable {
     const archetype = this.list[id]
     const index = archetype.components.get(0).length
     for (let i = 0; i < components.length; i++) {
-      archetype.components.get(keys[i]).push(components[i])
+      archetype.components.get(keys[i])[index] = components[i]
     }
     return index
   }
