@@ -6,14 +6,14 @@ export class ComponentInfo {
   id = 0
   /**
    * @readonly
-   * @type {string}
+   * @type {ComponentName}
    */
   name
   /**
    * @param {ComponentId} id
    * @param {Function} creator
    */
-  constructor(id,name) {
+  constructor(id, name) {
     this.id = id
     this.name = name
   }
@@ -30,29 +30,41 @@ export class TypeStore {
   list = []
   /**
    * @param {Function} componentClass
+   * @return {ComponentId}
    */
   set(componentClass) {
     const id = this.list.length
     const name = componentClass.name.toLowerCase()
     this.map.set(name, id)
     this.list.push(new ComponentInfo(id, name))
-
     return id
   }
   /**
    * @param {string} name
+   * @return {boolean}
    */
-  get(name) {
-    return this.getById(this.getId(name))
+  has(name) {
+    return this.map.has(name)
   }
   /**
-   * @param {number} id
+   * @param {string} name
+   * @return {ComponentInfo | undefined}
+   */
+  get(name) {
+    const id = this.getId(name)
+    if(id == void 0)return undefined
+    return this.getById(id)
+  }
+  /**
+   * @param {ComponentId} id
+   * @return {ComponentInfo | undefined}
    */
   getById(id) {
     return this.list[id]
   }
   /**
    * @param {string} name
+   * @return {ComponentId | undefined}
    */
   getId(name) {
     return this.map.get(name)
