@@ -165,7 +165,7 @@ export class Registry {
     const index = this.entities[entity + 1]
     const id = this.typestore.getId(compName)
     assert(id, `The component ${compName} is not registered into the \`Registry\`.Use \`Registry.registerType()\` to register it.`)
-    return this.table.get(archid, index, compNames)
+    return this.table.get(archid, index, id)
   }
   /**
    * @template T
