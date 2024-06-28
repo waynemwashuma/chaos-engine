@@ -1,3 +1,10 @@
+export class ComponentHooks {
+  /**@type {ComponentHook | null}*/
+  add = null
+  /**@type {ComponentHook | null}*/
+  remove = null
+}
+
 export class ComponentInfo {
   /**
    * @readonly
