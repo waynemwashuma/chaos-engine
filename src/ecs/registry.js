@@ -1,12 +1,13 @@
 import { ArchetypeTable } from "./tables/index.js"
 import { Query } from "./query.js"
-import { TypeStore } from "./typestore.js"
+import { TypeStore, ComponentInfo } from "./typestore.js"
+import { assert } from "../logger/index.js"
 
 export class Registry {
   /**
    * @private
    */
-  _table = new ArchetypeTable()
+  table = new ArchetypeTable()
   /**
    * @private
    * @type {Record<string,any>}
@@ -17,6 +18,29 @@ export class Registry {
    * @type {TypeStore}
    */
   _typestore = new TypeStore()
+  constructor() {
+    //Because the type `Entity` is a typedef, not an actual class.
+    //@tsignore
+    this._typestore.set({
+      name: "entity"
+    })
+    this.table.types = this._typestore
+  }
+  /**
+   * @param {any[]} components
+   * @returns {ComponentId[] | null}
+   */
+  getComponentIds(components) {
+    const ids = []
+    for (let i = 0; i < components.length; i++) {
+      const name = components[i].constructor.name.toLowerCase()
+      const id = this._typestore.getId(name)
+
+      if (!id) return null
+      ids.push(id)
+    }
+    return ids
+  }
   /**
    * Adds an entity to the registry.
    * 
@@ -25,7 +49,9 @@ export class Registry {
    * @returns {Entity}
    */
   create(components) {
-    const entity = this._table.insert(components)
+    const ids = this.getComponentIds(components)
+    assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`ArchetypeTable\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
+    const entity = this.table.insert(components, ids)
     return entity
   }
   /**
@@ -37,7 +63,9 @@ export class Registry {
    * @returns {Entity}
    */
   insert(entity, components) {
-    this._table.append(entity, components)
+    const ids = this.getComponentIds(components)
+    assert(ids, `Cannot insert "${components.map(e=>"`" + e.constructor.name+ "`").join(", ")}" into \`ArchetypeTable\`.Ensure that all of them are registered properly using \`Registry.registerType()\``)
+    this.table.append(entity, components, ids)
     return entity
   }
   /**
@@ -57,17 +85,18 @@ export class Registry {
    * @param {Entity} entity The entity to remove
    */
   remove(entity) {
-    this._table.remove(entity)
+    this.table.remove(entity)
   }
   /**
    * @template T
    * @param {Entity} entity
-   * @param { string[]  } compNames
+   * @param { string  } compName
    * @returns {T}
    */
-  get(entity, ...compNames) {
-    // @ts-ignore
-    return this._table.get(entity, compNames)
+  get(entity, compName) {
+    const id = this._typestore.getId(compName)
+    assert(id, `The component ${compName} is not registered into the \`Registry\`.Use \`Registry.registerType()\` to register it.`)
+    return this.table.get(entity, compNames)
   }
   /**
    * @template T
@@ -75,9 +104,15 @@ export class Registry {
    * @returns {Query<T>}
    */
   query(compNames) {
-    //TODO - Maybe cache the query?
-    const query = new Query(this, compNames)
-    this._table.query(query)
+    const ids = []
+    for (let i = 0; i < compNames.length; i++) {
+      const name = compNames[i]
+      const id = this._typestore.getId(name)
+      assert(id !== undefined, `The component "${name}" has not been registered into the \`Registry\`.Use \`App.registerType()\` or \`Registry.registerType()\`to add it.`)
+      ids.push(id)
+    }
+    const query = new Query(this, ids)
+    this.table.query(query)
     return query
   }
   /**
@@ -104,14 +139,14 @@ export class Registry {
   }
   /**
    * @param {Function} type
-  */
-  registerType(type){
+   */
+  registerType(type) {
     this._typestore.set(type)
   }
   /**
    * This removes all of the entities and components from the manager
    */
   clear() {
-    this._table.clear()
+    this.table.clear()
   }
 }
