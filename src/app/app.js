@@ -1,4 +1,4 @@
-import { Registry, Scheduler, ImmediateExecutor, RAFExecutor } from "../ecs/index.js"
+import { Registry, Scheduler, Schedule, ExecutorKind } from "../ecs/index.js"
 import { CommandsPlugin } from "../command/index.js"
 import { assert, deprecate } from "../logger/index.js"
 const registererror = "Systems,`Plugin`s or resources should be registered or set before `App().run()`"
@@ -16,14 +16,17 @@ export class App {
   scheduler = new Scheduler()
   _initialized = false
   constructor() {
-    this.scheduler.set(
+    this.createSchedule(
       AppSchedule.Startup,
-      new ImmediateExecutor(this.registry)
+      ExecutorKind.Immediate
     )
-    this.scheduler.set(
+    this.createSchedule(
       AppSchedule.MainUpdate,
-      new RAFExecutor(this.registry)
+      ExecutorKind.Raf
     )
+  }
+  createSchedule(label, kind, time) {
+    this.scheduler.set(label, new Schedule(this.registry, kind, time))
   }
   run() {
     this.registerPlugin(new CommandsPlugin())
