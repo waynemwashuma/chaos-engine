@@ -142,8 +142,6 @@ export class ArchetypeTable {
    */
   get(id, index, compname) {
     const archetype = this.list[id]
-    console.log(id,compname,archetype.components.has(compname))
-    archetype.components.forEach(v=>console.log(v))
     if (!archetype) return null
     if (!archetype.components.has(compname)) return null
     return archetype.components.get(compname)[index]
