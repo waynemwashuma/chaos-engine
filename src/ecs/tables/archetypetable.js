@@ -176,8 +176,31 @@ export class ArchetypeTable {
     const index = this.list[archindex].insert(entity, components)
     this.entities[entity] = archindex
     this.entities[entity + 1] = index
-
+    
     return entity
+  }
+  /**
+   * @param {T} components
+   * @param {Entity} entity
+   */
+  append(entity, components) {
+    const archid = this.entities[entity]
+    const tableid = this.entities[entity + 1]
+    const extracted = this.list[archid].extract(tableid)
+    components.push(...extracted)
+    console.log(entity,extracted)
+    this.remove(entity)
+    
+    const keys = []
+    for (let i = 0; i < components.length; i++) {
+      keys.push(components[i].constructor.name.toLowerCase())
+    }
+    let archindex =
+      this._getArchetypeId(keys)
+    archindex = archindex === -1 ? this._createArchetype(keys) : archindex
+    const index = this.list[archindex].insert(entity, components)
+    this.entities[entity] = archindex
+    this.entities[entity + 1] = index
   }
   /**
    * @param {Entity} entity
