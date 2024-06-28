@@ -91,9 +91,9 @@ export class Registry {
 
     const [id, index] = this.table.insert(components, ids)
 
-    this.callAddComponentHook(components, ids, entity)
     this.entities[entity] = id
     this.entities[entity + 1] = index
+    this.callAddComponentHook(components, ids, entity)
     return entity
   }
   /**
@@ -118,10 +118,11 @@ export class Registry {
     const [id, index] = this.table.insert(extract, idextract)
     const swapped = this.table.get(archid, index1, 0)
 
-    this.callAddComponentHook(components, ids, entity)
     this.entities[entity] = id
     this.entities[entity + 1] = index
     if (swapped) this.entities[swapped + 1] = index1
+
+    this.callAddComponentHook(components, ids, entity)
   }
   /**
    * @template {Tuple} T
