@@ -69,6 +69,13 @@ export class Registry {
     return this._resources[name]
   }
   /**
+   * @param {string} name
+   * @returns {boolean}
+   */
+  hasResource(name) {
+    return !!this._resources[name]
+  }
+  /**
    * @template T
    * @param {T} resource
    */

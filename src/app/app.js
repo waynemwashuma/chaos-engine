@@ -64,6 +64,6 @@ export class App {
     return this
   }
   hasResource(resource){
-    this.registry.hasResource(resource)
+    return this.registry.hasResource(resource)
   }
 }
