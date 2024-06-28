@@ -1,5 +1,4 @@
 import { Vector2, Angle, clamp } from "../../math/index.js"
-import { Body2D } from "../bodies/index.js"
 import { Settings } from "../settings.js"
 /**
  */
