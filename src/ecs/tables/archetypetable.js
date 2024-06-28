@@ -31,6 +31,17 @@ class Archetype {
     return entities.length - 1
   }
   /**
+   * @param {Entity} entity
+   * @returns {T}
+   */
+  extract(index) {
+    const components = new Array(this.keys.length)
+    for (let i = 0; i < this.keys.length; i++) {
+      components[i] = this.components.get(this.keys[i])[index]
+    }
+    return components
+  }
+  /**
    * @param {number} index
    * @returns {Entity | undefined}
    */
