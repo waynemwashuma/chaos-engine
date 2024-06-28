@@ -9,7 +9,7 @@ export class Mouse {
    * 
    * @type {Vector2}
    */
-  velocity = new Vector2()
+  lastPosition = new Vector2()
   /**
    * Position of the mouse in current frame.
    * 
@@ -82,8 +82,8 @@ export class MousePlugin {
       }
     })
     eh.add('mousemove', e => {
-      mouse.velocity.x = e.clientX - mouse.position.x
-      mouse.velocity.y = e.clientY - mouse.position.y
+      mouse.lastPosition.x = mouse.position.x
+      mouse.lastPosition.y = mouse.position.y
       mouse.position.x = e.clientX
       mouse.position.y = e.clientY
 
@@ -92,7 +92,7 @@ export class MousePlugin {
         mouse.dragPosition.x = e.clientX;
         mouse.dragPosition.y = e.clientY
       }
-      if (dragging) {
+      if (mouse.dragging) {
         if (mouse.position.x < mouse.dragPosition.x) {
           mouse.dragBox.min.x = mouse.position.x
           mouse.dragBox.max.x = mouse.dragPosition.x
