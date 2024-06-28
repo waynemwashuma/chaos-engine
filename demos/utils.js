@@ -2,7 +2,7 @@ import {
   BoundingBox,
   Shape2D,
   PhysicsProperties,
-  createRawRigidBody2D,
+  createRigidBody2D,
   createMovable2D,
   createTransform2D
 } from "/src/index.js"
@@ -52,7 +52,7 @@ function createStaticBox(x, y, w, h) {
   const box = [
     ...createTransform2D(x, y),
     ...createMovable2D(),
-    ...createRawRigidBody2D(0, 0, 1, 1),
+    ...createRigidBody2D(0, 0, 1, 1),
     collider,
     new BoundingBox()
   ]

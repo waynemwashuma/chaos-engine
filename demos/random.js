@@ -4,7 +4,7 @@ import {
   Shape2D,
   createTransform2D,
   createMovable2D,
-  createRawRigidBody2D
+  createRigidBody2D
 } from "/src/index.js"
 import { makeContainer } from "./utils.js"
 
@@ -44,8 +44,8 @@ function randomEntities(n, width, height, manager) {
       w = rand(50, 100),
       h = rand(50, 100)
     const body = (props <= 0.5) ?
-      createRawRigidBody2D(Shape2D.rectangle(w, h)) :
-      createRawRigidBody2D(Shape2D.circle(w / 2))
+      createRigidBody2D(Shape2D.rectangle(w, h)) :
+      createRigidBody2D(Shape2D.circle(w / 2))
     manager.create([
       ...createTransform2D(x, y),
       ...createMovable2D(),

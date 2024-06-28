@@ -3,7 +3,7 @@ import {
   Shape2D,
   createTransform2D,
   createMovable2D,
-  createRawRigidBody2D,
+  createRigidBody2D,
   SpawnCommand
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
@@ -21,7 +21,7 @@ export function box(manager) {
     .insertPrefab(
       createTransform2D(rect.width / 2, 400, Math.PI / 3.99))
     .insertPrefab(createMovable2D())
-    .insertPrefab(createRawRigidBody2D(mass, inertia))
+    .insertPrefab(createRigidBody2D(mass, inertia))
     .insert(new BoundingBox())
     .insert(collider)
     .build()

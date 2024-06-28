@@ -3,7 +3,7 @@ import {
   Shape2D,
   createTransform2D,
   createMovable2D,
-  createRawRigidBody2D
+  createRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 
@@ -15,7 +15,7 @@ export function triangle(manager) {
     ...createTransform2D(viewport.width / 2, 300),
     ...createMovable2D(),
     new BoundingBox(),
-    ...createRawRigidBody2D(Shape2D.triangle(base, (base / 2) * Math.sin(angle), angle))
+    ...createRigidBody2D(Shape2D.triangle(base, (base / 2) * Math.sin(angle), angle))
   ])
   makePlatform(
     manager,

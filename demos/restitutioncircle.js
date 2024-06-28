@@ -3,7 +3,7 @@ import {
   Shape2D,
   createTransform2D,
   createMovable2D,
-  createRawRigidBody2D
+  createRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 
@@ -26,7 +26,7 @@ function stackHorizontal(x, y, r, no, spacing, manager) {
     ...createTransform2D(x + (r + spacing) * i, y),
     ...createMovable2D(),
     new BoundingBox(),
-    ...createRawRigidBody2D(Shape2D.circle(r),1,i/no)
+    ...createRigidBody2D(Shape2D.circle(r),1,i/no)
     ])
   }
 }

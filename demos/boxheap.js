@@ -3,7 +3,7 @@ import {
   Shape2D,
   createTransform2D,
   createMovable2D,
-  createRawRigidBody2D
+  createRigidBody2D
 } from "/src/index.js"
 import { makePlatform } from "./utils.js"
 
@@ -35,7 +35,7 @@ function stack(x, y, w, h, no, spacing, manager) {
       .spawn()
       .insertPrefab(createTransform2D(x, y + (h + spacing) * i))
       .insertPrefab(createMovable2D())
-      .insertPrefab(createRawRigidBody2D())
+      .insertPrefab(createRigidBody2D())
       .insert(new BoundingBox())
   }
 }

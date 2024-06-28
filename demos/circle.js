@@ -2,7 +2,7 @@ import {
   BoundingBox,
   createTransform2D,
   createMovable2D,
-  createRawRigidBody2D,
+  createRigidBody2D,
   Shape2D
 } from  "/src/index.js"
 import {makePlatform} from "./utils.js"
@@ -14,7 +14,7 @@ export function circle(manager) {
     ...createTransform2D(viewport.width/2, 300),
     ...createMovable2D(),
     new BoundingBox(),
-    ...createRawRigidBody2D(Shape2D.circle(30))
+    ...createRigidBody2D(Shape2D.circle(30))
   ])
   makePlatform(
     manager,
