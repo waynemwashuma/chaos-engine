@@ -3,6 +3,14 @@ export class ComponentHooks {
   add = null
   /**@type {ComponentHook | null}*/
   remove = null
+  /**
+   * @param {ComponentHook} add
+   * @param {ComponentHook} remove
+   */
+  constructor(add, remove) {
+    this.add = add
+    this.remove = remove
+  }
 }
 
 export class ComponentInfo {
