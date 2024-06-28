@@ -65,13 +65,18 @@ export class App {
   /**
    * @param {Function} type
    */
-  registerType(type){
+  registerType(type) {
     this.registry.registerType(type)
+    return this
   }
   setResource(resource) {
     assert(!this._initialized, registererror)
     this.registry.setResource(resource)
     return this
+  }
+  getResource(resource) {
+    assert(!this._initialized, registererror)
+    return this.registry.getResource(resource)
   }
   hasResource(resource) {
     return this.registry.hasResource(resource)
