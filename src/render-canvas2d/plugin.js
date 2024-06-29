@@ -1,8 +1,14 @@
+import { ComponentHooks } from "../ecs/index.js"
 import { Viewport } from "../render/index.js"
 import { assert } from "../logger/index.js"
 import { drawImage } from "./canvas.js"
 import { MaterialType, Canvas2DMaterial } from "./components/index.js"
 import { BufferGeometry, Camera } from "../render/index.js"
+import {
+  buffergeometryAddHook,
+  buffergeometryRemoveHook
+} from "./hooks/index.js"
+
 export class Canvas2DRendererPlugin {
   constructor(options = {}) {}
   /**
@@ -15,6 +21,13 @@ export class Canvas2DRendererPlugin {
       .registerType(Camera)
       .registerType(BufferGeometry)
       .registerType(Canvas2DMaterial)
+      .setComponentHooks(
+        BufferGeometry,
+        new ComponentHooks(
+          buffergeometryAddHook,
+          buffergeometryRemoveHook
+        )
+      )
       .setResource(viewport)
       .setResource(viewport.domElement.getContext("2d"))
       .registerSystem(renderSprites)
