@@ -1,4 +1,5 @@
 import { boundSpheresColliding, AABBvsSphere, BoundType } from "./overlap.js"
+import { Vector2 } from "../vector2.js"
 import { deprecate } from "../../logger/index.js"
 /**
  * A circular bound that is used to contain a body so that broadphase can be used for quick collision detection.
@@ -14,14 +15,15 @@ export class BoundingCircle {
    * 
    * @type {Vector2}
    */
-  pos = { x: 0, y: 0 }
+  pos
   /**
+   * @param {number} [x]
+   * @param {number} [y]
    * @param {number} [r]
-   * @param {Vector2} [position]
    */
-  constructor(position = {x:0,y:0},r = 0) {
+  constructor(x = 0, y = 0, r = 0) {
     this.r = r
-    this.pos = position
+    this.pos = new Vector2(x, y)
   }
   /**
    * 
@@ -54,7 +56,7 @@ export class BoundingCircle {
   static translate(bound, x, y, out = new BoundingCircle()) {
     out.pos.x = bound.pos.x + x
     out.pos.y = bound.pos.y + y
-    
+
     return out
   }
   /**
