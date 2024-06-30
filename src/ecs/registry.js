@@ -31,6 +31,12 @@ export class Registry {
     })
   }
   /**
+   * @return {Readonly<number[]>}
+  */
+  getEntities(){
+    return this.entities
+  }
+  /**
    * @param {any[]} components
    * @returns {ComponentId[] | null}
    */
