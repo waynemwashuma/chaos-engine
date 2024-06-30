@@ -1,8 +1,6 @@
 import { verlet, euler } from "./intergrator.js"
 import { Vector2 } from "../math/index.js"
-
-class LinearDamping extends Number {}
-class AngularDamping extends Number {}
+import { LinearDamping, AngularDamping } from "./resources/index.js"
 
 export class Intergrator2DPlugin {
   /**
