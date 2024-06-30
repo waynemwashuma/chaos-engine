@@ -1,4 +1,5 @@
 import { AABBvsSphere, AABBColliding, BoundType } from "./overlap.js"
+import { Vector2 } from "../vector2.js"
 import { deprecate } from "../../logger/index.js"
 
 /**
@@ -25,14 +26,8 @@ export class BoundingBox {
    * @param {number} [maxY=0]
    */
   constructor(minX = 0, minY = 0, maxX = 0, maxY = 0) {
-    this.max = {
-      x: maxX,
-      y: maxY
-    }
-    this.min = {
-      x: minX,
-      y: minY
-    }
+    this.max = new Vector2(maxX, maxY)
+    this.min = new Vector2(minX, minY)
   }
   /**
    * 
@@ -55,7 +50,7 @@ export class BoundingBox {
    */
   translate(x, y) {
     deprecate("BoundingBox().translate()", "BoundingBox.translate()")
-    return BoundingBox.translate(this,x,y,this)
+    return BoundingBox.translate(this, x, y, this)
   }
   /**
    * Deep copies a bounding box to a new one.
@@ -75,17 +70,17 @@ export class BoundingBox {
    */
   copy(bounds) {
     deprecate("BoundingBox().copy()", "BoundingBox.copy()")
-    BoundingBox.copy(bounds,this)
+    BoundingBox.copy(bounds, this)
   }
   /**
    * @param {BoundingBox} bound
    */
-  static copy(bound,out = new BoundingBox()){
+  static copy(bound, out = new BoundingBox()) {
     out.min.x = bound.min.x
     out.min.y = bound.min.y
     out.max.x = bound.max.x
     out.max.y = bound.max.y
-    
+
     return out
   }
   /**
@@ -98,7 +93,7 @@ export class BoundingBox {
     out.min.y = bound.min.y + y
     out.max.x = bound.max.x + x
     out.max.y = bound.max.y + y
-    
+
     return out
   }
   /**
@@ -114,7 +109,7 @@ export class BoundingBox {
     out.max.y = bound1.max.y > bound2.max.y ? bound1.max.y : bound2.max.y
     out.min.x = bound1.min.x < bound2.min.x ? bound1.min.x : bound2.min.x
     out.min.y = bound1.min.y < bound2.min.y ? bound1.min.y : bound2.min.y
-    
+
     return out
   }
 }
