@@ -65,19 +65,6 @@ export function generateID() {
 }
 
 /**
- * Todo - Fix this function to add all props if no props param is given
- * Mixes the properties and methods required by an object from another object.
- * 
- *  @param {*} from the object constructor function to add methods from.
- * @param {*} to the object constructor function to add methods to.
- * @param {string[]} [props]
- */
-export function mixin(from, to, props = []) {
-  for (let name of props) {
-    to[name] = from[name]
-  }
-}
-/**
  * @param {any[]} _args
 */
 export function noop(..._args){}
