@@ -1,5 +1,4 @@
 import { clamp, rand } from "./math.js"
-import { deprecate } from "../logger/index.js"
 
 /**
  * A color manipulation class.
@@ -15,7 +14,6 @@ export class Color {
     this.set(r, g, b, alpha);
   }
   /**
-   * @deprecate
    * Set this color to the specified value.
    * @param {number} r - red component [0 .. 255]
    * @param {number} g - green component [0 .. 255]
@@ -24,39 +22,30 @@ export class Color {
    * @returns {Color} Reference to this object for method chaining
    */
   set(r, g, b, alpha = 1.0) {
-    deprecate("Color().set()", "Color.set()")
     return Color.set(this, r, g, b, alpha)
   }
   /**
-   * @deprecate
    * Create a new copy of this color object.
    * @returns {Color} Reference to the newly cloned object
    */
   clone() {
-    deprecate("Color().clone()", "Color.copy()")
     return Color.copy(this);
   }
   /**
-   * @deprecate
    * Copy a color object or CSS color into this one.
    * @param {Color} color
    * @returns {Color} Reference to this object for method chaining
    */
   copy(color) {
-    deprecate("Color().copy()", "Color.copy()")
-
     return Color.copy(color, this)
   }
   /**
    * Blend this color with the given one using addition.
    * 
-   * @deprecated
    * @param {Color} color
    * @returns {Color} Reference to this object for method chaining
    */
   add(color) {
-    deprecate("Color().add()", "Color.add()")
-
     this.r = clamp(this.r + color.r, 0, 255);
     this.g = clamp(this.g + color.g, 0, 255);
     this.b = clamp(this.b + color.b, 0, 255);
@@ -67,13 +56,10 @@ export class Color {
   /**
    * Darken this color value by 0..1
    * 
-   * @deprecated
    * @param {number} scale
    * @returns {Color} Reference to this object for method chaining
    */
   darken(scale) {
-    deprecate("Color().darken()", "Color.darken()")
-
     scale = clamp(scale, 0, 1);
     this.r *= scale;
     this.g *= scale;
@@ -84,13 +70,10 @@ export class Color {
   /**
    * Lighten this color value by 0..1
    * 
-   * @deprecated
    * @param {number} scale
    * @returns {Color} Reference to this object for method chaining
    */
   lighten(scale) {
-    deprecate("Color().lighten()", "Color.lighten()")
-
     scale = clamp(scale, 0, 1);
     this.r = clamp(this.r + (1 - this.r) * scale, 0, 1);
     this.g = clamp(this.g + (1 - this.g) * scale, 0, 1);
@@ -100,14 +83,11 @@ export class Color {
   }
   /**
    * Linearly interpolate between this color and the given one.
-   * @deprecated
    * @param {Color} color
    * @param {number} alpha - with alpha = 0 being this color, and alpha = 1 being the given one.
    * @returns {Color} Reference to this object for method chaining
    */
   lerp(color, alpha) {
-    deprecate("Color().lerp()", "Color.lerp()")
-
     alpha = clamp(alpha, 0, 1);
     this.r += (color.r - this.r) * alpha;
     this.g += (color.g - this.g) * alpha;
@@ -117,14 +97,11 @@ export class Color {
   }
   /**
    * Generate random r,g,b values for this color object
-   * @deprecated
    * @param {number} [min=0] - minimum value for the random range
    * @param {number} [max=255] - maxmium value for the random range
    * @returns {Color} Reference to this object for method chaining
    */
   random(min = 0, max = 255) {
-    deprecate("Color().random()", "Color.random()")
-
     if (min < 0) {
       min = 0;
     }
@@ -143,8 +120,6 @@ export class Color {
    * @param {number[]} array
    */
   toArray(array, offset = 0) {
-    deprecate("Color().toArray()")
-
     array[offset] = this.r
     array[offset + 1] = this.g
     array[offset + 2] = this.b
