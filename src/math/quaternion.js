@@ -30,11 +30,7 @@ export class Quaternion {
     return this;
   }
 
-  fromEuler(euler, update = true) {
-    const x = euler.x,
-      y = euler.y,
-      z = euler.z
-
+  fromEuler(x, y, z) {
     const c1 = Math.cos(x / 2);
     const c2 = Math.cos(y / 2);
     const c3 = Math.cos(z / 2);
