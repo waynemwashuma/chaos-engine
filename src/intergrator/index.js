@@ -1,3 +1,2 @@
-export * from "./transformComponent.js"
-export * from "./movableComponent.js"
 export * from "./plugin.js"
+export * from "./resources/index.js"
