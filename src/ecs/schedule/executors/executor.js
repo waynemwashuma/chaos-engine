@@ -1,5 +1,3 @@
-import { Schedule } from "../schedule.js"
-
 export class Executor {
   /**
    * @type {Registry}
