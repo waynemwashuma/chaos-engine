@@ -28,6 +28,17 @@ export class EntityCommands {
     this.buffered = new SpawnCommand(entity, [])
     return this
   }
+  spawnBatch(batch) {
+    const entities = []
+    for (let i = 0; i < batch.length; i++) {
+      const entity = this
+        .spawn()
+        .insertPrefab(batch[i])
+        .build()
+        entities.push(entity)
+    }
+    return entities
+  }
   build() {
     assert(this.buffered, entityerror + "`EntityCommands.build()`.")
     this.spawnqueue.add(this.buffered)
@@ -50,7 +61,7 @@ export class EntityCommands {
   }
   insertPrefab(components) {
     assert(this.buffered, entityerror + "`EntityCommands.insertPrefab()`.")
-    
+
     this.buffered.insertPrefab(components)
     return this
   }
