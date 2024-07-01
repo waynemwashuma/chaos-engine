@@ -41,13 +41,12 @@ export class EntityCommands {
   }
   build() {
     assert(this.buffered, entityerror + "`EntityCommands.build()`.")
+
+    const entity = this.buffered.entity
+
     this.spawnqueue.add(this.buffered)
     this.buffered = null
-  }
-  id() {
-    assert(this.buffered, entityerror + "`EntityCommands.id()`.")
-    const entity = this.buffered.entity
-    this.build()
+
     return entity
   }
   /**
