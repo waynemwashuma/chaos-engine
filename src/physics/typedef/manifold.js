@@ -1,5 +1,5 @@
 /**
  * @typedef CollisionPair
- * @property {Body2D} a
- * @property {Body2D} b
+ * @property {Entity} a
+ * @property {Entity} b
 */
