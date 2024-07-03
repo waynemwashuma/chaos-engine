@@ -14,8 +14,8 @@ export function createRigidBody2D(
   mass = 1,
   restitution = Settings.restitution,
   kineticfriction = Settings.kineticFriction,
-  mask = 2 ** 64 - 1,
-  group = 0
+  mask = 0xFFFFFFFFn,
+  group = 0xFFFFFFFFn
 ) {
   const properties = new PhysicsProperties()
   properties.invmass = mass === 0 ? 0 : 1 / mass
