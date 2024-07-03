@@ -23,7 +23,7 @@ export class NaiveBroadphase2D {
    * @returns {Entity[]}
    */
   query(bound, target) {
-    NaiveBroadphase2D.query(this, bound, target)
+    return NaiveBroadphase2D.query(this, bound, target)
   }
   /**
    * @inheritdoc
