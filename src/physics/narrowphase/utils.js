@@ -12,8 +12,8 @@ export function canCollide(
     !propB.invmass
   ) return false
   if (
-    (propA.group & propB.mask) &&
-    (propB.group & propA.mask)
+    !(propA.group & propB.mask) ||
+    !(propB.group & propA.mask)
   ) return false
   if (
     propA.sleep &&
