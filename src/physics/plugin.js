@@ -1,4 +1,5 @@
 import { NaiveBroadphase2DPlugin } from "./broadphases/index.js"
+import { ComponentHooks } from "../ecs/index.js"
 import { SATNarrowphase2DPlugin } from "./narrowphase/index.js"
 import { Vector2 } from "../math/index.js"
 import { Settings } from './settings.js';
@@ -6,7 +7,10 @@ import { CollisionManifold } from './narrowphase/index.js';
 import { Intergrator2DPlugin } from "../intergrator/index.js"
 import { Gravity } from "./resources/index.js"
 import { Shape2D, PhysicsProperties, RigidBody, SoftBody } from "./components/index.js"
-
+import {
+  physicspropertiesAddHook,
+  physicspropertiesRemoveHook
+} from "./hooks/index.js"
 export class Physics2DPlugin {
   /**
    * @param {Physics2DPluginOptions} options
@@ -32,7 +36,13 @@ export class Physics2DPlugin {
       .registerType(PhysicsProperties)
       .registerType(RigidBody)
       .registerType(SoftBody)
-
+      .setComponentHooks(
+        PhysicsProperties,
+        new ComponentHooks(
+          physicspropertiesAddHook,
+          physicspropertiesRemoveHook
+        )
+      )
     if (this.enableGravity) {
       if (profile) manager.registerSystem((r) => r.getResource('profiler').start("gravity  "))
       manager.setResource(
