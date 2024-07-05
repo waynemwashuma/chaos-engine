@@ -1,6 +1,7 @@
 import { ArchetypeTable } from "./tables/index.js"
 import { Query } from "./query.js"
-import { TypeStore, ComponentInfo } from "./typestore.js"
+import { TypeStore } from "./typestore.js"
+import { ComponentInfo } from "./component.js"
 import { assert } from "../logger/index.js"
 
 export class Registry {
@@ -32,8 +33,8 @@ export class Registry {
   }
   /**
    * @return {Readonly<number[]>}
-  */
-  getEntities(){
+   */
+  getEntities() {
     return this.entities
   }
   /**
