@@ -81,6 +81,19 @@ export class Registry {
     }
   }
   /**
+   * @private
+   * @param {any[]}components
+   * @param {ComponentId[]} ids
+   * @param {Entity} entity
+   */
+  callInsertComponentHook(components, ids, entity) {
+    for (let i = 0; i < ids.length; i++) {
+      const hook = this.typestore.getById(ids[i]).getHooks().insert
+      if (hook)
+        hook(components[i], entity, this)
+    }
+  }
+  /**
    * Adds an entity to the registry.
    * 
    * @template {Tuple} T
@@ -119,16 +132,17 @@ export class Registry {
 
     const [idextract, extract] = this.table.extract(archid, index1)
     this.table.remove(archid, index1)
-    extract.push(...components)
-    idextract.push(...ids)
 
-    const [id, index] = this.table.insert(extract, idextract)
+    const combined = [...components, ...extract]
+    const combinedid = [...ids, ...idextract]
+
+    const [id, index] = this.table.insert(combined, combinedid)
     const swapped = this.table.get(archid, index1, 0)
 
     this.entities[entity] = id
     this.entities[entity + 1] = index
     if (swapped) this.entities[swapped + 1] = index1
-
+    this.callInsertComponentHook(extract, idextract, entity)
     this.callAddComponentHook(components, ids, entity)
   }
   /**
