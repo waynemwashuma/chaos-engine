@@ -40,7 +40,8 @@ export class Physics2DPlugin {
         PhysicsProperties,
         new ComponentHooks(
           physicspropertiesAddHook,
-          physicspropertiesRemoveHook
+          physicspropertiesRemoveHook,
+          physicspropertiesAddHook
         )
       )
     if (this.enableGravity) {
