@@ -235,7 +235,7 @@ export class Vector2 {
    *  @returns { Vector2}
    */
   normalFast(target = new Vector2()) {
-    Vector2.set(target,-this.y, this.x)
+    Vector2.set(target, -this.y, this.x)
     return this
   }
   /**
@@ -551,7 +551,7 @@ export class Vector2 {
    * @returns {number}
    */
   static getAbsDegBtwn(v1, v2) {
-    let a = Vector2.cross(v1,v2)
+    let a = Vector2.cross(v1, v2)
     let deg = Vector2.getDegBtwn(v1, v2)
     return a < 0 ? deg : 360 - deg
   }
@@ -639,9 +639,9 @@ export class Vector2 {
     return a < 0 ? TWO_PI + a : a
   }
   /**
-   * @this {Vector2}
+   * Allows for iteration of components
    */
-  [Symbol.iterator] = function*() {
+  *[Symbol.iterator]() {
     yield this.x
     yield this.y
   }
@@ -681,3 +681,5 @@ export class Vec2 extends Vector2 {
     console.error("The class `Vec2` is depreciated since v0.4.13.Use Vector2 instead.")
   }
 }
+const a = new Vector2()
+console.log(...a)
