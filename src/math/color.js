@@ -216,4 +216,13 @@ export class Color {
 
     return out
   }
+  /**
+   * Allows for iteration of components
+   */
+  *[Symbol.iterator]() {
+    yield this.r
+    yield this.g
+    yield this.b
+    yield this.a
+  }
 }
