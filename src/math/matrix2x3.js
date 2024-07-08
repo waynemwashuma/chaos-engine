@@ -275,9 +275,9 @@ export class Matrix2x3 {
     )
   }
   /**
-   * @this {Matrix2x3}
+   * Allows iteration of components.
    */
-  [Symbol.iterator] = function*() {
+  *[Symbol.iterator]() {
     yield this.a
     yield this.b
     yield this.c
