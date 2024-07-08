@@ -56,7 +56,7 @@ export class Vector2 {
    * @returns {number}
    */
   distanceToSquared(v) {
-    return Vector2.distanceTo(this, v)
+    return Vector2.distanceToSquared(this, v)
   }
   /**
    * Adds a given vector into this 
