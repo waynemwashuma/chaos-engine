@@ -1,3 +1,4 @@
+import { AppSchedule } from "../app/index.js"
 import { verlet, euler } from "./intergrator.js"
 import { Vector2 } from "../math/index.js"
 import { LinearDamping, AngularDamping } from "./resources/index.js"
@@ -20,10 +21,10 @@ export class Intergrator2DPlugin {
   register(manager) {
     if (this.options.enableDamping) {
       manager.setResource(new LinearDamping(this.options.linearDamping))
-      manager.setResource(new AngularDamping(this.options.angularDamping))
-      manager.registerSystem(dampenVelocity)
+        .setResource(new AngularDamping(this.options.angularDamping))
+        .registerSystem(AppSchedule.Update, dampenVelocity)
     }
-    manager.registerSystem(updateTransformVerlet)
+    manager.registerSystem(AppSchedule.Update, updateTransformVerlet)
   }
 }
 /**
