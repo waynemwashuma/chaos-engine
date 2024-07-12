@@ -1,4 +1,5 @@
 import { ComponentHooks } from "../ecs/index.js"
+import { AppSchedule } from "../app/index.js"
 import { Viewport } from "../render/index.js"
 import { assert } from "../logger/index.js"
 import { drawImage } from "./canvas.js"
@@ -30,7 +31,7 @@ export class Canvas2DRendererPlugin {
       )
       .setResource(viewport)
       .setResource(viewport.domElement.getContext("2d"))
-      .registerSystem(renderSprites)
+      .registerSystem(AppSchedule.Update,renderSprites)
   }
 }
 
