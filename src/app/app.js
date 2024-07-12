@@ -8,7 +8,8 @@ const registererror = "Systems,`Plugin`s or resources should be registered or se
  * @enum {string}
  */
 export const AppSchedule = {
-  MainUpdate: "mainupdate",
+  MainUpdate:"mainupdate",
+  Update: "mainupdate",
   Startup: "startup"
 }
 export class App {
@@ -48,12 +49,16 @@ export class App {
     return this.registerPlugin(debug)
   }
   /**
-   * @deprecated
+   * @param {string} label
    * @param {SystemFunc} system
    */
-  registerSystem(system) {
-    deprecate("App().registerSystem()", "App().registerUpdateSystem()")
-    this.registerUpdateSystem(system)
+  registerSystem(label,system) {
+    const schedule = this.scheduler.get(label)
+    console.log(label)
+    assert(schedule != void 0,`The system ${system.name} cannot be added to schedule "${label}" as the schedule doesn't exist.`)
+    
+    schedule.add(system)
+    return this
   }
   registerUpdateSystem(system) {
     assert(!this._initialized, registererror)
