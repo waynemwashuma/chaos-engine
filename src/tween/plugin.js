@@ -1,3 +1,4 @@
+import { AppSchedule } from "../app/index.js"
 import {
   Position2DTween,
   Orientation2DTween,
@@ -32,17 +33,17 @@ export class TweenPlugin {
       .registerType(TweenFlip)
       .registerType(TweenRepeat)
 
-    manager.registerSystem(updatePosition2DTween)
+    manager.registerSystem(AppSchedule.Update, updatePosition2DTween)
     generateTweenedFn(manager, "position2dtween")
-    manager.registerSystem(updateOrientation2DTween)
+    manager.registerSystem(AppSchedule.Update, updateOrientation2DTween)
     generateTweenedFn(manager, "orientation2dtween")
-    manager.registerSystem(updateScale2DTween)
+    manager.registerSystem(AppSchedule.Update, updateScale2DTween)
     generateTweenedFn(manager, "scale2dtween")
-    manager.registerSystem(updatePosition3DTween)
+    manager.registerSystem(AppSchedule.Update, updatePosition3DTween)
     generateTweenedFn(manager, "position3dtween")
-    manager.registerSystem(updateOrientation3DTween)
+    manager.registerSystem(AppSchedule.Update, updateOrientation3DTween)
     generateTweenedFn(manager, "orientation3dtween")
-    manager.registerSystem(updateScale3DTween)
+    manager.registerSystem(AppSchedule.Update, updateScale3DTween)
     generateTweenedFn(manager, "scale3dtween")
   }
 }
@@ -82,9 +83,10 @@ function generateTweenedFn(manager, name) {
       tween.timeTaken = Math.min(tween.timeTaken + dt, tween.duration)
     })
   }
-  manager.registerSystem(flipTween)
-  manager.registerSystem(repeatTween)
-  manager.registerSystem(updateTimerTween)
+  manager
+    .registerSystem(AppSchedule.Update, flipTween)
+    .registerSystem(AppSchedule.Update, repeatTween)
+    .registerSystem(AppSchedule.Update, updateTimerTween)
 }
 //`updateTween<T>` where `T : Lerp` and `T => Tween<T>`.
 //`Lerp` is an interface/trait implementing the lerp method.
