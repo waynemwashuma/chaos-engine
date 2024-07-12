@@ -1,15 +1,16 @@
 import { Profiler } from "./resources/index.js"
-import { Timer,TimerMode } from "../time/index.js"
+import { Timer, TimerMode } from "../time/index.js"
+import { AppSchedule } from "../app/index.js"
 
-class ProfilerTimer extends Timer{}
+class ProfilerTimer extends Timer {}
 
 export class ProfilerPlugin {
   register(app) {
     app.setResource(new Profiler())
-    app.setResource(new ProfilerTimer(1,TimerMode.REPEAT))
+    app.setResource(new ProfilerTimer(1, TimerMode.REPEAT))
     setupProfileViewer(document.body)
-    app.registerSystem(updateProfileViewer)
-    app.registerSystem(updateProfileTimer)
+    app.registerSystem(AppSchedule.Update,updateProfileViewer)
+    app.registerSystem(AppSchedule.Update,updateProfileTimer)
   }
 }
 /**
@@ -24,17 +25,19 @@ function setupProfileViewer(parent) {
   container.style.color = "white"
   container.style.background = "black"
 }
-function updateProfileTimer(registry){
+
+function updateProfileTimer(registry) {
   const timer = registry.getResource("profilertimer")
   const clock = registry.getResource("virtualclock")
-  Timer.update(timer,clock.delta)
+  Timer.update(timer, clock.delta)
 }
+
 function updateProfileViewer(registry) {
   const profiler = registry.getResource("profiler")
   const timer = registry.getResource("profilertimer")
-  
-  if(!timer.finished)return
-  
+
+  if (!timer.finished) return
+
   const container = document.getElementById("profile-view")
   container.innerHTML = ""
   for (const [key, value] of profiler.profiles) {
