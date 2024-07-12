@@ -1,3 +1,4 @@
+import { AppSchedule } from "../app/index.js"
 import { Shape2D } from "./components/index.js"
 import { Vector2 } from "../math/index.js"
 import { circle, vertices, stroke } from "../render-canvas2d/index.js"
@@ -5,7 +6,7 @@ import { deprecate } from "../logger/index.js"
 
 const shapequery = ["shape2d"]
 const transformquery = ["position2d"]
-const velocityquery = ["position2d","velocity2d"]
+const velocityquery = ["position2d", "velocity2d"]
 const boundquery = ["boundingbox"]
 
 /**
@@ -35,14 +36,14 @@ export class Body2DDebugger {
   register(manager) {
     const { options } = this
     options.drawShape = options.drawShape ?? true
-    if (options.clearViewport) manager.registerSystem(clearViewport)
-    if (options.drawPosition) manager.registerSystem(drawPosition)
-    if (options.drawBounds) manager.registerSystem(drawBounds)
-    if (options.drawShape) manager.registerSystem(drawShapes)
-    if (options.drawCollisionArm) manager.registerSystem(drawArms)
-    if (options.drawContacts) manager.registerSystem(drawContacts)
-    if (options.drawPosition) manager.registerSystem(drawPosition)
-    if (options.drawVelocity) manager.registerSystem(drawVelocity)
+    if (options.clearViewport) manager.registerSystem(AppSchedule.Update, clearViewport)
+    if (options.drawPosition) manager.registerSystem(AppSchedule.Update, drawPosition)
+    if (options.drawBounds) manager.registerSystem(AppSchedule.Update, drawBounds)
+    if (options.drawShape) manager.registerSystem(AppSchedule.Update, drawShapes)
+    if (options.drawCollisionArm) manager.registerSystem(AppSchedule.Update, drawArms)
+    if (options.drawContacts) manager.registerSystem(AppSchedule.Update, drawContacts)
+    if (options.drawPosition) manager.registerSystem(AppSchedule.Update, drawPosition)
+    if (options.drawVelocity) manager.registerSystem(AppSchedule.Update, drawVelocity)
   }
 }
 

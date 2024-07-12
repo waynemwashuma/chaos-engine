@@ -1,3 +1,4 @@
+import { AppSchedule } from "../../app/index.js"
 import { Vector2, clamp } from "../../math/index.js"
 import { Utils } from "../../utils/index.js"
 import { CollisionData, CollisionManifold } from "./collisionManifold.js"
@@ -36,10 +37,10 @@ export class SATNarrowphase2DPlugin {
    * @param {App} manager
    */
   register(manager) {
-    manager.setResource(new Contacts())
-    manager.setResource(new SATNarrowphase2D())
-
-    manager.registerSystem(getSATContacts)
+    manager
+      .setResource(new Contacts())
+      .setResource(new SATNarrowphase2D())
+      .registerSystem(AppSchedule.Update, getSATContacts)
   }
 }
 
@@ -57,7 +58,7 @@ function getSATContacts(manager) {
     const getA = query.get(entityA)
     const getB = query.get(entityB)
     if (!getA || !getB) continue
-    const [positionA, velocityA, rotationA,shapeA, propertiesA] = getA
+    const [positionA, velocityA, rotationA, shapeA, propertiesA] = getA
     const [positionB, velocityB, rotationB, shapeB, propertiesB] = getB
     if (!canCollide(propertiesA, propertiesB))
       continue

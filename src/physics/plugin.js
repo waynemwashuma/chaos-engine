@@ -1,3 +1,4 @@
+import { AppSchedule } from "../app/index.js"
 import { NaiveBroadphase2DPlugin } from "./broadphases/index.js"
 import { ComponentHooks } from "../ecs/index.js"
 import { SATNarrowphase2DPlugin } from "./narrowphase/index.js"
@@ -45,32 +46,32 @@ export class Physics2DPlugin {
         )
       )
     if (this.enableGravity) {
-      if (profile) manager.registerSystem((r) => r.getResource('profiler').start("gravity  "))
+      if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').start("gravity  "))
       manager.setResource(
         new Gravity(
           this.gravity.x,
           this.gravity.y
         )
       )
-      manager.registerSystem(applyGravity)
-      if (profile) manager.registerSystem((r) => r.getResource('profiler').end("gravity"))
+      manager.registerSystem(AppSchedule.Update, applyGravity)
+      if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').end("gravity"))
     }
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("update_body"))
-    manager.registerSystem(updateBodies)
-    if (this.autoUpdateBounds) manager.registerSystem(updateBounds)
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("update_body"))
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("broadphase"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').start("update_body"))
+    manager.registerSystem(AppSchedule.Update, updateBodies)
+    if (this.autoUpdateBounds) manager.registerSystem(AppSchedule.Update, updateBounds)
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').end("update_body"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').start("broadphase"))
     manager.registerPlugin(this.broadphase)
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("broadphase"))
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("narrowphase"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').end("broadphase"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').start("narrowphase"))
     manager.registerPlugin(this.narrowphase)
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("narrowphase"))
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("collision response"))
-    manager.registerSystem(collisionResponse)
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("collision response"))
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').start("intergrator"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').end("narrowphase"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').start("collision response"))
+    manager.registerSystem(AppSchedule.Update, collisionResponse)
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').end("collision response"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').start("intergrator"))
     manager.registerPlugin(this.intergrator)
-    if (profile) manager.registerSystem((r) => r.getResource('profiler').end("intergrator"))
+    if (profile) manager.registerSystem(AppSchedule.Update, (r) => r.getResource('profiler').end("intergrator"))
   }
 }
 

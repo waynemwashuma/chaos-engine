@@ -1,3 +1,4 @@
+import { AppSchedule } from "../../app/index.js"
 import { BoundingBox, boundsColliding } from "../../math/index.js"
 import { deprecate } from "../../logger/index.js"
 
@@ -49,7 +50,7 @@ export class NaiveBroadphase2DPlugin {
       .registerType(BoundingBox)
       .setResource(new CollisionPairs())
       .setResource(new NaiveBroadphase2D())
-      .registerSystem(getCollisionPairs)
+      .registerSystem(AppSchedule.Update, getCollisionPairs)
   }
 }
 
