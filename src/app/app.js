@@ -54,7 +54,6 @@ export class App {
    */
   registerSystem(label,system) {
     const schedule = this.scheduler.get(label)
-    console.log(label)
     assert(schedule != void 0,`The system ${system.name} cannot be added to schedule "${label}" as the schedule doesn't exist.`)
     
     schedule.add(system)
