@@ -1,9 +1,8 @@
 import {
   BufferGeometry,
   Canvas2DMaterial,
-  initCanvas2DGeometry,
   createTransform2D
-} from "/src/index.js"
+} from "chaos-studio"
 const assets = {
   static: "./assets/warrior.png"
 }
@@ -12,6 +11,7 @@ export async function materials(manager) {
   const viewport = manager.getResource("viewport")
   const geometry = BufferGeometry.quad2D(50, 50)
   const commands = manager.getResource("entitycommands")
+  
   const img = new Image()
   const materials = [
     Canvas2DMaterial.basic(),
@@ -26,7 +26,6 @@ export async function materials(manager) {
   ]
 
   img.src = assets.static
-  initCanvas2DGeometry(geometry)
   for (let i = 0; i < materials.length; i++) {
     commands
       .spawn()

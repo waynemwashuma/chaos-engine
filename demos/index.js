@@ -11,9 +11,10 @@ import { circlestacking } from "./circlestack.js"
 import { triangle } from "./triangle.js"
 import { friction } from "./friction.js"
 import { restitution } from "./restitution.js"
+import { collisionmasks } from "./collisionmasks.js"
 import { circlerestitution } from "./restitutioncircle.js"
-import { Storage } from '../src/index.js';
-import { animation } from "./animation.js"
+import { Storage } from 'chaos-studio';
+import { easing } from "./easing.js"
 
 
 /*
@@ -34,18 +35,19 @@ demos.register("materials", materials)
 demos.register("box", box)
 demos.register("circle", circle)
 demos.register("triangle", triangle)
-demos.register("stack", stacking)
-demos.register("circlestacking", circlestacking)
 demos.register("pyramid", pyramid)
-demos.register("boxheap", boxheap)
-demos.register("circleheap", circleheap)
 demos.register("random", random)
-demos.register("restitution", restitution)
-demos.register("circlerestitution", circlerestitution)
+demos.register("box stack", stacking)
+demos.register("circle stack", circlestacking)
+demos.register("box heap", boxheap)
+demos.register("circle heap", circleheap)
+demos.register("box restitution", restitution)
+demos.register("circle restitution", circlerestitution)
 demos.register("friction", friction)
+demos.register("collision mask", collisionmasks)
 
-//Animation
-demos.register("animation", animation)
+//Tween
+demos.register("easing", easing)
 /*
 
 demos.register("constraints", constraint)

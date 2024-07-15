@@ -4,7 +4,7 @@ import {
   Trigon,
   rand,
   Raycaster
-} from "/src/index.js"
+} from "chaos-studio"
 export function raycaster(manager) {
   let world = manager.getSystem("world")
   let renderer = manager.getSystem("renderer")

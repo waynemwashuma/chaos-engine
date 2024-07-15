@@ -4,35 +4,42 @@ import {
   createTransform2D,
   createMovable2D,
   createRigidBody2D
-} from "/src/index.js"
+} from "chaos-studio"
 import { makePlatform } from "./utils.js"
 
 export function stacking(manager) {
   const viewport = manager.getResource("viewport")
+  const commands = manager.getResource("entitycommands")
+const gravity = manager.getResource("gravity")
+  commands
+    .spawn()
+    .insertPrefab(makePlatform(
+      viewport.width / 2,
+      viewport.height * 0.8,
+      viewport.width,
+      50
+    ))
+    .build()
+    
+  commands
+  .spawnBatch(stack(200, 100, 50, 50, 12, 5))
+  commands
+  .spawnBatch(stack(400, 100, 50, 50, 12, 5))
+  commands
+  .spawnBatch(stack(600, 100, 50, 50, 12, 5))
+  commands
+  .spawnBatch(stack(800, 100, 50, 50, 12, 5))
   
-  makePlatform(
-    manager,
-    viewport.width / 2,
-    viewport.height * 0.8,
-    viewport.width,
-    50
-  )
-  stack(200, 100, 50, 50, 12, 5, manager)
-  stack(400, 100, 50, 50, 10, 5, manager)
-  stack(600, 100, 50, 50, 8, 5, manager)
-  stack(800, 100, 50, 50, 6, 5, manager)
-  stack(1000, 100, 50, 50, 4, 5, manager)
-
-  manager.getResource("gravity").y = 900
+  gravity.set(0, 900)
 }
 
-function stack(x, y, w, h, no, spacing, manager) {
+function stack(x, y, w, h, no, spacing, commands) {
+  const entities = []
   for (let i = 0; i < no; i++) {
-    manager.create([
-    ...createTransform2D(x, y + (h + spacing) * i),
-    ...createMovable2D(),
-    new BoundingBox(),
-    ...createRigidBody2D(Shape2D.rectangle(w, h))
-    ])
+    entities.push([
+      ...createRigidBody2D(x, y + (h + spacing) * i),
+      Shape2D.rectangle(w, h)
+      ])
   }
+  return entities
 }

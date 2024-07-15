@@ -5,7 +5,7 @@ import {
   createRigidBody2D,
   createMovable2D,
   createTransform2D
-} from "/src/index.js"
+} from "chaos-studio"
 
 export function makePlatform(
   x,
@@ -50,21 +50,8 @@ export function makeContainer(
 function createStaticBox(x, y, w, h) {
   const collider = Shape2D.rectangle(w, h)
   const box = [
-    ...createTransform2D(x, y),
-    ...createMovable2D(),
-    ...createRigidBody2D(0, 0, 1, 1),
+    ...createRigidBody2D(x, y, 0, 0,1,1),
     collider,
-    new BoundingBox()
   ]
   return box
-}
-
-function createRigidBody(x, y, a, m, i, r, f) {
-  
-  return [
-    ...createTransform2D(x, y, a),
-    ...createMovable2D(),
-    new BoundingBox(),
-    new PhysicsProperties()
-    ]
 }

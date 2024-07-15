@@ -1,15 +1,9 @@
 import {
   App,
-  TimePlugin,
-  InputPlugin,
-  TransformPlugin,
-  MovablePlugin,
-  ProfilerPlugin,
+  DefaultPlugin,
   Canvas2DRendererPlugin,
   Physics2DPlugin,
-  AudioPlugin,
   TweenPlugin,
-  LoaderPlugin,
   FPSDebugger,
   Body2DDebugger,
   Storage,
@@ -17,25 +11,18 @@ import {
   sq,
   createCamera2D,
   Shape2D
-} from "/src/index.js"
+} from "chaos-studio"
 
 export const examples = new Map()
 export const app = new App()
 const appTarget = "#can"
 export function init() {
   app
-    .registerPlugin(new TransformPlugin())
-    .registerPlugin(new MovablePlugin())
-    .registerPlugin(new ProfilerPlugin())
-    .registerPlugin(new LoaderPlugin())
-    .registerPlugin(new TimePlugin())
-    .registerPlugin(new InputPlugin())
+    .registerPlugin(new DefaultPlugin())
     .registerPlugin(new Physics2DPlugin({
       profile: true
     }))
-    .registerPlugin(new Canvas2DRendererPlugin())
     .registerPlugin(new TweenPlugin())
-    .registerPlugin(new AudioPlugin())
     .registerDebugger(new Body2DDebugger({
       drawBounds: false,
       drawVelocity: true,
@@ -46,7 +33,7 @@ export function init() {
     .registerStartupSystem(setupViewport)
     .registerStartupSystem(setupCamera)
     .registerStartupSystem(setupInput)
-    .registerUpdateSystem(debugInput)
+    //.registerUpdateSystem(debugInput)
     .run()
 }
 export function play(name) {
@@ -89,9 +76,8 @@ function loadAssets(app) {
   imageloader.load("assets/warrior.png")
 }
 
-function debugInput(registry){
+function debugInput(registry) {
   const touch = registry.getResource("touches").getOne()
-  console.log(touch)
-  
+  console.log(touch?.position)
 }
 window.app = app

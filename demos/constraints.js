@@ -4,7 +4,7 @@ import {
   Box,
   BodySprite,
   DistanceConstraint,
-} from "/src/index.js"//"/dist/chaos.module.js"
+} from "chaos-studio"
 
 export function constraint(manager) {
   let world = manager.getSystem("world")

@@ -4,38 +4,44 @@ import {
   createTransform2D,
   createMovable2D,
   createRigidBody2D,
-} from "/src/index.js"
+} from "chaos-studio"
 import { makePlatform } from "./utils.js"
 
 export function pyramid(manager) {
   const viewport = manager.getResource("viewport")
+  const commands = manager.getResource("entitycommands")
+  const gravity = manager.getResource("gravity")
   const viewX = viewport.width / 2
-  stackpyramid(viewX,100,50,50,10,0,manager)
-  manager.getResource("gravity").y = 900
 
-  makePlatform(
-    manager,
-    viewport.width / 2,
-    viewport.height * 0.8,
-    viewport.width,
-    50
-  )
+  commands
+    .spawn()
+    .insertPrefab(
+      makePlatform(
+        viewport.width / 2,
+        viewport.height * 0.8,
+        viewport.width,
+        50
+      )
+    )
+    .build()
+
+  commands
+    .spawnBatch(stackpyramid(viewX, 100, 50, 50, 10, 0))
+
+  gravity.set(0, 900)
 }
 
-function stackpyramid(x,y,w,h,no,spacing,manager) {
+function stackpyramid(x, y, w, h, no, spacing) {
+  const entities = []
   let dx = x - (w / 2 * no)
-  for (var j = no; j > 0; j--) {
+  for (let j = no; j > 0; j--) {
     dx += w / 2
-    for (var i = 0; i < j; i++) {
-      manager.create([
-        ...createTransform2D(
-          dx + w * i,
-          y + (h + spacing) * j
-        ),
-        ...createMovable2D(),
-        new BoundingBox(),
-        ...createRigidBody2D(Shape2D.rectangle(w,h))
-      ])
+    for (let i = 0; i < j; i++) {
+      entities.push([
+        ...createRigidBody2D(dx + w * i, y + (h + spacing) * j),
+        Shape2D.rectangle(w, h)
+        ])
     }
   }
+  return entities
 }

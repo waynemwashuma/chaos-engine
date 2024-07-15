@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ES8 Project</title>
   <style>
     html,
@@ -18,18 +17,19 @@
       height: fit-content;
       background-color: red;
     }
-    canvas{
+
+    canvas {
       background: black;
     }
   </style>
-  <script src="./index.js" type="module"></script>
-  <script type="sourcemap">
+  <script type="importmap">
     {
-        "imports":{
-          "chaos":"/src/index.js"
-        }
+      "imports": {
+        "chaos-studio": "/src/index.js"
       }
+    }
   </script>
+  <script src="./index.js" type="module"></script>
 </head>
 
 <body>

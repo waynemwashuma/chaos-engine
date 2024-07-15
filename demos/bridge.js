@@ -4,7 +4,7 @@ import {
   DistanceConstraint,
   createEntity,
   BodySprite
-} from "/src/index.js"
+} from "chaos-studio"
 
 export function bridge(manager) {
   let world = manager.getSystem("world")

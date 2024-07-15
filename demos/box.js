@@ -5,25 +5,18 @@ import {
   createMovable2D,
   createRigidBody2D,
   SpawnCommand
-} from "/src/index.js"
+} from "chaos-studio"
 import { makePlatform } from "./utils.js"
 
 export function box(manager) {
   const rect = manager.getResource("viewport")
   const commands = manager.getResource("entitycommands")
-  
-  const collider = Shape2D.rectangle(50, 50)
-  const mass = 1
-  const inertia = Shape2D.calcInertia(collider, mass)
-  
+  const gravity = manager.getResource("gravity")
+
   commands
     .spawn()
-    .insertPrefab(
-      createTransform2D(rect.width / 2, 400, Math.PI / 3.99))
-    .insertPrefab(createMovable2D())
-    .insertPrefab(createRigidBody2D(mass, inertia))
-    .insert(new BoundingBox())
-    .insert(collider)
+    .insertPrefab(createRigidBody2D(rect.width / 2, 400, Math.PI / 3.99, 1))
+    .insert(Shape2D.rectangle(50, 50))
     .build()
   commands
     .spawn()
@@ -36,5 +29,5 @@ export function box(manager) {
       )
     )
     .build()
-  manager.getResource("gravity").y = 900
+  gravity.set(0, 900)
 }
