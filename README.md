@@ -6,7 +6,10 @@
 ![NPM](https://img.shields.io/npm/l/chaos-studio)
 ![GitHub Repo stars](https://img.shields.io/github/stars/waynemwashuma/chaos-engine)
 
- This is a 2d game engine with physics,a basic canvas renderer,AI,audio management through web audio,an event system and many more features.
+> [!Important]
+> This engine is no longer maintained nor will receive updates.A new engine has been created and is available [here](https://github.com/wimaengine/wima). Explanation for this change is [in the issues](https://github.com/waynemwashuma/chaos-engine/issues/50)
+
+This is a 2d game engine with physics,a basic canvas renderer,AI,audio management through web audio,an event system and many more features.
 
 ## Features of this game engine.
 
